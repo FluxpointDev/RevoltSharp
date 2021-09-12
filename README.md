@@ -16,7 +16,12 @@ public static RevoltClient Client;
 public static async Task Start()
 {
     Client = new RevoltClient("Bot Token", ClientMode.WebSocket);
+    // You don't need to run start if client mode is http.
     await Client.StartAsync();
     await Task.Delay(-1);
 }
 ```
+
+# Commands
+This lib also includes and easy to use command system for setting up commands and using data.
+Here is an example on how to do that.
