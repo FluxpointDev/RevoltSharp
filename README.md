@@ -24,4 +24,46 @@ public static async Task Start()
 
 # Commands
 This lib also includes and easy to use command system for setting up commands and using data.
-Here is an example on how to do that.
+Big thanks to [Discord.net](https://github.com/discord-net/Discord.Net) for the internal command handler system, this was modified to work with Revolt and the classes.
+
+Here is an example on how to setup commands.
+```cs
+class Program
+{
+    static void Main(string[] args)
+    {
+        Start().GetAwaiter().GetResult();
+    }
+
+    public static RevoltClient Client;
+    public static async Task Start()
+    {
+        Client = new RevoltClient("Bot Token", ClientMode.WebSocket);
+        await Client.StartAsync();
+        CommandHandler Commands = new CommandHandler(Client);
+        Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+        await Task.Delay(-1);
+    }
+}
+
+public class CommandHandler
+{
+    public CommandHandler(RevoltClient client)
+    {
+        Client = client;
+        client.OnMessageRecieved += Client_OnMessageRecieved;
+    }
+    public RevoltClient Client;
+    public CommandService Service = new CommandService();
+    private void Client_OnMessageRecieved(Message msg)
+    {
+        if (msg.Author.IsBot)
+            return;
+        int argPos = 0;
+        if (!(msg.HasCharPrefix('!', ref argPos) || msg.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+            return;
+        CommandContext context = new CommandContext(Client, msg);
+        Service.ExecuteAsync(context, argPos, null);
+    }
+}
+```
