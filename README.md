@@ -75,13 +75,13 @@ public class CmdTest : ModuleBase
     [Command("hi")]
     public async Task Hi()
     {
-    await ReplyAsync("Hi " + Context.User.Username);
+        await ReplyAsync("Hi " + Context.User.Username);
     }
 
     [Command("say")]
     public async Task Say([Remainder] string text)
     {
-    await ReplyAsync(text);
+        await ReplyAsync(text);
     }
 }
 ```
