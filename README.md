@@ -2,6 +2,10 @@
 RevoltSharp is a bot lib used to connect to [Revolt](https://revolt.chat/) chat app.
 This lib only supports bots for now and not userbots!
 
+# Support
+Join our Revolt server for more information or help with the lib.
+https://app.revolt.chat/invite/J5Ras1J3
+
 # Install
 You can download the lib in visual studio/code using this [Nuget Package](https://www.nuget.org/packages/RevoltSharp)
 
