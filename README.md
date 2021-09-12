@@ -67,3 +67,21 @@ public class CommandHandler
     }
 }
 ```
+
+### Create a command
+```cs
+public class CmdTest : ModuleBase
+{
+    [Command("hi")]
+    public async Task Hi()
+    {
+    await ReplyAsync("Hi " + Context.User.Username);
+    }
+
+    [Command("say")]
+    public async Task Say([Remainder] string text)
+    {
+    await ReplyAsync(text);
+    }
+}
+```
