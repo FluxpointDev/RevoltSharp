@@ -307,7 +307,7 @@
         <member name="P:RevoltSharp.Commands.CommandContext.Message">
             <inheritdoc/>
         </member>
-        <member name="M:RevoltSharp.Commands.CommandContext.#ctor(RevoltSharp.RevoltClient,RevoltSharp.Core.Message)">
+        <member name="M:RevoltSharp.Commands.CommandContext.#ctor(RevoltSharp.RevoltClient,RevoltSharp.Message)">
             <summary>
                 Initializes a new <see cref="T:RevoltSharp.Commands.CommandContext" /> class with the provided client and message.
             </summary>
@@ -697,7 +697,7 @@
                 Provides extension methods for <see cref="!:IUserMessage" /> that relates to commands.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Commands.MessageExtensions.HasCharPrefix(RevoltSharp.Core.Message,System.Char,System.Int32@)">
+        <member name="M:RevoltSharp.Commands.MessageExtensions.HasCharPrefix(RevoltSharp.Message,System.Char,System.Int32@)">
             <summary>
                 Gets whether the message starts with the provided character.
             </summary>
@@ -708,12 +708,12 @@
                 <c>true</c> if the message begins with the char <paramref name="c"/>; otherwise <c>false</c>.
             </returns>
         </member>
-        <member name="M:RevoltSharp.Commands.MessageExtensions.HasStringPrefix(RevoltSharp.Core.Message,System.String,System.Int32@,System.StringComparison)">
+        <member name="M:RevoltSharp.Commands.MessageExtensions.HasStringPrefix(RevoltSharp.Message,System.String,System.Int32@,System.StringComparison)">
             <summary>
                 Gets whether the message starts with the provided string.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Commands.MessageExtensions.HasMentionPrefix(RevoltSharp.Core.Message,RevoltSharp.Core.User,System.Int32@)">
+        <member name="M:RevoltSharp.Commands.MessageExtensions.HasMentionPrefix(RevoltSharp.Message,RevoltSharp.User,System.Int32@)">
             <summary>
                 Gets whether the message starts with the user's mention string.
             </summary>
@@ -948,7 +948,7 @@
             <param name="filePath">The file path of the file.</param>
             <param name="text">The message to be sent.</param>
             <param name="isTTS">Whether the message should be read aloud by Discord or not.</param>
-            <param name="embed">The <see cref="!:EmbedType.Rich" /> <see cref="T:RevoltSharp.Core.Embed" /> to be sent.</param>
+            <param name="embed">The <see cref="!:EmbedType.Rich" /> <see cref="T:RevoltSharp.Embed" /> to be sent.</param>
             <param name="options">The options to be used when sending the request.</param>
             <param name="isSpoiler">Whether the message attachment should be hidden as a spoiler.</param>
             <param name="allowedMentions">
