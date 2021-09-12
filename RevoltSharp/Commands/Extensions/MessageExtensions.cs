@@ -44,6 +44,8 @@ namespace RevoltSharp.Commands
         /// </summary>
         public static bool HasMentionPrefix(this Message msg, User user, ref int argPos)
         {
+            if (user == null)
+                return false;
             string text = msg.Content;
             if (string.IsNullOrEmpty(text) || text.Length <= 3 || text[0] != '<' || text[1] != '@') return false;
 
@@ -51,7 +53,7 @@ namespace RevoltSharp.Commands
             if (endPos == -1) return false;
             if (text.Length < endPos + 2 || text[endPos + 1] != ' ') return false; //Must end in "> "
 
-            string userId = "";
+            string userId = text.Replace("<@", "").Replace(">", "");
             //if (!MentionUtils.TryParseUser(text.Substring(0, endPos + 1), out userId)) return false;
             if (userId == user.Id)
             {
