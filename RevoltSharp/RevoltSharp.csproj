@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>1.0.0</Version>
+    <Version>1.0.2</Version>
     <Authors>Builderb</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway to get events.</Description>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/xXBuilderBXx/RevoltSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xXBuilderBXx/RevoltSharp</RepositoryUrl>
     <PackageTags>revolt</PackageTags>
-    <PackageReleaseNotes>First release of the lib.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added basic xml comments to some stuff, added some internal checks to rest and websocket client with better error handling such as invalid token and updated debug config with url options so you can use the bot for self-hosted instances.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -15,55 +15,55 @@ namespace RevoltSharp.Rest
         public RevoltRestClient(RevoltClient client)
         {
             Client = client;
+
+            if (string.IsNullOrEmpty(Client.Config.Debug.API_URL))
+                throw new RevoltException("Client config API_URL can not be empty.");
+
+            if (!Uri.IsWellFormedUriString(client.Config.Debug.API_URL, UriKind.Absolute))
+                throw new RevoltException("Client config API_URL is an invalid format.");
+
+            if (!Client.Config.Debug.API_URL.EndsWith('/'))
+                Client.Config.Debug.API_URL = Client.Config.Debug.API_URL + "/";
+
+            if (string.IsNullOrEmpty(Client.Config.Debug.UPLOAD_URL))
+                throw new RevoltException("Client config UPLOAD_URL can not be empty.");
+
+            if (!Uri.IsWellFormedUriString(client.Config.Debug.UPLOAD_URL, UriKind.Absolute))
+                throw new RevoltException("Client config UPLOAD_URL is an invalid format.");
+
+            if (!Client.Config.Debug.UPLOAD_URL.EndsWith('/'))
+                Client.Config.Debug.UPLOAD_URL = Client.Config.Debug.UPLOAD_URL + "/";
+
             HttpClient = new HttpClient()
             {
-                BaseAddress = new System.Uri(HostUrl)
+                BaseAddress = new System.Uri(Client.Config.Debug.API_URL)
             };
             HttpClient.DefaultRequestHeaders.Add("x-bot-token", Client.Token);
-            HttpClient.DefaultRequestHeaders.Add("User-Agent", "Revolt Bot (RevoltSharp)");
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
             HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             FileHttpClient = new HttpClient()
             {
-                BaseAddress = new System.Uri(FileHostUrl)
+                BaseAddress = new System.Uri(Client.Config.Debug.UPLOAD_URL)
             };
-            FileHttpClient.DefaultRequestHeaders.Add("User-Agent", "Revolt Bot (RevoltSharp)");
+            FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
         }
 
         public RevoltClient Client { get; private set; }
         internal HttpClient HttpClient;
         internal HttpClient FileHttpClient;
-        internal static string HostUrl = "https://api.revolt.chat/";
-        internal static string FileHostUrl = "https://autumn.revolt.chat/";
 
-        public async Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint)
-        {
-            HttpMethod Method = GetMethod(method);
-            return await InternalJsonRequest(Method, endpoint, null);
-        }
+        public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint)
+            => InternalRequest(GetMethod(method), endpoint, null);
 
-        public async Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, Dictionary<string, object> json = null)
-        {
-            HttpMethod Method = GetMethod(method);
-            if (json == null)
-                return await InternalRequest(Method, endpoint);
-            return await InternalJsonRequest(Method, endpoint, json);
-        }
+        public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, Dictionary<string, object> json = null)
+           => json == null ? InternalRequest(GetMethod(method), endpoint, null) : InternalRequest(GetMethod(method), endpoint, json);
+        
+        public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, RevoltRequest json = null)
+        => json == null ? InternalRequest(GetMethod(method), endpoint, null) : InternalRequest(GetMethod(method), endpoint, json);
 
-        public async Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, RevoltRequest json = null)
-        {
-            HttpMethod Method = GetMethod(method);
-            if (json == null)
-                return await InternalRequest(Method, endpoint);
-            return await InternalJsonRequest(Method, endpoint, json);
-        }
-
-
-        public async Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, RevoltRequest json = null)
-            where TResponse : class
-        {
-            HttpMethod Method = GetMethod(method);
-            return await InternalJsonRequest<TResponse>(Method, endpoint, json);
-        }
+        public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, RevoltRequest json = null) where TResponse : class
+            => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
+        
 
         internal HttpMethod GetMethod(RequestType method)
         {
@@ -71,8 +71,6 @@ namespace RevoltSharp.Rest
             {
                 case RequestType.Post:
                     return HttpMethod.Post;
-                case RequestType.Put:
-                    return HttpMethod.Put;
                 case RequestType.Delete:
                     return HttpMethod.Delete;
                 case RequestType.Patch:
@@ -81,12 +79,14 @@ namespace RevoltSharp.Rest
             return HttpMethod.Get;
         }
 
-        public async Task<FileAttachment> UploadFileAsync(string path, UploadFileType type)
-        {
-            return await UploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
-        }
+        public Task<FileAttachment> UploadFileAsync(string path, UploadFileType type)
+            => InternalUploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
 
-        public async Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
+
+        public Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
+           => InternalUploadFileAsync(bytes, name, type);
+
+        internal async Task<FileAttachment> InternalUploadFileAsync(byte[] bytes, string name, UploadFileType type)
         {
             HttpRequestMessage Mes = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
             MultipartFormDataContent MP = new System.Net.Http.MultipartFormDataContent("file");
@@ -95,7 +95,7 @@ namespace RevoltSharp.Rest
             Mes.Content = MP;
             HttpResponseMessage Req = await FileHttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Req, Formatting.Indented));
+                Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented));
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
             return Req.IsSuccessStatusCode ? new FileAttachment { Id = DeserializeJson<FileAttachmentJson>(Req.Content.ReadAsStream()).id } : null;
@@ -119,33 +119,48 @@ namespace RevoltSharp.Rest
 
         public enum UploadFileType
         {
-            Attachment, Avatar, Icon, Banner, Background
+            /// <summary>
+            /// Upload a normal file e.g txt, mp4, ect.
+            /// </summary>
+            Attachment, 
+            /// <summary>
+            /// Set the bot's avatar with this image.
+            /// </summary>
+            Avatar,
+            /// <summary>
+            /// Set a server or channel icon with this image.
+            /// </summary>
+            Icon,
+            /// <summary>
+            /// Set a server banner with this image.
+            /// </summary>
+            Banner,
+            /// <summary>
+            /// Set the bot's profile background with this image.
+            /// </summary>
+            Background
         }
 
-        internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint)
-        {
-            HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
-            HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
-            if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Req, Formatting.Indented));
-            if (Client.Config.Debug.CheckRestRequest)
-                Req.EnsureSuccessStatusCode();
-            return Req;
-        }
-        internal async Task<HttpResponseMessage> InternalJsonRequest(HttpMethod method, string endpoint, object request)
+        internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object request)
         {
             HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
             if (request != null)
             {
                 Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
-                if (Client.Config.Debug.LogRestRequestContent)
-                    Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(request, Formatting.Indented));
+                if (Client.Config.Debug.LogRestRequestJson)
+                    Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Req, Formatting.Indented));
+                Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented));
+
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
+            if (Req.IsSuccessStatusCode && Client.Config.Debug.LogRestResponseJson)
+            {
+                string Content = await Req.Content.ReadAsStringAsync();
+                Console.WriteLine("--- Rest Response ---\n" + Content);
+            }
             return Req;
         }
         internal async Task<TResponse> InternalJsonRequest<TResponse>(HttpMethod method, string endpoint, object request)
@@ -155,15 +170,22 @@ namespace RevoltSharp.Rest
             if (request != null)
             {
                 Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
-                if (Client.Config.Debug.LogRestRequestContent)
-                    Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(request, Formatting.Indented));
+                if (Client.Config.Debug.LogRestRequestJson)
+                    Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Req, Formatting.Indented));
+                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented));
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
-            return Req.IsSuccessStatusCode ? DeserializeJson<TResponse>(Req.Content.ReadAsStream()) : null;
+            TResponse Response = null;
+            if (Req.IsSuccessStatusCode)
+            {
+                Response = DeserializeJson<TResponse>(Req.Content.ReadAsStream());
+                if (Client.Config.Debug.LogRestResponseJson)
+                    Console.WriteLine("--- Rest Response Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented));
+            }
+            return Response;
         }
 
         internal string SerializeJson(object value)
@@ -184,6 +206,21 @@ namespace RevoltSharp.Rest
     }
     public enum RequestType
     {
-        Get, Post, Put, Delete, Patch
+        /// <summary>
+        /// Get data from the API.
+        /// </summary>
+        Get, 
+        /// <summary>
+        /// Post new messages or create channels.
+        /// </summary>
+        Post,
+        /// <summary>
+        /// Delete a message, channel, ect.
+        /// </summary>
+        Delete,
+        /// <summary>
+        /// Update an existing channel, server, ect.
+        /// </summary>
+        Patch
     }
 }

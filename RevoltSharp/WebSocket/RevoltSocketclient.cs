@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -19,18 +20,22 @@ namespace RevoltSharp.WebSocket
         public RevoltSocketclient(RevoltClient client)
         {
             Client = client;
+            if (string.IsNullOrEmpty(client.Config.Debug.WEBSOCKET_URL))
+                throw new RevoltException("Client config WEBSOCKET_URL can not be empty.");
+
+            if (!Uri.IsWellFormedUriString(client.Config.Debug.WEBSOCKET_URL, UriKind.Absolute))
+                throw new RevoltException("Client config WEBSOCKET_URL is an invalid format.");
         }
 
         public RevoltClient Client { get; private set; }
         internal ClientWebSocket WebSocket;
         internal bool FirstConnected = true;
-        internal static string HostUrl = "wss://ws.revolt.chat?format=json";
         internal CancellationToken CancellationToken = new CancellationToken();
-
         internal ConcurrentDictionary<string, Server> ServerCache = new ConcurrentDictionary<string, Server>();
         internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
         internal ConcurrentDictionary<string, User> Usercache = new ConcurrentDictionary<string, User>();
         internal User CurrentUser;
+        internal bool FirstError = true;
         internal async Task SetupWebsocket()
         {
             while (!CancellationToken.IsCancellationRequested)
@@ -39,21 +44,26 @@ namespace RevoltSharp.WebSocket
                 {
                     try
                     {
-                        await WebSocket.ConnectAsync(new Uri(HostUrl), CancellationToken);
+                        await WebSocket.ConnectAsync(new Uri(Client.Config.Debug.WEBSOCKET_URL + "?format=json"), CancellationToken);
                         await Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new AuthenticateRequest { token = Client.Token }), CancellationToken);
+                        FirstError = true;
                         await Receive(WebSocket, CancellationToken);
-
+                    }
+                    catch (ArgumentException ae)
+                    {
+                        Console.WriteLine("Client config WEBSOCKET_URL is an invalid format.");
+                        throw new RevoltException("Client config WEBSOCKET_URL is an invalid format.");
                     }
                     catch (WebSocketException we)
                     {
-                        Console.WriteLine($"WebSocket Error - {we}");
-                        await Task.Delay(10000);
+                        Console.WriteLine("--- WebSocket Error ---\n" + $"{we}");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Client Error - {ex}");
-                        await Task.Delay(10000);
+                        Console.WriteLine("--- WebSocket Exception ---\n" + $"{ex}");
                     }
+                    await Task.Delay(FirstError ? 3000 : 10000);
+                    FirstError = false;
                 }
             }
         }
@@ -103,16 +113,17 @@ namespace RevoltSharp.WebSocket
         private async Task WebSocketMessage(string json)
         {
             JToken Payload = Newtonsoft.Json.JsonConvert.DeserializeObject<JToken>(json);
-            if (Client.Config.Debug.LogFullEvents)
-                Console.WriteLine("Json - " + json);
+            if (Client.Config.Debug.LogWebSocketFull)
+                Console.WriteLine("--- WebSocket Response Json ---\n" + json);
 
             switch (Payload["type"].ToString())
             {
                 case "Authenticated":
                     if (FirstConnected)
-                        Console.WriteLine("WebSocket Connected!");
+                        Console.WriteLine("Revolt WebSocket Connected!");
                     else
-                        Console.WriteLine("Websocket Reconnected!");
+                        Console.WriteLine("Revolt WebSocket Reconnected!");
+
                     FirstConnected = false;
                     Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
                     
@@ -120,26 +131,34 @@ namespace RevoltSharp.WebSocket
                     {
                         while (!CancellationToken.IsCancellationRequested)
                         {
-                            await Task.Delay(20000);
+                            await Task.Delay(50000);
                             await Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
                         }
                     });
                     break;
+                case "Pong":
+                    {
+
+                    }
+                    break;
                 case "Error":
                     {
                         ErrorEventJson Event = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorEventJson>(json);
-                        Console.Write("WS Error - " + Event.error);
+                        Console.WriteLine("--- WebSocket Error ---\n" + json);
+                        if (Event.error == "InvalidSession")
+                        {
+                            await Client.StopAsync();
+                            if (FirstConnected)
+                                Console.WriteLine("WebSocket session is invalid, check if your bot token is correct.");
+                            else
+                                Console.WriteLine("WebSocket session is invalid!");
+                        }
                     }
                     break;
                 case "Ready":
                     {
                         ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
                         Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.id, x => x.ToEntity()));
-                        foreach(var u in Usercache.Values)
-                        {
-                            Console.Write($"{u.Username} - {u.ProfileBio}");
-                        }
-                        
                         CurrentUser = Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null);
                         ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.id, x => x.ToEntity(Client)));
                         ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.id, x => x.ToEntity(Client)));
@@ -419,6 +438,13 @@ namespace RevoltSharp.WebSocket
                 case "UserRelationship":
                     {
                         UserRelationshipEventJson Event = Payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
+                    }
+                    break;
+
+                default:
+                    {
+                        if (Client.Config.Debug.LogWebSocketUnknownEvent)
+                            Console.WriteLine("--- WebSocket Unknown Event ---\n" + json);
                     }
                     break;
             }

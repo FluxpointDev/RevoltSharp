@@ -1,6 +1,6 @@
 ﻿namespace RevoltSharp
 {
-    public class DMChannel : Channel
+    internal class DMChannel : Channel
     {
         public bool Active { get; internal set; }
         public string[] Recipents { get; internal set; }

@@ -1,6 +1,6 @@
 ﻿namespace RevoltSharp
 {
-    class SavedMessagesChannel : Channel
+    internal class SavedMessagesChannel : Channel
     {
         public string User { get; internal set; }
 

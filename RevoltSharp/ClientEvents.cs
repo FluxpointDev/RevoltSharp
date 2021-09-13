@@ -1,15 +1,25 @@
 ﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Do not use this class! only used for <see cref="RevoltClient"/>
+    /// </summary>
     public class ClientEvents
     {
         public delegate void RevoltEvent<TValue>(TValue value);
         public delegate void RevoltEvent<TValue, TValue2>(TValue value, TValue2 value2);
+
+        /// <summary>
+        /// Receive message events from websocket in a <see cref="TextChannel"/> or <seealso cref="GroupChannel"/>
+        /// </summary>
         public event RevoltEvent<Message> OnMessageRecieved;
         internal void InvokeMessageRecieved(Message msg)
         {
             OnMessageRecieved?.Invoke(msg);
         }
 
+        /// <summary>
+        /// Event used when the <see cref="RevoltClient"/> WebSocket has fully loaded with cached data and <see cref="RevoltClient.CurrentUser"/> is set.
+        /// </summary>
         public event RevoltEvent<User> OnReady;
         internal void InvokeReady(User user)
         {
@@ -89,7 +99,6 @@
         {
             OnMemberLeft?.Invoke(server, user);
         }
-
 
         public event RevoltEvent<Role> OnRoleCreated;
         internal void InvokeRoleCreated(Role role)

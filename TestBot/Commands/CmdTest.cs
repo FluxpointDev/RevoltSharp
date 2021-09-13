@@ -6,10 +6,11 @@ namespace TestBot.Commands
 {
     public class CmdTest : ModuleBase
     {
-        [Command("hi")]
-        public async Task Hi()
+        [Command("test")]
+        public async Task Test()
         {
-            await ReplyAsync("Hi " + Context.User.Username);
+            var File = await ReplyFileAsync("C:/Users/Brandan/Downloads/0154.jpeg");
+            await ReplyAsync("Test");
         }
     }
 }

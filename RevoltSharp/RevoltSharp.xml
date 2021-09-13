@@ -4,6 +4,67 @@
         <name>RevoltSharp</name>
     </assembly>
     <members>
+        <member name="F:RevoltSharp.ClientConfig.Debug">
+            <summary>
+            Do not use this unless you know what you're doing.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.LogWebSocketFull">
+            <summary>
+            Log all websocket events that you get from Revolt.
+            </summary>
+            <remarks>
+            Do not use this in production!
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.LogWebSocketError">
+            <summary>
+            Log when the websocket gets an error.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.LogWebSocketUnknownEvent">
+            <summary>
+            Log when the websocket gets an unknown event not used in the lib.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.LogRestRequest">
+            <summary>
+            Log the internal request used on <see cref="M:RevoltSharp.Rest.RevoltRestClient.SendRequestAsync(RevoltSharp.Rest.RequestType,System.String)"/> and <see cref="M:RevoltSharp.Rest.RevoltRestClient.UploadFileAsync(System.Byte[],System.String,RevoltSharp.Rest.RevoltRestClient.UploadFileType)"/>
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.CheckRestRequest">
+            <summary>
+            Check all requests sent, if they are not successful enable this to throw an exception.
+            </summary>
+            <remarks>
+            By default the lib will return a <see cref="T:System.Net.Http.HttpResponseMessage"/> or <see langword="null"/> for <see langword="GetServerAsync"/>, <see langword="GetUserAsync"/>, ect.
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.LogRestRequestJson">
+            <summary>
+            Log the json content used when sending a http request.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.LogRestResponseJson">
+            <summary>
+            Log the http response content/json when successful.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.ClientEvents">
+            <summary>
+            Do not use this class! only used for <see cref="T:RevoltSharp.RevoltClient"/>
+            </summary>
+        </member>
+        <member name="E:RevoltSharp.ClientEvents.OnMessageRecieved">
+            <summary>
+            Receive message events from websocket in a <see cref="T:RevoltSharp.TextChannel"/> or <seealso cref="T:RevoltSharp.GroupChannel"/>
+            </summary>
+        </member>
+        <member name="E:RevoltSharp.ClientEvents.OnReady">
+            <summary>
+            Event used when the <see cref="T:RevoltSharp.RevoltClient"/> WebSocket has fully loaded with cached data and <see cref="P:RevoltSharp.RevoltClient.CurrentUser"/> is set.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.Commands.AliasAttribute">
             <summary>
                 Marks the aliases for a command.
@@ -1260,14 +1321,253 @@
             </summary>
             <seealso cref="P:RevoltSharp.Commands.CommandServiceConfig.QuotationMarkAliasMap"/>
         </member>
+        <member name="T:RevoltSharp.Channel">
+            <summary>
+            Revolt channel that can be casted to types <see cref="T:RevoltSharp.GroupChannel"/>, <see cref="T:RevoltSharp.TextChannel"/>, <see cref="T:RevoltSharp.VoiceChannel"/> and <see cref="T:RevoltSharp.UnknownChannel"/>
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.Attachment">
+            <summary>
+            Revolt file attachment for messages which could by any type including an image.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Id">
+            <summary>
+            Id of the attachment file.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Tag">
+            <summary>
+            The type of attachment used avatar, banner, icon, ect.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Filename">
+            <summary>
+            The original file name of the attachment.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Type">
+            <summary>
+            The file mime type of the attachment.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Size">
+            <summary>
+            The size of the file attachment.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Width">
+            <summary>
+            The width of the image if the file is an image type.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Attachment.Height">
+            <summary>
+            The height of the image if the file is an image type.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.FileAttachment">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.FileAttachment.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.Message">
+            <summary>
+            Revolt chat message with author, attachments, mentions and optional server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.Id">
+            <summary>
+            Id of the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.ChannelId">
+            <summary>
+            Channel id of the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.ServerId">
+            <summary>
+            Server id of the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.Server">
+            <summary>
+            Revolt server the message was posted to.
+            </summary>
+            <remarks>
+            This will be <see langword="null"/> on <see cref="T:RevoltSharp.GroupChannel"/> and <see cref="F:RevoltSharp.ClientMode.Http"/>
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.Message.Channel">
+            <summary>
+            Revolt channel the message was posted to.
+            </summary>
+            <remarks>
+            This will be <see langword="null"/> on <see cref="F:RevoltSharp.ClientMode.Http"/>
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.Message.Author">
+            <summary>
+            Revolt user who posted the message.
+            </summary>
+            <remarks>
+            This will be <see langword="null"/> on <see cref="F:RevoltSharp.ClientMode.Http"/>
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.Message.AuthorId">
+            <summary>
+            Id of the user who posted the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.Content">
+            <summary>
+            The text content of the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.Attachments">
+            <summary>
+            List of file attachments and images sent with the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.Mentions">
+            <summary>
+            List of mentions that this message has tagged.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Message.Replies">
+            <summary>
+            List of message replies this message is referencing.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.DisableConsoleQuickEdit.Go">
             <summary>
             Fix the console from freezing the bot due to checking for readinput in the console
             </summary>
         </member>
+        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Attachment">
+            <summary>
+            Upload a normal file e.g txt, mp4, ect.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Avatar">
+            <summary>
+            Set the bot's avatar with this image.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Icon">
+            <summary>
+            Set a server or channel icon with this image.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Banner">
+            <summary>
+            Set a server banner with this image.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Background">
+            <summary>
+            Set the bot's profile background with this image.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RequestType.Get">
+            <summary>
+            Get data from the API.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RequestType.Post">
+            <summary>
+            Post new messages or create channels.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RequestType.Delete">
+            <summary>
+            Delete a message, channel, ect.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Rest.RequestType.Patch">
+            <summary>
+            Update an existing channel, server, ect.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.RevoltClient">
+            <summary>
+            Revolt bot client used to connect to the Revolt chat API and WebSocket with a bot.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.RevoltClient.#ctor(System.String,RevoltSharp.ClientMode,RevoltSharp.ClientConfig)">
+            <summary>
+            Create a Revolt bot client.
+            </summary>
+            <param name="token">Bot token to connect with.</param>
+            <param name="mode">Use http for http requests only with no websocket.</param>
+            <param name="config">Optional config stuff for the bot and lib.</param>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.Token">
+            <summary>
+            Revolt bot token used for http requests and websocket.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.Config">
+            <summary>
+            Client config options for user-agent and debug options including self-host support.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.Rest">
+            <summary>
+            Internal rest/http client used to connect to the Revolt API.
+            </summary>
+            <remarks>
+            You can also make custom requests with <see cref="M:RevoltSharp.Rest.RevoltRestClient.SendRequestAsync(RevoltSharp.Rest.RequestType,System.String,RevoltSharp.Rest.RevoltRequest)"/> and json class based on <see cref="T:RevoltSharp.Rest.RevoltRequest"/>
+            </remarks>
+        </member>
+        <member name="M:RevoltSharp.RevoltClient.StartAsync">
+            <summary>
+            Start the WebSocket connection to Revolt.
+            </summary>
+            <remarks>
+            Will throw a <see cref="T:RevoltSharp.RevoltException"/> if <see cref="F:RevoltSharp.ClientMode.Http"/>
+            </remarks>
+            <exception cref="T:RevoltSharp.RevoltException"></exception>
+        </member>
+        <member name="M:RevoltSharp.RevoltClient.StopAsync">
+            <summary>
+            Stop the WebSocket connection to Revolt.
+            </summary>
+            <remarks>
+            Will throw a <see cref="T:RevoltSharp.RevoltException"/> if <see cref="F:RevoltSharp.ClientMode.Http"/>
+            </remarks>
+            <exception cref="T:RevoltSharp.RevoltException"></exception>
+        </member>
         <member name="P:RevoltSharp.RevoltClient.CurrentUser">
             <summary>
-            Get the current bot user if you are using websocket.
+            Get the current bot <see cref="T:RevoltSharp.User"/> after ready event.
+            </summary>
+            <remarks>
+            Using <see cref="F:RevoltSharp.ClientMode.Http"/> means this is always <see langword="null"/> or use <see cref="P:RevoltSharp.RevoltClient.Rest"/> to get user.
+            </remarks>
+        </member>
+        <member name="T:RevoltSharp.ClientMode">
+            <summary>
+            Run the client with Http requests only or use websocket to get cached data such as servers, channels and users instead of just ids.
+            </summary>
+            <remarks>
+            Using <see cref="F:RevoltSharp.ClientMode.Http"/> means that some data will be <see langword="null"/> such as <see cref="P:RevoltSharp.Message.Author"/> and will only contain ids <see cref="P:RevoltSharp.Message.AuthorId"/>
+            </remarks>
+        </member>
+        <member name="F:RevoltSharp.ClientMode.Http">
+            <summary>
+            Client will only use the http/rest client of Revolt and removes any usage/memory of websocket stuff. 
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ClientMode.WebSocket">
+            <summary>
+            Will use both WebSocket and http/rest client so you can get cached data for <see cref="T:RevoltSharp.User"/>, <see cref="T:RevoltSharp.Server"/> and <see cref="T:RevoltSharp.Channel"/>
             </summary>
         </member>
     </members>

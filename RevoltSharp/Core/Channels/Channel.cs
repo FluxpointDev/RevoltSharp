@@ -1,5 +1,8 @@
 ﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> and <see cref="UnknownChannel"/>
+    /// </summary>
     public abstract class Channel
     {
         public string Id { get; internal set; }
