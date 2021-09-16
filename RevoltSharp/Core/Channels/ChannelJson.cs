@@ -11,7 +11,7 @@ namespace RevoltSharp
         public string user;
         public bool active;
         public string[] recipents;
-        public object last_message;
+        public string last_message_id;
         public AttachmentJson icon;
         public string description;
         public string name;
@@ -19,18 +19,9 @@ namespace RevoltSharp
         public int permissions;
         public int default_permissions;
         public string server;
+        public bool nsfw;
         internal Channel ToEntity(RevoltClient client)
         {
-            string LastMessage = "";
-            if (last_message != null)
-            {
-                if (last_message is string lms)
-                    LastMessage = lms;
-                else if (last_message is LastMessageJson js)
-                {
-                    LastMessage = js.id;
-                }
-            }
             switch (channel_type)
             {
                 case "SavedMessages":
@@ -48,7 +39,7 @@ namespace RevoltSharp
                         Type = ChannelType.DM,
                         Active = active,
                         Recipents = recipents,
-                        LastMessageId = LastMessage,
+                        LastMessageId = last_message_id,
                         Client = client
                     };
                 case "Group":
@@ -58,7 +49,7 @@ namespace RevoltSharp
                         Type = ChannelType.Group,
                         Recipents = recipents,
                         Description = description,
-                        LastMessageId = LastMessage,
+                        LastMessageId = last_message_id,
                         Name = name,
                         OwnerId = owner,
                         Permissions = permissions,
@@ -75,8 +66,9 @@ namespace RevoltSharp
                         Name = name,
                         ServerId = server,
                         Icon = icon != null ? icon.ToEntity() : null,
-                        LastMessageId = LastMessage,
-                        Client = client
+                        LastMessageId = last_message_id,
+                        Client = client,
+                        IsNsfw = nsfw
                     };
                 case "VoiceChannel":
                     return new VoiceChannel

@@ -11,13 +11,15 @@ namespace RevoltSharp
         public Option<int> rank;
         public Option<string> colour;
 
-        internal Role ToEntity(string roleId)
+        internal Role ToEntity(RevoltClient client, string serverId, string roleId)
         {
             return new Role
             {
                 Id = roleId,
                 Name = name.ValueOrDefault(),
-                Permissions = permissions.ValueOrDefault()
+                Permissions = permissions.ValueOrDefault(),
+                Client = client,
+                ServerId = serverId
             };
         }
     }

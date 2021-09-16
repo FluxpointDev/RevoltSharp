@@ -19,6 +19,8 @@ namespace RevoltSharp
         /// Server id of the message.
         /// </summary>
         public string ServerId { get; internal set; }
+
+        internal RevoltClient Client;
         /// <summary>
         /// Revolt server the message was posted to.
         /// </summary>
@@ -76,7 +78,8 @@ namespace RevoltSharp
                 Replies = json.replies != null ? json.replies : new string[0],
                 Channel = Chan,
                 ServerId = Chan.ServerId,
-                Server = Chan.IsServer && client.WebSocket != null ? client.WebSocket.ServerCache[Chan.ServerId] : null
+                Server = Chan.IsServer && client.WebSocket != null ? client.WebSocket.ServerCache[Chan.ServerId] : null,
+                Client = client
             };
         }
     }

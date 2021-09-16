@@ -33,7 +33,7 @@ namespace RevoltSharp
                 ChannelIds = channels != null ? channels.ToHashSet() : new HashSet<string>(),
                 Icon = icon != null ? icon.ToEntity() : null,
                 OwnerId = owner,
-                Roles = roles != null ? new ConcurrentDictionary<string, Role>(roles.ToDictionary(x => x.Key, x => x.Value.ToEntity(x.Key))) : new ConcurrentDictionary<string, Role>(),
+                Roles = roles != null ? new ConcurrentDictionary<string, Role>(roles.ToDictionary(x => x.Key, x => x.Value.ToEntity(client, id, x.Key))) : new ConcurrentDictionary<string, Role>(),
                 Client = client
             };
         }

@@ -6,11 +6,11 @@ namespace RevoltSharp
     {
         public string LastMessageId;
         public string ServerId { get { return base.ServerId; } internal set { base.ServerId = value; } }
-        public int DefaultPermissions;
-        public string Name;
-        public string Description;
-        public Attachment Icon;
-
+        public int DefaultPermissions { get; internal set; }
+        public string Name { get; internal set; }
+        public string Description { get; internal set; }
+        public Attachment Icon { get; internal set; }
+        public bool IsNsfw { get; internal set; }
         internal override void Update(PartialChannelJson json)
         {
             if (json.name.HasValue)

@@ -7,5 +7,6 @@
             Value = value;
         }
         public TValue Value;
+
     }
 }

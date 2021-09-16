@@ -1,13 +1,19 @@
-﻿using RevoltSharp.Rest.Requests;
+﻿using RevoltSharp.Rest;
+using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Rest
+namespace RevoltSharp
 {
     public static class MessageHelper
     {
+        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null)
+            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments);
+
         public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null)
         {
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
@@ -19,12 +25,18 @@ namespace RevoltSharp.Rest
             return Message.Create(rest.Client, Data);
         }
 
+        public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, string messageId, GetMessagesRequest req)
+            => GetMessagesAsync(channel.Client.Rest, channel.Id, req);
+
         public static async Task<IEnumerable<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, GetMessagesRequest req)
         {
             MessageJson[] Data = await rest.SendRequestAsync<MessageJson[]>(RequestType.Get, $"channels/{channelId}/messages", req);
 
             return Data.Select(x => Message.Create(rest.Client, x));
         }
+
+        public static Task<Message> GetMessageAsync(this Channel channel, string messageId)
+            => GetMessageAsync(channel.Client.Rest, channel.Id, messageId);
 
         public static async Task<Message> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
@@ -34,21 +46,30 @@ namespace RevoltSharp.Rest
             return Message.Create(rest.Client, Data);
         }
 
-        public static async Task EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, string content)
+        public static Task<HttpResponseMessage> EditMessageAsync(this Message msg, string content)
+            => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content);
+
+        public static async Task<HttpResponseMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, string content)
         {
-            await rest.SendRequestAsync(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", new SendMessageRequest
+            return await rest.SendRequestAsync(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", new SendMessageRequest
             {
                 content = content
             });
         }
 
 
-        public static Task DeleteMessageAsync(this Message mes)
+        public static Task<HttpResponseMessage> DeleteMessageAsync(this Message mes)
           => DeleteMessageAsync(mes.Channel.Client.Rest, mes.ChannelId, mes.Id);
 
-        public static async Task DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
+        public static Task<HttpResponseMessage> DeleteMessageAsync(this Channel channel, string messageId)
+            => DeleteMessageAsync(channel.Client.Rest, channel.Id, messageId);
+
+        public static async Task<HttpResponseMessage> DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");
+            return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");
         }
+
+
+
     }
 }

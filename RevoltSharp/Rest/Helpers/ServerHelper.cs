@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using RevoltSharp.Rest;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Rest
+namespace RevoltSharp
 {
     public static class ServerHelper
     {
+        public static Task<Server> GetServerAsync(this SelfUser user, string serverId)
+            => GetServerAsync(user.Client.Rest, serverId);
+
         public static async Task<Server> GetServerAsync(this RevoltRestClient rest, string serverId)
         {
             ServerJson Server = await rest.SendRequestAsync<ServerJson>(RequestType.Get, $"/servers/{serverId}");
             return Server.ToEntity(rest.Client);
-        }
-
-        public static async Task<Channel> GetChannelAsync(this RevoltRestClient rest, string channelId)
-        {
-            ChannelJson Channel = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, $"/channels/{channelId}");
-            return Channel.ToEntity(rest.Client);
         }
 
         public static Task<ServerMember[]> GetMembersAsync(this Server server)
@@ -31,5 +30,8 @@ namespace RevoltSharp.Rest
             }
             return Members.ToArray();
         }
+
+        
+
     }
 }

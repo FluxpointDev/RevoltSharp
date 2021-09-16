@@ -34,7 +34,7 @@ namespace RevoltSharp.WebSocket
         internal ConcurrentDictionary<string, Server> ServerCache = new ConcurrentDictionary<string, Server>();
         internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
         internal ConcurrentDictionary<string, User> Usercache = new ConcurrentDictionary<string, User>();
-        internal User CurrentUser;
+        internal SelfUser CurrentUser;
         internal bool FirstError = true;
         internal async Task SetupWebsocket()
         {
@@ -159,7 +159,7 @@ namespace RevoltSharp.WebSocket
                     {
                         ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
                         Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.id, x => x.ToEntity()));
-                        CurrentUser = Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null);
+                        CurrentUser = (SelfUser)Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null);
                         ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.id, x => x.ToEntity(Client)));
                         ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.id, x => x.ToEntity(Client)));
                         Client.InvokeReady(CurrentUser);
@@ -391,7 +391,7 @@ namespace RevoltSharp.WebSocket
                             }
                             else
                             {
-                                Role Role = Event.data.ToEntity(Event.role_id);
+                                Role Role = Event.data.ToEntity(Client, Event.id, Event.role_id);
                                 server.Roles.TryAdd(Event.role_id, Role);
                                 Client.InvokeRoleCreated(Role);
                             }

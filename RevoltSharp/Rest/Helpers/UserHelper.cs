@@ -1,8 +1,9 @@
 ﻿using RevoltSharp.Commands;
+using RevoltSharp.Rest;
 using System;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Rest
+namespace RevoltSharp
 {
     public static class UserHelper
     {
@@ -21,6 +22,9 @@ namespace RevoltSharp.Rest
             return User.Create(rest.Client, Data);
         }
 
+        public static Task<Profile> GetProfileAsync(this CommandContext context, string userId)
+            => GetProfileAsync(context.Client.Rest, userId);
+
         public static Task<Profile> GetProfileAsync(this User user)
             => GetProfileAsync(user.Client.Rest, user.Id);
 
@@ -30,10 +34,5 @@ namespace RevoltSharp.Rest
             return Profile.Create(Data);
         }
 
-        internal static async Task<DMChannel> GetDMChannel(this RevoltRestClient rest, string userId)
-        {
-            ChannelJson Data = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, $"users/{userId}/dm", null);
-            return (DMChannel)Data.ToEntity(rest.Client);
-        }
     }
 }

@@ -5,6 +5,8 @@ namespace RevoltSharp
     public class Role
     {
         public string Id { get; internal set; }
+        internal RevoltClient Client;
+        public string ServerId { get; internal set; }
         public string Name { get; internal set; }
         public int[] Permissions { get; internal set; }
         public bool Hoist { get; internal set; }

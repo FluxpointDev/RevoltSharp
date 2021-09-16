@@ -9,7 +9,6 @@ namespace TestBot.Commands
         [Command("test")]
         public async Task Test()
         {
-            var File = await ReplyFileAsync("C:/Users/Brandan/Downloads/0154.jpeg");
             await ReplyAsync("Test");
         }
     }
