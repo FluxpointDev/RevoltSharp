@@ -2,8 +2,8 @@
 {
     public class Profile
     {
-        public string bio;
-        public Attachment background;
+        public string bio { get; internal set; }
+        public Attachment background { get; internal set; }
 
         internal static Profile Create(ProfileJson json)
         {

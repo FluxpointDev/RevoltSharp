@@ -6,17 +6,17 @@ namespace RevoltSharp
 {
     public class Server
     {
-        public string Id;
-        public string OwnerId;
-        public string Name;
-        public string Description;
-        public HashSet<string> ChannelIds;
+        public string Id { get; internal set; }
+        public string OwnerId { get; internal set; }
+        public string Name { get; internal set; }
+        public string Description { get; internal set; }
+        public HashSet<string> ChannelIds { get; internal set; }
         //public ServerCategory[] Categories;
         //public ServerSystemMessages SystemMessages;
-        public ConcurrentDictionary<string, Role> Roles;
-        public int[] DefaultPermissions;
-        public Attachment Icon;
-        public Attachment Banner;
+        public ConcurrentDictionary<string, Role> Roles { get; internal set; }
+        public int[] DefaultPermissions { get; internal set; }
+        public Attachment Icon { get; internal set; }
+        public Attachment Banner { get; internal set; }
         internal RevoltClient Client;
 
         public Role GetRole(string roleId)

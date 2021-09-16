@@ -99,7 +99,7 @@ namespace RevoltSharp
         /// <remarks>
         /// Using <see cref="ClientMode.Http"/> means this is always <see langword="null"/> or use <see cref="Rest"/> to get user.
         /// </remarks>
-        public User CurrentUser
+        public SelfUser CurrentUser
             => WebSocket != null ? WebSocket.CurrentUser : null;
     }
 

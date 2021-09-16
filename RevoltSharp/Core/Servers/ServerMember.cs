@@ -8,11 +8,11 @@ namespace RevoltSharp
         public string Id
             => User.Id;
 
-        public string ServerId;
-        public string Nickname;
-        public User User;
-        public Attachment Avatar;
-        public HashSet<string> RolesIds;
+        public string ServerId { get; internal set; }
+        public string Nickname { get; internal set; }
+        public User User { get; internal set; }
+        public Attachment Avatar { get; internal set; }
+        public HashSet<string> RolesIds { get; internal set; }
 
         internal static ServerMember Create(ServerMemberJson sjson, UserJson ujson)
         {
