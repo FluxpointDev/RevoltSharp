@@ -10,5 +10,7 @@ namespace RevoltSharp
     {
         public string Owner
             => BotData.Owner;
+
+        public string ProfileBio { get { return base.ProfileBio; } internal set { base.ProfileBio = value; } }
     }
 }

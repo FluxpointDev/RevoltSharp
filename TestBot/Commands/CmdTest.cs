@@ -1,5 +1,5 @@
-﻿using RevoltSharp.Commands;
-using RevoltSharp.Rest;
+﻿using RevoltSharp;
+using RevoltSharp.Commands;
 using System.Threading.Tasks;
 
 namespace TestBot.Commands

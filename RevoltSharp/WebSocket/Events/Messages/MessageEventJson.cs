@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace RevoltSharp.WebSocket.Events
 {
@@ -7,6 +8,7 @@ namespace RevoltSharp.WebSocket.Events
         internal Message ToEntity(RevoltClient client)
         {
             Channel Chan = client.WebSocket.ChannelCache[channel];
+          
             return new Message
             {
                 Id = id,

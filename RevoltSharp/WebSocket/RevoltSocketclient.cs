@@ -157,12 +157,13 @@ namespace RevoltSharp.WebSocket
                     break;
                 case "Ready":
                     {
-                        ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
-                        Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.id, x => x.ToEntity()));
-                        CurrentUser = (SelfUser)Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null);
-                        ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.id, x => x.ToEntity(Client)));
-                        ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.id, x => x.ToEntity(Client)));
-                        Client.InvokeReady(CurrentUser);
+                            ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
+                            Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.id, x => x.ToEntity()));
+                            CurrentUser = SelfUser.CreateSelf(Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null));
+                            ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.id, x => x.ToEntity(Client)));
+                            ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.id, x => x.ToEntity(Client)));
+                            Client.InvokeReady(CurrentUser);
+                       
                     }
                     break;
                 case "Message":
@@ -179,6 +180,7 @@ namespace RevoltSharp.WebSocket
                             ChannelCache.TryAdd(Event.channel, Channel);
                         }
                         Client.InvokeMessageRecieved(Event.ToEntity(Client));
+                        
                     }
                     break;
                 case "MessageUpdate":
@@ -440,7 +442,9 @@ namespace RevoltSharp.WebSocket
                         UserRelationshipEventJson Event = Payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
                     }
                     break;
-
+                case "ChannelStartTyping":
+                case "ChannelStopTyping":
+                    break;
                 default:
                     {
                         if (Client.Config.Debug.LogWebSocketUnknownEvent)

@@ -10,7 +10,7 @@ namespace RevoltSharp
 
         public string Status { get; internal set; }
 
-        public string ProfileBio { get; internal set; }
+        internal string ProfileBio;
 
         public Attachment Avatar { get; internal set; }
 
@@ -43,6 +43,23 @@ namespace RevoltSharp
                 Relationship = json.relationship,
                 Status = json.status != null ? json.status.text : null,
                 Client = client
+            };
+        }
+
+        internal static SelfUser CreateSelf(User user)
+        {
+            return new SelfUser
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Client = user.Client,
+                Status = user.Status,
+                BotData = user.BotData,
+                Avatar = user.Avatar,
+                Badges = user.Badges,
+                IsOnline = user.IsOnline,
+                ProfileBio = user.ProfileBio,
+                Relationship = user.Relationship
             };
         }
 
