@@ -8,7 +8,7 @@ namespace RevoltSharp.WebSocket.Events
         internal Message ToEntity(RevoltClient client)
         {
             Channel Chan = client.WebSocket.ChannelCache[channel];
-          
+            client.WebSocket.Usercache.TryGetValue(author, out User User);
             return new Message
             {
                 Id = id,
@@ -19,7 +19,10 @@ namespace RevoltSharp.WebSocket.Events
                 Content = content,
                 Mentions = mentions,
                 Replies = replies,
-                Server = Chan.IsServer ? client.WebSocket.ServerCache[Chan.ServerId] : null
+                Server = Chan.IsServer ? client.WebSocket.ServerCache[Chan.ServerId] : null,
+                Author = User,
+                Client = client,
+                ServerId = Chan.ServerId
             };
         }
     }

@@ -1,4 +1,7 @@
-﻿namespace RevoltSharp
+﻿using System;
+using System.Numerics;
+
+namespace RevoltSharp
 {
     internal class RoleJson
     {
@@ -6,7 +9,7 @@
         public string name;
         public int[] permissions;
         public bool hoist;
-        public int rank;
+        public BigInteger rank;
         public string colour;
 
         public Role ToEntity(RevoltClient client, string serverId, string roleId)

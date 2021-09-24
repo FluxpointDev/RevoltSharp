@@ -1,5 +1,6 @@
 ﻿using Optional;
 using Optional.Unsafe;
+using System.Numerics;
 
 namespace RevoltSharp
 {
@@ -8,7 +9,7 @@ namespace RevoltSharp
         public Option<string> name;
         public Option<int[]> permissions;
         public Option<bool> hoist;
-        public Option<int> rank;
+        public Option<BigInteger> rank;
         public Option<string> colour;
 
         internal Role ToEntity(RevoltClient client, string serverId, string roleId)

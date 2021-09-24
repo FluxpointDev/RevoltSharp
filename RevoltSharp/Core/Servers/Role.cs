@@ -1,4 +1,5 @@
 ﻿using Optional.Unsafe;
+using System.Numerics;
 
 namespace RevoltSharp
 {
@@ -10,7 +11,7 @@ namespace RevoltSharp
         public string Name { get; internal set; }
         public int[] Permissions { get; internal set; }
         public bool Hoist { get; internal set; }
-        public int Rank { get; internal set; }
+        public BigInteger Rank { get; internal set; }
         public string Color { get; internal set; }
 
         internal void Update(PartialRoleJson json)

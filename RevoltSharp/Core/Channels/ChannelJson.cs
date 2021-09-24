@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace RevoltSharp
 {
@@ -10,7 +11,7 @@ namespace RevoltSharp
         public string nonce;
         public string user;
         public bool active;
-        public string[] recipents;
+        public string[] recipients;
         public string last_message_id;
         public AttachmentJson icon;
         public string description;
@@ -38,7 +39,7 @@ namespace RevoltSharp
                         Id = id,
                         Type = ChannelType.DM,
                         Active = active,
-                        Recipents = recipents,
+                        Recipents = recipients != null ? recipients : new string[0],
                         LastMessageId = last_message_id,
                         Client = client
                     };
@@ -47,7 +48,7 @@ namespace RevoltSharp
                     {
                         Id = id,
                         Type = ChannelType.Group,
-                        Recipents = recipents,
+                        Recipents = recipients != null ? recipients : new string[0],
                         Description = description,
                         LastMessageId = last_message_id,
                         Name = name,
