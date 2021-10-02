@@ -1,26 +1,24 @@
-﻿using Optional;
+﻿using Newtonsoft.Json;
+using Optional;
 using Optional.Unsafe;
 
 namespace RevoltSharp
 {
-    internal class PartialRoleJson
+    public class PartialRoleJson
     {
-        public Option<string> name;
-        public Option<int[]> permissions;
-        public Option<bool> hoist;
-        public Option<int> rank;
-        public Option<string> colour;
+        [JsonProperty("name")]
+        public Option<string> Name;
 
-        internal Role ToEntity(RevoltClient client, string serverId, string roleId)
-        {
-            return new Role
-            {
-                Id = roleId,
-                Name = name.ValueOrDefault(),
-                Permissions = permissions.ValueOrDefault(),
-                Client = client,
-                ServerId = serverId
-            };
-        }
+        [JsonProperty("permissions")]
+        public Option<int[]> Permissions;
+
+        [JsonProperty("hoist")]
+        public Option<bool> Hoist;
+
+        [JsonProperty("rank")]
+        public Option<int> Rank;
+
+        [JsonProperty("colour")]
+        public Option<string> Colour;
     }
 }

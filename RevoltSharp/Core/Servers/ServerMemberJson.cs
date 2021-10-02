@@ -2,17 +2,26 @@
 
 namespace RevoltSharp
 {
-    internal class ServerMemberJson
+    public class ServerMemberJson
     {
         [JsonProperty("_id")]
-        public ServerMemberIdsJson id;
-        public string nickname;
-        public AttachmentJson avatar;
-        public string[] roles;
+        public ServerMemberIdsJson Id;
+
+        [JsonProperty("nickname")]
+        public string Nickname;
+
+        [JsonProperty("avatar")]
+        public AttachmentJson Avatar;
+
+        [JsonProperty("roles")]
+        public string[] Roles;
     }
-    internal class ServerMemberIdsJson
+    public class ServerMemberIdsJson
     {
-        public string server;
-        public string user;
+        [JsonProperty("server")]
+        public string Server;
+
+        [JsonProperty("user")]
+        public string User;
     }
 }

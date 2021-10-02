@@ -3,27 +3,28 @@ using System.Linq;
 
 namespace RevoltSharp
 {
-    public class ServerMember
+    public class ServerMember : Entity
     {
-        public string Id
-            => User.Id;
+        public string Id => User.Id;
 
-        public string ServerId { get; internal set; }
-        public string Nickname { get; internal set; }
-        public User User { get; internal set; }
-        public Attachment Avatar { get; internal set; }
-        public HashSet<string> RolesIds { get; internal set; }
+        public string ServerId { get; }
 
-        internal static ServerMember Create(ServerMemberJson sjson, UserJson ujson)
+        public string Nickname { get; }
+
+        public User User { get; }
+
+        public Attachment ServerAvatar { get; }
+
+        public HashSet<string> RolesIds { get; }
+
+        public ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel)
+            : base(client)
         {
-            return new ServerMember
-            {
-                ServerId = sjson.id.server,
-                Avatar = sjson.avatar != null ? sjson.avatar.ToEntity() : null,
-                Nickname = sjson.nickname,
-                RolesIds = sjson.roles != null ? sjson.roles.ToHashSet() : new HashSet<string>(),
-                User = ujson.ToEntity()
-            };
+            ServerId = sModel.Id.Server;
+            Nickname = sModel.Nickname;
+            ServerAvatar = sModel.Avatar != null ? new Attachment(client, sModel.Avatar) : null;
+            RolesIds = sModel.Roles != null ? sModel.Roles.ToHashSet() : new HashSet<string>();
+            User = new User(client, uModel);
         }
     }
 }

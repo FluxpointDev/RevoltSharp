@@ -1,6 +1,6 @@
 ﻿namespace RevoltSharp
 {
-    internal class CategoryJson
+    public class CategoryJson
     {
         public string id;
         public string title;

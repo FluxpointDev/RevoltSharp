@@ -24,7 +24,7 @@ namespace RevoltSharp
         public static async Task<Invite[]> GetInvitesAsync(this RevoltRestClient rest, string serverId)
         {
             InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
-            return Json.Select(x => new Invite { Code = x.code }).ToArray();
+            return Json.Select(x => new Invite { Code = x.Code }).ToArray();
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿namespace RevoltSharp
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp
 {
-    internal class MembersListJson
+    public class MembersListJson
     {
-        public ServerMemberJson[] members;
-        public UserJson[] users;
+        [JsonProperty("members")]
+        public ServerMemberJson[] Members;
+
+        [JsonProperty("users")]
+        public UserJson[] Users;
     }
 }

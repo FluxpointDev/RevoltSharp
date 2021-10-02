@@ -1,17 +1,15 @@
 ﻿namespace RevoltSharp
 {
-    public class Profile
+    public class Profile : Entity
     {
-        public string bio { get; internal set; }
-        public Attachment background { get; internal set; }
+        public string Bio { get; internal set; }
+        public Attachment Background { get; internal set; }
 
-        internal static Profile Create(ProfileJson json)
+        public Profile(RevoltClient client, ProfileJson model)
+            : base(client)
         {
-            return new Profile
-            {
-                bio = json.content,
-                background = json.background != null ? json.background.ToEntity() : null
-            };
+            Bio = model.Content;
+            Background = new Attachment(client, model.Background);
         }
     }
 }

@@ -7,18 +7,18 @@ namespace RevoltSharp.WebSocket.Events
     {
         internal Message ToEntity(RevoltClient client)
         {
-            Channel Chan = client.WebSocket.ChannelCache[channel];
+            Channel Chan = client.WebSocket.ChannelCache[Channel];
           
             return new Message
             {
                 Id = id,
-                Attachments = attachments != null ? attachments.Select(x => x.ToEntity()).ToArray() : new Attachment[0],
-                AuthorId = author,
+                Attachments = Attachments != null ? Attachments.Select(x => x.ToEntity()).ToArray() : new Attachment[0],
+                AuthorId = Author,
                 Channel = Chan,
-                ChannelId = channel,
-                Content = content,
-                Mentions = mentions,
-                Replies = replies,
+                ChannelId = Channel,
+                Content = Content,
+                Mentions = Mentions,
+                Replies = Replies,
                 Server = Chan.IsServer ? client.WebSocket.ServerCache[Chan.ServerId] : null
             };
         }

@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp.WebSocket
 {
-    internal class RevoltSocketclient
+    internal class RevoltSocketClient
     {
-        public RevoltSocketclient(RevoltClient client)
+        public RevoltSocketClient(RevoltClient client)
         {
             Client = client;
             if (string.IsNullOrEmpty(client.Config.Debug.WEBSOCKET_URL))
@@ -126,7 +126,7 @@ namespace RevoltSharp.WebSocket
 
                     FirstConnected = false;
                     Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
-                    
+
                     Heartbeat = Task.Run(async () =>
                     {
                         while (!CancellationToken.IsCancellationRequested)
@@ -160,41 +160,41 @@ namespace RevoltSharp.WebSocket
                             ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
                             Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.id, x => x.ToEntity()));
                             CurrentUser = SelfUser.CreateSelf(Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null));
-                            ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.id, x => x.ToEntity(Client)));
+                            ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.Id, x => x.ToEntity(Client)));
                             ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.id, x => x.ToEntity(Client)));
                             Client.InvokeReady(CurrentUser);
-                       
+
                     }
                     break;
                 case "Message":
                     {
                         MessageEventJson Event = Payload.ToObject<MessageEventJson>(Client.Serializer);
-                        if (!Usercache.ContainsKey(Event.author))
+                        if (!Usercache.ContainsKey(Event.Author))
                         {
-                            User User = await Client.Rest.GetUserAsync(Event.author);
-                            Usercache.TryAdd(Event.author, User);
+                            User User = await Client.Rest.GetUserAsync(Event.Author);
+                            Usercache.TryAdd(Event.Author, User);
                         }
-                        if (!ChannelCache.ContainsKey(Event.channel))
+                        if (!ChannelCache.ContainsKey(Event.Channel))
                         {
-                            Channel Channel = await Client.Rest.GetChannelAsync(Event.channel);
-                            ChannelCache.TryAdd(Event.channel, Channel);
+                            Channel Channel = await Client.Rest.GetChannelAsync(Event.Channel);
+                            ChannelCache.TryAdd(Event.Channel, Channel);
                         }
                         Client.InvokeMessageRecieved(Event.ToEntity(Client));
-                        
+
                     }
                     break;
                 case "MessageUpdate":
                     {
                         MessageUpdateEventJson Event = Payload.ToObject<MessageUpdateEventJson>(Client.Serializer);
-                        if (!Usercache.ContainsKey(Event.data.author))
+                        if (!Usercache.ContainsKey(Event.data.Author))
                         {
-                            User User = await Client.Rest.GetUserAsync(Event.data.author);
-                            Usercache.TryAdd(Event.data.author, User);
+                            User User = await Client.Rest.GetUserAsync(Event.data.Author);
+                            Usercache.TryAdd(Event.data.Author, User);
                         }
-                        if (!ChannelCache.ContainsKey(Event.data.channel))
+                        if (!ChannelCache.ContainsKey(Event.data.Channel))
                         {
-                            Channel Channel = await Client.Rest.GetChannelAsync(Event.data.channel);
-                            ChannelCache.TryAdd(Event.data.channel, Channel);
+                            Channel Channel = await Client.Rest.GetChannelAsync(Event.data.Channel);
+                            ChannelCache.TryAdd(Event.data.Channel, Channel);
                         }
                         Client.InvokeMessageUpdated(Message.Create(Client,Event.data));
                     }
@@ -217,9 +217,9 @@ namespace RevoltSharp.WebSocket
                         ChannelEventJson Event = Payload.ToObject<ChannelEventJson>(Client.Serializer);
                         Channel Chan = Event.ToEntity(Client);
                         ChannelCache.TryAdd(Event.id, Chan);
-                        if (!string.IsNullOrEmpty(Event.server))
+                        if (!string.IsNullOrEmpty(Event.Server))
                         {
-                            ServerCache.TryGetValue(Event.server, out Server server);
+                            ServerCache.TryGetValue(Event.Server, out Server server);
                             if (server == null)
                             {
 
@@ -234,7 +234,7 @@ namespace RevoltSharp.WebSocket
                         ChannelUpdateEventJson Event = Payload.ToObject<ChannelUpdateEventJson>(Client.Serializer);
                         if (ChannelCache.TryGetValue(Event.id, out Channel Chan))
                         {
-                            
+
                             if (Event.clear.HasValue)
                             {
                                 if (Event.data == null)
@@ -242,10 +242,10 @@ namespace RevoltSharp.WebSocket
                                 switch (Event.clear.ValueOrDefault())
                                 {
                                     case "Icon":
-                                        Event.data.icon = Option.Some<AttachmentJson>(null);
+                                        Event.data.Icon = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Description":
-                                        Event.data.description = Option.Some<string>(null);
+                                        Event.data.Description = Option.Some<string>(null);
                                         break;
                                 }
                             }
@@ -314,13 +314,13 @@ namespace RevoltSharp.WebSocket
                                 switch (Event.clear.ValueOrDefault())
                                 {
                                     case "Icon":
-                                        Event.data.icon = Option.Some<AttachmentJson>(null);
+                                        Event.data.Icon = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Banner":
-                                        Event.data.banner = Option.Some<AttachmentJson>(null);
+                                        Event.data.Banner = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Description":
-                                        Event.data.description = Option.Some<string>(null);
+                                        Event.data.Description = Option.Some<string>(null);
                                         break;
                                 }
                             }

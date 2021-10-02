@@ -87,7 +87,7 @@ namespace RevoltSharp
             InviteJson Json = await rest.SendRequestAsync<InviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
             if (Json == null)
                 return null;
-            return new Invite { Code = Json.code };
+            return new Invite { Code = Json.Code };
         }
     }
 }

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace RevoltSharp
 {
-    internal class InviteJson
+    public class InviteJson
     {
-        public string code;
+        [JsonProperty("code")]
+        public string Code;
     }
 }

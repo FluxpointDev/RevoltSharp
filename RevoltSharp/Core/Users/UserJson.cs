@@ -2,45 +2,48 @@
 
 namespace RevoltSharp
 {
-    internal class UserJson
+    public class UserJson
     {
         [JsonProperty("_id")]
-        public string id;
-        public string username;
-        public AttachmentJson avatar;
-        public int badges;
-        public UserStatusJson status;
-        public UserProfileJson profile;
-        public UserBotJson bot;
-        public string relationship;
-        public bool online;
+        public string Id;
 
-        internal User ToEntity()
-        {
-            return new User
-            {
-                Id = id,
-                Username = username,
-                BotData = bot != null ? new BotData { Owner = bot.owner } : null,
-                Avatar = avatar != null ? avatar.ToEntity() : null,
-                Badges = new UserBadges() { Raw = badges },
-                IsOnline = online,
-                ProfileBio = profile != null ? profile.content : null,
-                Relationship = relationship,
-                Status = status != null ? status.text : null
-            };
-        }
+        [JsonProperty("username")]
+        public string Username;
+
+        [JsonProperty("avatar")]
+        public AttachmentJson Avatar;
+
+        [JsonProperty("badges")]
+        public int Badges;
+
+        [JsonProperty("status")]
+        public UserStatusJson Status;
+
+        [JsonProperty("profile")]
+        public UserProfileJson Profile;
+
+        [JsonProperty("bot")]
+        public UserBotJson Bot;
+
+        [JsonProperty("relationship")]
+        public string Relationship;
+
+        [JsonProperty("online")]
+        public bool Online;
     }
-    internal class UserStatusJson
+    public class UserStatusJson
     {
-        public string text;
+        [JsonProperty("text")]
+        public string Text;
     }
-    internal class UserBotJson
+    public class UserBotJson
     {
-        public string owner;
+        [JsonProperty("owner")]
+        public string Owner;
     }
-    internal class UserProfileJson
+    public class UserProfileJson
     {
-        public string content;
+        [JsonProperty("content")]
+        public string Content;
     }
 }

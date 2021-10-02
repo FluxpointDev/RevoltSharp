@@ -31,7 +31,7 @@ namespace RevoltSharp
             Serializer.Converters.Add(new OptionConverter());
             Rest = new RevoltRestClient(this);
             if (mode == ClientMode.WebSocket)
-                WebSocket = new RevoltSocketclient(this);
+                WebSocket = new RevoltSocketClient(this);
 
         }
 
@@ -55,7 +55,7 @@ namespace RevoltSharp
         /// </remarks>
         public RevoltRestClient Rest { get; internal set; }
 
-        internal RevoltSocketclient WebSocket;
+        internal RevoltSocketClient WebSocket;
 
         /// <summary>
         /// Start the WebSocket connection to Revolt.

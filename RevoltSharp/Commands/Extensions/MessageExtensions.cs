@@ -18,7 +18,7 @@ namespace RevoltSharp.Commands
         /// </returns>
         public static bool HasCharPrefix(this Message msg, char c, ref int argPos)
         {
-            string text = msg.Content;
+            string text = (msg as UserMessage)?.Content;
             if (!string.IsNullOrEmpty(text) && text[0] == c)
             {
                 argPos = 1;
@@ -31,7 +31,7 @@ namespace RevoltSharp.Commands
         /// </summary>
         public static bool HasStringPrefix(this Message msg, string str, ref int argPos, StringComparison comparisonType = StringComparison.Ordinal)
         {
-            string text = msg.Content;
+            string text = (msg as UserMessage)?.Content;;
             if (!string.IsNullOrEmpty(text) && text.StartsWith(str, comparisonType))
             {
                 argPos = str.Length;
@@ -46,7 +46,7 @@ namespace RevoltSharp.Commands
         {
             if (user == null)
                 return false;
-            string text = msg.Content;
+            string text = (msg as UserMessage)?.Content;
             if (string.IsNullOrEmpty(text) || text.Length <= 3 || text[0] != '<' || text[1] != '@') return false;
 
             int endPos = text.IndexOf('>');
