@@ -14,7 +14,7 @@ namespace RevoltSharp.Commands
         /// <inheritdoc/>
         public ServerMember Member { get; }
         /// <inheritdoc/>
-        public Message Message { get; }
+        public UserMessage Message { get; }
 
         public CommandInfo Command { get; set; }
 
@@ -28,14 +28,14 @@ namespace RevoltSharp.Commands
         /// </summary>
         /// <param name="client">The underlying client.</param>
         /// <param name="msg">The underlying message.</param>
-        public CommandContext(RevoltClient client, Message msg)
+        public CommandContext(RevoltClient client, UserMessage msg)
         {
             Client = client;
             Channel = client.WebSocket.ChannelCache[msg.ChannelId];
             User = client.WebSocket.Usercache[msg.AuthorId];
-            if (Channel.IsServer)
+            if (Channel is TextChannel channel)
             {
-                Server = client.WebSocket.ServerCache[Channel.ServerId];
+                Server = client.WebSocket.ServerCache[channel.ServerId];
             }
             Message = msg;
         }

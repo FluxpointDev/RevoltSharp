@@ -3,79 +3,58 @@ using System;
 
 namespace RevoltSharp
 {
-    public class User
+    public class User : Entity
     {
-        public string Id { get; internal set; }
-        public string Username { get; internal set; }
+        public string Id { get; }
+
+        public string Username { get; }
 
         public string Status { get; internal set; }
 
-        internal string ProfileBio;
-
         public Attachment Avatar { get; internal set; }
 
-        public UserBadges Badges { get; internal set; }
+        public UserBadges Badges { get; }
 
-        public BotData BotData { get; internal set; }
+        public BotData BotData { get; }
 
-        public bool IsOnline { get; internal set; }
+        public bool IsOnline { get; }
 
-        public string Relationship { get; internal set; }
+        public string Relationship { get; }
 
-        public bool IsBot
-            => BotData != null;
+        public bool IsBot => BotData != null;
+
+        internal UserJson Model { get; }
+
+        public User(RevoltClient client, UserJson model)
+            : base(client)
+        {
+            Model = model;
+            Id = model.Id;
+            Username = model.Username;
+            BotData = model.Bot != null ? new BotData { Owner = model.Bot.Owner } : null;
+            Avatar = new Attachment(client, model.Avatar);
+            Badges = new UserBadges { Raw = model.Badges };
+            IsOnline = model.Online;
+            Relationship = model.Relationship;
+            Status = model.Status?.Text;
+        }
         public bool HasBadge(UserBadgeTypes type)
             => Badges.Types.HasFlag(type);
-
-        internal RevoltClient Client;
-
-        internal static User Create(RevoltClient client, UserJson json)
-        {
-            return new User
-            {
-                Id = json.id,
-                Username = json.username,
-                BotData = json.bot != null ? new BotData { Owner = json.bot.owner } : null,
-                Avatar = json.avatar != null ? json.avatar.ToEntity() : null,
-                Badges = new UserBadges { Raw = json.badges },
-                IsOnline = json.online,
-                ProfileBio = json.profile != null ? json.profile.content : null,
-                Relationship = json.relationship,
-                Status = json.status != null ? json.status.text : null,
-                Client = client
-            };
-        }
-
-        internal static SelfUser CreateSelf(User user)
-        {
-            return new SelfUser
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Client = user.Client,
-                Status = user.Status,
-                BotData = user.BotData,
-                Avatar = user.Avatar,
-                Badges = user.Badges,
-                IsOnline = user.IsOnline,
-                ProfileBio = user.ProfileBio,
-                Relationship = user.Relationship
-            };
-        }
 
         internal void Update(PartialUserJson data)
         {
             if (data.avatar.HasValue)
-                Avatar = data.avatar.ValueOrDefault().ToEntity();
+                Avatar = new Attachment(Client, data.avatar.ValueOrDefault());
             if (data.status.HasValue)
-                Status = data.status.ValueOrDefault().text;
+                Status = data.status.ValueOrDefault().Text;
         }
     }
     public class UserBadges
     {
         public int Raw { get; internal set; }
+
         public UserBadgeTypes Types
-            => (UserBadgeTypes)Raw;
+            => (UserBadgeTypes) Raw;
     }
     public class BotData
     {

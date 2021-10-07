@@ -8,9 +8,17 @@ namespace RevoltSharp
 {
     public class SelfUser : User
     {
-        public string Owner
-            => BotData.Owner;
+        public string Owner => BotData.Owner;
 
-        public string ProfileBio { get { return base.ProfileBio; } internal set { base.ProfileBio = value; } }
+        public string ProfileBio { get; }
+
+        public SelfUser(RevoltClient client, UserJson model)
+            : base(client, model)
+        {
+            ProfileBio = model.Profile?.Content;
+        }
+
+        internal static SelfUser CreateSelf(User user)
+            => new SelfUser(user.Client, user.Model);
     }
 }

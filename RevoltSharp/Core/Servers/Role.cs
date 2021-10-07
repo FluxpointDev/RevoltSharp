@@ -1,40 +1,70 @@
 ﻿using Optional.Unsafe;
-using System.Numerics;
 
 namespace RevoltSharp
 {
-    public class Role
+    public class Role : Entity
     {
         public string Id { get; internal set; }
-        internal RevoltClient Client;
+
         public string ServerId { get; internal set; }
+
         public string Name { get; internal set; }
+
         public int[] Permissions { get; internal set; }
-        public bool Hoist { get; internal set; }
-        public BigInteger Rank { get; internal set; }
+
+        public bool IsHoisted { get; internal set; }
+
+        public int Rank { get; internal set; }
+
         public string Color { get; internal set; }
+
+        public Role(RevoltClient client, RoleJson model, string serverId, string roleId)
+            : base(client)
+        {
+            Id = roleId;
+            Color = model.Colour;
+            IsHoisted = model.Hoist;
+            Name = model.Name;
+            Permissions = model.Permissions;
+            Rank = model.Rank;
+            ServerId = serverId;
+        }
+
+        internal Role(RevoltClient client, PartialRoleJson model, string serverId, string roleId)
+            : base(client)
+        {
+            Id = roleId;
+            Name = model.Name.ValueOrDefault();
+            Permissions = model.Permissions.ValueOrDefault();
+            ServerId = serverId;
+        }
 
         internal void Update(PartialRoleJson json)
         {
-            if (json.name.HasValue)
-                Name = json.name.ValueOrDefault();
+            if (json.Name.HasValue)
+                Name = json.Name.ValueOrDefault();
 
-            if (json.permissions.HasValue)
-                Permissions = json.permissions.ValueOrDefault();
+            if (json.Permissions.HasValue)
+                Permissions = json.Permissions.ValueOrDefault();
 
-            if (json.hoist.HasValue)
-                Hoist = json.hoist.ValueOrDefault();
+            if (json.Hoist.HasValue)
+                IsHoisted = json.Hoist.ValueOrDefault();
 
-            if (json.rank.HasValue)
-                Rank = json.rank.ValueOrDefault();
+            if (json.Rank.HasValue)
+                Rank = json.Rank.ValueOrDefault();
 
-            if (json.colour.HasValue)
-                Color = json.colour.ValueOrDefault();
+            if (json.Colour.HasValue)
+                Color = json.Colour.ValueOrDefault();
+        }
+
+        public Role CreateFromPartial(RevoltClient client, PartialRoleJson model, string serverId, string roleId)
+        {
+            return new Role(client, model, serverId, roleId);
         }
 
         internal Role Clone()
         {
-            return (Role)this.MemberwiseClone();
+            return (Role) this.MemberwiseClone();
         }
     }
 }

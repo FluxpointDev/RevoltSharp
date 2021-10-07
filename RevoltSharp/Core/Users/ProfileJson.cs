@@ -1,8 +1,13 @@
-﻿namespace RevoltSharp
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp
 {
-    internal class ProfileJson
+    public class ProfileJson
     {
-        public string content;
-        public AttachmentJson background;
+        [JsonProperty("content")]
+        public string Content;
+
+        [JsonProperty("background")]
+        public AttachmentJson Background;
     }
 }

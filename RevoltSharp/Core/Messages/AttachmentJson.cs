@@ -2,34 +2,35 @@
 
 namespace RevoltSharp
 {
-    internal class AttachmentJson
+    public class AttachmentJson
     {
         [JsonProperty("_id")]
-        public string id;
-        public string tag;
-        public string filename;
-        public AttachmentMetaJson metadata;
-        public string content_type;
-        public int size;
+        public string Id;
 
-        public Attachment ToEntity()
-        {
-            return new Attachment
-            {
-                Filename = filename,
-                Id = id,
-                Height = metadata.height,
-                Size = size,
-                Tag = tag,
-                Type = content_type,
-                Width = metadata.width
-            };
-        }
+        [JsonProperty("tag")]
+        public string Tag;
+
+        [JsonProperty("filename")]
+        public string Filename;
+
+        [JsonProperty("metadata")]
+        public AttachmentMetaJson Metadata;
+
+        [JsonProperty("content_type")]
+        public string ContentType;
+
+        [JsonProperty("size")]
+        public int Size;
     }
-    internal class AttachmentMetaJson
+    public class AttachmentMetaJson
     {
-        public string type;
-        public int width;
-        public int height;
+        [JsonProperty("type")]
+        public string Type;
+
+        [JsonProperty("width")]
+        public int Width;
+
+        [JsonProperty("height")]
+        public int Height;
     }
 }

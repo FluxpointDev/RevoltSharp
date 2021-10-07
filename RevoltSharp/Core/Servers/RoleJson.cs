@@ -1,30 +1,25 @@
-﻿using System;
-using System.Numerics;
+﻿using Newtonsoft.Json;
 
 namespace RevoltSharp
 {
-    internal class RoleJson
+    public class RoleJson
     {
-        public string id;
-        public string name;
-        public int[] permissions;
-        public bool hoist;
-        public BigInteger rank;
-        public string colour;
+        [JsonProperty("id")]
+        public string Id;
 
-        public Role ToEntity(RevoltClient client, string serverId, string roleId)
-        {
-            return new Role
-            {
-                Id = roleId,
-                Color = colour,
-                Hoist = hoist,
-                Name = name,
-                Permissions = permissions,
-                Rank = rank,
-                Client = client,
-                ServerId = serverId
-            };
-        }
+        [JsonProperty("name")]
+        public string Name;
+
+        [JsonProperty("permissions")]
+        public int[] Permissions;
+
+        [JsonProperty("hoist")]
+        public bool Hoist;
+
+        [JsonProperty("rank")]
+        public int Rank;
+
+        [JsonProperty("colour")]
+        public string Colour;
     }
 }

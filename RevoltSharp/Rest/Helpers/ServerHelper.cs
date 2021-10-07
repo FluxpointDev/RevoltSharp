@@ -24,9 +24,9 @@ namespace RevoltSharp
         {
             MembersListJson List = await rest.SendRequestAsync<MembersListJson>(RequestType.Get, $"servers/{serverId}/members");
             HashSet<ServerMember> Members = new HashSet<ServerMember>();
-            for (int i = 0; i < List.members.Length; i++)
+            for (int i = 0; i < List.Members.Length; i++)
             {
-                Members.Add(ServerMember.Create(List.members[i], List.users[i]));
+                Members.Add(ServerMember.Create(List.Members[i], List.Users[i]));
             }
             return Members.ToArray();
         }

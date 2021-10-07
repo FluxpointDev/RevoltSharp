@@ -1,74 +1,104 @@
 ﻿using Optional.Unsafe;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RevoltSharp
 {
-    public class Server
+    public class Server : Entity
     {
         public string Id { get; internal set; }
+
         public string OwnerId { get; internal set; }
+
         public string Name { get; internal set; }
+
         public string Description { get; internal set; }
+
         public HashSet<string> ChannelIds { get; internal set; }
+
         //public ServerCategory[] Categories;
         //public ServerSystemMessages SystemMessages;
         public ConcurrentDictionary<string, Role> Roles { get; internal set; }
+
         public int[] DefaultPermissions { get; internal set; }
+
         public Attachment Icon { get; internal set; }
+
         public Attachment Banner { get; internal set; }
-        internal RevoltClient Client;
 
         public Role GetRole(string roleId)
         {
-            if (Roles.TryGetValue(roleId, out Role Role))
-                return Role;
+            if (Roles.TryGetValue(roleId, out var role))
+                return role;
             return null;
         }
 
         public TextChannel GetTextChannel(string channelId)
         {
-            if (Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel Chan))
-            {
-                if (Chan.ServerId != Id)
-                    return null;
-                return Chan as TextChannel;
-            }
-            return null;
+            if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out var chan))
+                return null;
+
+            if (chan is not TextChannel textChannel)
+                return null;
+
+            if (textChannel.ServerId != Id)
+                return null;
+
+            return textChannel;
         }
 
         public VoiceChannel GetVoiceChannel(string channelId)
         {
-            if (Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel Chan))
-            {
-                if (Chan.ServerId != Id)
-                    return null;
-                return Chan as VoiceChannel;
-            }
-            return null;
+            if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out var chan))
+                return null;
+
+            if (chan is not VoiceChannel voiceChannel)
+                return null;
+
+            if (voiceChannel.ServerId != Id)
+                return null;
+
+            return voiceChannel;
         }
 
         internal void Update(PartialServerJson json)
         {
-            if (json.name.HasValue)
-                Name = json.name.ValueOrDefault();
+            if (json.Name.HasValue)
+                Name = json.Name.ValueOrDefault();
 
-            if (json.icon.HasValue)
-                Icon = json.icon.ValueOrDefault() != null ? json.icon.ValueOrDefault().ToEntity() : null;
+            if (json.Icon.HasValue)
+                Icon = json.Icon.ValueOrDefault() != null ? new Attachment(Client, json.Icon.ValueOrDefault()) : null;
 
-            if (json.banner.HasValue)
-                Banner = json.banner.ValueOrDefault() != null ? json.banner.ValueOrDefault().ToEntity() : null;
+            if (json.Banner.HasValue)
+                Banner = json.Banner.ValueOrDefault() != null ? new Attachment(Client, json.Icon.ValueOrDefault()) : null;
 
-            if (json.default_permissions.HasValue)
-                DefaultPermissions = json.default_permissions.ValueOrDefault();
+            if (json.DefaultPermissions.HasValue)
+                DefaultPermissions = json.DefaultPermissions.ValueOrDefault();
 
-            if (json.description.HasValue)
-                Description = json.description.ValueOrDefault();
+            if (json.Description.HasValue)
+                Description = json.Description.ValueOrDefault();
         }
 
         internal Server Clone()
         {
-            return (Server)this.MemberwiseClone();
+            return (Server) this.MemberwiseClone();
+        }
+
+        public Server(RevoltClient client, ServerJson model)
+            : base(client)
+        {
+            Id = model.Id;
+            Name = model.Name;
+            DefaultPermissions = model.DefaultPermissions;
+            Description = model.Description;
+            Banner = new Attachment(client, model.Banner);
+            Icon = new Attachment(client, model.Icon);
+            ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
+            OwnerId = model.Owner;
+            Roles = model.Roles != null
+                ? new ConcurrentDictionary<string, Role>(model.Roles.ToDictionary(x => x.Key, x => new Role(client, x.Value, Id, x.Key)))
+                : new ConcurrentDictionary<string, Role>();
         }
     }
 }

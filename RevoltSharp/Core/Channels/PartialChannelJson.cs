@@ -1,12 +1,20 @@
-﻿using Optional;
+﻿using Newtonsoft.Json;
+using Optional;
 
 namespace RevoltSharp
 {
     internal class PartialChannelJson
     {
-        public Option<string> name { get; set; }
-        public Option<AttachmentJson> icon { get; set; }
-        public Option<string> description { get; set; }
-        public Option<int> default_permissions { get; set; }
+        [JsonProperty("name")]
+        public Option<string> Name { get; set; }
+
+        [JsonProperty("icon")]
+        public Option<AttachmentJson> Icon { get; set; }
+
+        [JsonProperty("description")]
+        public Option<string> Description { get; set; }
+
+        [JsonProperty("deafult_permissions")]
+        public Option<int> DefaultPermissions { get; set; }
     }
 }

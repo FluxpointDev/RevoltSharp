@@ -5,45 +5,57 @@ using System.Linq;
 
 namespace RevoltSharp
 {
-    internal class ServerJson
+    public class ServerJson
     {
         [JsonProperty("_id")]
-        public string id;
-        public string nonce;
-        public string owner;
-        public string name;
-        public string description;
-        public string[] channels;
-        public CategoryJson[] categories;
-        public ServerSystemMessagesJson system_messages;
-        public Dictionary<string, RoleJson> roles;
-        public int[] default_permissions;
-        public AttachmentJson icon;
-        public AttachmentJson banner;
+        public string Id;
 
-        internal Server ToEntity(RevoltClient client)
-        {
-            return new Server
-            {
-                Id = id,
-                Name = name,
-                DefaultPermissions = default_permissions,
-                Description = description,
-                Banner = banner != null ? banner.ToEntity() : null,
-                ChannelIds = channels != null ? channels.ToHashSet() : new HashSet<string>(),
-                Icon = icon != null ? icon.ToEntity() : null,
-                OwnerId = owner,
-                Roles = roles != null ? new ConcurrentDictionary<string, Role>(roles.ToDictionary(x => x.Key, x => x.Value.ToEntity(client, id, x.Key))) : new ConcurrentDictionary<string, Role>(),
-                Client = client
-            };
-        }
+        [JsonProperty("nonce")]
+        public string Nonce;
+
+        [JsonProperty("owner")]
+        public string Owner;
+
+        [JsonProperty("name")]
+        public string Name;
+
+        [JsonProperty("description")]
+        public string Description;
+
+        [JsonProperty("channels")]
+        public string[] Channels;
+
+        [JsonProperty("categories")]
+        public CategoryJson[] Categories;
+
+        [JsonProperty("system_messages")]
+        public ServerSystemMessagesJson SystemMessages;
+
+        [JsonProperty("roles")]
+        public Dictionary<string, RoleJson> Roles;
+
+        [JsonProperty("default_permissions")]
+        public int[] DefaultPermissions;
+
+        [JsonProperty("icon")]
+        public AttachmentJson Icon;
+
+        [JsonProperty("banner")]
+        public AttachmentJson Banner;
     }
 
-    internal class ServerSystemMessagesJson
+    public class ServerSystemMessagesJson
     {
-        public string user_joined;
-        public string user_left;
-        public string user_kicked;
-        public string user_banned;
+        [JsonProperty("user_joined")]
+        public string UserJoined;
+
+        [JsonProperty("user_left")]
+        public string UserLeft;
+
+        [JsonProperty("user_kicked")]
+        public string UserKicked;
+
+        [JsonProperty("user_banned")]
+        public string UserBanned;
     }
 }
