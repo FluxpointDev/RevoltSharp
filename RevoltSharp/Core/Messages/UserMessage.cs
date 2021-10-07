@@ -24,7 +24,9 @@ namespace RevoltSharp
         {
             Id = model.Id;
             AuthorId = model.Author;
+            Author = client.GetUser(AuthorId);
             ChannelId = model.Channel;
+            Channel = client.GetChannel(ChannelId);
             Nonce = model.Nonce;
             Content = model.Content as string;
         }

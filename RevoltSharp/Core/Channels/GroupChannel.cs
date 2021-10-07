@@ -17,13 +17,13 @@ namespace RevoltSharp
             : base(client)
         {
             Id = model.Id;
-            Recipents = model.Recipients;
+            Recipents = model.Recipients != null ? model.Recipients : new string[0];
             Description = model.Description;
             LastMessageId = model.LastMessageId;
             Name = model.Name;
             OwnerId = model.Owner;
             Permissions = model.Permissions;
-            Icon = Icon != null ? new Attachment(client, model.Icon) : null;
+            Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
         }
 
         internal override void Update(PartialChannelJson json)
@@ -31,7 +31,7 @@ namespace RevoltSharp
             if (json.Name.HasValue)
                 Name = json.Name.ValueOrDefault();
             if (json.Icon.HasValue)
-                Icon = json.Icon.ValueOrDefault() != null ? new Attachment(Client, json.Icon.ValueOrDefault()) : null;
+                Icon = new Attachment(Client, json.Icon.ValueOrDefault());
             if (json.Description.HasValue)
                 Description = json.Description.ValueOrDefault();
         }

@@ -31,13 +31,13 @@ namespace RevoltSharp.Commands
         public CommandContext(RevoltClient client, UserMessage msg)
         {
             Client = client;
-            Channel = client.WebSocket.ChannelCache[msg.ChannelId];
-            User = client.WebSocket.Usercache[msg.AuthorId];
+            Channel = msg.Channel;
+            User = msg.Author;
+            Message = msg;
             if (Channel is TextChannel channel)
             {
-                Server = client.WebSocket.ServerCache[channel.ServerId];
+                Server = channel.Server;
             }
-            Message = msg;
         }
 
     }

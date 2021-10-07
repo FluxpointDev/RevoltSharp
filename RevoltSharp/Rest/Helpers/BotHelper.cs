@@ -27,7 +27,7 @@ namespace RevoltSharp
         public static async Task<GroupChannel[]> GetGroupChannelsAsync(this RevoltRestClient rest)
         {
             ChannelJson[] Channels = await rest.SendRequestAsync<ChannelJson[]>(RequestType.Get, "/users/dms");
-            return Channels.Select(x => (GroupChannel)x.ToEntity(rest.Client)).ToArray();
+            return Channels.Select(x => new GroupChannel(rest.Client, x)).ToArray();
         }
 
         public static Task<HttpResponseMessage> LeaveServerAsync(this Server server)

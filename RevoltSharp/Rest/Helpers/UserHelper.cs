@@ -19,7 +19,7 @@ namespace RevoltSharp
                 return User;
 
             UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Get, $"users/{userId}", null);
-            return User.Create(rest.Client, Data);
+            return new User(rest.Client, Data);
         }
 
         public static Task<Profile> GetProfileAsync(this CommandContext context, string userId)
@@ -31,7 +31,7 @@ namespace RevoltSharp
         public static async Task<Profile> GetProfileAsync(this RevoltRestClient rest, string userId)
         {
             ProfileJson Data = await rest.SendRequestAsync<ProfileJson>(RequestType.Get, $"users/{userId}/profile", null);
-            return Profile.Create(Data);
+            return new Profile(rest.Client, Data);
         }
 
     }

@@ -18,10 +18,14 @@ namespace RevoltSharp
         /// </summary>
         public string ChannelId { get; internal set; }
 
+        public Channel Channel { get; internal set; }
+
         /// <summary>
         /// Id of the user who posted the message.
         /// </summary>
         public string AuthorId { get; internal set; }
+
+        public User Author { get; internal set; }
 
         public Message(RevoltClient client)
             : base(client)

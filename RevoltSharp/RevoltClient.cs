@@ -101,6 +101,28 @@ namespace RevoltSharp
         /// </remarks>
         public SelfUser CurrentUser
             => WebSocket != null ? WebSocket.CurrentUser : null;
+
+        public User GetUser(string id)
+        {
+            if (WebSocket != null && WebSocket.Usercache.TryGetValue(id, out User User))
+                return User;
+            return null;
+
+        }
+
+        public Channel GetChannel(string id)
+        {
+            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan))
+                return Chan;
+            return null;
+        }
+
+        public Server GetServer(string id)
+        {
+            if (WebSocket != null && WebSocket.ServerCache.TryGetValue(id, out Server Server))
+                return Server;
+            return null;
+        }
     }
 
     /// <summary>

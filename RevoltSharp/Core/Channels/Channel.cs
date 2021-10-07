@@ -7,6 +7,8 @@
     {
         public string Id { get; internal set; }
 
+        public Server Server { get; internal set; }
+
         protected Channel(RevoltClient client)
             : base(client)
         { }

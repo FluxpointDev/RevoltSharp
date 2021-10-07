@@ -1,4 +1,5 @@
 ﻿using Optional.Unsafe;
+using System.Numerics;
 
 namespace RevoltSharp
 {
@@ -8,19 +9,22 @@ namespace RevoltSharp
 
         public string ServerId { get; internal set; }
 
+        public Server Server { get; internal set; }
+
         public string Name { get; internal set; }
 
         public int[] Permissions { get; internal set; }
 
         public bool IsHoisted { get; internal set; }
 
-        public int Rank { get; internal set; }
+        public BigInteger Rank { get; internal set; }
 
         public string Color { get; internal set; }
 
         public Role(RevoltClient client, RoleJson model, string serverId, string roleId)
             : base(client)
         {
+
             Id = roleId;
             Color = model.Colour;
             IsHoisted = model.Hoist;
@@ -28,6 +32,7 @@ namespace RevoltSharp
             Permissions = model.Permissions;
             Rank = model.Rank;
             ServerId = serverId;
+            Server = client.GetServer(ServerId);
         }
 
         internal Role(RevoltClient client, PartialRoleJson model, string serverId, string roleId)

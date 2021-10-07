@@ -9,7 +9,7 @@
             : base(client)
         {
             Bio = model.Content;
-            Background = new Attachment(client, model.Background);
+            Background = model.Background != null ? new Attachment(client, model.Background) : null;
         }
     }
 }

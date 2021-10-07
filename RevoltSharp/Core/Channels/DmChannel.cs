@@ -13,7 +13,7 @@ namespace RevoltSharp
         {
             Id = model.Id;
             Active = model.Active;
-            Recipents = model.Recipients;
+            Recipents = model.Recipients != null ? model.Recipients : new string[0];
             LastMessageId = model.LastMessageId;
         }
 

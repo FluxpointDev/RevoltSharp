@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Optional;
 using Optional.Unsafe;
 using RevoltSharp.Rest;
@@ -157,13 +158,44 @@ namespace RevoltSharp.WebSocket
                     break;
                 case "Ready":
                     {
+                        try
+                        {
                             ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
-                            Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.id, x => x.ToEntity()));
+                            Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.Id, x => new User(Client, x)));
                             CurrentUser = SelfUser.CreateSelf(Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null));
-                            ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.Id, x => x.ToEntity(Client)));
-                            ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.id, x => x.ToEntity(Client)));
+                            if (CurrentUser == null)
+                            {
+                                Console.WriteLine("Fatal RevoltSharp error, could not load bot user.\n" +
+                                    "WebSocket connection has been stopped.");
+                                await Client.StopAsync();
+                            }
+
+                            ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.Id, x => new Server(Client, x)));
+                            ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
+                            Console.WriteLine("Revolt WebSocket Ready!");
                             Client.InvokeReady(CurrentUser);
 
+                            // This task will cleanup extra group channels where the bot is only a member of.
+                            _ = Task.Run(async () =>
+                            {
+                                foreach (Channel c in ChannelCache.Values.Where(x => x is GroupChannel))
+                                {
+                                    GroupChannel GC = (GroupChannel)c;
+                                    if (GC.Recipents.Count == 1)
+                                    {
+                                        await GC.DeleteChannelAsync();
+                                    }
+                                }
+                            });
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.Write(ex);
+                            Console.WriteLine("Fatal RevoltSharp error, could not parse ready event.\n" +
+                                "WebSocket connection has been stopped.");
+                            await Client.StopAsync();
+                        }
+                            
                     }
                     break;
                 case "Message":
@@ -215,16 +247,12 @@ namespace RevoltSharp.WebSocket
                 case "ChannelCreate":
                     {
                         ChannelEventJson Event = Payload.ToObject<ChannelEventJson>(Client.Serializer);
-                        Channel Chan = Event.ToEntity(Client);
-                        ChannelCache.TryAdd(Event.id, Chan);
+                        Channel Chan = Channel.Create(Client, Event);
+                        ChannelCache.TryAdd(Chan.Id, Chan);
                         if (!string.IsNullOrEmpty(Event.Server))
                         {
                             ServerCache.TryGetValue(Event.Server, out Server server);
-                            if (server == null)
-                            {
-
-                            }
-                            server.ChannelIds.Add(Event.id);
+                            server.ChannelIds.Add(Chan.Id);
                         }
                         Client.InvokeChannelCreated(Chan);
                     }
@@ -260,20 +288,11 @@ namespace RevoltSharp.WebSocket
                     {
                         ChannelDeleteEventJson Event = Payload.ToObject<ChannelDeleteEventJson>(Client.Serializer);
                         ChannelCache.TryRemove(Event.id, out Channel Chan);
-                        if (Chan.IsServer)
+                        if (Chan.Server != null)
                         {
-                            switch (Chan.Type)
+                            if (ServerCache.TryGetValue(Chan.Server.Id, out Server Server))
                             {
-                                case ChannelType.Text:
-                                case ChannelType.Unknown:
-                                case ChannelType.Voice:
-                                    {
-                                        if (ServerCache.TryRemove(Chan.ServerId, out Server Server))
-                                        {
-                                            Server.ChannelIds.Remove(Event.id);
-                                        }
-                                    }
-                                    break;
+                                Server.ChannelIds.Remove(Event.id);
                             }
                         }
                         Client.InvokeChannelDeleted(Chan);
@@ -393,7 +412,7 @@ namespace RevoltSharp.WebSocket
                             }
                             else
                             {
-                                Role Role = Event.data.ToEntity(Client, Event.id, Event.role_id);
+                                Role Role = new Role(Client, Event.data, Event.id, Event.role_id);
                                 server.Roles.TryAdd(Event.role_id, Role);
                                 Client.InvokeRoleCreated(Role);
                             }
@@ -453,6 +472,12 @@ namespace RevoltSharp.WebSocket
                     break;
             }
 
+        }
+
+        private static string FormatJsonPretty(string json)
+        {
+            dynamic parsedJson = JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
         }
 
     }

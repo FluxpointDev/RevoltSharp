@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Numerics;
 
 namespace RevoltSharp
 {
@@ -17,7 +18,7 @@ namespace RevoltSharp
         public bool Hoist;
 
         [JsonProperty("rank")]
-        public int Rank;
+        public BigInteger Rank;
 
         [JsonProperty("colour")]
         public string Colour;

@@ -45,5 +45,8 @@ namespace RevoltSharp
     {
         [JsonProperty("content")]
         public string Content;
+
+        [JsonProperty("background")]
+        public AttachmentJson Background;
     }
 }

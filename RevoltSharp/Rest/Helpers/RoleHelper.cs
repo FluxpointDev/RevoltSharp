@@ -18,7 +18,7 @@ namespace RevoltSharp
             RoleJson Json = await rest.SendRequestAsync<RoleJson>(RequestType.Post, $"/servers/{serverId}/roles", new CreateRoleRequest { name = roleName });
             if (Json == null)
                 return null;
-            return Json.ToEntity(rest.Client, serverId, Json?.Id);
+            return new Role(rest.Client, Json, serverId, Json.Id);
         }
 
         public static Task<HttpResponseMessage> ModifyRoleAsync(this Role role, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)

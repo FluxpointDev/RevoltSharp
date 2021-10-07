@@ -32,7 +32,7 @@ namespace RevoltSharp
             Id = model.Id;
             Username = model.Username;
             BotData = model.Bot != null ? new BotData { Owner = model.Bot.Owner } : null;
-            Avatar = new Attachment(client, model.Avatar);
+            Avatar = model.Avatar != null ? new Attachment(client, model.Avatar) : null;
             Badges = new UserBadges { Raw = model.Badges };
             IsOnline = model.Online;
             Relationship = model.Relationship;
@@ -44,9 +44,17 @@ namespace RevoltSharp
         internal void Update(PartialUserJson data)
         {
             if (data.avatar.HasValue)
-                Avatar = new Attachment(Client, data.avatar.ValueOrDefault());
+                Avatar = data.avatar.ValueOrDefault() != null ? new Attachment(Client, data.avatar.ValueOrDefault()) : null;
             if (data.status.HasValue)
-                Status = data.status.ValueOrDefault().Text;
+                Status = data.status.ValueOrDefault() != null ? data.status.ValueOrDefault().Text : null;
+            if (this is SelfUser Self)
+            {
+                if (data.ProfileBackground.HasValue)
+                    Self.Background = data.ProfileBackground.ValueOrDefault() != null ? new Attachment(Client, data.ProfileBackground.ValueOrDefault()) : null;
+
+                if (data.ProfileContent.HasValue)
+                    Self.ProfileBio = data.ProfileContent.ValueOrDefault();
+            }
         }
     }
     public class UserBadges

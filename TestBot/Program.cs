@@ -39,12 +39,13 @@ namespace TestBot
         public CommandService Service = new CommandService();
         private void Client_OnMessageRecieved(Message msg)
         {
-            if (msg.Author.IsBot)
+            UserMessage Message = msg as UserMessage;
+            if (Message == null || Message.Author.IsBot)
                 return;
             int argPos = 0;
             if (!(msg.HasCharPrefix('!', ref argPos) || msg.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                 return;
-            CommandContext context = new CommandContext(Client, msg);
+            CommandContext context = new CommandContext(Client, Message);
             Service.ExecuteAsync(context, argPos, null);
         }
     }

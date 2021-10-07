@@ -15,6 +15,7 @@ namespace RevoltSharp
         {
             Id = model.Id;
             ChannelId = model.Channel;
+            Channel = client.GetChannel(ChannelId);
             AuthorId = model.Author;
 
             if (model.Content is not JObject jo)

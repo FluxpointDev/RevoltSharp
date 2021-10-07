@@ -33,7 +33,7 @@ namespace RevoltSharp
             where TValue : Channel
         {
             ChannelJson Channel = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, $"/channels/{channelId}");
-            return (TValue)Channel.ToEntity(rest.Client);
+            return (TValue)RevoltSharp.Channel.Create(rest.Client, Channel);
         }
 
         public static Task<HttpResponseMessage> EditChannelAsync(this Channel channel, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
