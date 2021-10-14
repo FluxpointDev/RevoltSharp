@@ -1,8 +1,6 @@
-﻿using Optional.Linq;
-using RevoltSharp.Rest;
+﻿using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace RevoltSharp

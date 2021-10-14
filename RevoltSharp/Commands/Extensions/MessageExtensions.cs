@@ -16,9 +16,9 @@ namespace RevoltSharp.Commands
         /// <returns>
         ///     <c>true</c> if the message begins with the char <paramref name="c"/>; otherwise <c>false</c>.
         /// </returns>
-        public static bool HasCharPrefix(this Message msg, char c, ref int argPos)
+        public static bool HasCharPrefix(this UserMessage msg, char c, ref int argPos)
         {
-            string text = (msg as UserMessage)?.Content;
+            string text = msg.Content;
             if (!string.IsNullOrEmpty(text) && text[0] == c)
             {
                 argPos = 1;
@@ -29,9 +29,9 @@ namespace RevoltSharp.Commands
         /// <summary>
         ///     Gets whether the message starts with the provided string.
         /// </summary>
-        public static bool HasStringPrefix(this Message msg, string str, ref int argPos, StringComparison comparisonType = StringComparison.Ordinal)
+        public static bool HasStringPrefix(this UserMessage msg, string str, ref int argPos, StringComparison comparisonType = StringComparison.Ordinal)
         {
-            string text = (msg as UserMessage)?.Content;;
+            string text = msg.Content;
             if (!string.IsNullOrEmpty(text) && text.StartsWith(str, comparisonType))
             {
                 argPos = str.Length;
@@ -42,19 +42,19 @@ namespace RevoltSharp.Commands
         /// <summary>
         ///     Gets whether the message starts with the user's mention string.
         /// </summary>
-        public static bool HasMentionPrefix(this Message msg, User user, ref int argPos)
+        public static bool HasMentionPrefix(this UserMessage msg, SelfUser user, ref int argPos)
         {
             if (user == null)
                 return false;
-            string text = (msg as UserMessage)?.Content;
+            string text = msg.Content;
             if (string.IsNullOrEmpty(text) || text.Length <= 3 || text[0] != '<' || text[1] != '@') return false;
 
             int endPos = text.IndexOf('>');
             if (endPos == -1) return false;
-            if (text.Length < endPos + 2 || text[endPos + 1] != ' ') return false; //Must end in "> "
+            if (text.Length < endPos + 2 || text[endPos + 1] != ' ') 
+                return false; //Must end in "> "
 
-            string userId = text.Replace("<@", "").Replace(">", "");
-            //if (!MentionUtils.TryParseUser(text.Substring(0, endPos + 1), out userId)) return false;
+            string userId = text.Substring(0, endPos + 1);
             if (userId == user.Id)
             {
                 argPos = endPos + 2;

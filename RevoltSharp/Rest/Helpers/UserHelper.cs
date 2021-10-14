@@ -1,6 +1,5 @@
 ﻿using RevoltSharp.Commands;
 using RevoltSharp.Rest;
-using System;
 using System.Threading.Tasks;
 
 namespace RevoltSharp

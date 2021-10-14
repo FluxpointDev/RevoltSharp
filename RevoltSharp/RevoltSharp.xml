@@ -368,7 +368,7 @@
         <member name="P:RevoltSharp.Commands.CommandContext.Message">
             <inheritdoc/>
         </member>
-        <member name="M:RevoltSharp.Commands.CommandContext.#ctor(RevoltSharp.RevoltClient,RevoltSharp.Message)">
+        <member name="M:RevoltSharp.Commands.CommandContext.#ctor(RevoltSharp.RevoltClient,RevoltSharp.UserMessage)">
             <summary>
                 Initializes a new <see cref="T:RevoltSharp.Commands.CommandContext" /> class with the provided client and message.
             </summary>
@@ -758,7 +758,7 @@
                 Provides extension methods for <see cref="!:IUserMessage" /> that relates to commands.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Commands.MessageExtensions.HasCharPrefix(RevoltSharp.Message,System.Char,System.Int32@)">
+        <member name="M:RevoltSharp.Commands.MessageExtensions.HasCharPrefix(RevoltSharp.UserMessage,System.Char,System.Int32@)">
             <summary>
                 Gets whether the message starts with the provided character.
             </summary>
@@ -769,12 +769,12 @@
                 <c>true</c> if the message begins with the char <paramref name="c"/>; otherwise <c>false</c>.
             </returns>
         </member>
-        <member name="M:RevoltSharp.Commands.MessageExtensions.HasStringPrefix(RevoltSharp.Message,System.String,System.Int32@,System.StringComparison)">
+        <member name="M:RevoltSharp.Commands.MessageExtensions.HasStringPrefix(RevoltSharp.UserMessage,System.String,System.Int32@,System.StringComparison)">
             <summary>
                 Gets whether the message starts with the provided string.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Commands.MessageExtensions.HasMentionPrefix(RevoltSharp.Message,RevoltSharp.User,System.Int32@)">
+        <member name="M:RevoltSharp.Commands.MessageExtensions.HasMentionPrefix(RevoltSharp.UserMessage,RevoltSharp.SelfUser,System.Int32@)">
             <summary>
                 Gets whether the message starts with the user's mention string.
             </summary>
@@ -1326,6 +1326,11 @@
             Revolt channel that can be casted to types <see cref="T:RevoltSharp.GroupChannel"/>, <see cref="T:RevoltSharp.TextChannel"/>, <see cref="T:RevoltSharp.VoiceChannel"/> and <see cref="T:RevoltSharp.UnknownChannel"/>
             </summary>
         </member>
+        <member name="T:RevoltSharp.ServerChannel">
+            <summary>
+            If you would like to get a specific channel please cast to TextChannel or VoiceChannel
+            </summary>
+        </member>
         <member name="T:RevoltSharp.Attachment">
             <summary>
             Revolt file attachment for messages which could by any type including an image.
@@ -1391,58 +1396,9 @@
             Channel id of the message.
             </summary>
         </member>
-        <member name="P:RevoltSharp.Message.ServerId">
-            <summary>
-            Server id of the message.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.Message.Server">
-            <summary>
-            Revolt server the message was posted to.
-            </summary>
-            <remarks>
-            This will be <see langword="null"/> on <see cref="T:RevoltSharp.GroupChannel"/> and <see cref="F:RevoltSharp.ClientMode.Http"/>
-            </remarks>
-        </member>
-        <member name="P:RevoltSharp.Message.Channel">
-            <summary>
-            Revolt channel the message was posted to.
-            </summary>
-            <remarks>
-            This will be <see langword="null"/> on <see cref="F:RevoltSharp.ClientMode.Http"/>
-            </remarks>
-        </member>
-        <member name="P:RevoltSharp.Message.Author">
-            <summary>
-            Revolt user who posted the message.
-            </summary>
-            <remarks>
-            This will be <see langword="null"/> on <see cref="F:RevoltSharp.ClientMode.Http"/>
-            </remarks>
-        </member>
         <member name="P:RevoltSharp.Message.AuthorId">
             <summary>
             Id of the user who posted the message.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.Message.Content">
-            <summary>
-            The text content of the message.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.Message.Attachments">
-            <summary>
-            List of file attachments and images sent with the message.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.Message.Mentions">
-            <summary>
-            List of mentions that this message has tagged.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.Message.Replies">
-            <summary>
-            List of message replies this message is referencing.
             </summary>
         </member>
         <member name="M:RevoltSharp.DisableConsoleQuickEdit.Go">

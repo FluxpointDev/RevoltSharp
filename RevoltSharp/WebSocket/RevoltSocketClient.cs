@@ -2,13 +2,11 @@
 using Newtonsoft.Json.Linq;
 using Optional;
 using Optional.Unsafe;
-using RevoltSharp.Rest;
 using RevoltSharp.WebSocket.Events;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -116,7 +114,6 @@ namespace RevoltSharp.WebSocket
             JToken Payload = Newtonsoft.Json.JsonConvert.DeserializeObject<JToken>(json);
             if (Client.Config.Debug.LogWebSocketFull)
                 Console.WriteLine("--- WebSocket Response Json ---\n" + json);
-
             switch (Payload["type"].ToString())
             {
                 case "Authenticated":
@@ -146,14 +143,15 @@ namespace RevoltSharp.WebSocket
                     {
                         ErrorEventJson Event = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorEventJson>(json);
                         Console.WriteLine("--- WebSocket Error ---\n" + json);
-                        if (Event.error == "InvalidSession")
+                        if (Event.Error == WebSocketErrorType.InvalidSession)
                         {
-                            await Client.StopAsync();
                             if (FirstConnected)
                                 Console.WriteLine("WebSocket session is invalid, check if your bot token is correct.");
                             else
-                                Console.WriteLine("WebSocket session is invalid!");
+                                Console.WriteLine("WebSocket session was invalidated!");
+                            await Client.StopAsync();
                         }
+                        Client.InvokeWebSocketError(new WebSocketError { Messaage = Event.Message, Type = Event.Error });
                     }
                     break;
                 case "Ready":
@@ -178,12 +176,11 @@ namespace RevoltSharp.WebSocket
                             // This task will cleanup extra group channels where the bot is only a member of.
                             _ = Task.Run(async () =>
                             {
-                                foreach (Channel c in ChannelCache.Values.Where(x => x is GroupChannel))
+                                foreach (GroupChannel c in ChannelCache.Values.Where(x => x is GroupChannel))
                                 {
-                                    GroupChannel GC = (GroupChannel)c;
-                                    if (GC.Recipents.Count == 1)
+                                    if (c.Recipents.Count == 1)
                                     {
-                                        await GC.DeleteChannelAsync();
+                                        await c.DeleteChannelAsync();
                                     }
                                 }
                             });
@@ -195,13 +192,12 @@ namespace RevoltSharp.WebSocket
                                 "WebSocket connection has been stopped.");
                             await Client.StopAsync();
                         }
-                            
                     }
                     break;
                 case "Message":
                     {
                         MessageEventJson Event = Payload.ToObject<MessageEventJson>(Client.Serializer);
-                        if (!Usercache.ContainsKey(Event.Author))
+                        if (Event.Author != "00000000000000000000000000" && !Usercache.ContainsKey(Event.Author))
                         {
                             User User = await Client.Rest.GetUserAsync(Event.Author);
                             Usercache.TryAdd(Event.Author, User);
@@ -212,37 +208,36 @@ namespace RevoltSharp.WebSocket
                             ChannelCache.TryAdd(Event.Channel, Channel);
                         }
                         Client.InvokeMessageRecieved(Event.ToEntity(Client));
-
                     }
                     break;
                 case "MessageUpdate":
                     {
                         MessageUpdateEventJson Event = Payload.ToObject<MessageUpdateEventJson>(Client.Serializer);
-                        if (!Usercache.ContainsKey(Event.data.Author))
+                        if (Event.data.Author == "00000000000000000000000000")
+                            return;
+
+                        ChannelCache.TryGetValue(Event.channel, out Channel Channel);
+                        if (Channel == null)
                         {
-                            User User = await Client.Rest.GetUserAsync(Event.data.Author);
-                            Usercache.TryAdd(Event.data.Author, User);
+                            Channel = await Client.Rest.GetChannelAsync(Event.channel);
+                            ChannelCache.TryAdd(Channel.Id, Channel);
                         }
-                        if (!ChannelCache.ContainsKey(Event.data.Channel))
-                        {
-                            Channel Channel = await Client.Rest.GetChannelAsync(Event.data.Channel);
-                            ChannelCache.TryAdd(Event.data.Channel, Channel);
-                        }
-                        Client.InvokeMessageUpdated(Message.Create(Client,Event.data));
+                        Client.InvokeMessageUpdated(Channel, Event.id, Event.data.Content?.ToString());
                     }
                     break;
                 case "MessageDelete":
                     {
                         MessageDeleteEventJson Event = Payload.ToObject<MessageDeleteEventJson>(Client.Serializer);
-                        if (!ChannelCache.ContainsKey(Event.channel_id))
+                        
+                        ChannelCache.TryGetValue(Event.channel_id, out Channel Channel);
+                        if (Channel == null)
                         {
-                            Channel Channel = await Client.Rest.GetChannelAsync(Event.channel_id);
+                            Channel = await Client.Rest.GetChannelAsync(Event.channel_id);
                             ChannelCache.TryAdd(Event.channel_id, Channel);
                         }
-                        Client.InvokeMessageDeleted(ChannelCache[Event.channel_id], Event.id);
+                        Client.InvokeMessageDeleted(Channel, Event.id);
                     }
                     break;
-
 
                 case "ChannelCreate":
                     {
@@ -262,7 +257,6 @@ namespace RevoltSharp.WebSocket
                         ChannelUpdateEventJson Event = Payload.ToObject<ChannelUpdateEventJson>(Client.Serializer);
                         if (ChannelCache.TryGetValue(Event.id, out Channel Chan))
                         {
-
                             if (Event.clear.HasValue)
                             {
                                 if (Event.data == null)
@@ -288,9 +282,9 @@ namespace RevoltSharp.WebSocket
                     {
                         ChannelDeleteEventJson Event = Payload.ToObject<ChannelDeleteEventJson>(Client.Serializer);
                         ChannelCache.TryRemove(Event.id, out Channel Chan);
-                        if (Chan.Server != null)
+                        if (Chan is ServerChannel SC)
                         {
-                            if (ServerCache.TryGetValue(Chan.Server.Id, out Server Server))
+                            if (ServerCache.TryGetValue(SC.ServerId, out Server Server))
                             {
                                 Server.ChannelIds.Remove(Event.id);
                             }
@@ -305,8 +299,18 @@ namespace RevoltSharp.WebSocket
                         {
                             Channel Chan = await Client.Rest.GetChannelAsync(Event.id);
                             ChannelCache.TryAdd(Event.id, Chan);
+                            Client.InvokeGroupJoined((GroupChannel)Chan, CurrentUser);
                         }
-                        Client.InvokeGroupJoined((GroupChannel)ChannelCache[Event.id], Event.user_id);
+                        else
+                        {
+                            Usercache.TryGetValue(Event.user_id, out User User);
+                            if (User == null)
+                            {
+                                User = await Client.Rest.GetUserAsync(Event.user_id);
+                                Usercache.TryAdd(User.Id, User);
+                            }
+                            Client.InvokeGroupUserJoined((GroupChannel)ChannelCache[Event.id], User);
+                        }
                     }
                     break;
                 case "ChannelGroupLeave":
@@ -315,8 +319,13 @@ namespace RevoltSharp.WebSocket
                         if (Event.user_id == CurrentUser.Id)
                         {
                             ChannelCache.TryRemove(Event.id, out Channel Chan);
+                            Client.InvokeGroupLeft((GroupChannel)Chan, CurrentUser);
                         }
-                        Client.InvokeGroupLeft((GroupChannel)ChannelCache[Event.id], Event.user_id);
+                        else
+                        {
+                            Usercache.TryGetValue(Event.user_id, out User User);
+                            Client.InvokeGroupUserLeft((GroupChannel)ChannelCache[Event.id], User);
+                        }
                     }
                     break;
 
@@ -373,11 +382,17 @@ namespace RevoltSharp.WebSocket
                         {
                             Server Server = await Client.Rest.GetServerAsync(Event.id);
                             ServerCache.TryAdd(Event.id, Server);
-                            Client.InvokeServerJoined(Server);
+                            Client.InvokeServerJoined(Server, CurrentUser);
                         }
                         else
                         {
-                            Client.InvokeMemberJoined(ServerCache[Event.id], Event.user_id);
+                            Usercache.TryGetValue(Event.user_id, out User User);
+                            if (User == null)
+                            {
+                                User = await Client.Rest.GetUserAsync(Event.user_id);
+                                Usercache.TryAdd(User.Id, User);
+                            }
+                            Client.InvokeMemberJoined(ServerCache[Event.id], User);
                         }
                     }
                     break;
@@ -395,7 +410,13 @@ namespace RevoltSharp.WebSocket
                         }
                         else
                         {
-                            Client.InvokeMemberLeft(ServerCache[Event.id], Event.user_id);
+                            Usercache.TryGetValue(Event.user_id, out User User);
+                            if (User == null)
+                            {
+                                User = await Client.Rest.GetUserAsync(Event.user_id);
+                                Usercache.TryAdd(User.Id, User);
+                            }
+                            Client.InvokeMemberLeft(ServerCache[Event.id], User);
                         }
                     }
                     break;
@@ -452,7 +473,19 @@ namespace RevoltSharp.WebSocket
                                         break;
                                 }
                             }
-                            User.Update(Event.data);
+                            if (Event.id == CurrentUser.Id)
+                            {
+                                SelfUser Cloned = CurrentUser.Clone();
+                                User.Update(Event.data);
+                                CurrentUser.Update(Event.data);
+                                Client.InvokeCurrentUserUpdated(Cloned, CurrentUser);
+                            }
+                            else
+                            {
+                                User Cloned = User.Clone();
+                                User.Update(Event.data);
+                                Client.InvokeUserUpdated(Cloned, User);
+                            }
                         }
                     }
                     break;

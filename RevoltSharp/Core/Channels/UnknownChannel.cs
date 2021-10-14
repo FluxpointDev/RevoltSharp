@@ -11,16 +11,12 @@
         internal override void Update(PartialChannelJson json)
         { }
     }
-    public class ServerUnknownChannel : Channel
+    public class ServerUnknownChannel : ServerChannel
     {
-        public string ServerId { get; internal set; }
-
         public ServerUnknownChannel(RevoltClient client, ChannelJson model)
-            : base(client)
+            : base(client, model)
         {
-            Id = model.Id;
-            ServerId = model.Server;
-            Server = client.GetServer(ServerId);
+
         }
 
         internal override void Update(PartialChannelJson json)

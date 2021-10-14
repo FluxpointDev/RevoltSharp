@@ -1,8 +1,12 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp.WebSocket.Events
 {
     internal class ErrorEventJson
     {
-        public string error { get; set; }
-        public string msg { get; set; }
+        [JsonProperty("error")]
+        public WebSocketErrorType Error { get; set; }
+        [JsonProperty("msg")]
+        public string Message { get; set; }
     }
 }

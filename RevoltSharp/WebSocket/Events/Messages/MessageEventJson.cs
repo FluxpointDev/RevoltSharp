@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace RevoltSharp.WebSocket.Events
+﻿namespace RevoltSharp.WebSocket.Events
 {
     internal class MessageEventJson : MessageJson
     {

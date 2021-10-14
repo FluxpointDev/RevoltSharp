@@ -3,6 +3,7 @@
     internal class MessageUpdateEventJson
     {
         public string id;
+        public string channel;
         public MessageJson data;
     }
 }

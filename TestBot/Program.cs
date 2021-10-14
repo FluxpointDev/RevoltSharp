@@ -43,7 +43,7 @@ namespace TestBot
             if (Message == null || Message.Author.IsBot)
                 return;
             int argPos = 0;
-            if (!(msg.HasCharPrefix('!', ref argPos) || msg.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+            if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                 return;
             CommandContext context = new CommandContext(Client, Message);
             Service.ExecuteAsync(context, argPos, null);

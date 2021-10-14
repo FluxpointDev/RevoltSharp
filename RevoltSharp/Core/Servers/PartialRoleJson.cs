@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Optional;
-using Optional.Unsafe;
 using System.Numerics;
 
 namespace RevoltSharp

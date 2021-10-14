@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
     public class SelfUser : User
     {
@@ -26,5 +20,10 @@ namespace RevoltSharp
 
         internal static SelfUser CreateSelf(User user)
             => new SelfUser(user.Client, user.Model);
+
+        internal new SelfUser Clone()
+        {
+            return (SelfUser)this.MemberwiseClone();
+        }
     }
 }

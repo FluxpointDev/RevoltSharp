@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
     /// <summary>
     /// Revolt chat message with author, attachments, mentions and optional server.

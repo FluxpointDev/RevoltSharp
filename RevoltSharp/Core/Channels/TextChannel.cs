@@ -2,32 +2,16 @@
 
 namespace RevoltSharp
 {
-    public class TextChannel : Channel
+    public class TextChannel : ServerChannel
     {
         public string LastMessageId { get; internal set; }
-
-        public string ServerId { get; internal set; }
-
-        public int DefaultPermissions { get; internal set; }
-
-        public string Name { get; internal set; }
-
-        public string Description { get; internal set; }
-
-        public Attachment Icon { get; internal set; }
 
         public bool IsNsfw { get; internal set; }
 
         public TextChannel(RevoltClient client, ChannelJson model)
-            : base(client)
+            : base(client, model)
         {
             LastMessageId = model.LastMessageId;
-            ServerId = model.Server;
-            Server = client.GetServer(ServerId);
-            DefaultPermissions = model.DefaultPermissions;
-            Name = model.Name;
-            Description = model.Description;
-            Icon = model.Icon != null ?  new Attachment(client, model.Icon) : null;
             IsNsfw = model.Nsfw;
         }
 
@@ -45,7 +29,5 @@ namespace RevoltSharp
             if (json.Description.HasValue)
                 Description = json.Description.ValueOrDefault();
         }
-
-
     }
 }

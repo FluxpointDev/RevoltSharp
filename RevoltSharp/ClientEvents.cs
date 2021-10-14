@@ -7,6 +7,7 @@
     {
         public delegate void RevoltEvent<TValue>(TValue value);
         public delegate void RevoltEvent<TValue, TValue2>(TValue value, TValue2 value2);
+        public delegate void RevoltEvent<TValue, TValue2, TValue3>(TValue values, TValue2 values2, TValue3 value3);
 
         /// <summary>
         /// Receive message events from websocket in a <see cref="TextChannel"/> or <seealso cref="GroupChannel"/>
@@ -20,16 +21,16 @@
         /// <summary>
         /// Event used when the <see cref="RevoltClient"/> WebSocket has fully loaded with cached data and <see cref="RevoltClient.CurrentUser"/> is set.
         /// </summary>
-        public event RevoltEvent<User> OnReady;
-        internal void InvokeReady(User user)
+        public event RevoltEvent<SelfUser> OnReady;
+        internal void InvokeReady(SelfUser user)
         {
             OnReady?.Invoke(user);
         }
 
-        public event RevoltEvent<Message> OnMessageUpdated;
-        internal void InvokeMessageUpdated(Message msg)
+        public event RevoltEvent<Channel, string, string> OnMessageUpdated;
+        internal void InvokeMessageUpdated(Channel chan, string message, string content)
         {
-            OnMessageUpdated?.Invoke(msg);
+            OnMessageUpdated?.Invoke(chan, message, content);
         }
 
         public event RevoltEvent<Channel, string> OnMessageDeleted;
@@ -57,16 +58,28 @@
         }
 
 
-        public event RevoltEvent<GroupChannel, string> OnGroupJoined;
-        internal void InvokeGroupJoined(GroupChannel chan, string user)
+        public event RevoltEvent<GroupChannel, SelfUser> OnGroupJoined;
+        internal void InvokeGroupJoined(GroupChannel chan, SelfUser user)
         {
             OnGroupJoined?.Invoke(chan, user);
         }
 
-        public event RevoltEvent<GroupChannel, string> OnGroupLeft;
-        internal void InvokeGroupLeft(GroupChannel chan, string user)
+        public event RevoltEvent<GroupChannel, SelfUser> OnGroupLeft;
+        internal void InvokeGroupLeft(GroupChannel chan, SelfUser user)
         {
             OnGroupLeft?.Invoke(chan, user);
+        }
+
+        public event RevoltEvent<GroupChannel, User> OnGroupUserJoined;
+        internal void InvokeGroupUserJoined(GroupChannel chan, User user)
+        {
+            OnGroupUserJoined?.Invoke(chan, user);
+        }
+
+        public event RevoltEvent<GroupChannel, User> OnGroupUserLeft;
+        internal void InvokeGroupUserLeft(GroupChannel chan, User user)
+        {
+            OnGroupUserLeft?.Invoke(chan, user);
         }
 
 
@@ -76,10 +89,10 @@
             OnServerUpdated?.Invoke(old, news);
         }
 
-        public event RevoltEvent<Server> OnServerJoined;
-        internal void InvokeServerJoined(Server server)
+        public event RevoltEvent<Server, SelfUser> OnServerJoined;
+        internal void InvokeServerJoined(Server server, SelfUser user)
         {
-            OnServerJoined?.Invoke(server);
+            OnServerJoined?.Invoke(server, user);
         }
 
         public event RevoltEvent<Server> OnServerLeft;
@@ -88,14 +101,14 @@
             OnServerLeft?.Invoke(server);
         }
 
-        public event RevoltEvent<Server, string> OnMemberJoined;
-        internal void InvokeMemberJoined(Server server, string user)
+        public event RevoltEvent<Server, User> OnMemberJoined;
+        internal void InvokeMemberJoined(Server server, User user)
         {
             OnMemberJoined?.Invoke(server, user);
         }
 
-        public event RevoltEvent<Server, string> OnMemberLeft;
-        internal void InvokeMemberLeft(Server server, string user)
+        public event RevoltEvent<Server, User> OnMemberLeft;
+        internal void InvokeMemberLeft(Server server, User user)
         {
             OnMemberLeft?.Invoke(server, user);
         }
@@ -116,6 +129,24 @@
         internal void InvokeRoleUpdated(Role old, Role newr)
         {
             OnRoleUpdated?.Invoke(old, newr);
+        }
+
+        public event RevoltEvent<WebSocketError> OnWebSocketError;
+        internal void InvokeWebSocketError(WebSocketError error)
+        {
+            OnWebSocketError?.Invoke(error);
+        }
+
+        public event RevoltEvent<User, User> OnUserUpdated;
+        internal void InvokeUserUpdated(User old, User newu)
+        {
+            OnUserUpdated?.Invoke(old, newu);
+        }
+
+        public event RevoltEvent<SelfUser, SelfUser> OnCurrentUserUpdated;
+        internal void InvokeCurrentUserUpdated(SelfUser old, SelfUser newu)
+        {
+            OnCurrentUserUpdated?.Invoke(old, newu);
         }
     }
 }

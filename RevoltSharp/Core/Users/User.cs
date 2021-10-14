@@ -56,6 +56,11 @@ namespace RevoltSharp
                     Self.ProfileBio = data.ProfileContent.ValueOrDefault();
             }
         }
+
+        internal User Clone()
+        {
+            return (User)this.MemberwiseClone();
+        }
     }
     public class UserBadges
     {
