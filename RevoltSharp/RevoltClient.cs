@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RevoltSharp.Rest;
 using RevoltSharp.WebSocket;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -101,6 +102,9 @@ namespace RevoltSharp
         /// </remarks>
         public SelfUser CurrentUser
             => WebSocket != null ? WebSocket.CurrentUser : null;
+
+        public Server[] Servers
+            => WebSocket != null ? WebSocket.ServerCache.Values.ToArray() : new Server[0];
 
         public User GetUser(string id)
         {
