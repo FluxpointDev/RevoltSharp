@@ -1,16 +1,30 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp.WebSocket.Events
 {
     internal class ReadyEventJson
     {
-        public UserJson[] users;
-        public ServerJson[] servers;
-        public ChannelJson[] channels;
-        public ServerMemberJson[] members;
+        [JsonProperty("users")]
+        public UserJson[] Users;
+
+        [JsonProperty("servers")]
+        public ServerJson[] Servers;
+
+        [JsonProperty("channels")]
+        public ChannelJson[] Channels;
+
+        [JsonProperty("members")]
+        public ServerMemberJson[] Members;
     }
     internal class ServerMemberJson
     {
-        public string server;
-        public string user;
-        public string[] roles;
+        [JsonProperty("server")]
+        public string Server;
+
+        [JsonProperty("user")]
+        public string User;
+
+        [JsonProperty("roles")]
+        public string[] Roles;
     }
 }

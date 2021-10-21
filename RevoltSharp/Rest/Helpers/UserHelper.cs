@@ -14,7 +14,7 @@ namespace RevoltSharp
 
         public static async Task<User> GetUserAsync(this RevoltRestClient rest, string userId)
         {
-            if (rest.Client.WebSocket != null && rest.Client.WebSocket.Usercache.TryGetValue(userId, out User User))
+            if (rest.Client.WebSocket != null && rest.Client.WebSocket.UserCache.TryGetValue(userId, out User User))
                 return User;
 
             UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Get, $"users/{userId}", null);

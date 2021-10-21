@@ -1,12 +1,20 @@
-﻿using Optional;
+﻿using Newtonsoft.Json;
+using Optional;
 
 namespace RevoltSharp.WebSocket.Events
 {
     internal class ServerRoleUpdateEventJson
     {
-        public string id;
-        public string role_id;
-        public PartialRoleJson data;
-        public Option<string> clear;
+        [JsonProperty("id")]
+        public string Id;
+
+        [JsonProperty("roleId")]
+        public string RoleId;
+
+        [JsonProperty("data")]
+        public PartialRoleJson Data;
+
+        [JsonProperty("clear")]
+        public Option<string> Clear;
     }
 }

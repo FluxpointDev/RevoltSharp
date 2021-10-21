@@ -4,8 +4,10 @@ namespace RevoltSharp.WebSocket.Events
 {
     internal class ChannelStartTypingEventJson
     {
-        public string id;
+        [JsonProperty("id")]
+        public string Id;
+
         [JsonProperty("user")]
-        public string user_id;
+        public string UserId;
     }
 }

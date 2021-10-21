@@ -4,8 +4,10 @@ namespace RevoltSharp.WebSocket.Events
 {
     internal class MessageDeleteEventJson
     {
-        public string id;
+        [JsonProperty("id")]
+        public string Id;
+
         [JsonProperty("channel")]
-        public string channel_id;
+        public string ChannelId;
     }
 }

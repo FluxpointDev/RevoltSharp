@@ -1,7 +1,10 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp.WebSocket.Events
 {
     internal class ServerDeleteEventJson
     {
-        public string id;
+        [JsonProperty("id")]
+        public string Id;
     }
 }

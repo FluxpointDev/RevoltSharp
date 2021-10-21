@@ -1,8 +1,13 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp.WebSocket.Events
 {
     internal class ServerMemberUpdateEventJson
     {
-        public string id;
-        public ServerMemberJson data;
+        [JsonProperty("id")]
+        public string Id;
+
+        [JsonProperty("data")]
+        public ServerMemberJson Data;
     }
 }

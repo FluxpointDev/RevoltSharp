@@ -108,7 +108,7 @@ namespace RevoltSharp
 
         public User GetUser(string id)
         {
-            if (WebSocket != null && WebSocket.Usercache.TryGetValue(id, out User User))
+            if (WebSocket != null && WebSocket.UserCache.TryGetValue(id, out User User))
                 return User;
             return null;
 

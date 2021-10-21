@@ -19,22 +19,25 @@ namespace RevoltSharp.WebSocket
         public RevoltSocketClient(RevoltClient client)
         {
             Client = client;
-            if (string.IsNullOrEmpty(client.Config.Debug.WEBSOCKET_URL))
+            if (string.IsNullOrEmpty(client.Config.Debug.WebsocketUrl))
                 throw new RevoltException("Client config WEBSOCKET_URL can not be empty.");
 
-            if (!Uri.IsWellFormedUriString(client.Config.Debug.WEBSOCKET_URL, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(client.Config.Debug.WebsocketUrl, UriKind.Absolute))
                 throw new RevoltException("Client config WEBSOCKET_URL is an invalid format.");
         }
 
-        public RevoltClient Client { get; private set; }
+        private RevoltClient Client { get; }
+
+        private bool _firstConnected = true;
+        private bool _firstError = true;
+
         internal ClientWebSocket WebSocket;
-        internal bool FirstConnected = true;
         internal CancellationToken CancellationToken = new CancellationToken();
         internal ConcurrentDictionary<string, Server> ServerCache = new ConcurrentDictionary<string, Server>();
         internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
-        internal ConcurrentDictionary<string, User> Usercache = new ConcurrentDictionary<string, User>();
+        internal ConcurrentDictionary<string, User> UserCache = new ConcurrentDictionary<string, User>();
         internal SelfUser CurrentUser;
-        internal bool FirstError = true;
+
         internal async Task SetupWebsocket()
         {
             while (!CancellationToken.IsCancellationRequested)
@@ -43,9 +46,9 @@ namespace RevoltSharp.WebSocket
                 {
                     try
                     {
-                        await WebSocket.ConnectAsync(new Uri(Client.Config.Debug.WEBSOCKET_URL + "?format=json"), CancellationToken);
-                        await Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new AuthenticateRequest { token = Client.Token }), CancellationToken);
-                        FirstError = true;
+                        await WebSocket.ConnectAsync(new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json"), CancellationToken);
+                        await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest { Token = Client.Token }), CancellationToken);
+                        _firstError = true;
                         await Receive(WebSocket, CancellationToken);
                     }
                     catch (ArgumentException ae)
@@ -61,14 +64,14 @@ namespace RevoltSharp.WebSocket
                     {
                         Console.WriteLine("--- WebSocket Exception ---\n" + $"{ex}");
                     }
-                    await Task.Delay(FirstError ? 3000 : 10000);
-                    FirstError = false;
+                    await Task.Delay(_firstError ? 3000 : 10000, CancellationToken);
+                    _firstError = false;
                 }
             }
         }
 
-        private async Task Send(ClientWebSocket socket, string data, CancellationToken stoppingToken) =>
-        await socket.SendAsync(Encoding.UTF8.GetBytes(data), WebSocketMessageType.Text, true, stoppingToken);
+        private Task Send(ClientWebSocket socket, string data, CancellationToken stoppingToken)
+            => socket.SendAsync(Encoding.UTF8.GetBytes(data), WebSocketMessageType.Text, true, stoppingToken);
 
         private async Task Receive(ClientWebSocket socket, CancellationToken cancellationToken)
         {
@@ -76,7 +79,7 @@ namespace RevoltSharp.WebSocket
             while (!cancellationToken.IsCancellationRequested)
             {
                 WebSocketReceiveResult result;
-                using (var ms = new MemoryStream())
+                await using (var ms = new MemoryStream())
                 {
                     do
                     {
@@ -90,49 +93,54 @@ namespace RevoltSharp.WebSocket
                     ms.Seek(0, SeekOrigin.Begin);
                     using (var reader = new StreamReader(ms, Encoding.UTF8))
                     {
-                        WebSocketMessage(await reader.ReadToEndAsync());
+                        await WebSocketMessage(await reader.ReadToEndAsync());
                     }
                 }
-            };
+            }
         }
-
-        internal Task Heartbeat;
 
         internal class AuthenticateRequest
         {
-            public string type = "Authenticate";
-            public string token;
+            [JsonProperty("type")]
+            public string Type = "Authenticate";
+
+            [JsonProperty("token")]
+            public string Token;
         }
-        internal class HeartbeatRequest
+
+        private class HeartbeatRequest
         {
-            public string type = "Ping";
-            public int data = 20000;
+            [JsonProperty("type")]
+            public string Type = "Ping";
+
+            [JsonProperty("data")]
+            public int Data = 20000;
         }
 
         private async Task WebSocketMessage(string json)
         {
-            JToken Payload = Newtonsoft.Json.JsonConvert.DeserializeObject<JToken>(json);
+            var payload = JsonConvert.DeserializeObject<JToken>(json);
             if (Client.Config.Debug.LogWebSocketFull)
                 Console.WriteLine("--- WebSocket Response Json ---\n" + json);
-            switch (Payload["type"].ToString())
+            switch (payload["type"].ToString())
             {
                 case "Authenticated":
-                    if (FirstConnected)
+                    if (_firstConnected)
                         Console.WriteLine("Revolt WebSocket Connected!");
                     else
                         Console.WriteLine("Revolt WebSocket Reconnected!");
 
-                    FirstConnected = false;
-                    Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
+                    _firstConnected = false;
+                    await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
 
-                    Heartbeat = Task.Run(async () =>
+                    _ = Task.Run(async () =>
                     {
                         while (!CancellationToken.IsCancellationRequested)
                         {
-                            await Task.Delay(50000);
-                            await Send(WebSocket, Newtonsoft.Json.JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
+                            await Task.Delay(50000, CancellationToken);
+                            await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
                         }
-                    });
+                    }, CancellationToken);
                     break;
                 case "Pong":
                     {
@@ -141,26 +149,26 @@ namespace RevoltSharp.WebSocket
                     break;
                 case "Error":
                     {
-                        ErrorEventJson Event = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorEventJson>(json);
+                        var @event = JsonConvert.DeserializeObject<ErrorEventJson>(json);
                         Console.WriteLine("--- WebSocket Error ---\n" + json);
-                        if (Event.Error == WebSocketErrorType.InvalidSession)
+                        if (@event.Error == WebSocketErrorType.InvalidSession)
                         {
-                            if (FirstConnected)
+                            if (_firstConnected)
                                 Console.WriteLine("WebSocket session is invalid, check if your bot token is correct.");
                             else
                                 Console.WriteLine("WebSocket session was invalidated!");
                             await Client.StopAsync();
                         }
-                        Client.InvokeWebSocketError(new WebSocketError { Messaage = Event.Message, Type = Event.Error });
+                        Client.InvokeWebSocketError(new WebSocketError { Messaage = @event.Message, Type = @event.Error });
                     }
                     break;
                 case "Ready":
                     {
                         try
                         {
-                            ReadyEventJson Event = Payload.ToObject<ReadyEventJson>(Client.Serializer);
-                            Usercache = new ConcurrentDictionary<string, User>(Event.users.ToDictionary(x => x.Id, x => new User(Client, x)));
-                            CurrentUser = SelfUser.CreateSelf(Usercache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null));
+                            var @event = payload.ToObject<ReadyEventJson>(Client.Serializer);
+                            UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
+                            CurrentUser = SelfUser.CreateSelf(UserCache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null));
                             if (CurrentUser == null)
                             {
                                 Console.WriteLine("Fatal RevoltSharp error, could not load bot user.\n" +
@@ -168,16 +176,17 @@ namespace RevoltSharp.WebSocket
                                 await Client.StopAsync();
                             }
 
-                            ServerCache = new ConcurrentDictionary<string, Server>(Event.servers.ToDictionary(x => x.Id, x => new Server(Client, x)));
-                            ChannelCache = new ConcurrentDictionary<string, Channel>(Event.channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
+                            ServerCache = new ConcurrentDictionary<string, Server>(@event.Servers.ToDictionary(x => x.Id, x => new Server(Client, x)));
+                            ChannelCache = new ConcurrentDictionary<string, Channel>(@event.Channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
                             Console.WriteLine("Revolt WebSocket Ready!");
                             Client.InvokeReady(CurrentUser);
 
                             // This task will cleanup extra group channels where the bot is only a member of.
                             _ = Task.Run(async () =>
                             {
-                                foreach (GroupChannel c in ChannelCache.Values.Where(x => x is GroupChannel))
+                                foreach (var channel in ChannelCache.Values.Where(x => x is GroupChannel))
                                 {
+                                    var c = channel as GroupChannel;
                                     if (c.Recipents.Count == 1)
                                     {
                                         await c.DeleteChannelAsync();
@@ -196,135 +205,135 @@ namespace RevoltSharp.WebSocket
                     break;
                 case "Message":
                     {
-                        MessageEventJson Event = Payload.ToObject<MessageEventJson>(Client.Serializer);
-                        if (Event.Author != "00000000000000000000000000" && !Usercache.ContainsKey(Event.Author))
+                        var @event = payload.ToObject<MessageEventJson>(Client.Serializer);
+                        if (@event.Author != "00000000000000000000000000" && !UserCache.ContainsKey(@event.Author))
                         {
-                            User User = await Client.Rest.GetUserAsync(Event.Author);
-                            Usercache.TryAdd(Event.Author, User);
+                            var user = await Client.Rest.GetUserAsync(@event.Author);
+                            UserCache.TryAdd(@event.Author, user);
                         }
-                        if (!ChannelCache.ContainsKey(Event.Channel))
+                        if (!ChannelCache.ContainsKey(@event.Channel))
                         {
-                            Channel Channel = await Client.Rest.GetChannelAsync(Event.Channel);
-                            ChannelCache.TryAdd(Event.Channel, Channel);
+                            var channel = await Client.Rest.GetChannelAsync(@event.Channel);
+                            ChannelCache.TryAdd(@event.Channel, channel);
                         }
-                        Client.InvokeMessageRecieved(Event.ToEntity(Client));
+                        Client.InvokeMessageRecieved(@event.ToEntity(Client));
                     }
                     break;
                 case "MessageUpdate":
                     {
-                        MessageUpdateEventJson Event = Payload.ToObject<MessageUpdateEventJson>(Client.Serializer);
-                        if (Event.data.Author == "00000000000000000000000000")
+                        var @event = payload.ToObject<MessageUpdateEventJson>(Client.Serializer);
+                        if (@event.Data.Author == "00000000000000000000000000")
                             return;
 
-                        ChannelCache.TryGetValue(Event.channel, out Channel Channel);
-                        if (Channel == null)
+                        ChannelCache.TryGetValue(@event.Channel, out var channel);
+                        if (channel == null)
                         {
-                            Channel = await Client.Rest.GetChannelAsync(Event.channel);
-                            ChannelCache.TryAdd(Channel.Id, Channel);
+                            channel = await Client.Rest.GetChannelAsync(@event.Channel);
+                            ChannelCache.TryAdd(channel.Id, channel);
                         }
-                        Client.InvokeMessageUpdated(Channel, Event.id, Event.data.Content?.ToString());
+                        Client.InvokeMessageUpdated(channel, @event.Id, @event.Data.Content?.ToString());
                     }
                     break;
                 case "MessageDelete":
                     {
-                        MessageDeleteEventJson Event = Payload.ToObject<MessageDeleteEventJson>(Client.Serializer);
-                        
-                        ChannelCache.TryGetValue(Event.channel_id, out Channel Channel);
-                        if (Channel == null)
+                        var @event = payload.ToObject<MessageDeleteEventJson>(Client.Serializer);
+
+                        ChannelCache.TryGetValue(@event.ChannelId, out var channel);
+                        if (channel == null)
                         {
-                            Channel = await Client.Rest.GetChannelAsync(Event.channel_id);
-                            ChannelCache.TryAdd(Event.channel_id, Channel);
+                            channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
+                            ChannelCache.TryAdd(@event.ChannelId, channel);
                         }
-                        Client.InvokeMessageDeleted(Channel, Event.id);
+                        Client.InvokeMessageDeleted(channel, @event.Id);
                     }
                     break;
 
                 case "ChannelCreate":
                     {
-                        ChannelEventJson Event = Payload.ToObject<ChannelEventJson>(Client.Serializer);
-                        Channel Chan = Channel.Create(Client, Event);
-                        ChannelCache.TryAdd(Chan.Id, Chan);
-                        if (!string.IsNullOrEmpty(Event.Server))
+                        var @event = payload.ToObject<ChannelEventJson>(Client.Serializer);
+                        var chan = Channel.Create(Client, @event);
+                        ChannelCache.TryAdd(chan.Id, chan);
+                        if (!string.IsNullOrEmpty(@event.Server))
                         {
-                            ServerCache.TryGetValue(Event.Server, out Server server);
-                            server.ChannelIds.Add(Chan.Id);
+                            ServerCache.TryGetValue(@event.Server, out var server);
+                            server.ChannelIds.Add(chan.Id);
                         }
-                        Client.InvokeChannelCreated(Chan);
+                        Client.InvokeChannelCreated(chan);
                     }
                     break;
                 case "ChannelUpdate":
                     {
-                        ChannelUpdateEventJson Event = Payload.ToObject<ChannelUpdateEventJson>(Client.Serializer);
-                        if (ChannelCache.TryGetValue(Event.id, out Channel Chan))
+                        var @event = payload.ToObject<ChannelUpdateEventJson>(Client.Serializer);
+                        if (ChannelCache.TryGetValue(@event.Id, out var chan))
                         {
-                            if (Event.clear.HasValue)
+                            if (@event.Clear.HasValue)
                             {
-                                if (Event.data == null)
-                                    Event.data = new PartialChannelJson();
-                                switch (Event.clear.ValueOrDefault())
+                                if (@event.Data == null)
+                                    @event.Data = new PartialChannelJson();
+                                switch (@event.Clear.ValueOrDefault())
                                 {
                                     case "Icon":
-                                        Event.data.Icon = Option.Some<AttachmentJson>(null);
+                                        @event.Data.Icon = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Description":
-                                        Event.data.Description = Option.Some<string>(null);
+                                        @event.Data.Description = Option.Some<string>(null);
                                         break;
                                 }
                             }
 
-                            Channel Clone = Chan.Clone();
-                            Chan.Update(Event.data);
-                            Client.InvokeChannelUpdated(Clone, Chan);
+                            var clone = chan.Clone();
+                            chan.Update(@event.Data);
+                            Client.InvokeChannelUpdated(clone, chan);
                         }
                     }
                     break;
                 case "ChannelDelete":
                     {
-                        ChannelDeleteEventJson Event = Payload.ToObject<ChannelDeleteEventJson>(Client.Serializer);
-                        ChannelCache.TryRemove(Event.id, out Channel Chan);
-                        if (Chan is ServerChannel SC)
+                        var @event = payload.ToObject<ChannelDeleteEventJson>(Client.Serializer);
+                        ChannelCache.TryRemove(@event.Id, out var chan);
+                        if (chan is ServerChannel sc)
                         {
-                            if (ServerCache.TryGetValue(SC.ServerId, out Server Server))
+                            if (ServerCache.TryGetValue(sc.ServerId, out var server))
                             {
-                                Server.ChannelIds.Remove(Event.id);
+                                server.ChannelIds.Remove(@event.Id);
                             }
                         }
-                        Client.InvokeChannelDeleted(Chan);
+                        Client.InvokeChannelDeleted(chan);
                     }
                     break;
                 case "ChannelGroupJoin":
                     {
-                        ChannelGroupJoinEventJson Event = Payload.ToObject<ChannelGroupJoinEventJson>(Client.Serializer);
-                        if (Event.user_id == CurrentUser.Id)
+                        var @event = payload.ToObject<ChannelGroupJoinEventJson>(Client.Serializer);
+                        if (@event.UserId == CurrentUser.Id)
                         {
-                            Channel Chan = await Client.Rest.GetChannelAsync(Event.id);
-                            ChannelCache.TryAdd(Event.id, Chan);
-                            Client.InvokeGroupJoined((GroupChannel)Chan, CurrentUser);
+                            var chan = await Client.Rest.GetChannelAsync(@event.Id);
+                            ChannelCache.TryAdd(@event.Id, chan);
+                            Client.InvokeGroupJoined((GroupChannel)chan, CurrentUser);
                         }
                         else
                         {
-                            Usercache.TryGetValue(Event.user_id, out User User);
-                            if (User == null)
+                            UserCache.TryGetValue(@event.UserId, out var user);
+                            if (user == null)
                             {
-                                User = await Client.Rest.GetUserAsync(Event.user_id);
-                                Usercache.TryAdd(User.Id, User);
+                                user = await Client.Rest.GetUserAsync(@event.UserId);
+                                UserCache.TryAdd(user.Id, user);
                             }
-                            Client.InvokeGroupUserJoined((GroupChannel)ChannelCache[Event.id], User);
+                            Client.InvokeGroupUserJoined((GroupChannel)ChannelCache[@event.Id], user);
                         }
                     }
                     break;
                 case "ChannelGroupLeave":
                     {
-                        ChannelGroupLeaveEventJson Event = Payload.ToObject<ChannelGroupLeaveEventJson>(Client.Serializer);
-                        if (Event.user_id == CurrentUser.Id)
+                        var @event = payload.ToObject<ChannelGroupLeaveEventJson>(Client.Serializer);
+                        if (@event.UserId == CurrentUser.Id)
                         {
-                            ChannelCache.TryRemove(Event.id, out Channel Chan);
-                            Client.InvokeGroupLeft((GroupChannel)Chan, CurrentUser);
+                            ChannelCache.TryRemove(@event.Id, out var chan);
+                            Client.InvokeGroupLeft((GroupChannel)chan, CurrentUser);
                         }
                         else
                         {
-                            Usercache.TryGetValue(Event.user_id, out User User);
-                            Client.InvokeGroupUserLeft((GroupChannel)ChannelCache[Event.id], User);
+                            UserCache.TryGetValue(@event.UserId, out var user);
+                            Client.InvokeGroupUserLeft((GroupChannel)ChannelCache[@event.Id], user);
                         }
                     }
                     break;
@@ -332,166 +341,166 @@ namespace RevoltSharp.WebSocket
 
                 case "ServerUpdate":
                     {
-                        ServerUpdateEventJson Event = Payload.ToObject<ServerUpdateEventJson>(Client.Serializer);
-                        if (ServerCache.TryGetValue(Event.id, out Server Server))
+                        var @event = payload.ToObject<ServerUpdateEventJson>(Client.Serializer);
+                        if (ServerCache.TryGetValue(@event.Id, out var server))
                         {
-                            if (Event.clear.HasValue)
+                            if (@event.Clear.HasValue)
                             {
-                                if (Event.data == null)
-                                    Event.data = new PartialServerJson();
-                                switch (Event.clear.ValueOrDefault())
+                                if (@event.Data == null)
+                                    @event.Data = new PartialServerJson();
+                                switch (@event.Clear.ValueOrDefault())
                                 {
                                     case "Icon":
-                                        Event.data.Icon = Option.Some<AttachmentJson>(null);
+                                        @event.Data.Icon = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Banner":
-                                        Event.data.Banner = Option.Some<AttachmentJson>(null);
+                                        @event.Data.Banner = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Description":
-                                        Event.data.Description = Option.Some<string>(null);
+                                        @event.Data.Description = Option.Some<string>(null);
                                         break;
                                 }
                             }
-                            Server Cloned = Server.Clone();
-                            Server.Update(Event.data);
-                            Client.InvokeServerUpdated(Cloned, Server);
+                            var cloned = server.Clone();
+                            server.Update(@event.Data);
+                            Client.InvokeServerUpdated(cloned, server);
                         }
                     }
                     break;
                 case "ServerDelete":
                     {
-                        ServerDeleteEventJson Event = Payload.ToObject<ServerDeleteEventJson>(Client.Serializer);
-                        ServerCache.TryRemove(Event.id, out Server Server);
-                        foreach(var c in Server.ChannelIds)
+                        var @event = payload.ToObject<ServerDeleteEventJson>(Client.Serializer);
+                        ServerCache.TryRemove(@event.Id, out var server);
+                        foreach(var c in server.ChannelIds)
                         {
-                            ChannelCache.TryRemove(c, out Channel Chan);
+                            ChannelCache.TryRemove(c, out _);
                         }
-                        Client.InvokeServerLeft(Server);
+                        Client.InvokeServerLeft(server);
                     }
                     break;
                 case "ServerMemberUpdate":
                     {
-                        ServerMemberUpdateEventJson Event = Payload.ToObject<ServerMemberUpdateEventJson>(Client.Serializer);
+                        var @event = payload.ToObject<ServerMemberUpdateEventJson>(Client.Serializer);
                         //Console.WriteLine("Server Member Update - " + json);
                     }
                     break;
                 case "ServerMemberJoin":
                     {
-                        ServerMemberJoinEventJson Event = Payload.ToObject<ServerMemberJoinEventJson>(Client.Serializer);
-                        if (Event.user_id == CurrentUser.Id)
+                        var @event = payload.ToObject<ServerMemberJoinEventJson>(Client.Serializer);
+                        if (@event.UserId == CurrentUser.Id)
                         {
-                            Server Server = await Client.Rest.GetServerAsync(Event.id);
-                            ServerCache.TryAdd(Event.id, Server);
-                            Client.InvokeServerJoined(Server, CurrentUser);
+                            var server = await Client.Rest.GetServerAsync(@event.Id);
+                            ServerCache.TryAdd(@event.Id, server);
+                            Client.InvokeServerJoined(server, CurrentUser);
                         }
                         else
                         {
-                            Usercache.TryGetValue(Event.user_id, out User User);
-                            if (User == null)
+                            UserCache.TryGetValue(@event.UserId, out var user);
+                            if (user == null)
                             {
-                                User = await Client.Rest.GetUserAsync(Event.user_id);
-                                Usercache.TryAdd(User.Id, User);
+                                user = await Client.Rest.GetUserAsync(@event.UserId);
+                                UserCache.TryAdd(user.Id, user);
                             }
-                            Client.InvokeMemberJoined(ServerCache[Event.id], User);
+                            Client.InvokeMemberJoined(ServerCache[@event.Id], user);
                         }
                     }
                     break;
                 case "ServerMemberLeave":
                     {
-                        ServerMemberLeaveEventJson Event = Payload.ToObject<ServerMemberLeaveEventJson>(Client.Serializer);
-                        if (Event.user_id == CurrentUser.Id)
+                        var @event = payload.ToObject<ServerMemberLeaveEventJson>(Client.Serializer);
+                        if (@event.UserId == CurrentUser.Id)
                         {
-                            ServerCache.TryRemove(Event.id, out Server Server);
-                            foreach (var c in Server.ChannelIds)
+                            ServerCache.TryRemove(@event.Id, out var server);
+                            foreach (var c in server.ChannelIds)
                             {
-                                ChannelCache.TryRemove(c, out Channel Chan);
+                                ChannelCache.TryRemove(c, out _);
                             }
-                            Client.InvokeServerLeft(Server);
+                            Client.InvokeServerLeft(server);
                         }
                         else
                         {
-                            Usercache.TryGetValue(Event.user_id, out User User);
-                            if (User == null)
+                            UserCache.TryGetValue(@event.UserId, out var user);
+                            if (user == null)
                             {
-                                User = await Client.Rest.GetUserAsync(Event.user_id);
-                                Usercache.TryAdd(User.Id, User);
+                                user = await Client.Rest.GetUserAsync(@event.UserId);
+                                UserCache.TryAdd(user.Id, user);
                             }
-                            Client.InvokeMemberLeft(ServerCache[Event.id], User);
+                            Client.InvokeMemberLeft(ServerCache[@event.Id], user);
                         }
                     }
                     break;
                 case "ServerRoleUpdate":
                     {
-                        ServerRoleUpdateEventJson Event = Payload.ToObject<ServerRoleUpdateEventJson>(Client.Serializer);
-                        if (ServerCache.TryGetValue(Event.id, out Server server))
+                        var @event = payload.ToObject<ServerRoleUpdateEventJson>(Client.Serializer);
+                        if (ServerCache.TryGetValue(@event.Id, out var server))
                         {
-                            if (server.Roles.TryGetValue(Event.role_id, out Role role))
+                            if (server.Roles.TryGetValue(@event.RoleId, out var role))
                             {
-                                Role Cloned = role.Clone();
-                                role.Update(Event.data);
-                                Client.InvokeRoleUpdated(Cloned, role);
+                                var cloned = role.Clone();
+                                role.Update(@event.Data);
+                                Client.InvokeRoleUpdated(cloned, role);
                             }
                             else
                             {
-                                Role Role = new Role(Client, Event.data, Event.id, Event.role_id);
-                                server.Roles.TryAdd(Event.role_id, Role);
-                                Client.InvokeRoleCreated(Role);
+                                var newRole = new Role(Client, @event.Data, @event.Id, @event.RoleId);
+                                server.Roles.TryAdd(@event.RoleId, newRole);
+                                Client.InvokeRoleCreated(newRole);
                             }
                         }
                     }
                     break;
                 case "ServerRoleDelete":
                     {
-                        ServerRoleDeleteEventJson Event = Payload.ToObject<ServerRoleDeleteEventJson>(Client.Serializer);
-                        if (ServerCache.TryGetValue(Event.id, out Server server))
+                        var @event = payload.ToObject<ServerRoleDeleteEventJson>(Client.Serializer);
+                        if (ServerCache.TryGetValue(@event.Id, out var server))
                         {
-                            server.Roles.TryRemove(Event.role_id, out Role role);
+                            server.Roles.TryRemove(@event.RoleId, out var role);
                             Client.InvokeRoleDeleted(role);
                         }
                     }
                     break;
                 case "UserUpdate":
                     {
-                        UserUpdateEventJson Event = Payload.ToObject<UserUpdateEventJson>(Client.Serializer);
-                        if (Usercache.TryGetValue(Event.id, out User User))
+                        var @event = payload.ToObject<UserUpdateEventJson>(Client.Serializer);
+                        if (UserCache.TryGetValue(@event.Id, out var user))
                         {
-                            if (Event.clear.HasValue)
+                            if (@event.Clear.HasValue)
                             {
-                                switch (Event.clear.ValueOrDefault())
+                                switch (@event.Clear.ValueOrDefault())
                                 {
                                     case "ProfileContent":
-                                        Event.data.ProfileContent = Option.Some<string>("");
+                                        @event.Data.ProfileContent = Option.Some<string>("");
                                         break;
                                     case "StatusText":
-                                        Event.data.status = Option.Some<UserStatusJson>(null);
+                                        @event.Data.status = Option.Some<UserStatusJson>(null);
                                         break;
                                     case "ProfileBackground":
-                                        Event.data.ProfileBackground = Option.Some<AttachmentJson>(null);
+                                        @event.Data.ProfileBackground = Option.Some<AttachmentJson>(null);
                                         break;
                                     case "Avatar":
-                                        Event.data.avatar = Option.Some<AttachmentJson>(null);
+                                        @event.Data.avatar = Option.Some<AttachmentJson>(null);
                                         break;
                                 }
                             }
-                            if (Event.id == CurrentUser.Id)
+                            if (@event.Id == CurrentUser.Id)
                             {
-                                SelfUser Cloned = CurrentUser.Clone();
-                                User.Update(Event.data);
-                                CurrentUser.Update(Event.data);
-                                Client.InvokeCurrentUserUpdated(Cloned, CurrentUser);
+                                var cloned = CurrentUser.Clone();
+                                user.Update(@event.Data);
+                                CurrentUser.Update(@event.Data);
+                                Client.InvokeCurrentUserUpdated(cloned, CurrentUser);
                             }
                             else
                             {
-                                User Cloned = User.Clone();
-                                User.Update(Event.data);
-                                Client.InvokeUserUpdated(Cloned, User);
+                                var cloned = user.Clone();
+                                user.Update(@event.Data);
+                                Client.InvokeUserUpdated(cloned, user);
                             }
                         }
                     }
                     break;
                 case "UserRelationship":
                     {
-                        UserRelationshipEventJson Event = Payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
+                        var @event = payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
                     }
                     break;
                 case "ChannelStartTyping":
