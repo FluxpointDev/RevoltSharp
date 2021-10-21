@@ -9,10 +9,14 @@ namespace RevoltSharp
     {
         [EnumMember(Value = "LabelMe")]
         Unknown,
+
         [EnumMember(Value = "InternalError")]
         InternalServerError,
+
         InvalidSession,
+
         OnboardingNotFinished,
+
         AlreadyAuthenticated
     }
 }

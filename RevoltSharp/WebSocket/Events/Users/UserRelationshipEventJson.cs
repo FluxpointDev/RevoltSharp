@@ -1,8 +1,13 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp.WebSocket.Events
 {
     internal class UserRelationshipEventJson
     {
-        public string id;
-        public string user;
+        [JsonProperty("id")]
+        public string Id;
+
+        [JsonProperty("user")]
+        public string User;
     }
 }

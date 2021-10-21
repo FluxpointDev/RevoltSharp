@@ -16,34 +16,34 @@ namespace RevoltSharp.Rest
         {
             Client = client;
 
-            if (string.IsNullOrEmpty(Client.Config.Debug.API_URL))
+            if (string.IsNullOrEmpty(Client.Config.Debug.ApiUrl))
                 throw new RevoltException("Client config API_URL can not be empty.");
 
-            if (!Uri.IsWellFormedUriString(client.Config.Debug.API_URL, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(client.Config.Debug.ApiUrl, UriKind.Absolute))
                 throw new RevoltException("Client config API_URL is an invalid format.");
 
-            if (!Client.Config.Debug.API_URL.EndsWith('/'))
-                Client.Config.Debug.API_URL = Client.Config.Debug.API_URL + "/";
+            if (!Client.Config.Debug.ApiUrl.EndsWith('/'))
+                Client.Config.Debug.ApiUrl = Client.Config.Debug.ApiUrl + "/";
 
-            if (string.IsNullOrEmpty(Client.Config.Debug.UPLOAD_URL))
+            if (string.IsNullOrEmpty(Client.Config.Debug.UploadUrl))
                 throw new RevoltException("Client config UPLOAD_URL can not be empty.");
 
-            if (!Uri.IsWellFormedUriString(client.Config.Debug.UPLOAD_URL, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(client.Config.Debug.UploadUrl, UriKind.Absolute))
                 throw new RevoltException("Client config UPLOAD_URL is an invalid format.");
 
-            if (!Client.Config.Debug.UPLOAD_URL.EndsWith('/'))
-                Client.Config.Debug.UPLOAD_URL = Client.Config.Debug.UPLOAD_URL + "/";
+            if (!Client.Config.Debug.UploadUrl.EndsWith('/'))
+                Client.Config.Debug.UploadUrl = Client.Config.Debug.UploadUrl + "/";
 
             HttpClient = new HttpClient()
             {
-                BaseAddress = new System.Uri(Client.Config.Debug.API_URL)
+                BaseAddress = new System.Uri(Client.Config.Debug.ApiUrl)
             };
             HttpClient.DefaultRequestHeaders.Add("x-bot-token", Client.Token);
             HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
             HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             FileHttpClient = new HttpClient()
             {
-                BaseAddress = new System.Uri(Client.Config.Debug.UPLOAD_URL)
+                BaseAddress = new System.Uri(Client.Config.Debug.UploadUrl)
             };
             FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
         }

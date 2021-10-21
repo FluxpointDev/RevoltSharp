@@ -4,9 +4,13 @@ namespace RevoltSharp.WebSocket.Events
 {
     internal class ChannelAckEventJson
     {
-        public string id;
+        [JsonProperty("id")]
+        public string Id;
+
         [JsonProperty("user")]
-        public string user_id;
-        public string message_id;
+        public string UserId;
+
+        [JsonProperty("messageId")]
+        public string MessageId;
     }
 }

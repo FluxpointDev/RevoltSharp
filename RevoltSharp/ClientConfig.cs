@@ -13,9 +13,9 @@ namespace RevoltSharp
     }
     public class ClientDebugConfig
     {
-        public string API_URL = "https://api.revolt.chat/";
-        public string UPLOAD_URL = "https://autumn.revolt.chat/";
-        public string WEBSOCKET_URL = "wss://ws.revolt.chat";
+        public string ApiUrl = "https://api.revolt.chat/";
+        public string UploadUrl = "https://autumn.revolt.chat/";
+        public string WebsocketUrl = "wss://ws.revolt.chat";
         /// <summary>
         /// Log all websocket events that you get from Revolt.
         /// </summary>
