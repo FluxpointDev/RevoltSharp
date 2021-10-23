@@ -1,5 +1,7 @@
 ﻿using Optional.Unsafe;
 using System;
+using System.Collections.Concurrent;
+using System.Linq;
 
 namespace RevoltSharp
 {
@@ -24,6 +26,13 @@ namespace RevoltSharp
         public bool IsBot => BotData != null;
 
         internal UserJson Model { get; }
+
+        public ConcurrentDictionary<string, Server> MutualServers { get; set; } = new ConcurrentDictionary<string, Server>();
+
+        public ConcurrentDictionary<string, GroupChannel> MutualGroups { get; set; } = new ConcurrentDictionary<string, GroupChannel>();
+
+        internal bool HasMutuals()
+           => MutualGroups.Any() || MutualGroups.Any();
 
         public User(RevoltClient client, UserJson model)
             : base(client)

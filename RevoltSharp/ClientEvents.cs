@@ -101,14 +101,14 @@
             OnServerLeft?.Invoke(server);
         }
 
-        public event RevoltEvent<Server, User> OnMemberJoined;
-        internal void InvokeMemberJoined(Server server, User user)
+        public event RevoltEvent<Server, ServerMember> OnMemberJoined;
+        internal void InvokeMemberJoined(Server server, ServerMember user)
         {
             OnMemberJoined?.Invoke(server, user);
         }
 
-        public event RevoltEvent<Server, User> OnMemberLeft;
-        internal void InvokeMemberLeft(Server server, User user)
+        public event RevoltEvent<Server, ServerMember> OnMemberLeft;
+        internal void InvokeMemberLeft(Server server, ServerMember user)
         {
             OnMemberLeft?.Invoke(server, user);
         }

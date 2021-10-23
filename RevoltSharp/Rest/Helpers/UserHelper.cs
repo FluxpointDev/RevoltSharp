@@ -18,7 +18,12 @@ namespace RevoltSharp
                 return User;
 
             UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Get, $"users/{userId}", null);
-            return new User(rest.Client, Data);
+            if (Data == null)
+                return null;
+            User user = new User(rest.Client, Data);
+            if (rest.Client.WebSocket != null)
+                rest.Client.WebSocket.UserCache.TryAdd(userId, user);
+            return user;
         }
 
         public static Task<Profile> GetProfileAsync(this CommandContext context, string userId)

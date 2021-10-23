@@ -21,6 +21,8 @@ namespace RevoltSharp
         //public ServerSystemMessages SystemMessages;
         public ConcurrentDictionary<string, Role> Roles { get; internal set; }
 
+        public ConcurrentDictionary<string, ServerMember> Members { get; internal set; } = new ConcurrentDictionary<string, ServerMember>();
+
         public int[] DefaultPermissions { get; internal set; }
 
         public Attachment Icon { get; internal set; }
@@ -29,14 +31,14 @@ namespace RevoltSharp
 
         public Role GetRole(string roleId)
         {
-            if (Roles.TryGetValue(roleId, out var role))
+            if (Roles.TryGetValue(roleId, out Role role))
                 return role;
             return null;
         }
 
         public TextChannel GetTextChannel(string channelId)
         {
-            if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out var chan))
+            if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel chan))
                 return null;
 
             if (chan is not TextChannel textChannel)
@@ -50,7 +52,7 @@ namespace RevoltSharp
 
         public VoiceChannel GetVoiceChannel(string channelId)
         {
-            if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out var chan))
+            if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel chan))
                 return null;
 
             if (chan is not VoiceChannel voiceChannel)
@@ -85,9 +87,29 @@ namespace RevoltSharp
             return (Server) this.MemberwiseClone();
         }
 
+        internal void AddMember(ServerMember member)
+        {
+            Members.TryAdd(member.Id, member);
+            member.User.MutualServers.TryAdd(Id, this);
+        }
+
+        internal void RemoveMember(User user, bool delete)
+        {
+            if (!delete)
+                Members.TryRemove(user.Id, out _);
+
+            user.MutualServers.TryRemove(Id, out _);
+            if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals())
+            {
+                user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);
+            }
+        }
+
         public Server(RevoltClient client, ServerJson model)
             : base(client)
         {
+            if (model == null)
+                return;
             Id = model.Id;
             Name = model.Name;
             DefaultPermissions = model.DefaultPermissions;

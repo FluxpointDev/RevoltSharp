@@ -20,16 +20,16 @@ namespace RevoltSharp
             if (objectType == null) throw new ArgumentNullException(nameof(objectType));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            var innerType = objectType.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
-            var noneMethod = MakeStaticGenericMethodInfo(nameof(None), innerType);
-            var someMethod = MakeStaticGenericMethodInfo(nameof(Some), innerType);
+            Type innerType = objectType.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
+            MethodInfo noneMethod = MakeStaticGenericMethodInfo(nameof(None), innerType);
+            MethodInfo someMethod = MakeStaticGenericMethodInfo(nameof(Some), innerType);
 
             if (reader.TokenType == JsonToken.Null)
             {
                 return noneMethod.Invoke(null, new object[] { });
             }
 
-            var innerValue = serializer.Deserialize(reader, innerType);
+            object innerValue = serializer.Deserialize(reader, innerType);
 
             if (innerValue == null)
             {
@@ -50,11 +50,11 @@ namespace RevoltSharp
                 return;
             }
 
-            var innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
-            var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
-            var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
+            Type innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
+            MethodInfo hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
+            MethodInfo getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
 
-            var hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
+            bool hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
 
             if (!hasValue)
             {
@@ -62,7 +62,7 @@ namespace RevoltSharp
                 return;
             }
 
-            var innerValue = getValueMethod.Invoke(null, new[] { value });
+            object innerValue = getValueMethod.Invoke(null, new[] { value });
             serializer.Serialize(writer, innerValue);
         }
 

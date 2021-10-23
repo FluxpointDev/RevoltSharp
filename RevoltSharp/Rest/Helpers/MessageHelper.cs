@@ -40,8 +40,6 @@ namespace RevoltSharp
         public static async Task<Message> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Get, $"channels/{channelId}/messages/{messageId}", null);
-           
-            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented));
             return Message.Create(rest.Client, Data);
         }
 

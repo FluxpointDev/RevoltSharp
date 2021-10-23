@@ -16,6 +16,24 @@ namespace RevoltSharp
             return new RevoltSharp.Server(rest.Client, Server);
         }
 
+        public static Task<ServerMember> GetMemberAsync(this Server server, string userId)
+            => GetMemberAsync(server.Client.Rest, server.Id, userId);
+
+        public static async Task<ServerMember> GetMemberAsync(this RevoltRestClient rest, string serverId, string userId)
+        {
+            if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.Members.TryGetValue(userId, out ServerMember sm))
+                return sm;
+
+            ServerMemberJson Member = await rest.SendRequestAsync<ServerMemberJson>(RequestType.Get, $"servers/{serverId}/members/{userId}");
+            if (Member == null)
+                return null;
+            User User = await rest.GetUserAsync(userId);
+            ServerMember SM = new ServerMember(rest.Client, Member, User);
+            if (rest.Client.WebSocket != null)
+                rest.Client.WebSocket.ServerCache[serverId].AddMember(SM);
+            return SM;
+        }
+
         public static Task<ServerMember[]> GetMembersAsync(this Server server)
            => GetMembersAsync(server.Client.Rest, server.Id);
 

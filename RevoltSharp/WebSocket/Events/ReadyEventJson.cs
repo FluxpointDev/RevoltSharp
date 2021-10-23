@@ -16,15 +16,4 @@ namespace RevoltSharp.WebSocket.Events
         [JsonProperty("members")]
         public ServerMemberJson[] Members;
     }
-    internal class ServerMemberJson
-    {
-        [JsonProperty("server")]
-        public string Server;
-
-        [JsonProperty("user")]
-        public string User;
-
-        [JsonProperty("roles")]
-        public string[] Roles;
-    }
 }

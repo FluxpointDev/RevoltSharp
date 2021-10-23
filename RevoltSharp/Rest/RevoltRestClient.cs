@@ -90,7 +90,7 @@ namespace RevoltSharp.Rest
         {
             HttpRequestMessage Mes = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
             MultipartFormDataContent MP = new System.Net.Http.MultipartFormDataContent("file");
-            var Image = new ByteArrayContent(bytes);
+            ByteArrayContent Image = new ByteArrayContent(bytes);
             MP.Add(Image, "file", name);
             Mes.Content = MP;
             HttpResponseMessage Req = await FileHttpClient.SendAsync(Mes);

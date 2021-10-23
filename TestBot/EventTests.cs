@@ -109,13 +109,13 @@ namespace TestBot
             Console.WriteLine(value.Id + " | " + value2);
         }
 
-        private void Client_OnMemberLeft(Server value, User value2)
+        private void Client_OnMemberLeft(Server value, ServerMember value2)
         {
             Console.WriteLine("--- EVENT: Member Left ---");
             Console.WriteLine(value.Name);
         }
 
-        private void Client_OnMemberJoined(Server value, User value2)
+        private void Client_OnMemberJoined(Server value, ServerMember value2)
         {
             Console.WriteLine("--- EVENT: Member Joined ---");
             Console.WriteLine(value.Name);

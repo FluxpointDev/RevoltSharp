@@ -12,7 +12,7 @@ namespace RevoltSharp
         public string Name;
 
         [JsonProperty("permissions")]
-        public int[] Permissions;
+        public ulong[] Permissions;
 
         [JsonProperty("hoist")]
         public bool Hoist;

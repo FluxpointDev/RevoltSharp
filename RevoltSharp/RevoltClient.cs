@@ -106,6 +106,9 @@ namespace RevoltSharp
         public Server[] Servers
             => WebSocket != null ? WebSocket.ServerCache.Values.ToArray() : new Server[0];
 
+        public User[] Users
+           => WebSocket != null ? WebSocket.UserCache.Values.ToArray() : new User[0];
+
         public User GetUser(string id)
         {
             if (WebSocket != null && WebSocket.UserCache.TryGetValue(id, out User User))

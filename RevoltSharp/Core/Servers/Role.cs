@@ -13,7 +13,13 @@ namespace RevoltSharp
 
         public string Name { get; internal set; }
 
-        public int[] Permissions { get; internal set; }
+        public ulong[] Permissions { get; internal set; }
+
+        public bool hasPerm(ServerPermission perm)
+        {
+            ulong Flag = (ulong)perm;
+            return (Permissions[0] & Flag) == Flag;
+        }
 
         public bool IsHoisted { get; internal set; }
 

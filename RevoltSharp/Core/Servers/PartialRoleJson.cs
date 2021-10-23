@@ -10,7 +10,7 @@ namespace RevoltSharp
         public Option<string> Name;
 
         [JsonProperty("permissions")]
-        public Option<int[]> Permissions;
+        public Option<ulong[]> Permissions;
 
         [JsonProperty("hoist")]
         public Option<bool> Hoist;
