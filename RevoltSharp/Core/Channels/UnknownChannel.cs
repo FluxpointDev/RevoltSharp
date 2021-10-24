@@ -6,6 +6,7 @@
             : base(client)
         {
             Id = model.Id;
+            Type = ChannelType.Unknown;
         }
 
         internal override void Update(PartialChannelJson json)
@@ -16,7 +17,7 @@
         public ServerUnknownChannel(RevoltClient client, ChannelJson model)
             : base(client, model)
         {
-
+           
         }
 
         internal override void Update(PartialChannelJson json)

@@ -6,6 +6,7 @@
     public abstract class Channel : Entity
     {
         public string Id { get; internal set; }
+        public ChannelType Type { get; internal set; }
 
         protected Channel(RevoltClient client)
             : base(client)

@@ -8,6 +8,7 @@
             : base(client)
         {
             Id = model.Id;
+            Type = ChannelType.SavedMessages;
             User = model.User;
         }
 

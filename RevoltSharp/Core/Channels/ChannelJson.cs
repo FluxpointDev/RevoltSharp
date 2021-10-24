@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace RevoltSharp
 {
@@ -38,10 +39,13 @@ namespace RevoltSharp
         public string Owner;
 
         [JsonProperty("permissions")]
-        public int Permissions;
+        public ulong Permissions;
 
         [JsonProperty("default_permissions")]
-        public int DefaultPermissions;
+        public ulong DefaultPermissions;
+
+        [JsonProperty("role_permissions")]
+        public Dictionary<string, ulong> RolePermissions;
 
         [JsonProperty("server")]
         public string Server;

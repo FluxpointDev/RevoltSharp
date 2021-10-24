@@ -13,13 +13,7 @@ namespace RevoltSharp
 
         public string Name { get; internal set; }
 
-        public ulong[] Permissions { get; internal set; }
-
-        public bool hasPerm(ServerPermission perm)
-        {
-            ulong Flag = (ulong)perm;
-            return (Permissions[0] & Flag) == Flag;
-        }
+        public ServerPermissions Permissions { get; internal set; }
 
         public bool IsHoisted { get; internal set; }
 
@@ -35,7 +29,7 @@ namespace RevoltSharp
             Color = model.Colour;
             IsHoisted = model.Hoist;
             Name = model.Name;
-            Permissions = model.Permissions;
+            Permissions = new ServerPermissions(model.Permissions);
             Rank = model.Rank;
             ServerId = serverId;
             Server = client.GetServer(ServerId);
@@ -46,7 +40,7 @@ namespace RevoltSharp
         {
             Id = roleId;
             Name = model.Name.ValueOrDefault();
-            Permissions = model.Permissions.ValueOrDefault();
+            Permissions = new ServerPermissions(model.Permissions.ValueOrDefault());
             ServerId = serverId;
         }
 
@@ -56,7 +50,7 @@ namespace RevoltSharp
                 Name = json.Name.ValueOrDefault();
 
             if (json.Permissions.HasValue)
-                Permissions = json.Permissions.ValueOrDefault();
+                Permissions = new ServerPermissions(json.Permissions.ValueOrDefault());
 
             if (json.Hoist.HasValue)
                 IsHoisted = json.Hoist.ValueOrDefault();

@@ -7,6 +7,7 @@ namespace RevoltSharp
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ChannelType
     {
+        Unknown,
         [EnumMember(Value = "TextChannel")]
         Text,
 

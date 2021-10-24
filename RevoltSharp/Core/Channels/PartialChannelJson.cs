@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Optional;
+using System.Collections.Generic;
 
 namespace RevoltSharp
 {
@@ -15,6 +16,9 @@ namespace RevoltSharp
         public Option<string> Description { get; set; }
 
         [JsonProperty("deafult_permissions")]
-        public Option<int> DefaultPermissions { get; set; }
+        public Option<ulong> DefaultPermissions { get; set; }
+
+        [JsonProperty("role_permissions")]
+        public Option<Dictionary<string, ulong>> RolePermissions { get; set; }
     }
 }

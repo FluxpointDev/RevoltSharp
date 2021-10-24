@@ -1,6 +1,7 @@
 ﻿using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -49,19 +50,51 @@ namespace TestBot.Commands
             }
         }
 
-        [Command("permtest")]
-        public async Task PermTest()
+        [Command("perms")]
+        public async Task PermTest(string id = "")
         {
-            Console.WriteLine("PERM TEST");
-            try
+            if (id == "")
+                id = Context.User.Id;
+            ServerMember Member = await Context.Server.GetMemberAsync(id);
+            if (Member == null)
             {
-                var Role = Context.Server.Members[Context.User.Id].Roles.Values.OrderByDescending(x => x.Rank).FirstOrDefault();
-                await ReplyAsync(Role.Name + " " + Role.hasPerm(ServerPermission.BanMembers));
+                await ReplyAsync("Could not find server member.");
+                return;
             }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            List<string> Perms = new List<string>();
+            if (Member.Permissions.BanMembers)
+                Perms.Add("- Ban Members");
+            if (Member.Permissions.ChangeAvatar)
+                Perms.Add("- Change Avatar");
+            if (Member.Permissions.ChangeNickname)
+                Perms.Add("- Change Nickname");
+            if (Member.Permissions.CreateInvite)
+                Perms.Add("- Create Invite");
+            if (Member.Permissions.EmbedLinks)
+                Perms.Add("- Embed Links");
+            if (Member.Permissions.KickMembers)
+                Perms.Add("- Kick Members");
+            if (Member.Permissions.ManageAvatars)
+                Perms.Add("- Manage Avatars");
+            if (Member.Permissions.ManageChannels)
+                Perms.Add("- Manage Channels");
+            if (Member.Permissions.ManageMessages)
+                Perms.Add("- Manage Messages");
+            if (Member.Permissions.ManageNicknames)
+                Perms.Add("- Manage Nicknames");
+            if (Member.Permissions.ManageRoles)
+                Perms.Add("- Manage Roles");
+            if (Member.Permissions.ManageServer)
+                Perms.Add("- Manage Server");
+            if (Member.Permissions.SendMessages)
+                Perms.Add("- Send Messages");
+            if (Member.Permissions.UploadFiles)
+                Perms.Add("- Upload Files");
+            if (Member.Permissions.ViewChanels)
+                Perms.Add("- View Channels");
+            if (Member.Permissions.VoiceCall)
+                Perms.Add("- Voice Call");
+            await ReplyAsync($"{Member.Permissions.RawServer}|{Member.Permissions.RawChannel}");
         }
 
         [Command("test")]

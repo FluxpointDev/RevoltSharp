@@ -8,7 +8,7 @@ namespace RevoltSharp
 {
     public class GroupChannel : Channel
     {
-        public int Permissions { get; internal set; }
+        public ChannelPermissions Permissions { get; internal set; }
         public HashSet<string> Recipents { get; internal set; }
 
         public ConcurrentDictionary<string, User> Users { get; internal set; } = new ConcurrentDictionary<string, User>();
@@ -22,6 +22,7 @@ namespace RevoltSharp
             : base(client)
         {
             Id = model.Id;
+            Type = ChannelType.Group;
             Recipents = model.Recipients != null ? model.Recipients.ToHashSet() : new HashSet<string>();
             if (client.WebSocket != null)
             {
@@ -38,7 +39,7 @@ namespace RevoltSharp
             LastMessageId = model.LastMessageId;
             Name = model.Name;
             OwnerId = model.Owner;
-            Permissions = model.Permissions;
+            Permissions = new ChannelPermissions(model.Permissions);
             Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
         }
 
@@ -50,6 +51,8 @@ namespace RevoltSharp
                 Icon = new Attachment(Client, json.Icon.ValueOrDefault());
             if (json.Description.HasValue)
                 Description = json.Description.ValueOrDefault();
+            if (json.DefaultPermissions.HasValue)
+                Permissions = new ChannelPermissions(json.DefaultPermissions.ValueOrDefault());
         }
 
         internal void AddUser(User user)

@@ -12,6 +12,7 @@ namespace RevoltSharp
             : base(client)
         {
             Id = model.Id;
+            Type = ChannelType.Dm;
             Active = model.Active;
             Recipents = model.Recipients != null ? model.Recipients : new string[0];
             LastMessageId = model.LastMessageId;

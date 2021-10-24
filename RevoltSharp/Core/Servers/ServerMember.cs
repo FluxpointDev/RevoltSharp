@@ -22,6 +22,8 @@ namespace RevoltSharp
 
         public ConcurrentDictionary<string, Role> Roles { get; internal set;  }  = new ConcurrentDictionary<string, Role>();
 
+        public ServerPermissions Permissions { get; internal set; }
+
         public ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel)
             : base(client)
         {
@@ -36,6 +38,7 @@ namespace RevoltSharp
 
         public void Create(RevoltClient client, ServerMemberJson sModel, User user)
         {
+            User = user;
             if (sModel != null)
             {
                 ServerId = sModel.Id.Server;
@@ -46,13 +49,13 @@ namespace RevoltSharp
                 {
                     Server server = client.GetServer(ServerId);
                     Roles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.Roles[x]));
+                    Permissions = new ServerPermissions(server, this);
                 }
             }
             else
             {
                 RolesIds = new HashSet<string>();
             }
-            User = user;
             if (client.WebSocket != null)
             {
                 Server server = client.GetServer(ServerId);
@@ -73,6 +76,7 @@ namespace RevoltSharp
                 RolesIds = json.Roles.ValueOrDefault();
                 Server server = Client.GetServer(ServerId);
                 Roles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.Roles[x]));
+                Permissions = new ServerPermissions(server, this);
             }
         }
     }
