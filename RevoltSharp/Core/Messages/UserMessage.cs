@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RevoltSharp
 {
@@ -29,6 +31,9 @@ namespace RevoltSharp
             Channel = client.GetChannel(ChannelId);
             Nonce = model.Nonce;
             Content = model.Content as string;
+            Attachments = new List<Attachment>(model.Attachments.Select(a => new Attachment(client, a)));
+            Mentions = new List<string>(model.Mentions);
+            Replies = new List<string>(model.Replies);
         }
     }
 }
