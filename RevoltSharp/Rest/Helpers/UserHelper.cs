@@ -17,7 +17,7 @@ namespace RevoltSharp
             if (rest.Client.WebSocket != null && rest.Client.WebSocket.UserCache.TryGetValue(userId, out User User))
                 return User;
 
-            UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Get, $"users/{userId}", null);
+            UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Get, $"users/{userId}");
             if (Data == null)
                 return null;
             User user = new User(rest.Client, Data);
@@ -34,7 +34,7 @@ namespace RevoltSharp
 
         public static async Task<Profile> GetProfileAsync(this RevoltRestClient rest, string userId)
         {
-            ProfileJson Data = await rest.SendRequestAsync<ProfileJson>(RequestType.Get, $"users/{userId}/profile", null);
+            ProfileJson Data = await rest.SendRequestAsync<ProfileJson>(RequestType.Get, $"users/{userId}/profile");
             return new Profile(rest.Client, Data);
         }
 

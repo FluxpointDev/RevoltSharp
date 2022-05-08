@@ -31,9 +31,9 @@ namespace RevoltSharp
             Channel = client.GetChannel(ChannelId);
             Nonce = model.Nonce;
             Content = model.Content as string;
-            Attachments = new List<Attachment>(model.Attachments.Select(a => new Attachment(client, a)));
-            Mentions = new List<string>(model.Mentions);
-            Replies = new List<string>(model.Replies);
+            Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => new Attachment(client, a)));
+            Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
+            Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
         }
     }
 }

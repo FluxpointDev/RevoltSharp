@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace RevoltSharp
 {

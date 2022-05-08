@@ -16,9 +16,9 @@ namespace RevoltSharp
         public Option<string> Description { get; set; }
 
         [JsonProperty("deafult_permissions")]
-        public Option<ulong> DefaultPermissions { get; set; }
+        public Option<PermissionsJson> DefaultPermissions { get; set; }
 
         [JsonProperty("role_permissions")]
-        public Option<Dictionary<string, ulong>> RolePermissions { get; set; }
+        public Option<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Version>2.1.0</Version>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version>2.2.0</Version>
     <Authors>Builderb</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway to get events.</Description>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/xXBuilderBXx/RevoltSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xXBuilderBXx/RevoltSharp</RepositoryUrl>
     <PackageTags>revolt</PackageTags>
-    <PackageReleaseNotes>Added permission features, roles and channel permission checks.</PackageReleaseNotes>
+    <PackageReleaseNotes>Lib will check for api connection on startup and error instead of loop connecting, fixed lib not being able to connect due to api changes, added support for new permissions and clear fields and all modify requests now have an object attached.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using RevoltSharp.Rest;
+using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,6 +43,8 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
+        public static string Version { get; } = "2.2.0";
+
         internal JsonSerializer Serializer { get; set; }
 
         /// <summary>
@@ -58,6 +62,8 @@ namespace RevoltSharp
 
         internal RevoltSocketClient WebSocket;
 
+        internal bool FirstConnection = true;
+
         /// <summary>
         /// Start the WebSocket connection to Revolt.
         /// </summary>
@@ -70,8 +76,17 @@ namespace RevoltSharp
             if (WebSocket == null)
                 throw new RevoltException("Client is in http-only mode.");
 
-            if (WebSocket.WebSocket != null)
-                return;
+            if (FirstConnection)
+            {
+                QueryRequest Query = await Rest.SendRequestAsync<QueryRequest>(RequestType.Get, "/");
+                if (Query == null)
+                {
+                    Console.WriteLine("Client failed to connect to the revolt api at " + Config.ApiUrl);
+                    throw new RevoltException("Client failed to connect to the revolt api at " + Config.ApiUrl);
+                }
+                FirstConnection = false;
+            }
+
             WebSocket.SetupWebsocket();
             while (WebSocket.WebSocket == null || WebSocket.WebSocket.State != System.Net.WebSockets.WebSocketState.Open) { }
         }

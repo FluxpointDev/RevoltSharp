@@ -15,6 +15,6 @@ namespace RevoltSharp.WebSocket.Events
         public PartialRoleJson Data;
 
         [JsonProperty("clear")]
-        public Option<string> Clear;
+        public Option<string[]> Clear;
     }
 }

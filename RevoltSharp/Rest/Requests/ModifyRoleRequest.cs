@@ -8,6 +8,6 @@ namespace RevoltSharp.Rest.Requests
         public Option<string> colour;
         public Option<bool> hoist;
         public Option<int> rank;
-        public Option<string> remove;
+        public Option<string[]> remove;
     }
 }

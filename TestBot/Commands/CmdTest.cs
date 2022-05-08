@@ -94,12 +94,13 @@ namespace TestBot.Commands
                 Perms.Add("- View Channels");
             if (Member.Permissions.VoiceCall)
                 Perms.Add("- Voice Call");
-            await ReplyAsync($"{Member.Permissions.RawServer}|{Member.Permissions.RawChannel}");
+            await ReplyAsync($"{Member.Permissions.RawServer}");
         }
 
         [Command("test")]
         public async Task Test()
         {
+            Console.WriteLine("MSG: test");
             await ReplyAsync("Test");
         }
     }

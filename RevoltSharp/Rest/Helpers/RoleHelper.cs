@@ -19,13 +19,13 @@ namespace RevoltSharp
             return new Role(rest.Client, Json, serverId, Json.Id);
         }
 
-        public static Task<HttpResponseMessage> ModifyRoleAsync(this Role role, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
+        public static Task<Role> ModifyRoleAsync(this Role role, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
             => ModifyRoleAsync(role.Client.Rest, role.ServerId, role.Id, name, color, hoist, rank);
 
-        public static Task<HttpResponseMessage> ModifyRoleAsync(this Server server, string roleId, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
+        public static Task<Role> ModifyRoleAsync(this Server server, string roleId, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
             => ModifyRoleAsync(server.Client.Rest, server.Id, roleId, name, color, hoist, rank);
 
-        public static async Task<HttpResponseMessage> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Optional<string> name = null, Optional<string> color = null, Optional<bool> hoist = null, Optional<int> rank = null)
+        public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Optional<string> name = null, Optional<string> color = null, Optional<bool> hoist = null, Optional<int> rank = null)
         {
             ModifyRoleRequest Req = new ModifyRoleRequest();
             if (name != null)
@@ -33,7 +33,7 @@ namespace RevoltSharp
             if (color != null)
             {
                 if (string.IsNullOrEmpty(color.Value))
-                    Req.remove = Optional.Option.Some("Color");
+                    Req.remove = Optional.Option.Some(new string[] { "Color" });
                 else
                     Req.colour = Optional.Option.Some(color.Value);
             }
@@ -42,7 +42,7 @@ namespace RevoltSharp
             if (rank != null)
                 Req.rank = Optional.Option.Some(rank.Value);
 
-            return await rest.SendRequestAsync(RequestType.Patch, $"/servers/{serverId}/roles/{roleId}", Req);
+            return await rest.SendRequestAsync<Role>(RequestType.Patch, $"/servers/{serverId}/roles/{roleId}", Req);
         }
 
         public static Task<HttpResponseMessage> DeleteRoleAsync(this Role role)

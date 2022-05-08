@@ -9,11 +9,14 @@ namespace RevoltSharp
     public class ServerPermissions
     {
         public static ulong AllServerPermissions = 61503;
-        public static ulong AllChannelPermissions = 247;
-        public ServerPermissions(ulong[] permissions)
+        public ServerPermissions(PermissionsJson permissions)
         {
-            RawServer = permissions[0];
-            RawChannel = permissions[1];
+            RawServer = permissions.Allowed;
+        }
+
+        public ServerPermissions(ulong permissions)
+        {
+            RawServer = permissions;
         }
 
         public ServerPermissions(Server server, ServerMember member)
@@ -21,7 +24,6 @@ namespace RevoltSharp
             if (server.OwnerId == member.Id)
             {
                 RawServer = AllServerPermissions;
-                RawChannel = AllChannelPermissions;
             }
             else
             {
@@ -30,15 +32,12 @@ namespace RevoltSharp
                 foreach (Role r in member.Roles.Values)
                 {
                     resolvedServer |= r.Permissions.RawServer;
-                    resolvedChannel |= r.Permissions.RawChannel;
                 }
                 RawServer = resolvedServer;
-                RawChannel = resolvedChannel;
             }
         }
 
         public ulong RawServer { get; internal set; }
-        public ulong RawChannel { get; internal set; }
 
         public bool ViewChanels => Has(ServerPermission.ViewChannels);
         public bool ManageRoles => Has(ServerPermission.ManageRoles);
@@ -61,10 +60,11 @@ namespace RevoltSharp
             ulong Flag = (ulong)permission;
             return (RawServer & Flag) == Flag;
         }
+
         internal bool Has(ChannelPermission permission)
         {
             ulong Flag = (ulong)permission;
-            return (RawChannel & Flag) == Flag;
+            return (RawServer & Flag) == Flag;
         }
     }
 }

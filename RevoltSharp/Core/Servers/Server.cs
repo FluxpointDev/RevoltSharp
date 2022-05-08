@@ -23,7 +23,7 @@ namespace RevoltSharp
 
         public ConcurrentDictionary<string, ServerMember> Members { get; internal set; } = new ConcurrentDictionary<string, ServerMember>();
 
-        public int[] DefaultPermissions { get; internal set; }
+        public ServerPermissions DefaultPermissions { get; internal set; }
 
         public Attachment Icon { get; internal set; }
 
@@ -76,7 +76,7 @@ namespace RevoltSharp
                 Banner = new Attachment(Client, json.Icon.ValueOrDefault());
 
             if (json.DefaultPermissions.HasValue)
-                DefaultPermissions = json.DefaultPermissions.ValueOrDefault();
+                DefaultPermissions = new ServerPermissions(json.DefaultPermissions.ValueOrDefault());
 
             if (json.Description.HasValue)
                 Description = json.Description.ValueOrDefault();
@@ -112,7 +112,7 @@ namespace RevoltSharp
                 return;
             Id = model.Id;
             Name = model.Name;
-            DefaultPermissions = model.DefaultPermissions;
+            DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
             Description = model.Description;
             Banner = model.Banner != null ? new Attachment(client, model.Banner) : null;
             Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;

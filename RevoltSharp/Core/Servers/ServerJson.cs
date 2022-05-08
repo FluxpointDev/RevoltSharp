@@ -33,7 +33,7 @@ namespace RevoltSharp
         public Dictionary<string, RoleJson> Roles;
 
         [JsonProperty("default_permissions")]
-        public int[] DefaultPermissions;
+        public ulong DefaultPermissions;
 
         [JsonProperty("icon")]
         public AttachmentJson Icon;

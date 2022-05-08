@@ -16,14 +16,14 @@ namespace RevoltSharp.Rest
         {
             Client = client;
 
-            if (string.IsNullOrEmpty(Client.Config.Debug.ApiUrl))
+            if (string.IsNullOrEmpty(Client.Config.ApiUrl))
                 throw new RevoltException("Client config API_URL can not be empty.");
 
-            if (!Uri.IsWellFormedUriString(client.Config.Debug.ApiUrl, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(client.Config.ApiUrl, UriKind.Absolute))
                 throw new RevoltException("Client config API_URL is an invalid format.");
 
-            if (!Client.Config.Debug.ApiUrl.EndsWith('/'))
-                Client.Config.Debug.ApiUrl = Client.Config.Debug.ApiUrl + "/";
+            if (!Client.Config.ApiUrl.EndsWith('/'))
+                Client.Config.ApiUrl = Client.Config.ApiUrl + "/";
 
             if (string.IsNullOrEmpty(Client.Config.Debug.UploadUrl))
                 throw new RevoltException("Client config UPLOAD_URL can not be empty.");
@@ -36,10 +36,10 @@ namespace RevoltSharp.Rest
 
             HttpClient = new HttpClient()
             {
-                BaseAddress = new System.Uri(Client.Config.Debug.ApiUrl)
+                BaseAddress = new System.Uri(Client.Config.ApiUrl)
             };
             HttpClient.DefaultRequestHeaders.Add("x-bot-token", Client.Token);
-            HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version);
             HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             FileHttpClient = new HttpClient()
             {
@@ -60,6 +60,9 @@ namespace RevoltSharp.Rest
         
         public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, RevoltRequest json = null)
         => json == null ? InternalRequest(GetMethod(method), endpoint, null) : InternalRequest(GetMethod(method), endpoint, json);
+
+        public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
+            => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
 
         public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, RevoltRequest json = null) where TResponse : class
             => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);

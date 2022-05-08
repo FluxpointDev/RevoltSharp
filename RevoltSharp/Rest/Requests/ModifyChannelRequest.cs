@@ -8,6 +8,6 @@ namespace RevoltSharp.Rest.Requests
         public Option<string> description;
         public Option<string> icon;
         public Option<bool> nsfw;
-        public Option<string> remove;
+        public Option<string[]> remove;
     }
 }

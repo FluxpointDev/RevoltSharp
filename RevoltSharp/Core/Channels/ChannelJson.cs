@@ -42,10 +42,10 @@ namespace RevoltSharp
         public ulong Permissions;
 
         [JsonProperty("default_permissions")]
-        public ulong DefaultPermissions;
+        public PermissionsJson DefaultPermissions;
 
         [JsonProperty("role_permissions")]
-        public Dictionary<string, ulong> RolePermissions;
+        public Dictionary<string, PermissionsJson> RolePermissions;
 
         [JsonProperty("server")]
         public string Server;

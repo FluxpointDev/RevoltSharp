@@ -6,16 +6,23 @@ namespace RevoltSharp
     public class ClientConfig
     {
         public string UserAgent = "Revolt Bot (RevoltSharp)";
+
+        /// <summary>
+        /// Do not change this unless you know what you're doing.
+        /// </summary>
+        public string ApiUrl = "https://api.revolt.chat/";
+
         /// <summary>
         /// Do not use this unless you know what you're doing.
         /// </summary>
         public ClientDebugConfig Debug = new ClientDebugConfig();
+
     }
     public class ClientDebugConfig
     {
-        public string ApiUrl = "https://api.revolt.chat/";
         public string UploadUrl = "https://autumn.revolt.chat/";
         public string WebsocketUrl = "wss://ws.revolt.chat";
+
         /// <summary>
         /// Log all websocket events that you get from Revolt.
         /// </summary>

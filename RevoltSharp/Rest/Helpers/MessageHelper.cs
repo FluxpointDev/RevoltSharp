@@ -39,16 +39,16 @@ namespace RevoltSharp
 
         public static async Task<Message> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Get, $"channels/{channelId}/messages/{messageId}", null);
+            MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Get, $"channels/{channelId}/messages/{messageId}");
             return Message.Create(rest.Client, Data);
         }
 
-        public static Task<HttpResponseMessage> EditMessageAsync(this Message msg, string content)
+        public static Task<Message> EditMessageAsync(this Message msg, string content)
             => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content);
 
-        public static async Task<HttpResponseMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, string content)
+        public static async Task<Message> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, string content)
         {
-            return await rest.SendRequestAsync(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", new SendMessageRequest
+            return await rest.SendRequestAsync<Message>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", new SendMessageRequest
             {
                 content = content
             });
