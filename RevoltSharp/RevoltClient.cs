@@ -43,7 +43,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public static string Version { get; } = "2.2.0";
+        public string Version { get; } = "2.2.0";
 
         internal JsonSerializer Serializer { get; set; }
 
