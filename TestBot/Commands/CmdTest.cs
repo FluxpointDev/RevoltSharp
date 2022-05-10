@@ -101,7 +101,23 @@ namespace TestBot.Commands
         public async Task Test()
         {
             Console.WriteLine("MSG: test");
-            await ReplyAsync("Test");
+            await Context.Channel.SendMessageAsync("Test");
+        }
+
+        [Command("embed")]
+        public async Task Embed()
+        {
+            await Context.Channel.SendMessageAsync("t", null, new RevoltSharp.Embed[]
+            {
+                new EmbedBuilder
+                {
+                    Title = "Title",
+                    Description = "Desc",
+                    Color = new RevoltColor("#ffffff"),
+                    IconUrl = "https://img.fluxpoint.dev/2531914271424512.png",
+                    Url = "https://fluxpoint.dev"
+                }.Build()
+            });
         }
     }
 }

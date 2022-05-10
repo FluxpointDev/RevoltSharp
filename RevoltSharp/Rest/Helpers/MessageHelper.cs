@@ -1,4 +1,5 @@
-﻿using RevoltSharp.Rest;
+﻿using Optional;
+using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,17 @@ namespace RevoltSharp
 {
     public static class MessageHelper
     {
-        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null)
-            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments);
+        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null)
+            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds);
 
-        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null)
+        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null)
         {
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             { 
-                content = content,
-                nonce = Guid.NewGuid().ToString(),
-                attachments = attachments
+                content = Option.Some(content),
+                nonce = Option.Some(Guid.NewGuid().ToString()),
+                attachments = Option.Some(attachments),
+                embeds = embeds == null ? Option.Some<EmbedJson[]>(null) : Option.Some(embeds.Select(x => x.ToJson()).ToArray())
             });
             return Message.Create(rest.Client, Data);
         }
@@ -43,20 +45,25 @@ namespace RevoltSharp
             return Message.Create(rest.Client, Data);
         }
 
-        public static Task<Message> EditMessageAsync(this Message msg, string content)
-            => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content);
+        public static Task<Message> EditMessageAsync(this Message msg, Optional<string> content, Optional<Embed[]> embeds = null)
+            => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content, embeds);
 
-        public static async Task<Message> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, string content)
+        public static async Task<Message> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Optional<string> content, Optional<Embed[]> embeds = null)
         {
-            return await rest.SendRequestAsync<Message>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", new SendMessageRequest
-            {
-                content = content
-            });
+            var Req = new SendMessageRequest();
+            if (content != null)
+                Req.content = Option.Some(content.Value);
+            if (embeds != null)
+                Req.embeds = Option.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
+            return await rest.SendRequestAsync<Message>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", Req);
         }
 
 
         public static Task<HttpResponseMessage> DeleteMessageAsync(this Message mes)
           => DeleteMessageAsync(mes.Channel.Client.Rest, mes.ChannelId, mes.Id);
+
+        public static Task<HttpResponseMessage> DeleteMessageAsync(this Channel channel, Message message)
+            => DeleteMessageAsync(channel.Client.Rest, channel.Id, message.Id);
 
         public static Task<HttpResponseMessage> DeleteMessageAsync(this Channel channel, string messageId)
             => DeleteMessageAsync(channel.Client.Rest, channel.Id, messageId);

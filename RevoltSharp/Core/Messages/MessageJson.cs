@@ -32,5 +32,8 @@ namespace RevoltSharp
 
         [JsonProperty("replies")]
         public string[] Replies;
+
+        [JsonProperty("embeds")]
+        public Embed[] Embeds;
     }
 }

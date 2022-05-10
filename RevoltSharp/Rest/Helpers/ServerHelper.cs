@@ -1,6 +1,7 @@
 ﻿using RevoltSharp.Rest;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -46,6 +47,17 @@ namespace RevoltSharp
                 Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i]));
             }
             return Members.ToArray();
+        }
+
+        public static Task<HttpResponseMessage> LeaveServerAsync(this Server server)
+            => LeaveServerAsync(server.Client.Rest, server.Id);
+        public static Task<HttpResponseMessage> LeaveServerAsync(this SelfUser user, Server server)
+           => LeaveServerAsync(user.Client.Rest, server.Id);
+        public static Task<HttpResponseMessage> LeaveServerAsync(this SelfUser user, string serverId)
+           => LeaveServerAsync(user.Client.Rest, serverId);
+        public static async Task<HttpResponseMessage> LeaveServerAsync(this RevoltRestClient rest, string serverId)
+        {
+            return await rest.SendRequestAsync(RequestType.Delete, $"/servers/{serverId}");
         }
     }
 }

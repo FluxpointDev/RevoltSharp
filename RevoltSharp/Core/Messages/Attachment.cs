@@ -18,7 +18,7 @@
         /// <summary>
         /// The original file name of the attachment.
         /// </summary>
-        public string Filename { get; }
+        public string Filename { get; internal set; }
 
         /// <summary>
         /// The file mime type of the attachment.
@@ -43,6 +43,8 @@
         public Attachment(RevoltClient client, AttachmentJson model)
             : base(client)
         {
+            if (client == null)
+                return;
             Id = model.Id;
             Tag = model.Tag;
             Filename = model.Filename;

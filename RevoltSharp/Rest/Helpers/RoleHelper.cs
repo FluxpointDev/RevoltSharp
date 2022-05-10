@@ -19,8 +19,11 @@ namespace RevoltSharp
             return new Role(rest.Client, Json, serverId, Json.Id);
         }
 
-        public static Task<Role> ModifyRoleAsync(this Role role, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
+        public static Task<Role> ModifyAsync(this Role role, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
             => ModifyRoleAsync(role.Client.Rest, role.ServerId, role.Id, name, color, hoist, rank);
+
+        public static Task<Role> ModifyRoleAsync(this Server server, Role role, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
+            => ModifyRoleAsync(server.Client.Rest, server.Id, role.Id, name, color, hoist, rank);
 
         public static Task<Role> ModifyRoleAsync(this Server server, string roleId, Optional<string> name, Optional<string> color, Optional<bool> hoist, Optional<int> rank)
             => ModifyRoleAsync(server.Client.Rest, server.Id, roleId, name, color, hoist, rank);
@@ -45,11 +48,14 @@ namespace RevoltSharp
             return await rest.SendRequestAsync<Role>(RequestType.Patch, $"/servers/{serverId}/roles/{roleId}", Req);
         }
 
-        public static Task<HttpResponseMessage> DeleteRoleAsync(this Role role)
+        public static Task<HttpResponseMessage> DeleteAsync(this Role role)
           => DeleteRoleAsync(role.Client.Rest, role.ServerId, role.Id);
 
         public static Task<HttpResponseMessage> DeleteRoleAsync(this Server server, string roleId)
             => DeleteRoleAsync(server.Client.Rest, server.Id, roleId);
+
+        public static Task<HttpResponseMessage> DeleteRoleAsync(this Server server, Role role)
+           => DeleteRoleAsync(server.Client.Rest, server.Id, role.Id);
 
         public static async Task<HttpResponseMessage> DeleteRoleAsync(this RevoltRestClient rest, string serverId, string roleId)
         {

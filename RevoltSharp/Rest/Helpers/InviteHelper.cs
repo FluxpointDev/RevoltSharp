@@ -23,5 +23,14 @@ namespace RevoltSharp
             InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
             return Json.Select(x => new Invite { Code = x.Code }).ToArray();
         }
+
+        public static Task<Invite> CreateInviteAsync(this TextChannel channel)
+            => CreateInviteAsync(channel.Client.Rest, channel.Id);
+
+        public static async Task<Invite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
+        {
+            InviteJson Json = await rest.SendRequestAsync<InviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
+            return new Invite { Code = Json.Code };
+        }
     }
 }

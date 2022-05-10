@@ -101,7 +101,7 @@ namespace RevoltSharp.Rest
                 Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented));
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
-            return Req.IsSuccessStatusCode ? new FileAttachment { Id = DeserializeJson<FileAttachmentJson>(Req.Content.ReadAsStream()).id } : null;
+            return Req.IsSuccessStatusCode ? new FileAttachment(DeserializeJson<FileAttachmentJson>(Req.Content.ReadAsStream()).id) : null;
         }
 
         internal string GetUploadType(UploadFileType type)
@@ -174,7 +174,7 @@ namespace RevoltSharp.Rest
             {
                 Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
                 if (Client.Config.Debug.LogRestRequestJson)
-                    Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented));
+                    Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
@@ -186,7 +186,7 @@ namespace RevoltSharp.Rest
             {
                 Response = DeserializeJson<TResponse>(Req.Content.ReadAsStream());
                 if (Client.Config.Debug.LogRestResponseJson)
-                    Console.WriteLine("--- Rest Response Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented));
+                    Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented));
             }
             return Response;
         }

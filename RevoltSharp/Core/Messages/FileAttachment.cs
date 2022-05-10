@@ -5,6 +5,10 @@
     /// </summary>
     public class FileAttachment
     {
+        public FileAttachment(string id)
+        {
+            Id = id;
+        }
         /// <summary>
         /// 
         /// </summary>

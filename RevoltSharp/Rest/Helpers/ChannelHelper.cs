@@ -32,14 +32,12 @@ namespace RevoltSharp
             return (TValue)RevoltSharp.Channel.Create(rest.Client, Channel);
         }
 
-        public static Task<Channel> EditChannelAsync(this Channel channel, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
+        public static Task<Channel> EditAsync(this Channel channel, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
             => EditChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw);
 
         public static Task<Channel> EditChannelAsync(this Server server, string channelId, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
             => EditChannelAsync(server.Client.Rest, channelId, name, desc, iconId, nsfw);
         
-
-
         public static async Task<Channel> EditChannelAsync(this RevoltRestClient rest, string channelId, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
         {
             ModifyChannelRequest Req = new ModifyChannelRequest();
@@ -65,8 +63,7 @@ namespace RevoltSharp
             return await rest.SendRequestAsync<Channel>(RequestType.Patch, $"/channels/{channelId}", Req);
         }
 
-
-        public static Task<HttpResponseMessage> DeleteChannelAsync(this Channel channel)
+        public static Task<HttpResponseMessage> DeleteChannelAsync(this ServerChannel channel)
             => DeleteChannelAsync(channel.Client.Rest, channel.Id);
 
         public static Task<HttpResponseMessage> DeleteChannelAsync(this Server server, string channelId)
@@ -77,15 +74,6 @@ namespace RevoltSharp
             return await rest.SendRequestAsync(RequestType.Delete, $"/channels/{channelId}");
         }
 
-        public static Task<Invite> CreateInviteAsync(this TextChannel channel)
-            => CreateInviteAsync(channel.Client.Rest, channel.Id);
-
-        public static async Task<Invite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
-        {
-            InviteJson Json = await rest.SendRequestAsync<InviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
-            if (Json == null)
-                return null;
-            return new Invite { Code = Json.Code };
-        }
+        
     }
 }

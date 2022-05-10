@@ -96,7 +96,7 @@ namespace RevoltSharp.WebSocket
                     ms.Seek(0, SeekOrigin.Begin);
                     using (StreamReader reader = new StreamReader(ms, Encoding.UTF8))
                     {
-                        await WebSocketMessage(await reader.ReadToEndAsync());
+                        WebSocketMessage(await reader.ReadToEndAsync());
                     }
                 }
             }
@@ -191,7 +191,8 @@ namespace RevoltSharp.WebSocket
 
                                 foreach (var m in @event.Members)
                                 {
-                                    ServerCache[m.Id.Server].Members.TryAdd(m.Id.User, new ServerMember(Client, m, UserCache[m.Id.User]));
+                                    if (ServerCache.TryGetValue(m.Id.Server, out Server s))
+                                        s.Members.TryAdd(m.Id.User, new ServerMember(Client, m, UserCache[m.Id.User]));
                                 }
                                 Console.WriteLine("Revolt WebSocket Ready!");
                                 Client.InvokeReady(CurrentUser);
@@ -204,7 +205,7 @@ namespace RevoltSharp.WebSocket
                                         GroupChannel c = channel as GroupChannel;
                                         if (c.Recipents.Count == 1)
                                         {
-                                            await c.DeleteChannelAsync();
+                                            await c.LeaveAsync();
                                         }
                                     }
                                 });
