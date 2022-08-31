@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Optional;
+using System;
 
 namespace RevoltSharp
 {
-    public class MessageJson
+    internal class MessageJson
     {
         [JsonProperty("_id")]
         public string Id;
@@ -35,5 +37,34 @@ namespace RevoltSharp
 
         [JsonProperty("embeds")]
         public Embed[] Embeds;
+
+        [JsonProperty("system")]
+        public MessageSystemJson System;
+
+        [JsonProperty("edited")]
+        public Option<DateTime> Edited;
+    }
+    internal class MessageSystemJson
+    {
+        [JsonProperty("type")]
+        public string Type;
+
+        [JsonProperty("id")]
+        public string Id;
+
+        [JsonProperty("by")]
+        public string By;
+
+        [JsonProperty("name")]
+        public string Name;
+
+        [JsonProperty("from")]
+        public string From;
+
+        [JsonProperty("to")]
+        public string To;
+
+        [JsonProperty("content")]
+        public string Content;
     }
 }

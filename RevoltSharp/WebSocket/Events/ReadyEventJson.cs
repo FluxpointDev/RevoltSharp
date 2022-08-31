@@ -15,5 +15,8 @@ namespace RevoltSharp.WebSocket.Events
 
         [JsonProperty("members")]
         public ServerMemberJson[] Members;
+
+        [JsonProperty("emojis")]
+        public EmojiJson[] Emojis;
     }
 }

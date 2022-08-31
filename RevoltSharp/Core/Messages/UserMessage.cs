@@ -1,39 +1,44 @@
-﻿using System;
+﻿using Optional.Unsafe;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 
 namespace RevoltSharp
 {
     public class UserMessage : Message
     {
-        public string Nonce { get; }
+        public string Nonce { get; internal set; }
 
-        public string Content { get; }
+        public string Content { get; internal set; }
 
-        public IReadOnlyList<Attachment> Attachments { get; }
+        public IReadOnlyList<Attachment> Attachments { get; internal set; }
 
-        public IReadOnlyList<string> Mentions { get; }
+        public IReadOnlyList<string> Mentions { get; internal set; }
 
-        public IReadOnlyList<string> Replies { get; }
+        public IReadOnlyList<string> Replies { get; internal set; }
 
-        public DateTimeOffset? EditedAt { get; }
+        public DateTimeOffset? EditedAt { get; internal set; }
 
-        public IReadOnlyList<Embed> Embeds { get; }
+        public IReadOnlyList<Embed> Embeds { get; internal set; }
 
-        public UserMessage(RevoltClient client, MessageJson model)
+        internal UserMessage(RevoltClient client, MessageJson model)
             : base(client)
         {
             Id = model.Id;
             AuthorId = model.Author;
-            Author = client.GetUser(AuthorId);
+            Author = client.GetUser(model.Author);
             ChannelId = model.Channel;
-            Channel = client.GetChannel(ChannelId);
+            Channel = client.GetChannel(model.Channel);
             Nonce = model.Nonce;
             Content = model.Content as string;
             Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => new Attachment(client, a)));
             Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
             Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
+            if (model.Edited.HasValue)
+                EditedAt = model.Edited.ValueOrDefault();
+            Embeds = model.Embeds == null ? new List<Embed>() : new List<Embed>(model.Embeds);
         }
     }
 }

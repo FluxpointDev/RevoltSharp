@@ -5,6 +5,7 @@ using Optional.Unsafe;
 using RevoltSharp.WebSocket.Events;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
@@ -30,17 +31,20 @@ namespace RevoltSharp.WebSocket
 
         private bool _firstConnected { get; set; } = true;
         private bool _firstError = true;
+        internal bool StopWebSocket = false;
 
         internal ClientWebSocket WebSocket;
         internal CancellationToken CancellationToken = new CancellationToken();
         internal ConcurrentDictionary<string, Server> ServerCache = new ConcurrentDictionary<string, Server>();
         internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
         internal ConcurrentDictionary<string, User> UserCache = new ConcurrentDictionary<string, User>();
+        internal ConcurrentDictionary<string, Emoji> EmojiCache = new ConcurrentDictionary<string, Emoji>();
         internal SelfUser CurrentUser;
 
         internal async Task SetupWebsocket()
         {
-            while (!CancellationToken.IsCancellationRequested)
+            StopWebSocket = false;
+            while (!CancellationToken.IsCancellationRequested && !StopWebSocket)
             {
                 using (WebSocket = new ClientWebSocket())
                 {
@@ -127,7 +131,7 @@ namespace RevoltSharp.WebSocket
             try
             {
                 if (Client.Config.Debug.LogWebSocketFull && payload["type"].ToString() != "Ready")
-                    Console.WriteLine("--- WebSocket Response Json ---\n" + json);
+                    Console.WriteLine("--- WebSocket Response Json ---\n" + FormatJsonPretty(json));
 
 
                 switch (payload["type"].ToString())
@@ -159,7 +163,7 @@ namespace RevoltSharp.WebSocket
                         {
                             ErrorEventJson @event = JsonConvert.DeserializeObject<ErrorEventJson>(json);
                             Console.WriteLine("--- WebSocket Error ---\n" + json);
-                            if (@event.Error == WebSocketErrorType.InvalidSession)
+                            if (@event.Error == SocketErrorType.InvalidSession)
                             {
                                 if (_firstConnected)
                                     Console.WriteLine("WebSocket session is invalid, check if your bot token is correct.");
@@ -167,7 +171,7 @@ namespace RevoltSharp.WebSocket
                                     Console.WriteLine("WebSocket session was invalidated!");
                                 await Client.StopAsync();
                             }
-                            Client.InvokeWebSocketError(new WebSocketError { Messaage = @event.Message, Type = @event.Error });
+                            Client.InvokeWebSocketError(new SocketError { Messaage = @event.Message, Type = @event.Error });
                         }
                         break;
                     case "Ready":
@@ -175,26 +179,42 @@ namespace RevoltSharp.WebSocket
                             try
                             {
                                 ReadyEventJson @event = payload.ToObject<ReadyEventJson>(Client.Serializer);
+                                if (Client.Config.Debug.LogWebSocketReady && !Client.Config.Debug.LogWebSocketFull)
+                                    Console.WriteLine("--- WebSocket Ready ---\n" + FormatJsonPretty(json));
+
                                 UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
-                                CurrentUser = SelfUser.CreateSelf(UserCache.Values.FirstOrDefault(x => x.Relationship == "User" && x.BotData != null));
+                                CurrentUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Relationship == "User" && x.Bot != null));
+
+
                                 if (CurrentUser == null)
                                 {
                                     Console.WriteLine("Fatal RevoltSharp error, could not load bot user.\n" +
                                         "WebSocket connection has been stopped.");
                                     await Client.StopAsync();
                                 }
+
                                 // Update bot user from cache to use current user so mutual stuff and values are synced.
                                 UserCache.TryUpdate(CurrentUser.Id, CurrentUser, UserCache[CurrentUser.Id]);
 
                                 ServerCache = new ConcurrentDictionary<string, Server>(@event.Servers.ToDictionary(x => x.Id, x => new Server(Client, x)));
                                 ChannelCache = new ConcurrentDictionary<string, Channel>(@event.Channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
 
+
                                 foreach (var m in @event.Members)
                                 {
                                     if (ServerCache.TryGetValue(m.Id.Server, out Server s))
-                                        s.Members.TryAdd(m.Id.User, new ServerMember(Client, m, UserCache[m.Id.User]));
+                                        s.Members.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
+                                }
+                                foreach (var m in @event.Emojis)
+                                {
+                                    Emoji Emote = new Emoji(Client, m);
+                                    EmojiCache.TryAdd(m.Id, Emote);
+                                    if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
+                                        s.Emojis.TryAdd(m.Id, Emote);
                                 }
                                 Console.WriteLine("Revolt WebSocket Ready!");
+
+
                                 Client.InvokeReady(CurrentUser);
 
                                 // This task will cleanup extra group channels where the bot is only a member of.
@@ -212,7 +232,7 @@ namespace RevoltSharp.WebSocket
                             }
                             catch (Exception ex)
                             {
-                                Console.Write(ex);
+                                Console.WriteLine(ex);
                                 Console.WriteLine("Fatal RevoltSharp error, could not parse ready event.\n" +
                                     "WebSocket connection has been stopped.");
                                 await Client.StopAsync();
@@ -236,13 +256,23 @@ namespace RevoltSharp.WebSocket
                                 ChannelCache.TryAdd(@event.Channel, channel);
                             }
 
-                            if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
+                            switch (channel.Type)
                             {
+                                case ChannelType.Group:
+                                    (channel as GroupChannel).LastMessageId = @event.Id;
+                                    break;
+                                case ChannelType.Text:
+                                    (channel as TextChannel).LastMessageId = @event.Id;
+                                    break;
+                            }
+
+                            //if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
+                            //{
                                 //if (!TC.Server.Members.ContainsKey(@event.Author))
                                 //{
                                 //    await TC.Server.GetMemberAsync(@event.Author);
                                 //}  
-                            }
+                            //}
                             Message MSG = @event.ToEntity(Client);
                             Client.InvokeMessageRecieved(MSG);
                         }
@@ -461,7 +491,7 @@ namespace RevoltSharp.WebSocket
                             {
                                 
                                 Server server = await Client.Rest.GetServerAsync(@event.Id);
-                                server.AddMember(new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, CurrentUser));
+                                server.AddMember(new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser));
                                 Client.InvokeServerJoined(server, CurrentUser);
                             }
                             else
@@ -470,7 +500,7 @@ namespace RevoltSharp.WebSocket
                                 if (user == null)
                                     user = await Client.Rest.GetUserAsync(@event.UserId);
                                 Server server = ServerCache[@event.Id];
-                                ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, user);
+                                ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
                                 Client.InvokeMemberJoined(server, Member);
                             }
                         }
@@ -499,7 +529,7 @@ namespace RevoltSharp.WebSocket
                                 if (Member == null)
                                 {
                                     User User = await Client.Rest.GetUserAsync(@event.UserId);
-                                    Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, User);
+                                    Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, User);
                                 }
                                 server.RemoveMember(Member.User, false);
                                 Client.InvokeMemberLeft(server, Member);
@@ -580,6 +610,27 @@ namespace RevoltSharp.WebSocket
                             UserRelationshipEventJson @event = payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
                         }
                         break;
+                    case "EmojiCreate":
+                        {
+                            ServerEmojiCreatedEventJson @event = payload.ToObject<ServerEmojiCreatedEventJson>(Client.Serializer);
+                            Emoji Emoji = new Emoji(Client, @event);
+                            EmojiCache.TryAdd(Emoji.Id, Emoji);
+                            ServerCache.TryGetValue(Emoji.ServerId, out Server Server);
+                            Server.Emojis.TryAdd(Emoji.Id, Emoji);
+                            Client.InvokeEmojiCreated(Server, Emoji);
+                        }
+                        break;
+                    case "EmojiDelete":
+                        {
+                            ServerEmojiDeleteEventJson @event = payload.ToObject<ServerEmojiDeleteEventJson>(Client.Serializer);
+                            EmojiCache.TryRemove(@event.Id, out Emoji Emoji);
+                            ServerCache.TryGetValue(Emoji.ServerId, out Server Server);
+                            Server.Emojis.TryRemove(Emoji.Id, out Emoji Emoji2);
+                            Client.InvokeEmojiDeleted(Server, Emoji);
+                        }
+                        break;
+
+
                     case "ChannelStartTyping":
                     case "ChannelStopTyping":
                         break;

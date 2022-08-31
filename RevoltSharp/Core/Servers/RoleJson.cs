@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace RevoltSharp
 {
-    public class RoleJson
+    internal class RoleJson
     {
         [JsonProperty("id")]
         public string Id;
@@ -23,7 +23,7 @@ namespace RevoltSharp
         [JsonProperty("colour")]
         public string Colour;
     }
-    public class PermissionsJson
+    internal class PermissionsJson
     {
         [JsonProperty("a")]
         public ulong Allowed;

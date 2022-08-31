@@ -14,7 +14,7 @@ namespace RevoltSharp
         public static async Task<Server> GetServerAsync(this RevoltRestClient rest, string serverId)
         {
             ServerJson Server = await rest.SendRequestAsync<ServerJson>(RequestType.Get, $"/servers/{serverId}");
-            return new RevoltSharp.Server(rest.Client, Server);
+            return new Server(rest.Client, Server);
         }
 
         public static Task<ServerMember> GetMemberAsync(this Server server, string userId)
@@ -29,7 +29,7 @@ namespace RevoltSharp
             if (Member == null)
                 return null;
             User User = await rest.GetUserAsync(userId);
-            ServerMember SM = new ServerMember(rest.Client, Member, User);
+            ServerMember SM = new ServerMember(rest.Client, Member, null, User);
             if (rest.Client.WebSocket != null)
                 rest.Client.WebSocket.ServerCache[serverId].AddMember(SM);
             return SM;
@@ -44,7 +44,7 @@ namespace RevoltSharp
             HashSet<ServerMember> Members = new HashSet<ServerMember>();
             for (int i = 0; i < List.Members.Length; i++)
             {
-                Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i]));
+                Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i], rest.Client.GetUser(List.Users[i].Id)));
             }
             return Members.ToArray();
         }

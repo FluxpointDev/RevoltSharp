@@ -4,12 +4,7 @@ namespace RevoltSharp
 {
     internal class DmChannel : Channel
     {
-        public bool Active { get; }
-        public IReadOnlyList<string> Recipents { get; }
-        public string LastMessageId { get; }
-
-        internal DmChannel(RevoltClient client, ChannelJson model)
-            : base(client)
+        internal DmChannel(RevoltClient client, ChannelJson model) : base(client)
         {
             Id = model.Id;
             Type = ChannelType.Dm;
@@ -18,7 +13,14 @@ namespace RevoltSharp
             LastMessageId = model.LastMessageId;
         }
 
+        public bool Active { get; }
+        public IReadOnlyList<string> Recipents { get; }
+        public string LastMessageId { get; }
+
+        
+
         internal override void Update(PartialChannelJson json)
-        { }
+        {
+        }
     }
 }

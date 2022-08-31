@@ -2,7 +2,7 @@
 
 namespace RevoltSharp
 {
-    public class ProfileJson
+    internal class ProfileJson
     {
         [JsonProperty("content")]
         public string Content;

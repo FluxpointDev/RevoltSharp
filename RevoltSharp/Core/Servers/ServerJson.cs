@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RevoltSharp
 {
-    public class ServerJson
+    internal class ServerJson
     {
         [JsonProperty("_id")]
         public string Id;
@@ -40,9 +40,15 @@ namespace RevoltSharp
 
         [JsonProperty("banner")]
         public AttachmentJson Banner;
+
+        [JsonProperty("analytics")]
+        public bool Analytics;
+
+        [JsonProperty("discoverable")]
+        public bool Discoverable;
     }
 
-    public class ServerSystemMessagesJson
+    internal class ServerSystemMessagesJson
     {
         [JsonProperty("user_joined")]
         public string UserJoined;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RevoltSharp
 {
-    public class PartialServerMemberJson
+    internal class PartialServerMemberJson
     {
         [JsonProperty("nickname")]
         public Option<string> Nickname;

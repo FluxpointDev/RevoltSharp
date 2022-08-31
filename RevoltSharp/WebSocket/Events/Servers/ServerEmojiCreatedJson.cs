@@ -2,12 +2,14 @@
 
 namespace RevoltSharp.WebSocket.Events
 {
-    internal class ServerRoleDeleteEventJson
+    internal class ServerEmojiCreatedEventJson : EmojiJson
+    {
+
+    }
+    internal class ServerEmojiDeleteEventJson
     {
         [JsonProperty("id")]
         public string Id;
-
-        [JsonProperty("role_id")]
-        public string RoleId;
     }
+
 }

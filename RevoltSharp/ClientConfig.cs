@@ -20,8 +20,11 @@ namespace RevoltSharp
     }
     public class ClientDebugConfig
     {
-        public string UploadUrl = "https://autumn.revolt.chat/";
-        public string WebsocketUrl = "wss://ws.revolt.chat";
+        // This will be set once you run Client.StartAsync()
+        public string UploadUrl { get; internal set; } = "https://autumn.revolt.chat/";
+
+        // This will be set once you run Client.StartAsync()
+        public string WebsocketUrl { get; internal set; } = "wss://ws.revolt.chat";
 
         /// <summary>
         /// Log all websocket events that you get from Revolt.
@@ -30,6 +33,11 @@ namespace RevoltSharp
         /// Do not use this in production!
         /// </remarks>
         public bool LogWebSocketFull { get; set; }
+
+        /// <summary>
+        /// Log the websocket ready event json data.
+        /// </summary>
+        public bool LogWebSocketReady { get; set; }
 
         /// <summary>
         /// Log when the websocket gets an error.

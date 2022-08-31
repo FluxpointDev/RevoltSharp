@@ -2,7 +2,7 @@
 
 namespace RevoltSharp
 {
-    public class ServerMemberJson
+    internal class ServerMemberJson
     {
         [JsonProperty("_id")]
         public ServerMemberIdsJson Id;
@@ -16,7 +16,7 @@ namespace RevoltSharp
         [JsonProperty("roles")]
         public string[] Roles;
     }
-    public class ServerMemberIdsJson
+    internal class ServerMemberIdsJson
     {
         [JsonProperty("server")]
         public string Server;

@@ -21,7 +21,7 @@ namespace RevoltSharp
 
         public string Color { get; internal set; }
 
-        public Role(RevoltClient client, RoleJson model, string serverId, string roleId)
+        internal Role(RevoltClient client, RoleJson model, string serverId, string roleId)
             : base(client)
         {
 
@@ -29,7 +29,7 @@ namespace RevoltSharp
             Color = model.Colour;
             IsHoisted = model.Hoist;
             Name = model.Name;
-            Permissions = new ServerPermissions(model.Permissions);
+            Permissions = new ServerPermissions(model.Permissions.Allowed);
             Rank = model.Rank;
             ServerId = serverId;
             Server = client.GetServer(ServerId);
@@ -40,7 +40,7 @@ namespace RevoltSharp
         {
             Id = roleId;
             Name = model.Name.ValueOrDefault();
-            Permissions = new ServerPermissions(model.Permissions.ValueOrDefault());
+            Permissions = new ServerPermissions(model.Permissions.ValueOrDefault().Allowed);
             ServerId = serverId;
         }
 
@@ -50,7 +50,7 @@ namespace RevoltSharp
                 Name = json.Name.ValueOrDefault();
 
             if (json.Permissions.HasValue)
-                Permissions = new ServerPermissions(json.Permissions.ValueOrDefault());
+                Permissions = new ServerPermissions(json.Permissions.ValueOrDefault().Allowed);
 
             if (json.Hoist.HasValue)
                 IsHoisted = json.Hoist.ValueOrDefault();
@@ -60,11 +60,6 @@ namespace RevoltSharp
 
             if (json.Colour.HasValue)
                 Color = json.Colour.ValueOrDefault();
-        }
-
-        public Role CreateFromPartial(RevoltClient client, PartialRoleJson model, string serverId, string roleId)
-        {
-            return new Role(client, model, serverId, roleId);
         }
 
         internal Role Clone()

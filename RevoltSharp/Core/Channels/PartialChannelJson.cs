@@ -20,5 +20,8 @@ namespace RevoltSharp
 
         [JsonProperty("role_permissions")]
         public Option<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
+
+        [JsonProperty("nsfw")]
+        public Option<bool> Nsfw { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Optional.Unsafe;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,10 +8,9 @@ namespace RevoltSharp
     /// <summary>
     /// If you would like to get a specific channel please cast to TextChannel or VoiceChannel
     /// </summary>
-    public abstract class ServerChannel : Channel
+    public class ServerChannel : Channel
     {
-        public ServerChannel(RevoltClient client, ChannelJson model)
-            : base (client)
+        internal ServerChannel(RevoltClient client, ChannelJson model) : base(client)
         {
             Id = model.Id;
             ServerId = model.Server;
@@ -36,7 +36,7 @@ namespace RevoltSharp
             bool HasDefault = DefaultPermissions.Has(permission);
             if (HasDefault)
                 return true;
-            foreach(var c in RolePermissions)
+            foreach (var c in RolePermissions)
             {
                 if (member.Roles.ContainsKey(c.Key))
                 {
@@ -50,6 +50,8 @@ namespace RevoltSharp
 
         internal override void Update(PartialChannelJson json)
         {
+            Console.WriteLine("Update Channel");
+
             if (json.Name.HasValue)
                 Name = json.Name.ValueOrDefault();
 
@@ -64,7 +66,7 @@ namespace RevoltSharp
 
             if (json.RolePermissions.HasValue)
             {
-                foreach(var i in json.RolePermissions.ValueOrDefault())
+                foreach (var i in json.RolePermissions.ValueOrDefault())
                 {
                     if (RolePermissions.ContainsKey(i.Key))
                         RolePermissions[i.Key] = new ChannelPermissions(i.Value);

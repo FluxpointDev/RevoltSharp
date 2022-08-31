@@ -31,7 +31,7 @@ namespace TestBot
             client.OnWebSocketError += Client_OnWebSocketError;
         }
 
-        private void Client_OnWebSocketError(WebSocketError value)
+        private void Client_OnWebSocketError(SocketError value)
         {
             Console.WriteLine("--- EVENT: WebSocket Error ---");
             Console.WriteLine(value.Messaage);

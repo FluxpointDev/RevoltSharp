@@ -19,7 +19,7 @@ namespace TestBot
             string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
             Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
             {
-                Debug = new ClientDebugConfig { LogRestRequest = true, LogWebSocketFull = false, LogWebSocketError = true, LogWebSocketUnknownEvent = true }
+                Debug = new ClientDebugConfig { LogRestRequest = true, LogWebSocketFull = true, LogWebSocketError = true, LogWebSocketUnknownEvent = true }
             });
             await Client.StartAsync();
             CommandHandler Commands = new CommandHandler(Client);
@@ -39,7 +39,6 @@ namespace TestBot
         public CommandService Service = new CommandService();
         private void Client_OnMessageRecieved(Message msg)
         {
-            Console.WriteLine("MSG: send");
             UserMessage Message = msg as UserMessage;
             if (Message == null || Message.Author.IsBot)
                 return;
@@ -47,7 +46,6 @@ namespace TestBot
             if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                 return;
             CommandContext context = new CommandContext(Client, Message);
-            Console.WriteLine("MSG: execute");
             Service.ExecuteAsync(context, argPos, null);
         }
     }

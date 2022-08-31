@@ -8,18 +8,7 @@ namespace RevoltSharp
 {
     public class GroupChannel : Channel
     {
-        public ChannelPermissions Permissions { get; internal set; }
-        public HashSet<string> Recipents { get; internal set; }
-
-        public ConcurrentDictionary<string, User> Users { get; internal set; } = new ConcurrentDictionary<string, User>();
-        public string LastMessageId { get; internal set; }
-        public string OwnerId { get; internal set; }
-        public string Name { get; internal set; }
-        public string Description { get; internal set; }
-        public Attachment Icon { get; internal set; }
-
-        internal GroupChannel(RevoltClient client, ChannelJson model)
-            : base(client)
+        internal GroupChannel(RevoltClient client, ChannelJson model) : base(client)
         {
             Id = model.Id;
             Type = ChannelType.Group;
@@ -41,18 +30,37 @@ namespace RevoltSharp
             OwnerId = model.Owner;
             Permissions = new ChannelPermissions(model.Permissions);
             Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
+            IsNsfw = model.Nsfw;
         }
+
+        public ChannelPermissions Permissions { get; internal set; }
+        public HashSet<string> Recipents { get; internal set; }
+        public ConcurrentDictionary<string, User> Users { get; internal set; } = new ConcurrentDictionary<string, User>();
+        public string LastMessageId { get; internal set; }
+        public string OwnerId { get; internal set; }
+        public string Name { get; internal set; }
+        public string Description { get; internal set; }
+        public Attachment Icon { get; internal set; }
+        public bool IsNsfw { get; internal set; }
+
 
         internal override void Update(PartialChannelJson json)
         {
             if (json.Name.HasValue)
                 Name = json.Name.ValueOrDefault();
+
             if (json.Icon.HasValue)
                 Icon = new Attachment(Client, json.Icon.ValueOrDefault());
+
             if (json.Description.HasValue)
                 Description = json.Description.ValueOrDefault();
+
             if (json.DefaultPermissions.HasValue)
-                Permissions = new ChannelPermissions(json.DefaultPermissions.ValueOrDefault());
+                Permissions = new ChannelPermissions(json.DefaultPermissions.ValueOrDefault().Allowed);
+
+            if (json.Nsfw.HasValue)
+                IsNsfw = json.Nsfw.ValueOrDefault();
+
         }
 
         internal void AddUser(User user)

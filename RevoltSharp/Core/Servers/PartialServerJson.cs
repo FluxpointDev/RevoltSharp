@@ -3,7 +3,7 @@ using Optional;
 
 namespace RevoltSharp
 {
-    public class PartialServerJson
+    internal class PartialServerJson
     {
         [JsonProperty("name")]
         public Option<string> Name { get; set; }

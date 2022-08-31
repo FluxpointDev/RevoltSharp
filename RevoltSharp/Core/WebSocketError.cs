@@ -1,8 +1,8 @@
 ﻿namespace RevoltSharp
 {
-    public class WebSocketError
+    public class SocketError
     {
         public string Messaage;
-        public WebSocketErrorType Type;
+        public SocketErrorType Type;
     }
 }

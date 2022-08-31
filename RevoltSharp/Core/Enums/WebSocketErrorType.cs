@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace RevoltSharp
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum WebSocketErrorType
+    public enum SocketErrorType
     {
         [EnumMember(Value = "LabelMe")]
         Unknown,

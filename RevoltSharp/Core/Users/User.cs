@@ -35,7 +35,7 @@ namespace RevoltSharp
         internal bool HasMutuals()
            => MutualGroups.Any() || MutualGroups.Any();
 
-        public User(RevoltClient client, UserJson model)
+        internal User(RevoltClient client, UserJson model)
             : base(client)
         {
             Model = model;

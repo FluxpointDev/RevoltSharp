@@ -2,7 +2,7 @@
 
 namespace RevoltSharp
 {
-    public class InviteJson
+    internal class InviteJson
     {
         [JsonProperty("code")]
         public string Code;

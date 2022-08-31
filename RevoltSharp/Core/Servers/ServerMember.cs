@@ -24,21 +24,9 @@ namespace RevoltSharp
 
         public ServerPermissions Permissions { get; internal set; }
 
-        public ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel)
-            : base(client)
+        internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
         {
-            Create(client, sModel, client.GetUser(uModel.Id) ?? new User(Client, uModel));
-        }
-
-        public ServerMember(RevoltClient client, ServerMemberJson sModel, User user)
-             : base(client)
-        {
-            Create(client, sModel, user);
-        }
-
-        public void Create(RevoltClient client, ServerMemberJson sModel, User user)
-        {
-            User = user;
+            User = user != null ? user : new User(Client, uModel);
             if (sModel != null)
             {
                 ServerId = sModel.Id.Server;

@@ -84,6 +84,15 @@ namespace RevoltSharp
                     Console.WriteLine("Client failed to connect to the revolt api at " + Config.ApiUrl);
                     throw new RevoltException("Client failed to connect to the revolt api at " + Config.ApiUrl);
                 }
+
+
+
+                if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
+                    throw new RevoltException("Revolt server Image server url is an invalid format.");
+
+                Config.Debug.WebsocketUrl = Query.websocketUrl;
+                Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url + "/";
+
                 FirstConnection = false;
             }
 
@@ -105,6 +114,7 @@ namespace RevoltSharp
 
             if (WebSocket.WebSocket != null)
             {
+                WebSocket.StopWebSocket = true;
                 await WebSocket.WebSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", WebSocket.CancellationToken);
             }
         }

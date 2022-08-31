@@ -2,7 +2,7 @@
 
 namespace RevoltSharp
 {
-    public class MembersListJson
+    internal class MembersListJson
     {
         [JsonProperty("members")]
         public ServerMemberJson[] Members;

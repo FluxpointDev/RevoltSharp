@@ -2,7 +2,7 @@
 
 namespace RevoltSharp
 {
-    public class AttachmentJson
+    internal class AttachmentJson
     {
         [JsonProperty("_id")]
         public string Id;
@@ -22,7 +22,7 @@ namespace RevoltSharp
         [JsonProperty("size")]
         public int Size;
     }
-    public class AttachmentMetaJson
+    internal class AttachmentMetaJson
     {
         [JsonProperty("type")]
         public string Type;

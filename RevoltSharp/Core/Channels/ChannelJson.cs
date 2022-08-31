@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RevoltSharp
 {
-    public class ChannelJson
+    internal class ChannelJson
     {
         [JsonProperty("_id")]
         public string Id;

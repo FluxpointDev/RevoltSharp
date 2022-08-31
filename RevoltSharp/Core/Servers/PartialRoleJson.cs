@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace RevoltSharp
 {
-    public class PartialRoleJson
+    internal class PartialRoleJson
     {
         [JsonProperty("name")]
         public Option<string> Name;

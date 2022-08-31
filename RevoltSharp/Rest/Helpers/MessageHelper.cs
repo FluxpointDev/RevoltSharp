@@ -16,6 +16,9 @@ namespace RevoltSharp
 
         public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null)
         {
+            if (content.Length > 2000)
+                throw new RevoltException("Message content can't be more than 2000");
+
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             { 
                 content = Option.Some(content),

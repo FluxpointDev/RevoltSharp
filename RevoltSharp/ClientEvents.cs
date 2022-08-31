@@ -131,8 +131,8 @@
             OnRoleUpdated?.Invoke(old, newr);
         }
 
-        public event RevoltEvent<WebSocketError> OnWebSocketError;
-        internal void InvokeWebSocketError(WebSocketError error)
+        public event RevoltEvent<SocketError> OnWebSocketError;
+        internal void InvokeWebSocketError(SocketError error)
         {
             OnWebSocketError?.Invoke(error);
         }
@@ -147,6 +147,20 @@
         internal void InvokeCurrentUserUpdated(SelfUser old, SelfUser newu)
         {
             OnCurrentUserUpdated?.Invoke(old, newu);
+        }
+
+        public event RevoltEvent<Server, Emoji> OnEmojiCreated;
+
+        internal void InvokeEmojiCreated(Server server, Emoji emoji)
+        {
+            OnEmojiCreated?.Invoke(server, emoji);
+        }
+
+        public event RevoltEvent<Server, Emoji> OnEmojiDeleted;
+
+        internal void InvokeEmojiDeleted(Server server, Emoji emoji)
+        {
+            OnEmojiDeleted?.Invoke(server, emoji);
         }
     }
 }

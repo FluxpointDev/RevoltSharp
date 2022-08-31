@@ -9,13 +9,23 @@ namespace RevoltSharp
     [Flags]
     public enum ChannelPermission
     {
-        ViewChannel = 1 << 0,
-        SendMessages = 1 << 1,
-        ManageMessages = 1 << 2,
-        ManageChannel = 1 << 3,
-        VoiceCall = 1 << 4,
-        CreateInvite = 1 << 5,
-        EmbedLinks = 1 << 6,
-        UploadFiles = 1 << 7
+        ManageChannel = 1 << 0,
+        ManagePermissions = 1 << 2,
+        ViewChannel = 1 << 20,
+        ReadMessageHistory = 1 << 21,
+        SendMessages = 1 << 22,
+        ManageMessages = 1 << 23,
+        ManageWebhooks = 1 << 24,
+        CreateInvites = 1 << 25,
+        SendEmbeds = 1 << 26,
+        UploadFiles = 1 << 27,
+        Masquerade = 1 << 28,
+        AddReactions = 1 << 29,
+        VoiceConnect = 1 << 30,
+        VoiceSpeak = 1 << 31,
+        VoiceVideo = 1 << 32,
+        VoiceMuteMembers = 1 << 33,
+        VoiceDeafenMembers = 1 << 34,
+        VoiceMoveMembers = 1 << 35
     }
 }

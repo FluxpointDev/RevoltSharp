@@ -7,6 +7,23 @@ namespace RevoltSharp
 {
     public class Server : Entity
     {
+        internal Server(RevoltClient client, ServerJson model) : base(client)
+        {
+            Id = model.Id;
+                Name = model.Name;
+            DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
+            Description = model.Description;
+            Banner = model.Banner != null ? new Attachment(client, model.Banner) : null;
+            Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
+            ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
+            OwnerId = model.Owner;
+            Roles = model.Roles != null
+                ? new ConcurrentDictionary<string, Role>(model.Roles.ToDictionary(x => x.Key, x => new Role(client, x.Value, model.Id, x.Key)))
+                : new ConcurrentDictionary<string, Role>();
+            Analytics = model.Analytics;
+            Discoverable = model.Discoverable;
+        }
+
         public string Id { get; internal set; }
 
         public string OwnerId { get; internal set; }
@@ -15,13 +32,15 @@ namespace RevoltSharp
 
         public string Description { get; internal set; }
 
-        public HashSet<string> ChannelIds { get; internal set; }
+        internal HashSet<string> ChannelIds { get; set; }
 
         //public ServerCategory[] Categories;
         //public ServerSystemMessages SystemMessages;
-        public ConcurrentDictionary<string, Role> Roles { get; internal set; }
+        internal ConcurrentDictionary<string, Role> Roles { get; set; }
 
-        public ConcurrentDictionary<string, ServerMember> Members { get; internal set; } = new ConcurrentDictionary<string, ServerMember>();
+        internal ConcurrentDictionary<string, Emoji> Emojis { get; set; } = new ConcurrentDictionary<string, Emoji>();
+
+        internal ConcurrentDictionary<string, ServerMember> Members { get; set; } = new ConcurrentDictionary<string, ServerMember>();
 
         public ServerPermissions DefaultPermissions { get; internal set; }
 
@@ -29,11 +48,44 @@ namespace RevoltSharp
 
         public Attachment Banner { get; internal set; }
 
+        public bool Analytics { get; internal set; }
+
+        public bool Discoverable { get; internal set; }
+
+        public ServerMember GetCachedMember(string userId)
+        {
+            if (Members.TryGetValue(userId, out ServerMember member))
+                return member;
+            return null;
+        }
+
+        public IReadOnlyCollection<ServerMember> GetCachedMembers()
+        {
+            return (IReadOnlyCollection<ServerMember>)Members.Values;
+        }
+
         public Role GetRole(string roleId)
         {
             if (Roles.TryGetValue(roleId, out Role role))
                 return role;
             return null;
+        }
+
+        public IReadOnlyCollection<Role> GetRoles()
+        {
+            return (IReadOnlyCollection<Role>)Roles.Values;
+        }
+
+        public Emoji GetEmoji(string emojiId)
+        {
+            if (Emojis.TryGetValue(emojiId, out Emoji emoji))
+                return emoji;
+            return null;
+        }
+
+        public IReadOnlyCollection<Emoji> GetEmojis()
+        {
+            return (IReadOnlyCollection<Emoji>)Emojis.Values;
         }
 
         public TextChannel GetTextChannel(string channelId)
@@ -103,24 +155,6 @@ namespace RevoltSharp
             {
                 user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);
             }
-        }
-
-        public Server(RevoltClient client, ServerJson model)
-            : base(client)
-        {
-            if (model == null)
-                return;
-            Id = model.Id;
-            Name = model.Name;
-            DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
-            Description = model.Description;
-            Banner = model.Banner != null ? new Attachment(client, model.Banner) : null;
-            Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
-            ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
-            OwnerId = model.Owner;
-            Roles = model.Roles != null
-                ? new ConcurrentDictionary<string, Role>(model.Roles.ToDictionary(x => x.Key, x => new Role(client, x.Value, Id, x.Key)))
-                : new ConcurrentDictionary<string, Role>();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RevoltSharp
 {
-    public class UserJson
+    internal class UserJson
     {
         [JsonProperty("_id")]
         public string Id;
@@ -31,17 +31,17 @@ namespace RevoltSharp
         [JsonProperty("online")]
         public bool Online;
     }
-    public class UserStatusJson
+    internal class UserStatusJson
     {
         [JsonProperty("text")]
         public string Text;
     }
-    public class UserBotJson
+    internal class UserBotJson
     {
         [JsonProperty("owner")]
         public string Owner;
     }
-    public class UserProfileJson
+    internal class UserProfileJson
     {
         [JsonProperty("content")]
         public string Content;

@@ -5,6 +5,19 @@
     /// </summary>
     public class Attachment : Entity
     {
+        internal Attachment(RevoltClient client, AttachmentJson model) : base(client)
+        {
+            if (client == null)
+                return;
+            Id = model.Id;
+            Tag = model.Tag;
+            Filename = model.Filename;
+            Type = model.Metadata.Type;
+            Size = model.Size;
+            Width = model.Metadata.Width;
+            Height = model.Metadata.Height;
+        }
+
         /// <summary>
         /// Id of the attachment file.
         /// </summary>
@@ -39,19 +52,5 @@
         /// The height of the image if the file is an image type.
         /// </summary>
         public int Height { get; }
-
-        public Attachment(RevoltClient client, AttachmentJson model)
-            : base(client)
-        {
-            if (client == null)
-                return;
-            Id = model.Id;
-            Tag = model.Tag;
-            Filename = model.Filename;
-            Type = model.Metadata.Type;
-            Size = model.Size;
-            Width = model.Metadata.Width;
-            Height = model.Metadata.Height;
-        }
     }
 }

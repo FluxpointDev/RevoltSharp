@@ -9,11 +9,6 @@ namespace RevoltSharp
     public class ServerPermissions
     {
         public static ulong AllServerPermissions = 61503;
-        public ServerPermissions(PermissionsJson permissions)
-        {
-            RawServer = permissions.Allowed;
-        }
-
         public ServerPermissions(ulong permissions)
         {
             RawServer = permissions;
@@ -39,22 +34,36 @@ namespace RevoltSharp
 
         public ulong RawServer { get; internal set; }
 
-        public bool ViewChanels => Has(ServerPermission.ViewChannels);
-        public bool ManageRoles => Has(ServerPermission.ManageRoles);
-        public bool ManageChannels => Has(ServerPermission.ManageChannels);
+        public bool ManageChannels => Has(ChannelPermission.ManageChannel);
         public bool ManageServer => Has(ServerPermission.ManageServer);
+        public bool ManagePermissions => Has(ServerPermission.ManagePermissions);
+        public bool ManageRoles => Has(ServerPermission.ManageRoles);
+        public bool ManageCustomisation => Has(ServerPermission.ManageCustomisation);
         public bool KickMembers => Has(ServerPermission.KickMembers);
         public bool BanMembers => Has(ServerPermission.BanMembers);
+        public bool TimeoutMembers => Has(ServerPermission.TimeoutMembers);
+        public bool AssignRoles => Has(ServerPermission.AssignRoles);
         public bool ChangeNickname => Has(ServerPermission.ChangeNickname);
         public bool ManageNicknames => Has(ServerPermission.ManageNicknames);
         public bool ChangeAvatar => Has(ServerPermission.ChangeAvatar);
-        public bool ManageAvatars => Has(ServerPermission.RemoveAvatars);
+        public bool ManageAvatars => Has(ServerPermission.ManageAvatars);
+        public bool ViewChannels => Has(ChannelPermission.ViewChannel);
+        public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
         public bool SendMessages => Has(ChannelPermission.SendMessages);
         public bool ManageMessages => Has(ChannelPermission.ManageMessages);
-        public bool VoiceCall => Has(ChannelPermission.VoiceCall);
-        public bool CreateInvite => Has(ChannelPermission.CreateInvite);
-        public bool EmbedLinks => Has(ChannelPermission.EmbedLinks);
+        public bool ManageWebhooks => Has(ChannelPermission.ManageWebhooks);
+        public bool CreateInvites => Has(ChannelPermission.CreateInvites);
+        public bool EmbedLinks => Has(ChannelPermission.SendEmbeds);
         public bool UploadFiles => Has(ChannelPermission.UploadFiles);
+        public bool Masquerade => Has(ChannelPermission.Masquerade);
+        public bool AddReactions => Has(ChannelPermission.AddReactions);
+        public bool VoiceConnect => Has(ChannelPermission.VoiceConnect);
+        public bool VoiceSpeak => Has(ChannelPermission.VoiceSpeak);
+        public bool VoiceVideo => Has(ChannelPermission.VoiceVideo);
+        public bool VoiceMuteMembers => Has(ChannelPermission.VoiceMuteMembers);
+        public bool VoiceDeafenMembers => Has(ChannelPermission.VoiceDeafenMembers);
+        public bool VoiceMoveMembers => Has(ChannelPermission.VoiceMoveMembers);
+
         internal bool Has(ServerPermission permission)
         {
             ulong Flag = (ulong)permission;

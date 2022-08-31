@@ -8,7 +8,7 @@ namespace RevoltSharp.WebSocket.Events
         [JsonProperty("id")]
         public string Id;
 
-        [JsonProperty("roleId")]
+        [JsonProperty("role_id")]
         public string RoleId;
 
         [JsonProperty("data")]
