@@ -13,6 +13,9 @@ namespace RevoltSharp
 
         public static async Task<User[]> GetGroupChannelMembersAsync(this RevoltRestClient rest, string channelId)
         {
+            if (string.IsNullOrEmpty(channelId))
+                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+
             UserJson[] List = await rest.SendRequestAsync<UserJson[]>(RequestType.Get, $"channels/{channelId}");
             
             return List.Select(x => new User(rest.Client, x)).ToArray();
@@ -45,6 +48,9 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> LeaveGroupChannelAsync(this RevoltRestClient rest, string channelId)
         {
+            if (string.IsNullOrEmpty(channelId))
+                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+
             return await rest.SendRequestAsync(RequestType.Delete, $"/channels/{channelId}");
         }
 

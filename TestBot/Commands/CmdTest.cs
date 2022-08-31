@@ -13,7 +13,6 @@ namespace TestBot.Commands
         [Command("test")]
         public async Task Test()
         {
-            Console.WriteLine(Context.Server.GetEmojis().Count);
             Console.WriteLine("MSG: test");
             await Context.Channel.SendMessageAsync("Test");
         }

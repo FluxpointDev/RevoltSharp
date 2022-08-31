@@ -1,5 +1,6 @@
 ﻿using RevoltSharp.Commands;
 using RevoltSharp.Rest;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -14,6 +15,9 @@ namespace RevoltSharp
 
         public static async Task<User> GetUserAsync(this RevoltRestClient rest, string userId)
         {
+            if (string.IsNullOrEmpty(userId))
+                throw new RevoltArgumentException("User id can't be empty for this request.");
+
             if (rest.Client.WebSocket != null && rest.Client.WebSocket.UserCache.TryGetValue(userId, out User User))
                 return User;
 
@@ -34,6 +38,9 @@ namespace RevoltSharp
 
         public static async Task<Profile> GetProfileAsync(this RevoltRestClient rest, string userId)
         {
+            if (string.IsNullOrEmpty(userId))
+                throw new RevoltArgumentException("User id can't be empty for this request.");
+
             ProfileJson Data = await rest.SendRequestAsync<ProfileJson>(RequestType.Get, $"users/{userId}/profile");
             return new Profile(rest.Client, Data);
         }

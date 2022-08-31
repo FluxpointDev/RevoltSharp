@@ -12,4 +12,12 @@ namespace RevoltSharp
         public string Message { get; set; }
         public int Code { get; set; }
     }
+
+    public class RevoltArgumentException : RevoltException
+    {
+        public RevoltArgumentException(string message) : base(message, 400)
+        {
+
+        }
+    }
 }

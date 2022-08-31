@@ -20,6 +20,12 @@ namespace RevoltSharp
 
         [JsonProperty("creator_id")]
         public string CreatorId;
+
+        [JsonProperty("animated")]
+        public bool Animated;
+
+        [JsonProperty("nsfw")]
+        public bool Nsfw;
     }
     internal class EmojiParentJson
     {

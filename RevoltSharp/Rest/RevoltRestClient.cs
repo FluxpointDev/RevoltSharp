@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace RevoltSharp.Rest
@@ -78,6 +79,8 @@ namespace RevoltSharp.Rest
                     return HttpMethod.Delete;
                 case RequestType.Patch:
                     return HttpMethod.Patch;
+                case RequestType.Put:
+                    return HttpMethod.Put;
             }
             return HttpMethod.Get;
         }
@@ -91,6 +94,9 @@ namespace RevoltSharp.Rest
 
         internal async Task<FileAttachment> InternalUploadFileAsync(byte[] bytes, string name, UploadFileType type)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new RevoltArgumentException("File upload name can't be empty for this request.");
+
             HttpRequestMessage Mes = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
             MultipartFormDataContent MP = new System.Net.Http.MultipartFormDataContent("file");
             ByteArrayContent Image = new ByteArrayContent(bytes);
@@ -224,6 +230,10 @@ namespace RevoltSharp.Rest
         /// <summary>
         /// Update an existing channel, server, ect.
         /// </summary>
-        Patch
+        Patch,
+        /// <summary>
+        /// Post new emojis.
+        /// </summary>
+        Put
     }
 }

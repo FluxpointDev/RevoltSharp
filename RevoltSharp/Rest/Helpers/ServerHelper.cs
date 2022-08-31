@@ -1,7 +1,9 @@
-﻿using RevoltSharp.Rest;
+﻿using RevoltSharp.Core.Servers;
+using RevoltSharp.Rest;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -13,40 +15,24 @@ namespace RevoltSharp
 
         public static async Task<Server> GetServerAsync(this RevoltRestClient rest, string serverId)
         {
+            if (string.IsNullOrEmpty(serverId))
+                throw new RevoltArgumentException("Server id can't be empty for this request.");
+
             ServerJson Server = await rest.SendRequestAsync<ServerJson>(RequestType.Get, $"/servers/{serverId}");
             return new Server(rest.Client, Server);
         }
 
-        public static Task<ServerMember> GetMemberAsync(this Server server, string userId)
-            => GetMemberAsync(server.Client.Rest, server.Id, userId);
+        public static Task<ServerBan[]> GetBansAsync(this Server server)
+            => GetBansAsync(server.Client.Rest, server.Id);
 
-        public static async Task<ServerMember> GetMemberAsync(this RevoltRestClient rest, string serverId, string userId)
+        public static async Task<ServerBan[]> GetBansAsync(this RevoltRestClient rest, string serverId)
         {
-            if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.Members.TryGetValue(userId, out ServerMember sm))
-                return sm;
+            if (string.IsNullOrEmpty(serverId))
+                throw new RevoltArgumentException("Server id can't be empty for this request.");
 
-            ServerMemberJson Member = await rest.SendRequestAsync<ServerMemberJson>(RequestType.Get, $"servers/{serverId}/members/{userId}");
-            if (Member == null)
-                return null;
-            User User = await rest.GetUserAsync(userId);
-            ServerMember SM = new ServerMember(rest.Client, Member, null, User);
-            if (rest.Client.WebSocket != null)
-                rest.Client.WebSocket.ServerCache[serverId].AddMember(SM);
-            return SM;
-        }
-
-        public static Task<ServerMember[]> GetMembersAsync(this Server server)
-           => GetMembersAsync(server.Client.Rest, server.Id);
-
-        public static async Task<ServerMember[]> GetMembersAsync(this RevoltRestClient rest, string serverId)
-        {
-            MembersListJson List = await rest.SendRequestAsync<MembersListJson>(RequestType.Get, $"servers/{serverId}/members");
-            HashSet<ServerMember> Members = new HashSet<ServerMember>();
-            for (int i = 0; i < List.Members.Length; i++)
-            {
-                Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i], rest.Client.GetUser(List.Users[i].Id)));
-            }
-            return Members.ToArray();
+            ServerBansJson Bans = await rest.SendRequestAsync<ServerBansJson>(RequestType.Get, $"/servers/{serverId}/bans");
+            IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client) { Id = x.Id, Avatar = x.Avatar == null ? null : new Attachment(rest.Client, x.Avatar), Username = x.Username, Reason = Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault().Reason} );
+            return BanList.ToArray();
         }
 
         public static Task<HttpResponseMessage> LeaveServerAsync(this Server server)
@@ -57,6 +43,9 @@ namespace RevoltSharp
            => LeaveServerAsync(user.Client.Rest, serverId);
         public static async Task<HttpResponseMessage> LeaveServerAsync(this RevoltRestClient rest, string serverId)
         {
+            if (string.IsNullOrEmpty(serverId))
+                throw new RevoltArgumentException("Server id can't be empty for this request.");
+
             return await rest.SendRequestAsync(RequestType.Delete, $"/servers/{serverId}");
         }
     }

@@ -1,6 +1,7 @@
 ﻿using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Net.Http;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -11,8 +12,12 @@ namespace RevoltSharp
             => CreateRoleAsync(server.Client.Rest, server.Id, roleName);
         public static async Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string roleName)
         {
+            if (string.IsNullOrEmpty(serverId))
+                throw new RevoltArgumentException("Server id can't be empty for this request.");
+
             if (string.IsNullOrEmpty(roleName))
                 throw new RevoltException("Role cannot be created with a empty name.");
+
             RoleJson Json = await rest.SendRequestAsync<RoleJson>(RequestType.Post, $"/servers/{serverId}/roles", new CreateRoleRequest { name = roleName });
             if (Json == null)
                 return null;
@@ -30,6 +35,12 @@ namespace RevoltSharp
 
         public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Optional<string> name = null, Optional<string> color = null, Optional<bool> hoist = null, Optional<int> rank = null)
         {
+            if (string.IsNullOrEmpty(serverId))
+                throw new RevoltArgumentException("Server id can't be empty for this request.");
+
+            if (string.IsNullOrEmpty(roleId))
+                throw new RevoltArgumentException("Role id can't be empty for this request.");
+
             ModifyRoleRequest Req = new ModifyRoleRequest();
             if (name != null)
                 Req.name = Optional.Option.Some(name.Value);
@@ -59,6 +70,12 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteRoleAsync(this RevoltRestClient rest, string serverId, string roleId)
         {
+            if (string.IsNullOrEmpty(serverId))
+                throw new RevoltArgumentException("Server id can't be empty for this request.");
+
+            if (string.IsNullOrEmpty(roleId))
+                throw new RevoltArgumentException("Role id can't be empty for this request.");
+
             return await rest.SendRequestAsync(RequestType.Delete, $"/servers/{serverId}/roles/{roleId}");
         }
     }

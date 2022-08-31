@@ -1,4 +1,5 @@
-﻿using Optional;
+﻿using Newtonsoft.Json;
+using Optional;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,10 @@ namespace RevoltSharp.Rest.Requests
     internal class CreateChannelRequest : RevoltRequest
     {
         public string name;
+        [JsonProperty("type")]
+        public string Type;
         public Option<string> description;
-        public string[] users;
+        public Option<string[]> users;
         public Option<bool> nsfw;
 
     }
