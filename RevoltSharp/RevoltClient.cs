@@ -73,9 +73,6 @@ namespace RevoltSharp
         /// <exception cref="RevoltException"></exception>
         public async Task StartAsync()
         {
-            if (WebSocket == null)
-                throw new RevoltException("Client is in http-only mode.");
-
             if (FirstConnection)
             {
                 QueryRequest Query = await Rest.SendRequestAsync<QueryRequest>(RequestType.Get, "/");
@@ -95,9 +92,11 @@ namespace RevoltSharp
 
                 FirstConnection = false;
             }
-
-            WebSocket.SetupWebsocket();
-            while (WebSocket.WebSocket == null || WebSocket.WebSocket.State != System.Net.WebSockets.WebSocketState.Open) { }
+            if (WebSocket != null)
+            {
+                WebSocket.SetupWebsocket();
+                while (WebSocket.WebSocket == null || WebSocket.WebSocket.State != System.Net.WebSockets.WebSocketState.Open) { }
+            }
         }
 
         /// <summary>
