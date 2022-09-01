@@ -1,9 +1,6 @@
 ﻿using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace TestBot.Commands

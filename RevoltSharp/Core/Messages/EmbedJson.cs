@@ -1,6 +1,4 @@
-﻿using Newtonsoft;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
     internal class EmbedJson
     {

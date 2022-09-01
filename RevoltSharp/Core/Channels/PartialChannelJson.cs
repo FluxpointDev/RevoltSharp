@@ -23,5 +23,8 @@ namespace RevoltSharp
 
         [JsonProperty("nsfw")]
         public Option<bool> Nsfw { get; set; }
+
+        [JsonProperty("owner")]
+        public Option<string> Owner { get; set; }
     }
 }

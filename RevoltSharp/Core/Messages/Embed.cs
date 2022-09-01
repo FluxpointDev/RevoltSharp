@@ -1,20 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Create a embed to use for messages
+    /// </summary>
     public class EmbedBuilder
     {
+        /// <summary>
+        /// Embed title
+        /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// Embed url
+        /// </summary>
         public string Url { get; set; }
+
+        /// <summary>
+        /// Embed icon url
+        /// </summary>
         public string IconUrl { get; set; }
+
+        /// <summary>
+        /// Embed description
+        /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Embed image attachment
+        /// </summary>
         public FileAttachment Image { get; set; }
+
+        /// <summary>
+        /// Embed color
+        /// </summary>
         public RevoltColor Color { get; set; }
 
+        /// <summary>
+        /// Build the embed to use it in messages
+        /// </summary>
+        /// <returns><see cref="Embed" /></returns>
         public Embed Build()
         {
             return new Embed
@@ -31,17 +55,60 @@ namespace RevoltSharp
             };
         }
     }
+
+    /// <summary>
+    /// Message embeds
+    /// </summary>
     public class Embed
     {
+        /// <summary>
+        /// Type of embed
+        /// </summary>
         public EmbedType Type { get; }
+
+        /// <summary>
+        /// Embed url
+        /// </summary>
         public string Url { get; internal set; }
+
+        /// <summary>
+        /// Embed icon url
+        /// </summary>
         public string IconUrl { get; internal set; }
+
+        /// <summary>
+        /// Embed title
+        /// </summary>
         public string Title { get; internal set; }
+
+        /// <summary>
+        /// Embed description
+        /// </summary>
         public string Description { get; internal set; }
+
+        /// <summary>
+        /// Embed site name
+        /// </summary>
         public string Site { get; }
+
+        /// <summary>
+        /// Embed color
+        /// </summary>
         public RevoltColor Color { get; internal set; }
+
+        /// <summary>
+        /// Embed image attachment
+        /// </summary>
         public Attachment Image { get; internal set; }
+
+        /// <summary>
+        /// Embed video attachment
+        /// </summary>
         public Attachment Video { get; }
+
+        /// <summary>
+        /// Embed provider
+        /// </summary>
         public EmbedProvider Provider { get; }
 
         internal EmbedJson ToJson()

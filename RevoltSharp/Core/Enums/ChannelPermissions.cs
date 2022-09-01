@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Permissions for the channel that members can or can't use
+    /// </summary>
     public class ChannelPermissions
     {
         public static ulong AllChannelPermissions = 0;

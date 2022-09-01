@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
     public class SelfUser : User
     {

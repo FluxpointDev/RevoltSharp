@@ -1,13 +1,18 @@
-﻿using System;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
     /// <summary>
-    /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> and <see cref="UnknownChannel"/>
+    /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> <see cref="ServerChannel" /> <see cref="UnknownServerChannel" /> and <see cref="UnknownChannel"/>
     /// </summary>
     public abstract class Channel : Entity
     {
+        /// <summary>
+        /// Id of the channel
+        /// </summary>
         public string Id { get; internal set; }
+
+        /// <summary>
+        /// Type of channel to cast to 
+        /// </summary>
         public ChannelType Type { get; internal set; }
 
         public Channel(RevoltClient client)
@@ -39,7 +44,7 @@ namespace RevoltSharp
                 {
                         if (!string.IsNullOrEmpty(model.Server))
                         {
-                            return new ServerUnknownChannel(client, model);
+                            return new UnknownServerChannel(client, model);
                         }
 
                         return new UnknownChannel(client, model);

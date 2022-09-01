@@ -1,7 +1,6 @@
 ﻿using RevoltSharp.Rest;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp

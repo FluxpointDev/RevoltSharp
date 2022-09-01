@@ -1,12 +1,13 @@
 ﻿using Optional.Unsafe;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 
 namespace RevoltSharp
 {
+    /// <summary>
+    /// User messages sent with text, author, attachments, embeds, replies, mentions and optional parent server.
+    /// </summary>
     public class UserMessage : Message
     {
         public string Nonce { get; internal set; }

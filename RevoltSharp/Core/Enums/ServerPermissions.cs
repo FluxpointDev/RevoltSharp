@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Permissions for the server that members can or can't use
+    /// </summary>
     public class ServerPermissions
     {
         public static ulong AllServerPermissions = 61503;

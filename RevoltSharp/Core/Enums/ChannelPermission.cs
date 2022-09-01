@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevoltSharp
 {
+    /// <summary>
+    /// List of channel permissions
+    /// </summary>
     [Flags]
     public enum ChannelPermission
     {

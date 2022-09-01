@@ -6,7 +6,7 @@ using System.Linq;
 namespace RevoltSharp
 {
     /// <summary>
-    /// If you would like to get a specific channel please cast to TextChannel or VoiceChannel
+    /// Base channel for all servers that can be casted to <see cref="TextChannel" /> <see cref="VoiceChannel" /> or <see cref="UnknownServerChannel" />
     /// </summary>
     public class ServerChannel : Channel
     {
@@ -21,16 +21,54 @@ namespace RevoltSharp
             Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
         }
 
+        /// <summary>
+        /// If of the parent server
+        /// </summary>
         public string ServerId { get; internal set; }
 
+        /// <summary>
+        /// Parent server of the channel
+        /// </summary>
+        /// <remarks>
+        /// Will be <see langword="null" /> if using http mode
+        /// </remarks>
         public Server Server
             => Client.GetServer(ServerId);
+
+        /// <summary>
+        /// Default permissions for all members in the channel
+        /// </summary>
         public ChannelPermissions DefaultPermissions { get; internal set; }
+
+        /// <summary>
+        /// Role permission for the channel that wil override default permissions
+        /// </summary>
         public Dictionary<string, ChannelPermissions> RolePermissions { get; internal set; }
+
+        /// <summary>
+        /// Name of the channel
+        /// </summary>
         public string Name { get; internal set; }
+
+        /// <summary>
+        /// Description of the channel
+        /// </summary>
         public string Description { get; internal set; }
+
+        /// <summary>
+        /// Icon attachment of the channel
+        /// </summary>
+        /// <remarks>
+        /// This may be <see langword="null" />
+        /// </remarks>
         public Attachment Icon { get; internal set; }
 
+        /// <summary>
+        /// Check if a member has a permission for the channel
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="permission"></param>
+        /// <returns><see langword="true" /> if member has permission</returns>
         public bool HasPermission(ServerMember member, ChannelPermission permission)
         {
             bool HasDefault = DefaultPermissions.Has(permission);

@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Optional.Unsafe;
 
 namespace RevoltSharp
 {
+    /// <summary>
+    /// Private group channel with a list of user
+    /// </summary>
     public class GroupChannel : Channel
     {
         internal GroupChannel(RevoltClient client, ChannelJson model) : base(client)
@@ -33,14 +35,52 @@ namespace RevoltSharp
             IsNsfw = model.Nsfw;
         }
 
+        /// <summary>
+        /// Default permissions for all users
+        /// </summary>
         public ChannelPermissions Permissions { get; internal set; }
+
+        /// <summary>
+        /// List of user ids in the channel
+        /// </summary>
         public HashSet<string> Recipents { get; internal set; }
+
+        /// <summary>
+        /// List of users in the channel
+        /// </summary>
         public ConcurrentDictionary<string, User> Users { get; internal set; } = new ConcurrentDictionary<string, User>();
+
+        /// <summary>
+        /// Last message id to be posted in the channel
+        /// </summary>
         public string LastMessageId { get; internal set; }
+
+        /// <summary>
+        /// Owner of the channel
+        /// </summary>
         public string OwnerId { get; internal set; }
+
+        /// <summary>
+        /// Name of the channel
+        /// </summary>
         public string Name { get; internal set; }
+
+        /// <summary>
+        /// Description of the channel
+        /// </summary>
         public string Description { get; internal set; }
+
+        /// <summary>
+        /// Icon attachment of the channel
+        /// </summary>
+        /// <remarks>
+        /// This may be <see langword="null" />
+        /// </remarks>
         public Attachment Icon { get; internal set; }
+
+        /// <summary>
+        /// Channel has nsfw content
+        /// </summary>
         public bool IsNsfw { get; internal set; }
 
 
@@ -60,6 +100,9 @@ namespace RevoltSharp
 
             if (json.Nsfw.HasValue)
                 IsNsfw = json.Nsfw.ValueOrDefault();
+
+            if (json.Owner.HasValue)
+                OwnerId = json.Owner.ValueOrDefault();
 
         }
 

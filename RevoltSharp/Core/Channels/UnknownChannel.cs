@@ -1,5 +1,8 @@
 ﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Channel is an unknown type that can't be fully used 
+    /// </summary>
     public class UnknownChannel : Channel
     {
         internal UnknownChannel(RevoltClient client, ChannelJson model) : base(client)
@@ -12,9 +15,13 @@
         {
         }
     }
-    public class ServerUnknownChannel : ServerChannel
+
+    /// <summary>
+    /// Channel is an unknown type that can't be fully used
+    /// </summary>
+    public class UnknownServerChannel : ServerChannel
     {
-        internal ServerUnknownChannel(RevoltClient client, ChannelJson model) : base(client, model)
+        internal UnknownServerChannel(RevoltClient client, ChannelJson model) : base(client, model)
         {
             Type = ChannelType.Unknown;
         }

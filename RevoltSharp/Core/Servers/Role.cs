@@ -3,6 +3,9 @@ using System.Numerics;
 
 namespace RevoltSharp
 {
+    /// <summary>
+    /// Server role
+    /// </summary>
     public class Role : Entity
     {
         public string Id { get; internal set; }

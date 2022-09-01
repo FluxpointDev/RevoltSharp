@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevoltSharp
 {
+    /// <summary>
+    /// List of server permissions
+    /// </summary>
     [Flags]
     public enum ServerPermission
     {

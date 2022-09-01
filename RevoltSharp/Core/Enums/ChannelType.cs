@@ -4,6 +4,9 @@ using Newtonsoft.Json.Converters;
 
 namespace RevoltSharp
 {
+    /// <summary>
+    /// Type of channel that is <see cref="TextChannel" />, <see cref="VoiceChannel" />, <see cref="GroupChannel" />, <see cref="UnknownServerChannel" /> or <see cref="UnknownChannel" />
+    /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ChannelType
     {

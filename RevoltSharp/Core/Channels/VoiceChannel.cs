@@ -1,7 +1,8 @@
-﻿using Optional.Unsafe;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
+    /// <summary>
+    /// Channel that members can speak in to other members
+    /// </summary>
     public class VoiceChannel : ServerChannel
     {
         internal VoiceChannel(RevoltClient client, ChannelJson model)
