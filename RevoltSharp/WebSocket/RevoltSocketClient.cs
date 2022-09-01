@@ -182,8 +182,11 @@ namespace RevoltSharp.WebSocket
                                     Console.WriteLine("--- WebSocket Ready ---\n" + FormatJsonPretty(json));
 
                                 UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
-                                CurrentUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Relationship == "User" && x.Bot != null));
-
+                                
+                                if (!Client.UserBot)
+                                    CurrentUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Relationship == "User" && x.Bot != null));
+                                else
+                                    CurrentUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Id == CurrentUser.Id));
 
                                 if (CurrentUser == null)
                                 {

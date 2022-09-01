@@ -38,14 +38,14 @@ namespace RevoltSharp.Rest
             {
                 BaseAddress = new System.Uri(Client.Config.ApiUrl)
             };
-            HttpClient.DefaultRequestHeaders.Add("x-bot-token", Client.Token);
-            HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version);
+            HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version + (Client.Config.UserBot ? " user" : ""));
             HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             FileHttpClient = new HttpClient()
             {
                 BaseAddress = new System.Uri(Client.Config.Debug.UploadUrl)
             };
-            FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
+            FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + (Client.Config.UserBot ? " user" : ""));
         }
 
         public RevoltClient Client { get; private set; }
@@ -151,6 +151,9 @@ namespace RevoltSharp.Rest
 
         internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object request)
         {
+            if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
+                throw new RevoltException("Joining servers with a userbot has been blocked.");
+
             HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
             if (request != null)
             {
@@ -174,6 +177,9 @@ namespace RevoltSharp.Rest
         internal async Task<TResponse> InternalJsonRequest<TResponse>(HttpMethod method, string endpoint, object request)
             where TResponse : class
         {
+            if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
+                throw new RevoltException("Joining servers with a userbot has been blocked.");
+
             HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
             if (request != null)
             {

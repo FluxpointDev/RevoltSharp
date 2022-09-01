@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RevoltSharp.Core;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -28,6 +31,7 @@ namespace RevoltSharp
             catch { }
             Token = token;
             Config = config ?? new ClientConfig();
+            UserBot = config.UserBot;
             if (Config.Debug == null)
                 Config.Debug = new ClientDebugConfig();
             Serializer = new JsonSerializer();
@@ -35,7 +39,6 @@ namespace RevoltSharp
             Rest = new RevoltRestClient(this);
             if (mode == ClientMode.WebSocket)
                 WebSocket = new RevoltSocketClient(this);
-
         }
 
         /// <summary>
@@ -43,7 +46,9 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "2.2.1";
+        public string Version { get; } = "3.2.0";
+
+        internal bool UserBot { get; set; }
 
         internal JsonSerializer Serializer { get; set; }
 
@@ -82,8 +87,6 @@ namespace RevoltSharp
                     throw new RevoltException("Client failed to connect to the revolt api at " + Config.ApiUrl);
                 }
 
-
-
                 if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
                     throw new RevoltException("Revolt server Image server url is an invalid format.");
 
@@ -92,6 +95,21 @@ namespace RevoltSharp
 
                 FirstConnection = false;
             }
+
+            if (Config.UserBot)
+            {
+                UserJson SelfUser = await Rest.SendRequestAsync<UserJson>(RequestType.Get, "/users/@me");
+                if (SelfUser == null)
+                    throw new RevoltException("Failed to login to user account.");
+
+                if (WebSocket != null)
+                    WebSocket.CurrentUser = new SelfUser(this, SelfUser);
+
+                Console.WriteLine($"Revolt user login: {SelfUser.Username} ({SelfUser.Id})");
+            }
+
+
+
             if (WebSocket != null)
             {
                 WebSocket.SetupWebsocket();

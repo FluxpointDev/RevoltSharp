@@ -16,9 +16,13 @@ namespace TestBot
         public static RevoltClient Client;
         public static async Task Start()
         {
+            // Yes ik i can use json file blah blah :p
             string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
-            Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
+            string Pass = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Pass.txt");
+
+            Client = new RevoltClient(Pass, ClientMode.WebSocket, new ClientConfig
             {
+                UserBot = true,
                 Debug = new ClientDebugConfig { LogRestRequest = true, LogWebSocketFull = true, LogWebSocketError = true, LogWebSocketUnknownEvent = true }
             });
             await Client.StartAsync();

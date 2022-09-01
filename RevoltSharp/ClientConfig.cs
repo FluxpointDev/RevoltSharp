@@ -17,6 +17,10 @@ namespace RevoltSharp
         /// </summary>
         public ClientDebugConfig Debug = new ClientDebugConfig();
 
+        /// <summary>
+        /// Enable this if you want to use the lib with a userbot
+        /// </summary>
+        public bool UserBot;
     }
     public class ClientDebugConfig
     {
