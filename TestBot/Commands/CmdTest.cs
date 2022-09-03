@@ -49,7 +49,7 @@ namespace TestBot.Commands
                     Description = "Desc",
                     IconUrl = "https://img.fluxpoint.dev/2531914271424512.png",
                     Url = "https://fluxpoint.dev",
-                    Color = new RevoltColor("")
+                    Color = new RevoltColor(0, 1, 0)
                 }.Build()
             });
         }
