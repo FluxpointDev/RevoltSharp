@@ -29,12 +29,16 @@ namespace RevoltSharp
         public RevoltColor(string hex)
         {
             IsEmpty = string.IsNullOrEmpty(hex);
-            if (!IsEmpty && hex[0] != 'l')
+            if (!IsEmpty)
             {
-                Color color = ColorTranslator.FromHtml(hex);
-                R = color.R;
-                G = color.G;
-                B = color.B;
+                try
+                {
+                    Color color = ColorTranslator.FromHtml(hex);
+                    R = color.R;
+                    G = color.G;
+                    B = color.B;
+                }
+                catch { }
             }
         }
     }
