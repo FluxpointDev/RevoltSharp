@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Linq;
+using System.Reflection;
 
 namespace RevoltSharp
 {
@@ -26,7 +29,7 @@ namespace RevoltSharp
         public RevoltColor(string hex)
         {
             IsEmpty = string.IsNullOrEmpty(hex);
-            if (!IsEmpty)
+            if (!IsEmpty && hex[0] != 'l')
             {
                 Color color = ColorTranslator.FromHtml(hex);
                 R = color.R;

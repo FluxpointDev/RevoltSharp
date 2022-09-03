@@ -1,4 +1,5 @@
 ﻿using Optional.Unsafe;
+using System;
 using System.Numerics;
 
 namespace RevoltSharp
@@ -29,6 +30,7 @@ namespace RevoltSharp
         {
 
             Id = roleId;
+            
             Color = new RevoltColor(model.Colour);
             IsHoisted = model.Hoist;
             Name = model.Name;
