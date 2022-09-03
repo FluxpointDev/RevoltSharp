@@ -49,7 +49,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "3.2.4";
+        public string Version { get; } = "3.2.5";
 
         internal bool UserBot { get; set; }
 
@@ -154,12 +154,13 @@ namespace RevoltSharp
         public User[] Users
            => WebSocket != null ? WebSocket.UserCache.Values.ToArray() : new User[0];
 
+
+
         public User GetUser(string id)
         {
             if (WebSocket != null && WebSocket.UserCache.TryGetValue(id, out User User))
                 return User;
             return null;
-
         }
 
         public Channel GetChannel(string id)
@@ -173,6 +174,17 @@ namespace RevoltSharp
         {
             if (WebSocket != null && WebSocket.ServerCache.TryGetValue(id, out Server Server))
                 return Server;
+            return null;
+        }
+
+        public Emoji GetEmoji(string id)
+        {
+            if (WebSocket != null)
+            {
+                if (WebSocket.EmojiCache.TryGetValue(id, out Emoji emoji))
+                    return emoji;
+                return new Emoji(this, id);
+            }
             return null;
         }
     }

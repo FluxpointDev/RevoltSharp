@@ -12,10 +12,10 @@ namespace RevoltSharp
 {
     public static class MessageHelper
     {
-        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null)
-            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds);
+        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
+            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds, masquerade);
 
-        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null)
+        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
         {
             if (string.IsNullOrEmpty(channelId))
                 throw new RevoltArgumentException("Channel id can't be empty for this request.");
@@ -34,10 +34,14 @@ namespace RevoltSharp
                 content = Option.Some(content),
                 nonce = Option.Some(Guid.NewGuid().ToString()),
                 attachments = attachments == null ? Option.None<string[]>() : Option.Some(attachments),
-                embeds = embeds == null ? Option.None<EmbedJson[]>() : Option.Some(embeds.Select(x => x.ToJson()).ToArray())
+                embeds = embeds == null ? Option.None<EmbedJson[]>() : Option.Some(embeds.Select(x => x.ToJson()).ToArray()),
+                masquerade = masquerade == null ? Option.None<MessageMasqueradeJson>() : Option.Some<MessageMasqueradeJson>(masquerade.ToJson())
             });
             return Message.Create(rest.Client, Data);
         }
+
+
+
 
         public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, string messageId, GetMessagesRequest req)
             => GetMessagesAsync(channel.Client.Rest, channel.Id, req);

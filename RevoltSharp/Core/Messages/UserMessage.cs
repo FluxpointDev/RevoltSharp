@@ -1,4 +1,5 @@
-﻿using Optional.Unsafe;
+﻿using Optional.Linq;
+using Optional.Unsafe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,10 @@ namespace RevoltSharp
 
         public IReadOnlyList<Embed> Embeds { get; internal set; }
 
+        public Dictionary<Emoji, User[]> Reactions { get; internal set; }
+
+        public MessageMasquerade Masquerade { get; internal set; }
+
         internal UserMessage(RevoltClient client, MessageJson model)
             : base(client)
         {
@@ -33,13 +38,26 @@ namespace RevoltSharp
             ChannelId = model.Channel;
             Channel = client.GetChannel(model.Channel);
             Nonce = model.Nonce;
-            Content = model.Content as string;
+            Content = model.Content;
+            Masquerade = model.Masquerade == null ? null : new MessageMasquerade(model.Masquerade);
             Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => new Attachment(client, a)));
             Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
             Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
             if (model.Edited.HasValue)
                 EditedAt = model.Edited.ValueOrDefault();
             Embeds = model.Embeds == null ? new List<Embed>() : new List<Embed>(model.Embeds);
+            if (!model.Reactions.HasValue)
+                Reactions = new Dictionary<Emoji, User[]>();
+            else
+            {
+                Dictionary<Emoji, User[]> React = new Dictionary<Emoji, User[]>();
+                foreach(var r in model.Reactions.ValueOrDefault())
+                {
+                    React.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray());
+                }
+                Reactions = React;
+            }
+            
         }
     }
 }

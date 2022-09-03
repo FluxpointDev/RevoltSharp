@@ -1,4 +1,5 @@
 ﻿using Optional.Unsafe;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,10 @@ namespace RevoltSharp
 
         public string[] RolesIds { get; internal set; }
 
+        public DateTime JoinedAt { get; internal set; }
+
+        public DateTime? Timeout { get; internal set; }
+
         internal ConcurrentDictionary<string, Role> InternalRoles { get; set;  }  = new ConcurrentDictionary<string, Role>();
 
         public Role GetRole(string roleId)
@@ -37,28 +42,17 @@ namespace RevoltSharp
         internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
         {
             User = user != null ? user : new User(Client, uModel);
-            if (sModel != null)
-            {
-                ServerId = sModel.Id.Server;
-                Nickname = sModel.Nickname;
-                ServerAvatar = sModel.Avatar != null ? new Attachment(client, sModel.Avatar) : null;
-                RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
-                if (client.WebSocket != null)
-                {
-                    Server server = client.GetServer(ServerId);
-                    InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
-                    Permissions = new ServerPermissions(server, this);
-                }
-            }
-            else
-            {
-                RolesIds = new string[0];
-            }
-            if (client.WebSocket != null)
-            {
-                Server server = client.GetServer(ServerId);
-                server.AddMember(this);
-            }
+            ServerId = sModel.Id.Server;
+            Nickname = sModel.Nickname;
+            JoinedAt = sModel.JoinedAt;
+            if (sModel.Timeout.HasValue)
+                Timeout = sModel.Timeout.ValueOrDefault();
+            ServerAvatar = sModel.Avatar != null ? new Attachment(client, sModel.Avatar) : null;
+            RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
+            Server server = client.GetServer(ServerId);
+            server.AddMember(this);
+            InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
+            Permissions = new ServerPermissions(server, this);
         }
 
         internal void Update(PartialServerMemberJson json)
@@ -76,6 +70,12 @@ namespace RevoltSharp
                 InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
                 Permissions = new ServerPermissions(server, this);
             }
+
+            if (json.Timeout.HasValue)
+                Timeout = json.Timeout.ValueOrDefault();
+
+            if (json.ClearTimeout)
+                Timeout = null;
         }
     }
 }

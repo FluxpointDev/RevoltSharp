@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Optional;
+using System;
 
 namespace RevoltSharp
 {
@@ -15,6 +17,12 @@ namespace RevoltSharp
 
         [JsonProperty("roles")]
         public string[] Roles;
+
+        [JsonProperty("joined_at")]
+        public DateTime JoinedAt;
+
+        [JsonProperty("timeout")]
+        public Option<DateTime> Timeout;
     }
     internal class ServerMemberIdsJson
     {

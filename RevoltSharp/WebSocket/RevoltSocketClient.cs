@@ -475,11 +475,24 @@ namespace RevoltSharp.WebSocket
                                 if (@event.Data == null)
                                     @event.Data = new PartialServerMemberJson();
 
-                                if (@event.Clear.ValueOrDefault().Contains("Avatar"))
-                                    @event.Data.Avatar = Option.Some<AttachmentJson>(null);
-
-                                if (@event.Clear.ValueOrDefault().Contains("Nickname"))
-                                    @event.Data.Nickname = Option.Some<string>("");
+                                foreach(string s in @event.Clear.ValueOrDefault())
+                                {
+                                    switch (s)
+                                    {
+                                        case "Avatar":
+                                            @event.Data.Avatar = Option.Some<AttachmentJson>(null);
+                                            break;
+                                        case "Nickname":
+                                            @event.Data.Nickname = Option.Some<string>("");
+                                            break;
+                                        case "Timeout":
+                                            @event.Data.ClearTimeout = true;
+                                            break;
+                                        case "Roles":
+                                            @event.Data.Roles = Option.Some<string[]>(new string[0]);
+                                            break;
+                                    }
+                                }
                             }
 
                             Member.Update(@event.Data);

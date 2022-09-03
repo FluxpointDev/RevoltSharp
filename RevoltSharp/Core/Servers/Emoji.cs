@@ -1,4 +1,5 @@
-﻿namespace RevoltSharp
+﻿
+namespace RevoltSharp
 {
     /// <summary>
     /// Server emoji
@@ -16,9 +17,18 @@
             IsNsfw = model.Nsfw;
         }
 
+        internal Emoji(RevoltClient client, string emoji) : base(client)
+        {
+            Id = emoji;
+            Name = emoji;
+        }
+
         public string Id { get; internal set; }
 
         public string Name { get; internal set; }
+
+        public bool IsServerEmoji
+            => !string.IsNullOrEmpty(ServerId);
 
         public string ServerId { get; internal set; }
 

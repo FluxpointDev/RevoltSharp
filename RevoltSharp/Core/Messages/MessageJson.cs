@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Optional;
 using System;
+using System.Collections.Generic;
 
 namespace RevoltSharp
 {
@@ -21,10 +22,8 @@ namespace RevoltSharp
         [JsonProperty("author")]
         public string Author;
 
-        // So if its a system message we get a json object
-        // this would cause deserialization to a string to fail
         [JsonProperty("content")]
-        public object Content;
+        public string Content;
 
         [JsonProperty("attachments")]
         public AttachmentJson[] Attachments;
@@ -43,6 +42,23 @@ namespace RevoltSharp
 
         [JsonProperty("edited")]
         public Option<DateTime> Edited;
+
+        [JsonProperty("reactions")]
+        public Option<Dictionary<string, string[]>> Reactions;
+
+        [JsonProperty("masquerade")]
+        public MessageMasqueradeJson Masquerade;
+    }
+    internal class MessageMasqueradeJson
+    {
+        [JsonProperty("name")]
+        public string Name;
+
+        [JsonProperty("avatar")]
+        public string Avatar;
+
+        [JsonProperty("colour")]
+        public string Color;
     }
     internal class MessageSystemJson
     {

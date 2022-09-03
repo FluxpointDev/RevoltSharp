@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Optional;
+using System;
 using System.Collections.Generic;
 
 namespace RevoltSharp
@@ -14,5 +15,10 @@ namespace RevoltSharp
 
         [JsonProperty("roles")]
         public Option<string[]> Roles;
+
+        [JsonProperty("timeout")]
+        public Option<DateTime> Timeout;
+
+        public bool ClearTimeout;
     }
 }
