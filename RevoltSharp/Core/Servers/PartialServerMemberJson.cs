@@ -13,6 +13,6 @@ namespace RevoltSharp
         public Option<AttachmentJson> Avatar;
 
         [JsonProperty("roles")]
-        public Option<HashSet<string>> Roles;
+        public Option<string[]> Roles;
     }
 }

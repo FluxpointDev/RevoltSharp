@@ -29,9 +29,9 @@ namespace RevoltSharp.Commands
         ///     Specifies if notifications are sent for mentioned users and roles in the <paramref name="message"/>.
         ///     If <c>null</c>, all mentioned roles and users will be notified.
         /// </param>
-        protected virtual async Task<Message> ReplyAsync(string message = null)
+        protected virtual async Task<Message> ReplyAsync(string message, string[] attachments = null, Embed[] embeds = null)
         {
-            return await Context.Channel.SendMessageAsync(message).ConfigureAwait(false);
+            return await Context.Channel.SendMessageAsync(message, attachments, embeds).ConfigureAwait(false);
         }
 
 
@@ -50,6 +50,8 @@ namespace RevoltSharp.Commands
         /// </param>
         protected virtual async Task<Message> ReplyFileAsync(string filePath, string text = null)
         {
+            if (string.IsNullOrEmpty(filePath))
+                throw new RevoltArgumentException("File path cannot be empty when uploading files.");
             FileAttachment File = await Context.Client.Rest.UploadFileAsync(filePath, Rest.RevoltRestClient.UploadFileType.Attachment);
             if (File == null)
                 return await Context.Channel.SendMessageAsync(text).ConfigureAwait(false);

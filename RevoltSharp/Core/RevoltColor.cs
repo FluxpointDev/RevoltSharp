@@ -4,12 +4,19 @@ namespace RevoltSharp
 {
     public class RevoltColor
     {
-        public int R { get; }
-        public int G { get; }
-        public int B { get; }
+        public bool IsEmpty { get; internal set; }
+        public int R { get; internal set; } = 0;
+        public int G { get; internal set; } = 0;
+        public int B { get; internal set; } = 0;
         public string Hex
-        => string.Format("{0:X2}{1:X2}{2:X2}", R, G, B);
+        => (R == 0 && G == 0 && B == 0) ? "#000000" : string.Format("{0:X2}{1:X2}{2:X2}", R, G, B);
 
+        public RevoltColor(Color color)
+        {
+            R = color.R;
+            G = color.G;
+            B = color.B;
+        }
         public RevoltColor(int r, int g, int b)
         {
             this.R = r;
@@ -18,10 +25,14 @@ namespace RevoltSharp
         }
         public RevoltColor(string hex)
         {
-            Color color = ColorTranslator.FromHtml(hex);
-            R = color.R;
-            G = color.G;
-            B = color.B;
+            IsEmpty = string.IsNullOrEmpty(hex);
+            if (!IsEmpty)
+            {
+                Color color = ColorTranslator.FromHtml(hex);
+                R = color.R;
+                G = color.G;
+                B = color.B;
+            }
         }
     }
 }

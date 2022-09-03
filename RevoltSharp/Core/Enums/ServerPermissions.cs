@@ -21,7 +21,7 @@
             {
                 ulong resolvedServer = 0;
                 ulong resolvedChannel = 0;
-                foreach (Role r in member.Roles.Values)
+                foreach (Role r in member.InternalRoles.Values)
                 {
                     resolvedServer |= r.Permissions.RawServer;
                 }

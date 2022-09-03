@@ -76,7 +76,7 @@ namespace RevoltSharp
                 return true;
             foreach (var c in RolePermissions)
             {
-                if (member.Roles.ContainsKey(c.Key))
+                if (member.InternalRoles.ContainsKey(c.Key))
                 {
                     bool HasRole = c.Value.Has(permission);
                     if (HasRole)

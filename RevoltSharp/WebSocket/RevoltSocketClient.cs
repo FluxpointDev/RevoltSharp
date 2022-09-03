@@ -205,14 +205,14 @@ namespace RevoltSharp.WebSocket
                                 foreach (var m in @event.Members)
                                 {
                                     if (ServerCache.TryGetValue(m.Id.Server, out Server s))
-                                        s.Members.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
+                                        s.InternalMembers.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
                                 }
                                 foreach (var m in @event.Emojis)
                                 {
                                     Emoji Emote = new Emoji(Client, m);
                                     EmojiCache.TryAdd(m.Id, Emote);
                                     if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
-                                        s.Emojis.TryAdd(m.Id, Emote);
+                                        s.InternalEmojis.TryAdd(m.Id, Emote);
                                 }
                                 Console.WriteLine("Revolt WebSocket Ready!");
 
@@ -416,7 +416,7 @@ namespace RevoltSharp.WebSocket
                             Console.WriteLine("Joined server new");
                             ServerJoinEventJson @event = payload.ToObject<ServerJoinEventJson>(Client.Serializer);
                             ServerCache.TryAdd(@event.Server.Id, @event.Server);
-                            Console.WriteLine("Joined Server: " + @event.Server.Members.Keys.Count());
+                            Console.WriteLine("Joined Server: " + @event.Server.InternalMembers.Keys.Count());
                             foreach (ServerChannel c in @event.Channels)
                             {
                                 Console.WriteLine("Added channel: " + c.Name);
@@ -458,7 +458,7 @@ namespace RevoltSharp.WebSocket
                             {
                                 ChannelCache.TryRemove(c, out _);
                             }
-                            foreach (ServerMember m in server.Members.Values)
+                            foreach (ServerMember m in server.InternalMembers.Values)
                             {
                                 server.RemoveMember(m.User, true);
                             }
@@ -514,7 +514,7 @@ namespace RevoltSharp.WebSocket
                             {
                                 Console.WriteLine("Left server");
                                 ServerCache.TryRemove(@event.Id, out Server server);
-                                foreach (ServerMember m in server.Members.Values)
+                                foreach (ServerMember m in server.InternalMembers.Values)
                                 {
                                     server.RemoveMember(m.User, true);
                                 }
@@ -527,7 +527,7 @@ namespace RevoltSharp.WebSocket
                             else
                             {
                                 Server server = ServerCache[@event.Id];
-                                server.Members.TryGetValue(@event.UserId, out ServerMember Member);
+                                server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
                                 if (Member == null)
                                 {
                                     User User = await Client.Rest.GetUserAsync(@event.UserId);
@@ -543,7 +543,7 @@ namespace RevoltSharp.WebSocket
                             ServerRoleUpdateEventJson @event = payload.ToObject<ServerRoleUpdateEventJson>(Client.Serializer);
                             if (ServerCache.TryGetValue(@event.Id, out Server server))
                             {
-                                if (server.Roles.TryGetValue(@event.RoleId, out Role role))
+                                if (server.InternalRoles.TryGetValue(@event.RoleId, out Role role))
                                 {
                                     Role cloned = role.Clone();
                                     role.Update(@event.Data);
@@ -552,7 +552,7 @@ namespace RevoltSharp.WebSocket
                                 else
                                 {
                                     Role newRole = new Role(Client, @event.Data, @event.Id, @event.RoleId);
-                                    server.Roles.TryAdd(@event.RoleId, newRole);
+                                    server.InternalRoles.TryAdd(@event.RoleId, newRole);
                                     Client.InvokeRoleCreated(newRole);
                                 }
                             }
@@ -563,10 +563,10 @@ namespace RevoltSharp.WebSocket
                             ServerRoleDeleteEventJson @event = payload.ToObject<ServerRoleDeleteEventJson>(Client.Serializer);
                             if (ServerCache.TryGetValue(@event.Id, out Server server))
                             {
-                                server.Roles.TryRemove(@event.RoleId, out Role role);
-                                foreach (ServerMember m in server.Members.Values)
+                                server.InternalRoles.TryRemove(@event.RoleId, out Role role);
+                                foreach (ServerMember m in server.InternalMembers.Values)
                                 {
-                                    m.Roles.TryRemove(@event.RoleId, out _);
+                                    m.InternalRoles.TryRemove(@event.RoleId, out _);
                                 }
                                 Client.InvokeRoleDeleted(role);
                             }
@@ -618,7 +618,7 @@ namespace RevoltSharp.WebSocket
                             Emoji Emoji = new Emoji(Client, @event);
                             EmojiCache.TryAdd(Emoji.Id, Emoji);
                             ServerCache.TryGetValue(Emoji.ServerId, out Server Server);
-                            Server.Emojis.TryAdd(Emoji.Id, Emoji);
+                            Server.InternalEmojis.TryAdd(Emoji.Id, Emoji);
                             Client.InvokeEmojiCreated(Server, Emoji);
                         }
                         break;
@@ -627,7 +627,7 @@ namespace RevoltSharp.WebSocket
                             ServerEmojiDeleteEventJson @event = payload.ToObject<ServerEmojiDeleteEventJson>(Client.Serializer);
                             EmojiCache.TryRemove(@event.Id, out Emoji Emoji);
                             ServerCache.TryGetValue(Emoji.ServerId, out Server Server);
-                            Server.Emojis.TryRemove(Emoji.Id, out Emoji Emoji2);
+                            Server.InternalEmojis.TryRemove(Emoji.Id, out Emoji Emoji2);
                             Client.InvokeEmojiDeleted(Server, Emoji);
                         }
                         break;

@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp
+﻿using System;
+
+namespace RevoltSharp
 {
     /// <summary>
     /// Create a embed to use for messages
@@ -113,6 +115,7 @@
 
         internal EmbedJson ToJson()
         {
+            //Console.WriteLine($"{Color.R}:{Color.G}:{Color.B} - {Color.Hex}");
             return new EmbedJson
             {
                 icon_url = IconUrl,
@@ -120,7 +123,7 @@
                 title = Title,
                 description = Description,
                 media = Image == null ? null : Image.Filename,
-                colour = Color?.Hex
+                colour =  Color == null ? "" : (Color.IsEmpty ? null : Color.Hex)
             };
         }
     }

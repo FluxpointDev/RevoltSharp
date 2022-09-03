@@ -20,7 +20,7 @@ namespace RevoltSharp
             if (string.IsNullOrEmpty(userId))
                 throw new RevoltArgumentException("User id can't be empty for this request.");
 
-            if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.Members.TryGetValue(userId, out ServerMember sm))
+            if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.InternalMembers.TryGetValue(userId, out ServerMember sm))
                 return sm;
 
             ServerMemberJson Member = await rest.SendRequestAsync<ServerMemberJson>(RequestType.Get, $"servers/{serverId}/members/{userId}");

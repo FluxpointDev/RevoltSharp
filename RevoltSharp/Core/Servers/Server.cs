@@ -17,7 +17,7 @@ namespace RevoltSharp
             Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
             ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
             OwnerId = model.Owner;
-            Roles = model.Roles != null
+            InternalRoles = model.Roles != null
                 ? new ConcurrentDictionary<string, Role>(model.Roles.ToDictionary(x => x.Key, x => new Role(client, x.Value, model.Id, x.Key)))
                 : new ConcurrentDictionary<string, Role>();
             Analytics = model.Analytics;
@@ -36,11 +36,11 @@ namespace RevoltSharp
 
         //public ServerCategory[] Categories;
         //public ServerSystemMessages SystemMessages;
-        internal ConcurrentDictionary<string, Role> Roles { get; set; }
+        internal ConcurrentDictionary<string, Role> InternalRoles { get; set; }
 
-        internal ConcurrentDictionary<string, Emoji> Emojis { get; set; } = new ConcurrentDictionary<string, Emoji>();
+        internal ConcurrentDictionary<string, Emoji> InternalEmojis { get; set; } = new ConcurrentDictionary<string, Emoji>();
 
-        internal ConcurrentDictionary<string, ServerMember> Members { get; set; } = new ConcurrentDictionary<string, ServerMember>();
+        internal ConcurrentDictionary<string, ServerMember> InternalMembers { get; set; } = new ConcurrentDictionary<string, ServerMember>();
 
         public ServerPermissions DefaultPermissions { get; internal set; }
 
@@ -54,39 +54,33 @@ namespace RevoltSharp
 
         public ServerMember GetCachedMember(string userId)
         {
-            if (Members.TryGetValue(userId, out ServerMember member))
+            if (InternalMembers.TryGetValue(userId, out ServerMember member))
                 return member;
             return null;
         }
 
-        public IReadOnlyCollection<ServerMember> GetCachedMembers()
-        {
-            return (IReadOnlyCollection<ServerMember>)Members.Values;
-        }
+        public IReadOnlyCollection<ServerMember> CachedMembers
+            => (IReadOnlyCollection<ServerMember>)InternalMembers.Values;
 
         public Role GetRole(string roleId)
         {
-            if (Roles.TryGetValue(roleId, out Role role))
+            if (InternalRoles.TryGetValue(roleId, out Role role))
                 return role;
             return null;
         }
 
-        public IReadOnlyCollection<Role> GetRoles()
-        {
-            return (IReadOnlyCollection<Role>)Roles.Values;
-        }
+        public IReadOnlyCollection<Role> Roles
+            => (IReadOnlyCollection<Role>)InternalRoles.Values;
 
         public Emoji GetEmoji(string emojiId)
         {
-            if (Emojis.TryGetValue(emojiId, out Emoji emoji))
+            if (InternalEmojis.TryGetValue(emojiId, out Emoji emoji))
                 return emoji;
             return null;
         }
 
-        public IReadOnlyCollection<Emoji> GetEmojis()
-        {
-            return (IReadOnlyCollection<Emoji>)Emojis.Values;
-        }
+        public IReadOnlyCollection<Emoji> Emojis
+            => (IReadOnlyCollection<Emoji>)InternalEmojis.Values;
 
         public TextChannel GetTextChannel(string channelId)
         {
@@ -141,14 +135,14 @@ namespace RevoltSharp
 
         internal void AddMember(ServerMember member)
         {
-            Members.TryAdd(member.Id, member);
+            InternalMembers.TryAdd(member.Id, member);
             member.User.MutualServers.TryAdd(Id, this);
         }
 
         internal void RemoveMember(User user, bool delete)
         {
             if (!delete)
-                Members.TryRemove(user.Id, out _);
+                InternalMembers.TryRemove(user.Id, out _);
 
             user.MutualServers.TryRemove(Id, out _);
             if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals())

@@ -93,6 +93,9 @@ namespace RevoltSharp.Rest
 
         internal async Task<FileAttachment> InternalUploadFileAsync(byte[] bytes, string name, UploadFileType type)
         {
+            if (bytes == null || bytes.Length == 0)
+                throw new RevoltArgumentException("Image bytes is empty on file upload.");
+
             if (string.IsNullOrEmpty(name))
                 throw new RevoltArgumentException("File upload name can't be empty for this request.");
 
@@ -103,9 +106,13 @@ namespace RevoltSharp.Rest
             Mes.Content = MP;
             HttpResponseMessage Req = await FileHttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented));
+                Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
+
+            if (Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
+                throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
+
             return Req.IsSuccessStatusCode ? new FileAttachment(DeserializeJson<FileAttachmentJson>(Req.Content.ReadAsStream()).id) : null;
         }
 
@@ -159,14 +166,18 @@ namespace RevoltSharp.Rest
             {
                 Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
                 if (Client.Config.Debug.LogRestRequestJson)
-                    Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented));
+                    Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented));
+                Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
 
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
+
+            if (method != HttpMethod.Get && Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
+                throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
+
             if (Req.IsSuccessStatusCode && Client.Config.Debug.LogRestResponseJson)
             {
                 string Content = await Req.Content.ReadAsStringAsync();
@@ -185,19 +196,23 @@ namespace RevoltSharp.Rest
             {
                 Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
                 if (Client.Config.Debug.LogRestRequestJson)
-                    Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented));
+                    Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Client.Config.Debug.LogRestRequest)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented));
+                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             if (Client.Config.Debug.CheckRestRequest)
                 Req.EnsureSuccessStatusCode();
+
+            if (method != HttpMethod.Get && Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
+                throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
+
             TResponse Response = null;
             if (Req.IsSuccessStatusCode)
             {
                 Response = DeserializeJson<TResponse>(Req.Content.ReadAsStream());
                 if (Client.Config.Debug.LogRestResponseJson)
-                    Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented));
+                    Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             }
             return Response;
         }

@@ -29,6 +29,9 @@ namespace RevoltSharp
                 DisableConsoleQuickEdit.Go();
             }
             catch { }
+            if (string.IsNullOrEmpty(token))
+                throw new RevoltArgumentException("Client token is missing!");
+
             Token = token;
             Config = config ?? new ClientConfig();
             UserBot = config.UserBot;
@@ -46,7 +49,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "3.2.0";
+        public string Version { get; } = "3.2.1";
 
         internal bool UserBot { get; set; }
 

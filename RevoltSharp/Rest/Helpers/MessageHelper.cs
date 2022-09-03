@@ -1,4 +1,5 @@
 ﻿using Optional;
+using Optional.Collections;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
@@ -19,15 +20,21 @@ namespace RevoltSharp
             if (string.IsNullOrEmpty(channelId))
                 throw new RevoltArgumentException("Channel id can't be empty for this request.");
 
+            if (string.IsNullOrEmpty(content) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))
+                throw new RevoltArgumentException("Message content, attachments and embed can't be empty.");
+
             if (content.Length > 2000)
                 throw new RevoltArgumentException("Message content can't be more than 2000");
+
+            if (rest.Client.UserBot && embeds != null)
+                throw new RevoltRestException("Userbots cannot send embeds!", 401);
 
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             { 
                 content = Option.Some(content),
                 nonce = Option.Some(Guid.NewGuid().ToString()),
-                attachments = Option.Some(attachments),
-                embeds = embeds == null ? Option.Some<EmbedJson[]>(null) : Option.Some(embeds.Select(x => x.ToJson()).ToArray())
+                attachments = attachments == null ? Option.None<string[]>() : Option.Some(attachments),
+                embeds = embeds == null ? Option.None<EmbedJson[]>() : Option.Some(embeds.Select(x => x.ToJson()).ToArray())
             });
             return Message.Create(rest.Client, Data);
         }

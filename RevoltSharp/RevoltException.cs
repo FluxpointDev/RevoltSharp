@@ -13,6 +13,14 @@ namespace RevoltSharp
         public int Code { get; set; }
     }
 
+    public class RevoltRestException : RevoltException
+    {
+        public RevoltRestException(string message, int code) : base(message, code)
+        {
+
+        }
+    }
+
     public class RevoltArgumentException : RevoltException
     {
         public RevoltArgumentException(string message) : base(message, 400)

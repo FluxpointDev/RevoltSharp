@@ -22,14 +22,14 @@ namespace RevoltSharp
 
         public BigInteger Rank { get; internal set; }
 
-        public string Color { get; internal set; }
+        public RevoltColor Color { get; internal set; }
 
         internal Role(RevoltClient client, RoleJson model, string serverId, string roleId)
             : base(client)
         {
 
             Id = roleId;
-            Color = model.Colour;
+            Color = new RevoltColor(model.Colour);
             IsHoisted = model.Hoist;
             Name = model.Name;
             Permissions = new ServerPermissions(model.Permissions.Allowed);
@@ -62,7 +62,7 @@ namespace RevoltSharp
                 Rank = json.Rank.ValueOrDefault();
 
             if (json.Colour.HasValue)
-                Color = json.Colour.ValueOrDefault();
+                Color = new RevoltColor(json.Colour.ValueOrDefault());
         }
 
         internal Role Clone()

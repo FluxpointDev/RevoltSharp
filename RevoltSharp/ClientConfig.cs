@@ -21,6 +21,11 @@ namespace RevoltSharp
         /// Enable this if you want to use the lib with a userbot
         /// </summary>
         public bool UserBot;
+
+        /// <summary>
+        /// Enabled by default, rest requests for POST/PUT/DELETE will throw a RevoltRestException
+        /// </summary>
+        public bool RestThrowException = true;
     }
     public class ClientDebugConfig
     {
@@ -62,7 +67,7 @@ namespace RevoltSharp
         /// Check all requests sent, if they are not successful enable this to throw an exception.
         /// </summary>
         /// <remarks>
-        /// By default the lib will return a <see cref="HttpResponseMessage"/> or <see langword="null"/> for <see langword="GetServerAsync"/>, <see langword="GetUserAsync"/>, ect.
+        /// By default the lib will return <see langword="null"/> for get requests, <see cref="RevoltRestException"/> for post/put/delete or <see cref="HttpResponseMessage"/> if you disable <see cref="ClientConfig.RestThrowException"/>.
         /// </remarks>
         public bool CheckRestRequest { get; set; }
 

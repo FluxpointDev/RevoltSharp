@@ -20,10 +20,9 @@ namespace TestBot
             string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
             string Pass = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Pass.txt");
 
-            Client = new RevoltClient(Pass, ClientMode.WebSocket, new ClientConfig
+            Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
             {
-                UserBot = true,
-                Debug = new ClientDebugConfig { LogRestRequest = true, LogWebSocketFull = true, LogWebSocketError = true, LogWebSocketUnknownEvent = true }
+                Debug = new ClientDebugConfig { LogRestRequestJson = true, LogRestRequest = true, LogWebSocketFull = true, LogWebSocketError = true, LogWebSocketUnknownEvent = true }
             });
             await Client.StartAsync();
             CommandHandler Commands = new CommandHandler(Client);

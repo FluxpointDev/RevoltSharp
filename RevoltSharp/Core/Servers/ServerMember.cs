@@ -17,9 +17,20 @@ namespace RevoltSharp
 
         public Attachment ServerAvatar { get; internal set; }
 
-        public HashSet<string> RolesIds { get; internal set; }
+        public string[] RolesIds { get; internal set; }
 
-        public ConcurrentDictionary<string, Role> Roles { get; internal set;  }  = new ConcurrentDictionary<string, Role>();
+        internal ConcurrentDictionary<string, Role> InternalRoles { get; set;  }  = new ConcurrentDictionary<string, Role>();
+
+        public Role GetRole(string roleId)
+        {
+            if (InternalRoles.TryGetValue(roleId, out Role role))
+                return role;
+            return null;
+        }
+
+        public IReadOnlyCollection<Role> Roles
+            => (IReadOnlyCollection<Role>)InternalRoles.Values;
+
 
         public ServerPermissions Permissions { get; internal set; }
 
@@ -31,17 +42,17 @@ namespace RevoltSharp
                 ServerId = sModel.Id.Server;
                 Nickname = sModel.Nickname;
                 ServerAvatar = sModel.Avatar != null ? new Attachment(client, sModel.Avatar) : null;
-                RolesIds = sModel.Roles != null ? sModel.Roles.ToHashSet() : new HashSet<string>();
+                RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
                 if (client.WebSocket != null)
                 {
                     Server server = client.GetServer(ServerId);
-                    Roles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.Roles[x]));
+                    InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
                     Permissions = new ServerPermissions(server, this);
                 }
             }
             else
             {
-                RolesIds = new HashSet<string>();
+                RolesIds = new string[0];
             }
             if (client.WebSocket != null)
             {
@@ -62,7 +73,7 @@ namespace RevoltSharp
             {
                 RolesIds = json.Roles.ValueOrDefault();
                 Server server = Client.GetServer(ServerId);
-                Roles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.Roles[x]));
+                InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
                 Permissions = new ServerPermissions(server, this);
             }
         }
