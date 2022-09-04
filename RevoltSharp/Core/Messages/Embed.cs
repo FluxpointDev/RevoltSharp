@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Optional;
+using System;
 
 namespace RevoltSharp
 {
@@ -123,7 +124,7 @@ namespace RevoltSharp
                 title = Title,
                 description = Description,
                 media = Image == null ? null : Image.Filename,
-                colour =  Color == null ? "" : (Color.IsEmpty ? null : Color.Hex)
+                colour =  Color == null ? Option.None<string>() : (Color.IsEmpty ? Option.None<string>() : Option.Some(Color.Hex))
             };
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp
+﻿using Optional;
+
+namespace RevoltSharp
 {
     internal class EmbedJson
     {
@@ -7,6 +9,6 @@
         public string title;
         public string description;
         public string media;
-        public string colour;
+        public Option<string> colour;
     }
 }
