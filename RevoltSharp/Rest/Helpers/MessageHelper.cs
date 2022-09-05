@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace RevoltSharp
 {
@@ -29,6 +32,27 @@ namespace RevoltSharp
             if (rest.Client.UserBot && embeds != null)
                 throw new RevoltRestException("Userbots cannot send embeds!", 401);
 
+            if (embeds != null && embeds.Any(x => !string.IsNullOrEmpty(x.Image)))
+            {
+                var uploadTasks = embeds.Select(async x =>
+                {
+                    if (x.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || x.Image.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var Bytes = await rest.FileHttpClient.GetByteArrayAsync(x.Image);
+                        var Upload = await rest.UploadFileAsync(Bytes, "image.png", RevoltRestClient.UploadFileType.Attachment);
+                        x.Image = Upload.Id;
+                    }
+                    else if (x.Image.Contains('/') || x.Image.Contains('\\'))
+                    {
+                        if (!System.IO.File.Exists(x.Image))
+                            throw new RevoltArgumentException("Embed image url path does not exist.");
+                        var Upload = await rest.UploadFileAsync(x.Image, RevoltRestClient.UploadFileType.Attachment);
+                        x.Image = Upload.Id;
+                    }
+
+                });
+                await Task.WhenAll(uploadTasks);
+            }
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             { 
                 content = Option.Some(content),
@@ -39,9 +63,6 @@ namespace RevoltSharp
             });
             return Message.Create(rest.Client, Data);
         }
-
-
-
 
         public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, string messageId, GetMessagesRequest req)
             => GetMessagesAsync(channel.Client.Rest, channel.Id, req);
@@ -112,7 +133,6 @@ namespace RevoltSharp
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");
         }
 
-
-
+        
     }
 }

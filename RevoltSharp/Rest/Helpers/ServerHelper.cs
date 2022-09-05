@@ -30,12 +30,13 @@ namespace RevoltSharp
                 throw new RevoltArgumentException("Server id can't be empty for this request.");
 
             ServerBansJson Bans = await rest.SendRequestAsync<ServerBansJson>(RequestType.Get, $"/servers/{serverId}/bans");
-            IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client) { Id = x.Id, Avatar = x.Avatar == null ? null : new Attachment(rest.Client, x.Avatar), Username = x.Username, Reason = Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault().Reason} );
+            IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client) { Id = x.Id, Avatar = x.Avatar == null ? null : new Attachment(x.Avatar), Username = x.Username, Reason = Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault().Reason} );
             return BanList.ToArray();
         }
 
-        public static Task<HttpResponseMessage> LeaveServerAsync(this Server server)
+        public static Task<HttpResponseMessage> LeaveAsync(this Server server)
             => LeaveServerAsync(server.Client.Rest, server.Id);
+
         public static Task<HttpResponseMessage> LeaveServerAsync(this SelfUser user, Server server)
            => LeaveServerAsync(user.Client.Rest, server.Id);
         public static Task<HttpResponseMessage> LeaveServerAsync(this SelfUser user, string serverId)

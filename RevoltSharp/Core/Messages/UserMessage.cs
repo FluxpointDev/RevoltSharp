@@ -23,9 +23,9 @@ namespace RevoltSharp
 
         public DateTimeOffset? EditedAt { get; internal set; }
 
-        public IReadOnlyList<Embed> Embeds { get; internal set; }
+        public IReadOnlyList<MessageEmbed> Embeds { get; internal set; }
 
-        public Dictionary<Emoji, User[]> Reactions { get; internal set; }
+        public IReadOnlyDictionary<Emoji, User[]> Reactions { get; internal set; }
 
         public MessageMasquerade Masquerade { get; internal set; }
 
@@ -40,12 +40,12 @@ namespace RevoltSharp
             Nonce = model.Nonce;
             Content = model.Content;
             Masquerade = model.Masquerade == null ? null : new MessageMasquerade(model.Masquerade);
-            Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => new Attachment(client, a)));
+            Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => new Attachment(a)));
             Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
             Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
             if (model.Edited.HasValue)
                 EditedAt = model.Edited.ValueOrDefault();
-            Embeds = model.Embeds == null ? new List<Embed>() : new List<Embed>(model.Embeds);
+            Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => new MessageEmbed(x)));
             if (!model.Reactions.HasValue)
                 Reactions = new Dictionary<Emoji, User[]>();
             else

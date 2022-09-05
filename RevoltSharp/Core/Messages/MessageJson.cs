@@ -35,7 +35,7 @@ namespace RevoltSharp
         public string[] Replies;
 
         [JsonProperty("embeds")]
-        public Embed[] Embeds;
+        public EmbedJson[] Embeds;
 
         [JsonProperty("system")]
         public MessageSystemJson System;

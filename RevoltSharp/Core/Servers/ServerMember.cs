@@ -47,7 +47,7 @@ namespace RevoltSharp
             JoinedAt = sModel.JoinedAt;
             if (sModel.Timeout.HasValue)
                 Timeout = sModel.Timeout.ValueOrDefault();
-            ServerAvatar = sModel.Avatar != null ? new Attachment(client, sModel.Avatar) : null;
+            ServerAvatar = sModel.Avatar != null ? new Attachment(sModel.Avatar) : null;
             RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
             Server server = client.GetServer(ServerId);
             server.AddMember(this);
@@ -61,7 +61,7 @@ namespace RevoltSharp
                 Nickname = json.Nickname.ValueOrDefault();
 
             if (json.Avatar.HasValue)
-                ServerAvatar = json.Avatar.ValueOrDefault() == null ? null : new Attachment(Client, json.Avatar.ValueOrDefault());
+                ServerAvatar = json.Avatar.ValueOrDefault() == null ? null : new Attachment(json.Avatar.ValueOrDefault());
 
             if (json.Roles.HasValue)
             {

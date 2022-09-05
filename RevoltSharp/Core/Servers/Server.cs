@@ -13,8 +13,8 @@ namespace RevoltSharp
                 Name = model.Name;
             DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
             Description = model.Description;
-            Banner = model.Banner != null ? new Attachment(client, model.Banner) : null;
-            Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
+            Banner = model.Banner != null ? new Attachment(model.Banner) : null;
+            Icon = model.Icon != null ? new Attachment(model.Icon) : null;
             ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
             OwnerId = model.Owner;
             InternalRoles = model.Roles != null
@@ -116,10 +116,10 @@ namespace RevoltSharp
                 Name = json.Name.ValueOrDefault();
 
             if (json.Icon.HasValue)
-                Icon = new Attachment(Client, json.Icon.ValueOrDefault());
+                Icon = new Attachment(json.Icon.ValueOrDefault());
 
             if (json.Banner.HasValue)
-                Banner = new Attachment(Client, json.Icon.ValueOrDefault());
+                Banner = new Attachment(json.Icon.ValueOrDefault());
 
             if (json.DefaultPermissions.HasValue)
                 DefaultPermissions = new ServerPermissions(json.DefaultPermissions.ValueOrDefault());

@@ -1,5 +1,7 @@
 ﻿using Optional;
+using Optional.Unsafe;
 using System;
+using System.Drawing;
 
 namespace RevoltSharp
 {
@@ -31,7 +33,7 @@ namespace RevoltSharp
         /// <summary>
         /// Embed image attachment
         /// </summary>
-        public FileAttachment Image { get; set; }
+        public string Image { get; set; }
 
         /// <summary>
         /// Embed color
@@ -50,20 +52,38 @@ namespace RevoltSharp
                 Url = Url,
                 IconUrl = IconUrl,
                 Description = Description,
-                Image = Image == null ? null : new Attachment(null, null)
-                {
-                    Filename = Image.Id
-                },
+                Image = Image,
                 Color = Color
             };
         }
     }
 
-    /// <summary>
-    /// Message embeds
-    /// </summary>
-    public class Embed
+    public class MessageEmbed
     {
+        internal MessageEmbed(EmbedJson model)
+        {
+            Type = model.type;
+            switch (Type)
+            {
+                case EmbedType.Image:
+                    Image = new EmbedMedia(null) { Url = model.url, Height = model.height, Width = model.width };
+                    break;
+                case EmbedType.Video:
+                    Video = new EmbedMedia(null) { Url = model.url, Height = model.height, Width = model.width };
+                    break;
+            }
+            Url = model.url;
+            IconUrl = model.icon_url;
+            Title = model.title;
+            Description = model.description;
+            Site = model.site_name;
+            Color = model.colour.HasValue == false ? new RevoltColor("") : new RevoltColor(model.colour.ValueOrDefault());
+            Image = model.image == null ? null : new EmbedMedia(model.image);
+            Media = model.media == null ? null : new EmbedMedia(model.media as EmbedMediaJson);
+            Video = model.video == null ? null : new EmbedMedia(model.video);
+            Provider = model.special == null ? EmbedProviderType.None : model.special.Type;
+        }
+
         /// <summary>
         /// Type of embed
         /// </summary>
@@ -97,47 +117,102 @@ namespace RevoltSharp
         /// <summary>
         /// Embed color
         /// </summary>
-        public RevoltColor Color { get; internal set; }
+        public RevoltColor Color { get; internal set; } = new RevoltColor("");
 
         /// <summary>
         /// Embed image attachment
         /// </summary>
-        public Attachment Image { get; internal set; }
+        public EmbedMedia Image { get; internal set; }
+
+        public EmbedMedia Media { get; internal set; }
 
         /// <summary>
         /// Embed video attachment
         /// </summary>
-        public Attachment Video { get; }
+        public EmbedMedia Video { get; internal set; }
 
         /// <summary>
         /// Embed provider
         /// </summary>
-        public EmbedProvider Provider { get; }
+        public EmbedProviderType Provider { get; }
+    }
+
+    /// <summary>
+    /// Message embeds
+    /// </summary>
+    public class Embed
+    {
+        
+        public Embed()
+        {
+
+        }
+
+        /// <summary>
+        /// Embed url
+        /// </summary>
+        public string Url { get; internal set; }
+
+        /// <summary>
+        /// Embed icon url
+        /// </summary>
+        public string IconUrl { get; internal set; }
+
+        /// <summary>
+        /// Embed title
+        /// </summary>
+        public string Title { get; internal set; }
+
+        /// <summary>
+        /// Embed description
+        /// </summary>
+        public string Description { get; internal set; }
+
+        /// <summary>
+        /// Embed image url
+        /// </summary>
+        public string Image { get; internal set; }
+
+        /// <summary>
+        /// Embed color
+        /// </summary>
+        public RevoltColor Color { get; internal set; } = new RevoltColor("");
+
 
         internal EmbedJson ToJson()
         {
-            //Console.WriteLine($"{Color.R}:{Color.G}:{Color.B} - {Color.Hex}");
+            Console.WriteLine("IMG: " + Image);
             return new EmbedJson
             {
                 icon_url = IconUrl,
                 url = Url,
                 title = Title,
                 description = Description,
-                media = Image == null ? null : Image.Filename,
+                media = Image == null ? null : Image,
                 colour =  Color == null ? Option.None<string>() : (Color.IsEmpty ? Option.None<string>() : Option.Some(Color.Hex))
             };
         }
     }
-    public class EmbedProvider
+    public class EmbedMedia
     {
-        public EmbedProviderType Type { get; }
+        internal EmbedMedia(EmbedMediaJson model)
+        {
+            if (model == null)
+                return;
+            Url = model.url;
+            Width = model.width;
+            Height = model.height;
+        }
+        public string Url;
+        public int Width;
+        public int Height;
     }
     public enum EmbedType
     {
-        None, Website, Image, Text
+        None, Website, Image, Video, Text
     }
     public enum EmbedProviderType
     {
-        None, YouTube, Twitch, Spotify, Soundcloud, Bandcamp
+        None, GIF, Lightspeed, YouTube, Twitch, Spotify, Soundcloud, Bandcamp
     }
 }

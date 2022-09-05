@@ -49,7 +49,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "3.2.6";
+        public string Version { get; } = "3.2.8";
 
         internal bool UserBot { get; set; }
 

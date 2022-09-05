@@ -1,5 +1,6 @@
 ﻿using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -130,6 +131,27 @@ namespace RevoltSharp
             return await rest.SendRequestAsync(RequestType.Delete, $"/channels/{channelId}");
         }
 
-        
+        public static Task<HttpResponseMessage> DeleteMessagesAsync(this Channel channel, Message[] messages)
+            => DeleteMessagesAsync(channel.Client.Rest, channel.Id, messages.Select(x => x.Id).ToArray());
+
+        public static Task<HttpResponseMessage> DeleteMessagesAsync(this Channel channel, string[] messageIds)
+            => DeleteMessagesAsync(channel.Client.Rest, channel.Id, messageIds);
+
+        public static async Task<HttpResponseMessage> DeleteMessagesAsync(this RevoltRestClient rest, string channelId, string[] messageIds)
+        {
+            if (string.IsNullOrEmpty(channelId))
+                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+
+            if (messageIds == null || messageIds.Length == 0)
+                throw new RevoltArgumentException("Message id can't be empty for this request.");
+
+
+            return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest
+            {
+                ids = messageIds
+            });
+        }
+
+
     }
 }

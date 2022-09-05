@@ -12,7 +12,7 @@ namespace RevoltSharp
         {
             Name = name;
             Avatar = avatar;
-            Color = color;
+            Color = color == null ? new RevoltColor("") : color;
         }
         internal MessageMasquerade(MessageMasqueradeJson model)
         {
@@ -30,7 +30,7 @@ namespace RevoltSharp
             {
                 Name = Name,
                 Avatar = Avatar,
-                Color = Color == null ? null : Color.IsEmpty ? null : Color.Hex
+                Color = Color == null ? "#ffffff" : Color.IsEmpty ? "#ffffff" : Color.Hex
             };
         }
     }

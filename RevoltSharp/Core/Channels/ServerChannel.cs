@@ -18,7 +18,7 @@ namespace RevoltSharp
             RolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(x.Value)) : new Dictionary<string, ChannelPermissions>();
             Name = model.Name;
             Description = model.Description;
-            Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
+            Icon = model.Icon != null ? new Attachment(model.Icon) : null;
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace RevoltSharp
                 Name = json.Name.ValueOrDefault();
 
             if (json.Icon.HasValue)
-                Icon = new Attachment(Client, json.Icon.ValueOrDefault());
+                Icon = new Attachment(json.Icon.ValueOrDefault());
 
             if (json.DefaultPermissions.HasValue)
                 DefaultPermissions = new ChannelPermissions(json.DefaultPermissions.ValueOrDefault());

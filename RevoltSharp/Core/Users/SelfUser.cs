@@ -16,7 +16,7 @@
         {
 
             ProfileBio = model.Profile?.Content;
-            Background = model.Profile?.Background != null ? new Attachment(client, model.Profile.Background) : null;
+            Background = model.Profile?.Background != null ? new Attachment(model.Profile.Background) : null;
         }
 
 

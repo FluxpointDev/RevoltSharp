@@ -3,12 +3,10 @@
     /// <summary>
     /// Revolt file attachment for messages which could by any type including an image.
     /// </summary>
-    public class Attachment : Entity
+    public class Attachment 
     {
-        internal Attachment(RevoltClient client, AttachmentJson model) : base(client)
+        internal Attachment(AttachmentJson model)
         {
-            if (client == null)
-                return;
             Id = model.Id;
             Tag = model.Tag;
             Filename = model.Filename;

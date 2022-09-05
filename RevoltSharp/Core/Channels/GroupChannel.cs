@@ -31,7 +31,7 @@ namespace RevoltSharp
             Name = model.Name;
             OwnerId = model.Owner;
             Permissions = new ChannelPermissions(model.Permissions);
-            Icon = model.Icon != null ? new Attachment(client, model.Icon) : null;
+            Icon = model.Icon != null ? new Attachment(model.Icon) : null;
             IsNsfw = model.Nsfw;
         }
 
@@ -90,7 +90,7 @@ namespace RevoltSharp
                 Name = json.Name.ValueOrDefault();
 
             if (json.Icon.HasValue)
-                Icon = new Attachment(Client, json.Icon.ValueOrDefault());
+                Icon = new Attachment(json.Icon.ValueOrDefault());
 
             if (json.Description.HasValue)
                 Description = json.Description.ValueOrDefault();
