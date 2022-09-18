@@ -162,5 +162,19 @@
         {
             OnEmojiDeleted?.Invoke(server, emoji);
         }
+
+        public event RevoltEvent<Emoji, ServerChannel, ServerMember> OnReactionAdded;
+
+        internal void InvokeReactionAdded(Emoji emoji, ServerChannel channel, ServerMember member)
+        {
+            OnReactionAdded?.Invoke(emoji, channel, member);
+        }
+
+        public event RevoltEvent<Emoji, ServerChannel, ServerMember> OnReactionRemoved;
+
+        internal void InvokeReactionRemoved(Emoji emoji, ServerChannel channel, ServerMember member)
+        {
+            OnReactionRemoved?.Invoke(emoji, channel, member);
+        }
     }
 }

@@ -8,6 +8,12 @@ namespace RevoltSharp
 {
     public static class ChannelHelper
     {
+        internal static ChannelPermissions GetPermissions(this ServerChannel channel)
+        {
+            ChannelPermissions Perms = new ChannelPermissions(channel.DefaultPermissions.RawAllowed);
+            return Perms;
+        }
+
         public static Task<TextChannel> GetTextChannelAsync(this Server server, string channelId)
             => GetChannelAsync<TextChannel>(server.Client.Rest, channelId);
 

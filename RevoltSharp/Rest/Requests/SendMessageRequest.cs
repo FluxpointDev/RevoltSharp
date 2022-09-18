@@ -9,5 +9,6 @@ namespace RevoltSharp.Rest.Requests
         public Option<string[]> attachments;
         public Option<EmbedJson[]> embeds;
         public Option<MessageMasqueradeJson> masquerade;
+        public Option<MessageInteractionsJson> interactions;
     }
 }

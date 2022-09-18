@@ -2,7 +2,7 @@
 namespace RevoltSharp
 {
     /// <summary>
-    /// Server emoji
+    /// Server or default emoji
     /// </summary>
     public class Emoji : Entity
     {

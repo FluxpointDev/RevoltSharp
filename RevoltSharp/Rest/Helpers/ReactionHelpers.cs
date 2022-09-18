@@ -1,10 +1,6 @@
 ﻿using RevoltSharp.Rest.Requests;
 using RevoltSharp.Rest;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -30,19 +26,19 @@ namespace RevoltSharp
             return await rest.SendRequestAsync(RequestType.Put, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}");
         }
 
-        public static Task<HttpResponseMessage> DeleteReactionAsync(this UserMessage message, Emoji emoji, string userId, bool removeAll = false)
-            => DeleteMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emoji.Id, userId, removeAll);
+        public static Task<HttpResponseMessage> RemoveReactionAsync(this UserMessage message, Emoji emoji, string userId, bool removeAll = false)
+            => RemoveMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emoji.Id, userId, removeAll);
 
-        public static Task<HttpResponseMessage> DeleteReactionAsync(this UserMessage message, Emoji emoji, User user, bool removeAll = false)
-            => DeleteMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emoji.Id, user.Id, removeAll);
+        public static Task<HttpResponseMessage> RemoveReactionAsync(this UserMessage message, Emoji emoji, User user, bool removeAll = false)
+            => RemoveMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emoji.Id, user.Id, removeAll);
 
-        public static Task<HttpResponseMessage> DeleteReactionAsync(this UserMessage message, string emojiId, User user, bool removeAll = false)
-            => DeleteMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emojiId, user.Id, removeAll);
+        public static Task<HttpResponseMessage> RemoveReactionAsync(this UserMessage message, string emojiId, User user, bool removeAll = false)
+            => RemoveMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emojiId, user.Id, removeAll);
 
-        public static Task<HttpResponseMessage> DeleteReactionAsync(this UserMessage message, string emojiId, string userId, bool removeAll = false)
-            => DeleteMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emojiId, userId, removeAll);
+        public static Task<HttpResponseMessage> RemoveReactionAsync(this UserMessage message, string emojiId, string userId, bool removeAll = false)
+            => RemoveMessageReactionAsync(message.Client.Rest, message.Channel.Id, message.Id, emojiId, userId, removeAll);
 
-        public static async Task<HttpResponseMessage> DeleteMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId, string userId, bool removeAll = false)
+        public static async Task<HttpResponseMessage> RemoveMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId, string userId, bool removeAll = false)
         {
             if (string.IsNullOrEmpty(channelId))
                 throw new RevoltArgumentException("Channel id can't be empty for this request.");
@@ -61,10 +57,10 @@ namespace RevoltSharp
         }
 
 
-        public static Task<HttpResponseMessage> DeleteAllReactionsAsync(this UserMessage message)
-            => DeleteAllMessageReactionsAsync(message.Client.Rest, message.Channel.Id, message.Id);
+        public static Task<HttpResponseMessage> RemoveAllReactionsAsync(this UserMessage message)
+            => RemoveAllMessageReactionsAsync(message.Client.Rest, message.Channel.Id, message.Id);
 
-        public static async Task<HttpResponseMessage> DeleteAllMessageReactionsAsync(this RevoltRestClient rest, string channelId, string messageId)
+        public static async Task<HttpResponseMessage> RemoveAllMessageReactionsAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
             if (string.IsNullOrEmpty(channelId))
                 throw new RevoltArgumentException("Channel id can't be empty for this request.");

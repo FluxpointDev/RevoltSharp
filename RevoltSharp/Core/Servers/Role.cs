@@ -1,5 +1,4 @@
 ﻿using Optional.Unsafe;
-using System;
 using System.Numerics;
 
 namespace RevoltSharp

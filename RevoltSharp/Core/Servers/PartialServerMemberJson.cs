@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Optional;
 using System;
-using System.Collections.Generic;
 
 namespace RevoltSharp
 {

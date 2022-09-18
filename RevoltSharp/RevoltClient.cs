@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RevoltSharp.Core;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -49,7 +46,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "3.2.8";
+        public string Version { get; } = "3.2.9";
 
         internal bool UserBot { get; set; }
 

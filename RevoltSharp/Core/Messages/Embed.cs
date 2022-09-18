@@ -1,7 +1,6 @@
 ﻿using Optional;
 using Optional.Unsafe;
 using System;
-using System.Drawing;
 
 namespace RevoltSharp
 {

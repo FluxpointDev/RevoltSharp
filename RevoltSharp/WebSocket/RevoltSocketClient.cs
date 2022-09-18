@@ -644,7 +644,51 @@ namespace RevoltSharp.WebSocket
                             Client.InvokeEmojiDeleted(Server, Emoji);
                         }
                         break;
-
+                    case "MessageReact":
+                        {
+                            ReactionAddedEventJson @event = payload.ToObject<ReactionAddedEventJson>(Client.Serializer);
+                            EmojiCache.TryGetValue(@event.EmojiId, out Emoji emoji);
+                            if (emoji == null)
+                            {
+                                if (!Char.IsDigit(@event.EmojiId[0]))
+                                    emoji = new Emoji(Client, @event.EmojiId);
+                                else
+                                {
+                                    Emoji Emote = await Client.Rest.GetEmojiAsync(@event.EmojiId);
+                                    if (Emote == null)
+                                        return;
+                                    emoji = Emote;
+                                }
+                            }
+                            ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                            ServerChannel SC = channel as ServerChannel;
+                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId);
+                            Client.InvokeReactionAdded(emoji, SC, SM);
+                        }
+                        break;
+                    case "MessageUnreact":
+                        {
+                            ReactionRemovedEventJson @event = payload.ToObject<ReactionRemovedEventJson>(Client.Serializer);
+                            EmojiCache.TryGetValue(@event.EmojiId, out Emoji emoji);
+                            if (emoji == null)
+                            {
+                                if (!Char.IsDigit(@event.EmojiId[0]))
+                                    emoji = new Emoji(Client, @event.EmojiId);
+                                else
+                                {
+                                    Emoji Emote = await Client.Rest.GetEmojiAsync(@event.EmojiId);
+                                    if (Emote == null)
+                                        return;
+                                    emoji = Emote;
+                                }
+                            }
+                                
+                            ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                            ServerChannel SC = channel as ServerChannel;
+                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId);
+                            Client.InvokeReactionRemoved(emoji, SC, SM);
+                        }
+                        break;
 
                     case "ChannelStartTyping":
                     case "ChannelStopTyping":

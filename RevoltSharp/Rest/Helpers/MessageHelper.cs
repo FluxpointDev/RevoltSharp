@@ -1,24 +1,20 @@
 ﻿using Optional;
-using Optional.Collections;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Net.WebRequestMethods;
 
 namespace RevoltSharp
 {
     public static class MessageHelper
     {
-        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
-            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds, masquerade);
+        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null)
+            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds, masquerade, interactions);
 
-        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
+        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null)
         {
             if (string.IsNullOrEmpty(channelId))
                 throw new RevoltArgumentException("Channel id can't be empty for this request.");
@@ -54,12 +50,17 @@ namespace RevoltSharp
                 await Task.WhenAll(uploadTasks);
             }
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
-            { 
+            {
                 content = Option.Some(content),
                 nonce = Option.Some(Guid.NewGuid().ToString()),
                 attachments = attachments == null ? Option.None<string[]>() : Option.Some(attachments),
                 embeds = embeds == null ? Option.None<EmbedJson[]>() : Option.Some(embeds.Select(x => x.ToJson()).ToArray()),
-                masquerade = masquerade == null ? Option.None<MessageMasqueradeJson>() : Option.Some<MessageMasqueradeJson>(masquerade.ToJson())
+                masquerade = masquerade == null ? Option.None<MessageMasqueradeJson>() : Option.Some<MessageMasqueradeJson>(masquerade.ToJson()),
+                interactions = interactions == null ? Option.None<MessageInteractionsJson>() : Option.Some(new MessageInteractionsJson
+                {
+                    reactions = interactions.Reactions.Select(x => x.Id).ToArray(),
+                    restrict_reactions = interactions.RestrictReactions
+                })
             });
             return Message.Create(rest.Client, Data);
         }
