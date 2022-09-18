@@ -33,7 +33,8 @@ namespace RevoltSharp
             Color = new RevoltColor(model.Colour);
             IsHoisted = model.Hoist;
             Name = model.Name;
-            Permissions = new ServerPermissions(model.Permissions.Allowed);
+
+            Permissions = model.Permissions == null ? new ServerPermissions(0) : new ServerPermissions(model.Permissions.Allowed);
             Rank = model.Rank;
             ServerId = serverId;
             Server = client.GetServer(ServerId);
