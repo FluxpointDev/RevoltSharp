@@ -1,4 +1,5 @@
-﻿using RevoltSharp.Rest;
+﻿using Optional;
+using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,26 @@ namespace RevoltSharp
 {
     public static class MemberHelper
     {
+        public static async Task<HttpResponseMessage> AddRoleAsync(this RevoltRestClient rest, ServerMember member, Role role)
+        {
+            if (!member.Roles.Any(x => x.Id == role.Id))
+                return await rest.SendRequestAsync(RequestType.Patch, $"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
+                {
+                    roles = Option.Some(member.Roles.Append(role).Select(x => x.Id).ToArray())
+                });
+            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        }
+
+        public static async Task<HttpResponseMessage> RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, Role role)
+        {
+            if (member.Roles.Any(x => x.Id == role.Id))
+                return await rest.SendRequestAsync(RequestType.Patch, $"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
+                {
+                    roles = Option.Some(member.Roles.Except(new Role[] { role }).Select(x => x.Id).ToArray())
+                });
+            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        }
+
         public static Task<ServerMember> GetMemberAsync(this Server server, string userId)
             => GetMemberAsync(server.Client.Rest, server.Id, userId);
 

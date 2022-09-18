@@ -90,6 +90,29 @@ namespace TestBot.Commands
             }
         }
 
+        [Command("addrole")]
+        public async Task AddRole()
+        {
+            var Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
+            var Req = await Context.Client.Rest.AddRoleAsync(Member, Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
+            await ReplyAsync(Req.IsSuccessStatusCode.ToString());
+        
+        }
+
+        [Command("memberroles")]
+        public async Task Roles()
+        {
+            var Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
+            await ReplyAsync(String.Join(", ", Member.Roles.Select(x => x.Name)));
+        }
+
+        [Command("removerole")]
+        public async Task RemoveRole()
+        {
+            var Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
+            await Context.Client.Rest.RemoveRoleAsync(Member, Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
+        }
+
         [Command("testreaction")]
         public async Task TestReaction()
         {
