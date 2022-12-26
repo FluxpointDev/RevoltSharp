@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +25,18 @@ namespace RevoltSharp
             HasAnalytics = model.Analytics;
             IsDiscoverable = model.Discoverable;
             IsNsfw = model.Nsfw;
-            SystemMessages = new ServerSystemMessages
+            if (model.SystemMessages == null)
+                SystemMessages = new ServerSystemMessages();
+            else
             {
-                UserBanned = model.SystemMessages.UserBanned.SomeNotNull(),
-                UserJoined = model.SystemMessages.UserJoined.SomeNotNull(),
-                UserKicked = model.SystemMessages.UserKicked.SomeNotNull(),
-                UserLeft = model.SystemMessages.UserLeft.SomeNotNull()
-            };
+                SystemMessages = new ServerSystemMessages
+                {
+                    UserBanned = model.SystemMessages.UserBanned,
+                    UserJoined = model.SystemMessages.UserJoined,
+                    UserKicked = model.SystemMessages.UserKicked,
+                    UserLeft = model.SystemMessages.UserLeft
+                };
+            }
         }
 
         public string Id { get; internal set; }
@@ -153,6 +159,17 @@ namespace RevoltSharp
 
             if (json.Owner.HasValue)
                 OwnerId = json.Owner.Value;
+
+            if (json.SystemMessages.HasValue)
+            {
+                SystemMessages = new ServerSystemMessages
+                {
+                    UserBanned = json.SystemMessages.Value.UserBanned,
+                    UserJoined = json.SystemMessages.Value.UserJoined,
+                    UserKicked = json.SystemMessages.Value.UserKicked,
+                    UserLeft = json.SystemMessages.Value.UserLeft
+                };
+            }
         }
 
         internal Server Clone()

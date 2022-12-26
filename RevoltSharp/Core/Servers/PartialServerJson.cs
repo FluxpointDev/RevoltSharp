@@ -31,5 +31,8 @@ namespace RevoltSharp
 
         [JsonProperty("owner")]
         public Optional<string> Owner;
+
+        [JsonProperty("system_messages")]
+        public Optional<ServerSystemMessagesJson> SystemMessages;
     }
 }

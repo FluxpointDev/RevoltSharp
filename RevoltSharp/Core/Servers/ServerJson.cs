@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Optionals;
 using System.Collections.Generic;
 
 namespace RevoltSharp
@@ -54,15 +55,15 @@ namespace RevoltSharp
     internal class ServerSystemMessagesJson
     {
         [JsonProperty("user_joined")]
-        public string UserJoined;
+        public Optional<string> UserJoined;
 
         [JsonProperty("user_left")]
-        public string UserLeft;
+        public Optional<string> UserLeft;
 
         [JsonProperty("user_kicked")]
-        public string UserKicked;
+        public Optional<string> UserKicked;
 
         [JsonProperty("user_banned")]
-        public string UserBanned;
+        public Optional<string> UserBanned;
     }
 }
