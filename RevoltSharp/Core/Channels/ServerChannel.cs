@@ -94,8 +94,6 @@ namespace RevoltSharp
 
         internal override void Update(PartialChannelJson json)
         {
-            Console.WriteLine("Update Channel");
-
             if (json.Name.HasValue)
                 Name = json.Name.Value;
 

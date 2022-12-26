@@ -46,7 +46,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "4.0.1";
+        public string Version { get; } = "4.0.2";
 
         internal bool UserBot { get; set; }
 
@@ -83,12 +83,12 @@ namespace RevoltSharp
                 QueryRequest Query = await Rest.SendRequestAsync<QueryRequest>(RequestType.Get, "/");
                 if (Query == null)
                 {
-                    Console.WriteLine("Client failed to connect to the revolt api at " + Config.ApiUrl);
+                    Console.WriteLine("[RevoltSharp] Client failed to connect to the revolt api at " + Config.ApiUrl);
                     throw new RevoltException("Client failed to connect to the revolt api at " + Config.ApiUrl);
                 }
 
                 if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
-                    throw new RevoltException("Revolt server Image server url is an invalid format.");
+                    throw new RevoltException("[RevoltSharp] Server Image server url is an invalid format.");
 
                 Config.Debug.WebsocketUrl = Query.websocketUrl;
                 Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url + "/";
@@ -105,7 +105,7 @@ namespace RevoltSharp
                 if (WebSocket != null)
                     WebSocket.CurrentUser = new SelfUser(this, SelfUser);
 
-                Console.WriteLine($"Revolt user login: {SelfUser.Username} ({SelfUser.Id})");
+                Console.WriteLine($"[RevoltSharp] User login: {SelfUser.Username} ({SelfUser.Id})");
             }
 
 
