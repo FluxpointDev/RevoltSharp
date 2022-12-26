@@ -180,7 +180,7 @@ namespace RevoltSharp
         internal void AddMember(ServerMember member)
         {
             InternalMembers.TryAdd(member.Id, member);
-            member.User.MutualServers.TryAdd(Id, this);
+            member.User.InternalMutualServers.TryAdd(Id, this);
         }
 
         internal void RemoveMember(User user, bool delete)
@@ -188,7 +188,7 @@ namespace RevoltSharp
             if (!delete)
                 InternalMembers.TryRemove(user.Id, out _);
 
-            user.MutualServers.TryRemove(Id, out _);
+            user.InternalMutualServers.TryRemove(Id, out _);
             if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals())
             {
                 user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);

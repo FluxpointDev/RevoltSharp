@@ -10,6 +10,50 @@ namespace TestBot.Commands
 {
     public class CmdTest : ModuleBase
     {
+        [Command("members")]
+        public async Task RoleAll()
+        {
+            await ReplyAsync("Running");
+            var Members = await Context.Server.GetMembersAsync();
+            Console.WriteLine("Members: " + Members.Length);
+            foreach (ServerMember m in Members)
+            {
+                if (m.IsBot)
+                {
+                    Console.WriteLine("BOT: " + m.Username);
+                    continue;
+                }
+                if (m.GetRole("01FESEE54DDDSEM217NX9GH4KG") == null)
+                {
+                    Console.WriteLine("NO ROLE: " + m.User.Username);
+
+                }
+                else
+                {
+                    Console.WriteLine("HAS ROLE: " + m.User.Username);
+                }
+            }
+        }
+
+        [Command("retry")]
+        public async Task Retry()
+        {
+            int Count = 0;
+            while (Count != 12)
+            {
+                try
+                {
+                    await ReplyAsync($"Testing {Count} :)");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                Count = Count + 1;
+            }
+        }
+
+
         [Command("testclass")]
         public async Task TestClass(string type)
         {

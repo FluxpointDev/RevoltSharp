@@ -32,14 +32,20 @@ namespace RevoltSharp
         [JsonIgnore]
         internal UserJson Model { get; }
 
-        [JsonIgnore]
-        public ConcurrentDictionary<string, Server> MutualServers { get; set; } = new ConcurrentDictionary<string, Server>();
+        internal ConcurrentDictionary<string, Server> InternalMutualServers { get; set; } = new ConcurrentDictionary<string, Server>();
 
         [JsonIgnore]
-        public ConcurrentDictionary<string, GroupChannel> MutualGroups { get; set; } = new ConcurrentDictionary<string, GroupChannel>();
+        public IReadOnlyCollection<Server> MutualServers
+            => (IReadOnlyCollection<Server>)InternalMutualServers.Values;
+
+        internal ConcurrentDictionary<string, GroupChannel> InternalMutualGroups { get; set; } = new ConcurrentDictionary<string, GroupChannel>();
+
+        [JsonIgnore]
+        public IReadOnlyCollection<GroupChannel> MutualGroups
+           => (IReadOnlyCollection<GroupChannel>)InternalMutualGroups.Values;
 
         internal bool HasMutuals()
-           => MutualGroups.Any() || MutualGroups.Any();
+           => InternalMutualGroups.Any() || InternalMutualGroups.Any();
 
         internal User(RevoltClient client, UserJson model)
             : base(client)

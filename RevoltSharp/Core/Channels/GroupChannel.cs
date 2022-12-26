@@ -21,7 +21,7 @@ namespace RevoltSharp
                 {
                     if (client.WebSocket.UserCache.TryGetValue(u, out User user))
                     {
-                        user.MutualGroups.TryAdd(Id, this);
+                        user.InternalMutualGroups.TryAdd(Id, this);
                         CachedUsers.TryAdd(user.Id, user);
                     }
                 }
@@ -118,7 +118,7 @@ namespace RevoltSharp
                 Recipents.Add(user.Id);
             }
             catch { }
-            user.MutualGroups.TryAdd(Id, this);
+            user.InternalMutualGroups.TryAdd(Id, this);
             CachedUsers.TryAdd(user.Id, user);
         }
 
@@ -133,7 +133,7 @@ namespace RevoltSharp
                 }
                 catch { }
             }
-            user.MutualGroups.TryRemove(Id, out _);
+            user.InternalMutualGroups.TryRemove(Id, out _);
             if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals())
             {
                 user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);

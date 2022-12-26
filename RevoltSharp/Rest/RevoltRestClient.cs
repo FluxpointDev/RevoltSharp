@@ -1,9 +1,13 @@
 ﻿using Newtonsoft.Json;
+using Optionals;
+using RevoltSharp.Core;
+using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,6 +109,19 @@ namespace RevoltSharp.Rest
             MP.Add(Image, "file", name);
             Mes.Content = MP;
             HttpResponseMessage Req = await FileHttpClient.SendAsync(Mes);
+
+            if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                RetryRequest Retry = DeserializeJson<RetryRequest>(Req.Content.ReadAsStream());
+                if (Retry != null)
+                {
+                    await Task.Delay(Retry.retry_after + 2);
+                    HttpRequestMessage MesRetry = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
+                    MesRetry.Content = MP;
+                    Req = await HttpClient.SendAsync(MesRetry);
+                }
+            }
+
             if (Client.Config.Debug.LogRestRequest)
                 Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             if (Client.Config.Debug.CheckRestRequest)
@@ -169,6 +186,19 @@ namespace RevoltSharp.Rest
                     Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
+            if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                RetryRequest Retry = DeserializeJson<RetryRequest>(Req.Content.ReadAsStream());
+                if (Retry != null)
+                {
+                    await Task.Delay(Retry.retry_after + 2);
+                    HttpRequestMessage MesRetry = new HttpRequestMessage(method, endpoint);
+                    if (request != null)
+                        MesRetry.Content = Mes.Content;
+                    Req = await HttpClient.SendAsync(MesRetry);
+                }
+            }
+
             if (Client.Config.Debug.LogRestRequest)
                 Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
 
@@ -199,6 +229,19 @@ namespace RevoltSharp.Rest
                     Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             }
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
+            if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                RetryRequest Retry = DeserializeJson<RetryRequest>(Req.Content.ReadAsStream());
+                if (Retry != null)
+                {
+                    await Task.Delay(Retry.retry_after + 2);
+                    HttpRequestMessage MesRetry = new HttpRequestMessage(method, endpoint);
+                    if (request != null)
+                        MesRetry.Content = Mes.Content;
+                    Req = await HttpClient.SendAsync(MesRetry);
+                }
+            }
+
             if (Client.Config.Debug.LogRestRequest)
                 Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             if (Client.Config.Debug.CheckRestRequest)

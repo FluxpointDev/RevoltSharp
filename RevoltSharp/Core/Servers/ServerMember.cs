@@ -40,6 +40,20 @@ namespace RevoltSharp
 
         public ServerPermissions Permissions { get; internal set; }
 
+        #region UserProperties
+        public string Username => User.Username;
+        public string Status => User.Status;
+        public Attachment Avatar => User.Avatar;
+        public UserBadges Badges => User.Badges;
+        public BotData BotData => User.BotData;
+        public bool IsOnline => User.IsOnline;
+        public bool Privileged => User.Privileged;
+        public string Relationship => User.Relationship;
+        public bool IsBot => User.IsBot;
+        #endregion
+
+
+
         internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
         {
             User = user != null ? user : new User(Client, uModel);
