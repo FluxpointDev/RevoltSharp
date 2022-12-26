@@ -1,7 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using Newtonsoft.Json;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Optional.Unsafe;
 
 namespace RevoltSharp
 {
@@ -22,7 +22,7 @@ namespace RevoltSharp
                     if (client.WebSocket.UserCache.TryGetValue(u, out User user))
                     {
                         user.MutualGroups.TryAdd(Id, this);
-                        Users.TryAdd(user.Id, user);
+                        CachedUsers.TryAdd(user.Id, user);
                     }
                 }
             }
@@ -48,7 +48,12 @@ namespace RevoltSharp
         /// <summary>
         /// List of users in the channel
         /// </summary>
-        public ConcurrentDictionary<string, User> Users { get; internal set; } = new ConcurrentDictionary<string, User>();
+        internal ConcurrentDictionary<string, User> CachedUsers { get; set; } = new ConcurrentDictionary<string, User>();
+
+        [JsonIgnore]
+        public IReadOnlyCollection<User> Users
+            => (IReadOnlyCollection<User>)CachedUsers.Values;
+
 
         /// <summary>
         /// Last message id to be posted in the channel
@@ -87,22 +92,22 @@ namespace RevoltSharp
         internal override void Update(PartialChannelJson json)
         {
             if (json.Name.HasValue)
-                Name = json.Name.ValueOrDefault();
+                Name = json.Name.Value;
 
             if (json.Icon.HasValue)
-                Icon = new Attachment(json.Icon.ValueOrDefault());
+                Icon = new Attachment(json.Icon.Value);
 
             if (json.Description.HasValue)
-                Description = json.Description.ValueOrDefault();
+                Description = json.Description.Value;
 
             if (json.DefaultPermissions.HasValue)
-                Permissions = new ChannelPermissions(json.DefaultPermissions.ValueOrDefault().Allowed);
+                Permissions = new ChannelPermissions(json.DefaultPermissions.Value.Allowed);
 
             if (json.Nsfw.HasValue)
-                IsNsfw = json.Nsfw.ValueOrDefault();
+                IsNsfw = json.Nsfw.Value;
 
             if (json.Owner.HasValue)
-                OwnerId = json.Owner.ValueOrDefault();
+                OwnerId = json.Owner.Value;
 
         }
 
@@ -114,14 +119,14 @@ namespace RevoltSharp
             }
             catch { }
             user.MutualGroups.TryAdd(Id, this);
-            Users.TryAdd(user.Id, user);
+            CachedUsers.TryAdd(user.Id, user);
         }
 
         internal void RemoveUser(User user, bool delete)
         {
             if (!delete)
             {
-                Users.TryRemove(user.Id, out _);
+                CachedUsers.TryRemove(user.Id, out _);
                 try
                 {
                     Recipents.Remove(user.Id);

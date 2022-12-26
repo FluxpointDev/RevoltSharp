@@ -6,7 +6,7 @@ namespace RevoltSharp.Rest
 {
     public class ModifySelfRequest
     {
-        public static Dictionary<string, object> Create(Optional<string> avatar, Optional<string> statusText, Optional<UserStatusType> statusType, Optional<string> profileBio, Optional<string> profileBackground)
+        public static Dictionary<string, object> Create(Option<string> avatar, Option<string> statusText, Option<UserStatusType> statusType, Option<string> profileBio, Option<string> profileBackground)
         {
             Dictionary<string, object> Values = new Dictionary<string, object>();
             if (avatar != null)

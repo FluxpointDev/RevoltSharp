@@ -1,12 +1,13 @@
-﻿namespace RevoltSharp.Rest.Requests
+﻿using Optionals;
+
+namespace RevoltSharp.Rest.Requests
 {
     public class GetMessagesRequest : RevoltRequest
     {
-        public int limit = 1;
-        public string before;
-        public string after;
+        public int limit = 100;
+        public Optional<string> before;
+        public Optional<string> after;
         public string sort = "Latest";
-        public string nearby;
-        public bool include_users;
+        public bool include_users = false;
     }
 }

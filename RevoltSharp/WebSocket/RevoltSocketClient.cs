@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Optional;
-using Optional.Unsafe;
+using Optionals;
 using RevoltSharp.WebSocket.Events;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
@@ -178,7 +178,7 @@ namespace RevoltSharp.WebSocket
                             try
                             {
                                 ReadyEventJson @event = payload.ToObject<ReadyEventJson>(Client.Serializer);
-                                if (Client.Config.Debug.LogWebSocketReady && !Client.Config.Debug.LogWebSocketFull)
+                                if (Client.Config.Debug.LogWebSocketReady)
                                     Console.WriteLine("--- WebSocket Ready ---\n" + FormatJsonPretty(json));
 
                                 UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
@@ -268,13 +268,14 @@ namespace RevoltSharp.WebSocket
                                     break;
                             }
 
-                            //if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
-                            //{
-                                //if (!TC.Server.Members.ContainsKey(@event.Author))
-                                //{
-                                //    await TC.Server.GetMemberAsync(@event.Author);
-                                //}  
-                            //}
+                            if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
+                            {
+                                if (!TC.Server.InternalMembers.ContainsKey(@event.Author))
+                                {
+                                    ServerMember Member = await TC.Server.GetMemberAsync(@event.Author);
+                                    TC.Server.InternalMembers.TryAdd(@event.Author, Member);
+                                }  
+                            }
                             Message MSG = @event.ToEntity(Client);
                             Client.InvokeMessageRecieved(MSG);
                         }
@@ -331,11 +332,11 @@ namespace RevoltSharp.WebSocket
                                     if (@event.Data == null)
                                         @event.Data = new PartialChannelJson();
 
-                                    if (@event.Clear.ValueOrDefault().Contains("Icon"))
-                                        @event.Data.Icon = Option.Some<AttachmentJson>(null);
+                                    if (@event.Clear.Value.Contains("Icon"))
+                                        @event.Data.Icon = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.ValueOrDefault().Contains("Description"))
-                                        @event.Data.Description = Option.Some<string>(null);
+                                    if (@event.Clear.Value.Contains("Description"))
+                                        @event.Data.Description = Optional.Some<string>(null);
 
                                 }
 
@@ -396,7 +397,7 @@ namespace RevoltSharp.WebSocket
                             if (@event.UserId == CurrentUser.Id)
                             {
                                 ChannelCache.TryRemove(@event.Id, out Channel chan);
-                                foreach (User u in GC.Users.Values)
+                                foreach (User u in GC.CachedUsers.Values)
                                 {
                                     GC.RemoveUser(u, true);
                                 }
@@ -435,14 +436,14 @@ namespace RevoltSharp.WebSocket
                                     if (@event.Data == null)
                                         @event.Data = new PartialServerJson();
 
-                                    if (@event.Clear.ValueOrDefault().Contains("Icon"))
-                                        @event.Data.Icon = Option.Some<AttachmentJson>(null);
+                                    if (@event.Clear.Value.Contains("Icon"))
+                                        @event.Data.Icon = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.ValueOrDefault().Contains("Banner"))
-                                        @event.Data.Banner = Option.Some<AttachmentJson>(null);
+                                    if (@event.Clear.Value.Contains("Banner"))
+                                        @event.Data.Banner = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.ValueOrDefault().Contains("Description"))
-                                        @event.Data.Description = Option.Some<string>(null);
+                                    if (@event.Clear.Value.Contains("Description"))
+                                        @event.Data.Description = Optional.Some<string>(null);
                                 }
                                 Server cloned = server.Clone();
                                 server.Update(@event.Data);
@@ -475,21 +476,21 @@ namespace RevoltSharp.WebSocket
                                 if (@event.Data == null)
                                     @event.Data = new PartialServerMemberJson();
 
-                                foreach(string s in @event.Clear.ValueOrDefault())
+                                foreach(string s in @event.Clear.Value)
                                 {
                                     switch (s)
                                     {
                                         case "Avatar":
-                                            @event.Data.Avatar = Option.Some<AttachmentJson>(null);
+                                            @event.Data.Avatar = Optional.Some<AttachmentJson>(null);
                                             break;
                                         case "Nickname":
-                                            @event.Data.Nickname = Option.Some<string>("");
+                                            @event.Data.Nickname = Optional.Some<string>("");
                                             break;
                                         case "Timeout":
                                             @event.Data.ClearTimeout = true;
                                             break;
                                         case "Roles":
-                                            @event.Data.Roles = Option.Some<string[]>(new string[0]);
+                                            @event.Data.Roles = Optional.Some<string[]>(new string[0]);
                                             break;
                                     }
                                 }
@@ -592,17 +593,17 @@ namespace RevoltSharp.WebSocket
                             {
                                 if (@event.Clear.HasValue)
                                 {
-                                    if (@event.Clear.ValueOrDefault().Contains("ProfileContent"))
-                                        @event.Data.ProfileContent = Option.Some<string>("");
+                                    if (@event.Clear.Value.Contains("ProfileContent"))
+                                        @event.Data.ProfileContent = Optional.Some<string>("");
 
-                                    if (@event.Clear.ValueOrDefault().Contains("StatusText"))
-                                        @event.Data.status = Option.Some<UserStatusJson>(null);
+                                    if (@event.Clear.Value.Contains("StatusText"))
+                                        @event.Data.status = Optional.Some<UserStatusJson>(null);
 
-                                    if (@event.Clear.ValueOrDefault().Contains("ProfileBackground"))
-                                        @event.Data.ProfileBackground = Option.Some<AttachmentJson>(null);
+                                    if (@event.Clear.Value.Contains("ProfileBackground"))
+                                        @event.Data.ProfileBackground = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.ValueOrDefault().Contains("Avatar"))
-                                        @event.Data.avatar = Option.Some<AttachmentJson>(null);
+                                    if (@event.Clear.Value.Contains("Avatar"))
+                                        @event.Data.avatar = Optional.Some<AttachmentJson>(null);
                                 }
                                 if (@event.Id == CurrentUser.Id)
                                 {

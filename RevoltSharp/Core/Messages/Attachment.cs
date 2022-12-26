@@ -50,5 +50,23 @@
         /// The height of the image if the file is an image type.
         /// </summary>
         public int Height { get; }
+
+        internal AttachmentJson ToJson()
+        {
+            return new AttachmentJson
+            {
+                Id = Id,
+                Tag = Tag,
+                Filename = Filename,
+                Metadata = new AttachmentMetaJson
+                {
+                    Type = "Image",
+                    Height = Height,
+                    Width = Width
+                },
+                ContentType = Type,
+                Size = Size
+            };
+        }
     }
 }

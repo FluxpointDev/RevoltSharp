@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 using System.Collections.Generic;
 
 namespace RevoltSharp
@@ -7,24 +7,24 @@ namespace RevoltSharp
     internal class PartialChannelJson
     {
         [JsonProperty("name")]
-        public Option<string> Name { get; set; }
+        public Optional<string> Name { get; set; }
 
         [JsonProperty("icon")]
-        public Option<AttachmentJson> Icon { get; set; }
+        public Optional<AttachmentJson> Icon { get; set; }
 
         [JsonProperty("description")]
-        public Option<string> Description { get; set; }
+        public Optional<string> Description { get; set; }
 
         [JsonProperty("deafult_permissions")]
-        public Option<PermissionsJson> DefaultPermissions { get; set; }
+        public Optional<PermissionsJson> DefaultPermissions { get; set; }
 
         [JsonProperty("role_permissions")]
-        public Option<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
+        public Optional<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
 
         [JsonProperty("nsfw")]
-        public Option<bool> Nsfw { get; set; }
+        public Optional<bool> Nsfw { get; set; }
 
         [JsonProperty("owner")]
-        public Option<string> Owner { get; set; }
+        public Optional<string> Owner { get; set; }
     }
 }

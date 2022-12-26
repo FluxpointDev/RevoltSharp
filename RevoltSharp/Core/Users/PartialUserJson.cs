@@ -1,18 +1,20 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 
 namespace RevoltSharp
 {
     internal class PartialUserJson
     {
         [JsonProperty("profile.content")]
-        public Option<string> ProfileContent;
+        public Optional<string> ProfileContent;
 
         [JsonProperty("profile.background")]
-        public Option<AttachmentJson> ProfileBackground;
+        public Optional<AttachmentJson> ProfileBackground;
 
-        public Option<UserStatusJson> status;
+        public Optional<UserStatusJson> status;
 
-        public Option<AttachmentJson> avatar;
+        public Optional<AttachmentJson> avatar;
+
+        public Optional<bool> privileged;
     }
 }

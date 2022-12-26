@@ -1,4 +1,4 @@
-﻿using Optional.Unsafe;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace RevoltSharp
             Id = model.Id;
             ServerId = model.Server;
             DefaultPermissions = new ChannelPermissions(model.DefaultPermissions);
-            RolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(x.Value)) : new Dictionary<string, ChannelPermissions>();
+            InternalRolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(x.Value)) : new Dictionary<string, ChannelPermissions>();
             Name = model.Name;
             Description = model.Description;
             Icon = model.Icon != null ? new Attachment(model.Icon) : null;
@@ -32,6 +32,7 @@ namespace RevoltSharp
         /// <remarks>
         /// Will be <see langword="null" /> if using http mode
         /// </remarks>
+        [JsonIgnore]
         public Server Server
             => Client.GetServer(ServerId);
 
@@ -43,7 +44,12 @@ namespace RevoltSharp
         /// <summary>
         /// Role permission for the channel that wil override default permissions
         /// </summary>
-        public Dictionary<string, ChannelPermissions> RolePermissions { get; internal set; }
+        
+        internal Dictionary<string, ChannelPermissions> InternalRolePermissions { get; set; }
+
+        [JsonIgnore]
+        public IReadOnlyCollection<ChannelPermissions> RolePermissions
+            => InternalRolePermissions.Values;
 
         /// <summary>
         /// Name of the channel
@@ -74,7 +80,7 @@ namespace RevoltSharp
             bool HasDefault = DefaultPermissions.Has(permission);
             if (HasDefault)
                 return true;
-            foreach (var c in RolePermissions)
+            foreach (var c in InternalRolePermissions)
             {
                 if (member.InternalRoles.ContainsKey(c.Key))
                 {
@@ -91,25 +97,25 @@ namespace RevoltSharp
             Console.WriteLine("Update Channel");
 
             if (json.Name.HasValue)
-                Name = json.Name.ValueOrDefault();
+                Name = json.Name.Value;
 
             if (json.Icon.HasValue)
-                Icon = new Attachment(json.Icon.ValueOrDefault());
+                Icon = new Attachment(json.Icon.Value);
 
             if (json.DefaultPermissions.HasValue)
-                DefaultPermissions = new ChannelPermissions(json.DefaultPermissions.ValueOrDefault());
+                DefaultPermissions = new ChannelPermissions(json.DefaultPermissions.Value);
 
             if (json.Description.HasValue)
-                Description = json.Description.ValueOrDefault();
+                Description = json.Description.Value;
 
             if (json.RolePermissions.HasValue)
             {
-                foreach (var i in json.RolePermissions.ValueOrDefault())
+                foreach (var i in json.RolePermissions.Value)
                 {
-                    if (RolePermissions.ContainsKey(i.Key))
-                        RolePermissions[i.Key] = new ChannelPermissions(i.Value);
+                    if (InternalRolePermissions.ContainsKey(i.Key))
+                        InternalRolePermissions[i.Key] = new ChannelPermissions(i.Value);
                     else
-                        RolePermissions.Add(i.Key, new ChannelPermissions(i.Value));
+                        InternalRolePermissions.Add(i.Key, new ChannelPermissions(i.Value));
                 }
             }
         }

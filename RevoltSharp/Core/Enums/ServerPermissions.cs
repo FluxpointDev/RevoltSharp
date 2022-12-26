@@ -45,7 +45,7 @@
         public bool ChangeAvatar => Has(ServerPermission.ChangeAvatar);
         public bool ManageAvatars => Has(ServerPermission.ManageAvatars);
         public bool ViewChannels => Has(ChannelPermission.ViewChannel);
-        public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
+        //public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
         public bool SendMessages => Has(ChannelPermission.SendMessages);
         public bool ManageMessages => Has(ChannelPermission.ManageMessages);
         public bool ManageWebhooks => Has(ChannelPermission.ManageWebhooks);

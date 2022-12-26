@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 using System;
 using System.Collections.Generic;
 
@@ -41,10 +41,10 @@ namespace RevoltSharp
         public MessageSystemJson System;
 
         [JsonProperty("edited")]
-        public Option<DateTime> Edited;
+        public Optional<DateTime> Edited;
 
         [JsonProperty("reactions")]
-        public Option<Dictionary<string, string[]>> Reactions;
+        public Optional<Dictionary<string, string[]>> Reactions;
 
         [JsonProperty("masquerade")]
         public MessageMasqueradeJson Masquerade;

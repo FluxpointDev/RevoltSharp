@@ -17,8 +17,7 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<Emoji> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
         {
-            if (string.IsNullOrEmpty(emojiId))
-                throw new RevoltArgumentException("Emoji id can't be empty for this request.");
+            Conditions.EmojiIdEmpty(emojiId);
 
             EmojiJson Emoji =  await rest.SendRequestAsync<EmojiJson>(RequestType.Get, $"/custom/emoji/{emojiId}");
             return Emoji == null ? null : new Emoji(rest.Client, Emoji);
@@ -37,13 +36,14 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<Emoji[]> GetEmojisAsync(this RevoltRestClient rest, string serverId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             EmojiJson[] Json = await rest.SendRequestAsync<EmojiJson[]>(RequestType.Get, $"/servers/{serverId}/emojis");
             return Json.Select(x => new Emoji(rest.Client, x)).ToArray();
         }
 
+        public static Task<Emoji> CreateEmojiAsync(this Server server, string attachmentId, string name, bool nsfw = false)
+            => CreateEmojiAsync(server.Client.Rest, server.Id, attachmentId, name, nsfw);
 
 
         /// <summary>
@@ -59,13 +59,12 @@ namespace RevoltSharp
         /// <param name="nsfw">Is the emoji nsfw</param>
         /// <returns><see cref="Emoji" /></returns>
         /// <exception cref="RevoltArgumentException"></exception>
-        public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string attachmentId, string serverId, string name, bool nsfw = false)
+        public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentId, string name, bool nsfw = false)
         {
             if (string.IsNullOrEmpty(attachmentId))
                 throw new RevoltArgumentException("Attachment id can't be empty for this request.");
 
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             if (string.IsNullOrEmpty(name))
                 throw new RevoltArgumentException("Emoji name can't be empty for this request.");
@@ -83,6 +82,14 @@ namespace RevoltSharp
         }
 
 
+        public static Task<HttpResponseMessage> DeleteAsync(this Emoji emoji)
+           => DeleteEmojiAsync(emoji.Client.Rest, emoji.Id);
+
+
+        public static Task<HttpResponseMessage> DeleteEmojiAsync(this Server server, Emoji emoji)
+           => DeleteEmojiAsync(server.Client.Rest, emoji.Id);
+
+
         /// <summary>
         /// Delete an <see cref="Emoji" /> from a server
         /// </summary>
@@ -95,8 +102,7 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<HttpResponseMessage> DeleteEmojiAsync(this RevoltRestClient rest, string emojiId)
         {
-            if (string.IsNullOrEmpty(emojiId))
-                throw new RevoltArgumentException("Emoji id can't be empty for this request.");
+            Conditions.EmojiIdEmpty(emojiId);
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/custom/emoji/{emojiId}");
         }

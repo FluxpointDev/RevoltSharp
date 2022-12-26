@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 
 namespace RevoltSharp.WebSocket.Events
 {
@@ -15,6 +15,6 @@ namespace RevoltSharp.WebSocket.Events
         public PartialRoleJson Data;
 
         [JsonProperty("clear")]
-        public Option<string[]> Clear;
+        public Optional<string[]> Clear;
     }
 }

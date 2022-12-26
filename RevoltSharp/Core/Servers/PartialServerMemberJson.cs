@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 using System;
 
 namespace RevoltSharp
@@ -7,16 +7,16 @@ namespace RevoltSharp
     internal class PartialServerMemberJson
     {
         [JsonProperty("nickname")]
-        public Option<string> Nickname;
+        public Optional<string> Nickname;
 
         [JsonProperty("avatar")]
-        public Option<AttachmentJson> Avatar;
+        public Optional<AttachmentJson> Avatar;
 
         [JsonProperty("roles")]
-        public Option<string[]> Roles;
+        public Optional<string[]> Roles;
 
         [JsonProperty("timeout")]
-        public Option<DateTime> Timeout;
+        public Optional<DateTime> Timeout;
 
         public bool ClearTimeout;
     }

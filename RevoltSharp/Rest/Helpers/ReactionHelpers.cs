@@ -14,14 +14,9 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> AddMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(messageId))
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(emojiId))
-                throw new RevoltArgumentException("Emoji id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageId);
+            Conditions.EmojiIdEmpty(emojiId);
 
             return await rest.SendRequestAsync(RequestType.Put, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}");
         }
@@ -40,14 +35,11 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> RemoveMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId, string userId, bool removeAll = false)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageId);
 
-            if (string.IsNullOrEmpty(messageId))
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
-
-            if (!removeAll && string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request unless you specify remove all.");
+            if (!removeAll)
+                Conditions.UserIdEmpty(userId);
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}", new DeleteReactionRequest
             {
@@ -62,11 +54,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> RemoveAllMessageReactionsAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(messageId))
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageId);
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}/reactions");
         }

@@ -1,6 +1,4 @@
-﻿using Optional.Linq;
-using Optional.Unsafe;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,14 +42,14 @@ namespace RevoltSharp
             Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
             Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
             if (model.Edited.HasValue)
-                EditedAt = model.Edited.ValueOrDefault();
+                EditedAt = model.Edited.Value;
             Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => new MessageEmbed(x)));
             if (!model.Reactions.HasValue)
                 Reactions = new Dictionary<Emoji, User[]>();
             else
             {
                 Dictionary<Emoji, User[]> React = new Dictionary<Emoji, User[]>();
-                foreach(var r in model.Reactions.ValueOrDefault())
+                foreach(var r in model.Reactions.Value)
                 {
                     React.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray());
                 }

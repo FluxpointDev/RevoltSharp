@@ -1,23 +1,35 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 
 namespace RevoltSharp
 {
     internal class PartialServerJson
     {
         [JsonProperty("name")]
-        public Option<string> Name { get; set; }
+        public Optional<string> Name { get; set; }
 
         [JsonProperty("icon")]
-        public Option<AttachmentJson> Icon { get; set; }
+        public Optional<AttachmentJson> Icon { get; set; }
 
         [JsonProperty("banner")]
-        public Option<AttachmentJson> Banner { get; set; }
+        public Optional<AttachmentJson> Banner { get; set; }
 
         [JsonProperty("description")]
-        public Option<string> Description { get; set; }
+        public Optional<string> Description { get; set; }
 
         [JsonProperty("default_permissions")]
-        public Option<ulong> DefaultPermissions { get; set; }
+        public Optional<ulong> DefaultPermissions { get; set; }
+
+        [JsonProperty("analytics")]
+        public Optional<bool> Analytics;
+
+        [JsonProperty("discoverable")]
+        public Optional<bool> Discoverable;
+
+        [JsonProperty("nsfw")]
+        public Optional<bool> Nsfw;
+
+        [JsonProperty("owner")]
+        public Optional<string> Owner;
     }
 }

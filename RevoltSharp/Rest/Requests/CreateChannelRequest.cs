@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 
 namespace RevoltSharp.Rest.Requests
 {
@@ -8,9 +8,9 @@ namespace RevoltSharp.Rest.Requests
         public string name;
         [JsonProperty("type")]
         public string Type;
-        public Option<string> description;
-        public Option<string[]> users;
-        public Option<bool> nsfw;
+        public Optional<string> description;
+        public Optional<string[]> users;
+        public Optional<bool> nsfw;
 
     }
 }

@@ -14,8 +14,7 @@ namespace RevoltSharp
 
         public static async Task<Server> GetServerAsync(this RevoltRestClient rest, string serverId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             ServerJson Server = await rest.SendRequestAsync<ServerJson>(RequestType.Get, $"/servers/{serverId}");
             return new Server(rest.Client, Server);
@@ -26,8 +25,7 @@ namespace RevoltSharp
 
         public static async Task<ServerBan[]> GetBansAsync(this RevoltRestClient rest, string serverId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             ServerBansJson Bans = await rest.SendRequestAsync<ServerBansJson>(RequestType.Get, $"/servers/{serverId}/bans");
             IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client) { Id = x.Id, Avatar = x.Avatar == null ? null : new Attachment(x.Avatar), Username = x.Username, Reason = Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault().Reason} );
@@ -43,8 +41,7 @@ namespace RevoltSharp
            => LeaveServerAsync(user.Client.Rest, serverId);
         public static async Task<HttpResponseMessage> LeaveServerAsync(this RevoltRestClient rest, string serverId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/servers/{serverId}");
         }

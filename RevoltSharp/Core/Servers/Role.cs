@@ -1,5 +1,4 @@
-﻿using Optional.Unsafe;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace RevoltSharp
 {
@@ -44,27 +43,27 @@ namespace RevoltSharp
             : base(client)
         {
             Id = roleId;
-            Name = model.Name.ValueOrDefault();
-            Permissions = new ServerPermissions(model.Permissions.ValueOrDefault().Allowed);
+            Name = model.Name.Value;
+            Permissions = new ServerPermissions(model.Permissions.Value.Allowed);
             ServerId = serverId;
         }
 
         internal void Update(PartialRoleJson json)
         {
             if (json.Name.HasValue)
-                Name = json.Name.ValueOrDefault();
+                Name = json.Name.Value;
 
             if (json.Permissions.HasValue)
-                Permissions = new ServerPermissions(json.Permissions.ValueOrDefault().Allowed);
+                Permissions = new ServerPermissions(json.Permissions.Value.Allowed);
 
             if (json.Hoist.HasValue)
-                IsHoisted = json.Hoist.ValueOrDefault();
+                IsHoisted = json.Hoist.Value;
 
             if (json.Rank.HasValue)
-                Rank = json.Rank.ValueOrDefault();
+                Rank = json.Rank.Value;
 
             if (json.Colour.HasValue)
-                Color = new RevoltColor(json.Colour.ValueOrDefault());
+                Color = new RevoltColor(json.Colour.Value);
         }
 
         internal Role Clone()

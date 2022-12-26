@@ -1,6 +1,7 @@
-﻿using Optional;
+﻿using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -10,22 +11,41 @@ namespace RevoltSharp
 {
     public static class MemberHelper
     {
-        public static async Task<HttpResponseMessage> AddRoleAsync(this RevoltRestClient rest, ServerMember member, Role role)
+
+        public static Task<HttpResponseMessage> AddRoleAsync(this ServerMember member, Role role)
+            => AddRoleAsync(member.Client.Rest, member, role);
+
+        public static Task<HttpResponseMessage> AddRoleAsync(this ServerMember member, string roleId)
+            => AddRoleAsync(member.Client.Rest, member, roleId);
+
+        public static Task<HttpResponseMessage> AddRoleAsync(this RevoltRestClient rest, ServerMember member, Role role)
+            => AddRoleAsync(rest, member, role.Id);
+
+        public static async Task<HttpResponseMessage> AddRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
         {
-            if (!member.Roles.Any(x => x.Id == role.Id))
+            if (!member.RolesIds.Any(x => x == roleId))
                 return await rest.SendRequestAsync(RequestType.Patch, $"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
                 {
-                    roles = Option.Some(member.Roles.Append(role).Select(x => x.Id).ToArray())
+                    roles = Optional.Some(member.RolesIds.Append(roleId).Select(x => x).ToArray())
                 });
             return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
         }
 
-        public static async Task<HttpResponseMessage> RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, Role role)
+        public static Task<HttpResponseMessage> RemoveRoleAsync(this ServerMember member, Role role)
+            => RemoveRoleAsync(member.Client.Rest, member, role);
+
+        public static Task<HttpResponseMessage> RemoveRoleAsync(this ServerMember member, string roleId)
+            => RemoveRoleAsync(member.Client.Rest, member, roleId);
+
+        public static Task<HttpResponseMessage> RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, Role role)
+            => RemoveRoleAsync(rest, member, role.Id);
+
+        public static async Task<HttpResponseMessage> RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
         {
-            if (member.Roles.Any(x => x.Id == role.Id))
+            if (member.Roles.Any(x => x.Id == roleId))
                 return await rest.SendRequestAsync(RequestType.Patch, $"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
                 {
-                    roles = Option.Some(member.Roles.Except(new Role[] { role }).Select(x => x.Id).ToArray())
+                    roles = Optional.Some(member.RolesIds.Where(x => x != roleId).ToArray())
                 });
             return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
         }
@@ -35,11 +55,8 @@ namespace RevoltSharp
 
         public static async Task<ServerMember> GetMemberAsync(this RevoltRestClient rest, string serverId, string userId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
+            Conditions.UserIdEmpty(userId);
 
             if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.InternalMembers.TryGetValue(userId, out ServerMember sm))
                 return sm;
@@ -54,15 +71,14 @@ namespace RevoltSharp
             return SM;
         }
 
-        public static Task<ServerMember[]> GetMembersAsync(this Server server)
+        public static Task<ServerMember[]> GetMembersAsync(this Server server, bool onlineOnly = false)
            => GetMembersAsync(server.Client.Rest, server.Id);
 
-        public static async Task<ServerMember[]> GetMembersAsync(this RevoltRestClient rest, string serverId)
+        public static async Task<ServerMember[]> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
-            MembersListJson List = await rest.SendRequestAsync<MembersListJson>(RequestType.Get, $"servers/{serverId}/members");
+            MembersListJson List = await rest.SendRequestAsync<MembersListJson>(RequestType.Get, $"servers/{serverId}/members?exclude_offline=" + onlineOnly.ToString());
             HashSet<ServerMember> Members = new HashSet<ServerMember>();
             for (int i = 0; i < List.Members.Length; i++)
             {
@@ -81,11 +97,9 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> KickMemberAsync(this RevoltRestClient rest, string serverId, string userId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
-            if (string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request.");
+            Conditions.UserIdEmpty(userId);
 
             return await rest.SendRequestAsync(RequestType.Delete, $"servers/{serverId}/members/{userId}");
         }
@@ -98,14 +112,12 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string reason = "")
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
+            Conditions.UserIdEmpty(userId);
 
-            if (string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request.");
             ReasonRequest Req = new ReasonRequest();
             if (!string.IsNullOrEmpty(reason))
-                Req.reason = Optional.Option.Some(reason);
+                Req.reason = Optional.Some(reason);
 
             return await rest.SendRequestAsync(RequestType.Put, $"servers/{serverId}/bans/{userId}", Req);
         }
@@ -113,14 +125,38 @@ namespace RevoltSharp
             => UnbanMemberAsync(server.Client.Rest, server.Id, userId);
         public static async Task<HttpResponseMessage> UnbanMemberAsync(this RevoltRestClient rest, string serverId, string userId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
+            Conditions.UserIdEmpty(userId);
 
-            if (string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request.");
-            
             return await rest.SendRequestAsync(RequestType.Delete, $"servers/{serverId}/bans/{userId}");
         }
 
+
+        public static Task<HttpResponseMessage> ModifyAsync(this ServerMember member, Option<string> nickname, Option<Attachment> avatar, Option<DateTime> timeout)
+            => ModifyMemberAsync(member.Client.Rest, member.ServerId, member.Id, nickname, avatar, timeout);
+
+        public static Task<HttpResponseMessage> ModifyMemberAsync(this Server server, ServerMember member, Option<string> nickname, Option<Attachment> avatar, Option<DateTime> timeout)
+            => ModifyMemberAsync(server.Client.Rest, server.Id, member.Id, nickname, avatar, timeout);
+
+        public static Task<HttpResponseMessage> ModifyMemberAsync(this Server server, string memberId, Option<string> nickname, Option<Attachment> avatar, Option<DateTime> timeout)
+            => ModifyMemberAsync(server.Client.Rest, server.Id, memberId, nickname, avatar, timeout);
+
+        public static Task<HttpResponseMessage> ModifyMemberAsync(this RevoltRestClient rest, Server server, string memberId, Option<string> nickname, Option<Attachment> avatar, Option<DateTime> timeout)
+            => ModifyMemberAsync(rest, server.Id, memberId, nickname, avatar, timeout);
+
+        public static async Task<HttpResponseMessage> ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string> nickname, Option<Attachment> avatar, Option<DateTime> timeout)
+        {
+            EditMemberRequest Req = new EditMemberRequest();
+            if (nickname != null)
+                Req.nickname = new Optional<string>(nickname.Value);
+
+            if (avatar != null)
+                Req.avatar = new Optional<AttachmentJson>(avatar.Value.ToJson());
+
+            if (timeout != null)
+                Req.timeout = new Optional<DateTime>(timeout.Value);
+
+            return await rest.SendRequestAsync(RequestType.Patch, $"servers/{serverId}/members/{memberId}", Req);
+        }
     }
 }

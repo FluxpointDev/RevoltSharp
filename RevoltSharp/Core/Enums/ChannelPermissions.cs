@@ -31,7 +31,7 @@
         public bool ManageChannel => Has(ChannelPermission.ManageChannel);
         public bool ManagePermissions => Has(ChannelPermission.ManagePermissions);
         public bool ViewChanel => Has(ChannelPermission.ViewChannel);
-        public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
+        //public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
         public bool SendMessages => Has(ChannelPermission.SendMessages);
         public bool ManageMessages => Has(ChannelPermission.ManageMessages);
         public bool ManageWebhooks => Has(ChannelPermission.ManageWebhooks);

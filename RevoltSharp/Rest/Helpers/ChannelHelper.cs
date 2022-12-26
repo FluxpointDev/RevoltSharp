@@ -1,4 +1,5 @@
-﻿using RevoltSharp.Rest;
+﻿using Optionals;
+using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Linq;
 using System.Net.Http;
@@ -35,8 +36,7 @@ namespace RevoltSharp
         internal static async Task<TValue> GetChannelAsync<TValue>(this RevoltRestClient rest, string channelId)
             where TValue : Channel
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
 
             ChannelJson Channel = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, $"/channels/{channelId}");
             return (TValue)RevoltSharp.Channel.Create(rest.Client, Channel);
@@ -48,8 +48,7 @@ namespace RevoltSharp
 
         public static async Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description, bool nsfw = false)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             if (string.IsNullOrEmpty(name))
                 throw new RevoltArgumentException("Channel name can't be empty for this request.");
@@ -59,9 +58,9 @@ namespace RevoltSharp
                 Type = "Text"
             };
             if (!string.IsNullOrEmpty(description))
-                Req.description = Optional.Option.Some(description);
+                Req.description = Optional.Some(description);
             if (nsfw)
-                Req.nsfw = Optional.Option.Some(true);
+                Req.nsfw = Optional.Some(true);
 
             ChannelJson Json = await rest.SendRequestAsync<ChannelJson>(RequestType.Post, $"/servers/{serverId}/channels", Req);
             return new TextChannel(rest.Client, Json);
@@ -72,8 +71,7 @@ namespace RevoltSharp
 
         public static async Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = "")
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             if (string.IsNullOrEmpty(name))
                 throw new RevoltArgumentException("Channel name can't be empty for this request.");
@@ -83,43 +81,56 @@ namespace RevoltSharp
                 Type = "Voice"
             };
             if (!string.IsNullOrEmpty(description))
-                Req.description = Optional.Option.Some(description);
+                Req.description = Optional.Some(description);
 
             ChannelJson Json = await rest.SendRequestAsync<ChannelJson>(RequestType.Post, $"/servers/{serverId}/channels", Req);
             return new VoiceChannel(rest.Client, Json);
         }
 
-        public static Task<Channel> EditAsync(this Channel channel, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
-            => EditChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw);
 
-        public static Task<Channel> EditChannelAsync(this Server server, string channelId, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
-            => EditChannelAsync(server.Client.Rest, channelId, name, desc, iconId, nsfw);
+        public static Task<Channel> ModifyAsync(this TextChannel channel, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw)
+            => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
+
+        public static Task<Channel> ModifyAsync(this VoiceChannel channel, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw)
+            => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
+
+        public static Task<Channel> ModifyAsync(this GroupChannel channel, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw, Option<string> owner)
+            => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, owner);
+
+        public static Task<Channel> ModifyChannelAsync(this Server server, string channelId, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw)
+            => ModifyChannelAsync(server.Client.Rest, channelId, name, desc, iconId, nsfw, null);
         
-        public static async Task<Channel> EditChannelAsync(this RevoltRestClient rest, string channelId, Optional<string> name, Optional<string> desc, Optional<string> iconId, Optional<bool> nsfw)
+        public static async Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw, Option<string> owner)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
 
             ModifyChannelRequest Req = new ModifyChannelRequest();
             if (name != null)
             {
                 if (string.IsNullOrEmpty(name.Value))
                     throw new RevoltException("Channel modify name can not be empty.");
-                Req.name = Optional.Option.Some(name.Value);
+                Req.name = Optional.Some(name.Value);
             }
             if (desc != null)
-               Req.description = Optional.Option.Some(desc.Value);
+               Req.description = Optional.Some(desc.Value);
 
             if (iconId != null)
             {
                 if (string.IsNullOrEmpty(iconId.Value))
-                    Req.remove = Optional.Option.Some(new string[] { "Icon" });
+                    Req.remove = Optional.Some(new string[] { "Icon" });
                 else
-                    Req.icon = Optional.Option.Some(iconId.Value);
+                    Req.icon = Optional.Some(iconId.Value);
             }
 
             if (nsfw != null)
-                Req.nsfw = Optional.Option.Some(nsfw.Value);
+                Req.nsfw = Optional.Some(nsfw.Value);
+
+            if (owner != null)
+            {
+                Conditions.UserIdEmpty(owner.Value);
+                Req.owner = Optional.Some(owner.Value);
+            }
+
             return await rest.SendRequestAsync<Channel>(RequestType.Patch, $"/channels/{channelId}", Req);
         }
 
@@ -131,8 +142,7 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteChannelAsync(this RevoltRestClient rest, string channelId)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/channels/{channelId}");
         }
@@ -145,11 +155,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteMessagesAsync(this RevoltRestClient rest, string channelId, string[] messageIds)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
-
-            if (messageIds == null || messageIds.Length == 0)
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageIds);
 
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest

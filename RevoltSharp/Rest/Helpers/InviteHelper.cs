@@ -23,23 +23,34 @@ namespace RevoltSharp
 
         public static async Task<Invite[]> GetInvitesAsync(this RevoltRestClient rest, string serverId)
         {
-            if (string.IsNullOrEmpty(serverId))
-                throw new RevoltArgumentException("Server id can't be empty for this request.");
+            Conditions.ServerIdEmpty(serverId);
 
             InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
-            return Json.Select(x => new Invite { Code = x.Code }).ToArray();
+            return Json.Select(x => new Invite(x)).ToArray();
         }
 
-        public static Task<Invite> CreateInviteAsync(this TextChannel channel)
+
+        /// <summary>
+        /// Only user accounts can create invites
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
+        public static Task<CreatedInvite> CreateInviteAsync(this TextChannel channel)
             => CreateInviteAsync(channel.Client.Rest, channel.Id);
 
-        public static async Task<Invite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
+        /// <summary>
+        /// Only user accounts can create invites
+        /// </summary>
+        /// <param name="rest"></param>
+        /// <param name="channelId"></param>
+        /// <returns></returns>
+        /// <exception cref="RevoltArgumentException"></exception>
+        public static async Task<CreatedInvite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
 
-            InviteJson Json = await rest.SendRequestAsync<InviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
-            return new Invite { Code = Json.Code };
+            CreateInviteJson Json = await rest.SendRequestAsync<CreateInviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
+            return new CreatedInvite(Json);
         }
     }
 }

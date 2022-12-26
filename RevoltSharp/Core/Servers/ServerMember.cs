@@ -1,4 +1,4 @@
-﻿using Optional.Unsafe;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -33,6 +33,7 @@ namespace RevoltSharp
             return null;
         }
 
+        [JsonIgnore]
         public IReadOnlyCollection<Role> Roles
             => (IReadOnlyCollection<Role>)InternalRoles.Values;
 
@@ -46,7 +47,7 @@ namespace RevoltSharp
             Nickname = sModel.Nickname;
             JoinedAt = sModel.JoinedAt;
             if (sModel.Timeout.HasValue)
-                Timeout = sModel.Timeout.ValueOrDefault();
+                Timeout = sModel.Timeout.Value;
             ServerAvatar = sModel.Avatar != null ? new Attachment(sModel.Avatar) : null;
             RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
             Server server = client.GetServer(ServerId);
@@ -58,21 +59,21 @@ namespace RevoltSharp
         internal void Update(PartialServerMemberJson json)
         {
             if (json.Nickname.HasValue)
-                Nickname = json.Nickname.ValueOrDefault();
+                Nickname = json.Nickname.Value;
 
             if (json.Avatar.HasValue)
-                ServerAvatar = json.Avatar.ValueOrDefault() == null ? null : new Attachment(json.Avatar.ValueOrDefault());
+                ServerAvatar = json.Avatar.Value == null ? null : new Attachment(json.Avatar.Value);
 
             if (json.Roles.HasValue)
             {
-                RolesIds = json.Roles.ValueOrDefault();
+                RolesIds = json.Roles.Value;
                 Server server = Client.GetServer(ServerId);
                 InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
                 Permissions = new ServerPermissions(server, this);
             }
 
             if (json.Timeout.HasValue)
-                Timeout = json.Timeout.ValueOrDefault();
+                Timeout = json.Timeout.Value;
 
             if (json.ClearTimeout)
                 Timeout = null;

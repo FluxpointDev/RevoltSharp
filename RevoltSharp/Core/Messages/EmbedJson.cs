@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Optional;
+using Optionals;
 
 namespace RevoltSharp
 {
@@ -18,7 +18,7 @@ namespace RevoltSharp
         public EmbedMediaJson image;
         public object media;
         public EmbedMediaJson video;
-        public Option<string> colour;
+        public Optional<string> colour;
         public EmbedSpecialJson special;
     }
     internal class EmbedSpecialJson

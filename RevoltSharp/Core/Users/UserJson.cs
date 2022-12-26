@@ -30,6 +30,9 @@ namespace RevoltSharp
 
         [JsonProperty("online")]
         public bool Online;
+
+        [JsonProperty("privileged")]
+        public bool Privileged;
     }
     internal class UserStatusJson
     {

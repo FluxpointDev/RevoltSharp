@@ -1,13 +1,13 @@
-﻿using Optional;
+﻿using Optionals;
 
 namespace RevoltSharp.Rest.Requests
 {
     internal class ModifyRoleRequest : RevoltRequest
     {
-        public Option<string> name;
-        public Option<string> colour;
-        public Option<bool> hoist;
-        public Option<int> rank;
-        public Option<string[]> remove;
+        public Optional<string> name;
+        public Optional<string> colour;
+        public Optional<bool> hoist;
+        public Optional<int> rank;
+        public Optional<string[]> remove;
     }
 }

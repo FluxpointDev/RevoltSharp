@@ -1,14 +1,14 @@
-﻿using Optional;
+﻿using Optionals;
 
 namespace RevoltSharp.Rest.Requests
 {
     internal class SendMessageRequest : RevoltRequest
     {
-        public Option<string> content;
-        public Option<string> nonce;
-        public Option<string[]> attachments;
-        public Option<EmbedJson[]> embeds;
-        public Option<MessageMasqueradeJson> masquerade;
-        public Option<MessageInteractionsJson> interactions;
+        public Optional<string> content;
+        public Optional<string> nonce;
+        public Optional<string[]> attachments;
+        public Optional<EmbedJson[]> embeds;
+        public Optional<MessageMasqueradeJson> masquerade;
+        public Optional<MessageInteractionsJson> interactions;
     }
 }

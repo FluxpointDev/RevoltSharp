@@ -1,6 +1,4 @@
-﻿using Optional.Unsafe;
-
-namespace RevoltSharp
+﻿namespace RevoltSharp
 {
     /// <summary>
     /// Server text channel that members can talk in
@@ -28,7 +26,7 @@ namespace RevoltSharp
         internal override void Update(PartialChannelJson json)
         {
             if (json.Nsfw.HasValue)
-                IsNsfw = json.Nsfw.ValueOrDefault();
+                IsNsfw = json.Nsfw.Value;
             base.Update(json);
         }
     }

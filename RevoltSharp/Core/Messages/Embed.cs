@@ -1,6 +1,4 @@
-﻿using Optional;
-using Optional.Unsafe;
-using System;
+﻿using Optionals;
 
 namespace RevoltSharp
 {
@@ -76,7 +74,7 @@ namespace RevoltSharp
             Title = model.title;
             Description = model.description;
             Site = model.site_name;
-            Color = model.colour.HasValue == false ? new RevoltColor("") : new RevoltColor(model.colour.ValueOrDefault());
+            Color = model.colour.HasValue == false ? new RevoltColor("") : new RevoltColor(model.colour.Value);
             Image = model.image == null ? null : new EmbedMedia(model.image);
             Media = model.media == null ? null : new EmbedMedia(model.media as EmbedMediaJson);
             Video = model.video == null ? null : new EmbedMedia(model.video);
@@ -180,7 +178,6 @@ namespace RevoltSharp
 
         internal EmbedJson ToJson()
         {
-            Console.WriteLine("IMG: " + Image);
             return new EmbedJson
             {
                 icon_url = IconUrl,
@@ -188,7 +185,7 @@ namespace RevoltSharp
                 title = Title,
                 description = Description,
                 media = Image == null ? null : Image,
-                colour =  Color == null ? Option.None<string>() : (Color.IsEmpty ? Option.None<string>() : Option.Some(Color.Hex))
+                colour =  Color == null ? Optional.None<string>() : (Color.IsEmpty ? Optional.None<string>() : Optional.Some(Color.Hex))
             };
         }
     }

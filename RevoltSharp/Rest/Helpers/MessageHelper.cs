@@ -1,4 +1,4 @@
-﻿using Optional;
+﻿using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
@@ -16,8 +16,7 @@ namespace RevoltSharp
 
         public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
 
             if (string.IsNullOrEmpty(content) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))
                 throw new RevoltArgumentException("Message content, attachments and embed can't be empty.");
@@ -51,12 +50,12 @@ namespace RevoltSharp
             }
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             {
-                content = Option.Some(content),
-                nonce = Option.Some(Guid.NewGuid().ToString()),
-                attachments = attachments == null ? Option.None<string[]>() : Option.Some(attachments),
-                embeds = embeds == null ? Option.None<EmbedJson[]>() : Option.Some(embeds.Select(x => x.ToJson()).ToArray()),
-                masquerade = masquerade == null ? Option.None<MessageMasqueradeJson>() : Option.Some<MessageMasqueradeJson>(masquerade.ToJson()),
-                interactions = interactions == null ? Option.None<MessageInteractionsJson>() : Option.Some(new MessageInteractionsJson
+                content = Optional.Some(content),
+                nonce = Optional.Some(Guid.NewGuid().ToString()),
+                attachments = attachments == null ? Optional.None<string[]>() : Optional.Some(attachments),
+                embeds = embeds == null ? Optional.None<EmbedJson[]>() : Optional.Some(embeds.Select(x => x.ToJson()).ToArray()),
+                masquerade = masquerade == null ? Optional.None<MessageMasqueradeJson>() : Optional.Some<MessageMasqueradeJson>(masquerade.ToJson()),
+                interactions = interactions == null ? Optional.None<MessageInteractionsJson>() : Optional.Some(new MessageInteractionsJson
                 {
                     reactions = interactions.Reactions.Select(x => x.Id).ToArray(),
                     restrict_reactions = interactions.RestrictReactions
@@ -65,15 +64,23 @@ namespace RevoltSharp
             return Message.Create(rest.Client, Data);
         }
 
-        public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, string messageId, GetMessagesRequest req)
-            => GetMessagesAsync(channel.Client.Rest, channel.Id, req);
+        public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+            => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount);
 
-        public static async Task<IEnumerable<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, GetMessagesRequest req)
+        public static async Task<IEnumerable<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
 
-            MessageJson[] Data = await rest.SendRequestAsync<MessageJson[]>(RequestType.Get, $"channels/{channelId}/messages", req);
+            GetMessagesRequest Req = new GetMessagesRequest
+            {
+                limit = messageCount,
+                include_users = includeUserDetails
+            };
+            if (!string.IsNullOrEmpty(afterMessageId))
+                Req.after = new Optional<string>(afterMessageId);
+            if (!string.IsNullOrEmpty(beforeMessageId))
+                Req.after = new Optional<string>(beforeMessageId);
+            MessageJson[] Data = await rest.SendRequestAsync<MessageJson[]>(RequestType.Get, $"channels/{channelId}/messages", Req);
 
             return Data.Select(x => Message.Create(rest.Client, x));
         }
@@ -83,32 +90,26 @@ namespace RevoltSharp
 
         public static async Task<Message> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(messageId))
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageId);
 
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Get, $"channels/{channelId}/messages/{messageId}");
             return Message.Create(rest.Client, Data);
         }
 
-        public static Task<Message> EditMessageAsync(this Message msg, Optional<string> content, Optional<Embed[]> embeds = null)
+        public static Task<Message> EditMessageAsync(this Message msg, Option<string> content, Option<Embed[]> embeds = null)
             => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content, embeds);
 
-        public static async Task<Message> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Optional<string> content, Optional<Embed[]> embeds = null)
+        public static async Task<Message> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content, Option<Embed[]> embeds = null)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(messageId))
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageId);
 
             var Req = new SendMessageRequest();
             if (content != null)
-                Req.content = Option.Some(content.Value);
+                Req.content = Optional.Some(content.Value);
             if (embeds != null)
-                Req.embeds = Option.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
+                Req.embeds = Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
             return await rest.SendRequestAsync<Message>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", Req);
         }
 
@@ -124,11 +125,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            if (string.IsNullOrEmpty(channelId))
-                throw new RevoltArgumentException("Channel id can't be empty for this request.");
-
-            if (string.IsNullOrEmpty(messageId))
-                throw new RevoltArgumentException("Message id can't be empty for this request.");
+            Conditions.ChannelIdEmpty(channelId);
+            Conditions.MessageIdEmpty(messageId);
 
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");

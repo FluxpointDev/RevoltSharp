@@ -1,6 +1,8 @@
-﻿using Optional.Unsafe;
+﻿
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RevoltSharp
@@ -21,14 +23,19 @@ namespace RevoltSharp
 
         public bool IsOnline { get; }
 
+        public bool Privileged { get; internal set; }
+
         public string Relationship { get; }
 
         public bool IsBot => BotData != null;
 
+        [JsonIgnore]
         internal UserJson Model { get; }
 
+        [JsonIgnore]
         public ConcurrentDictionary<string, Server> MutualServers { get; set; } = new ConcurrentDictionary<string, Server>();
 
+        [JsonIgnore]
         public ConcurrentDictionary<string, GroupChannel> MutualGroups { get; set; } = new ConcurrentDictionary<string, GroupChannel>();
 
         internal bool HasMutuals()
@@ -46,6 +53,7 @@ namespace RevoltSharp
             IsOnline = model.Online;
             Relationship = model.Relationship;
             Status = model.Status?.Text;
+            Privileged = model.Privileged;
         }
         public bool HasBadge(UserBadgeTypes type)
             => Badges.Types.HasFlag(type);
@@ -53,17 +61,20 @@ namespace RevoltSharp
         internal void Update(PartialUserJson data)
         {
             if (data.avatar.HasValue)
-                Avatar = data.avatar.ValueOrDefault() != null ? new Attachment(data.avatar.ValueOrDefault()) : null;
+                Avatar = data.avatar.Value != null ? new Attachment(data.avatar.Value) : null;
             if (data.status.HasValue)
-                Status = data.status.ValueOrDefault() != null ? data.status.ValueOrDefault().Text : null;
+                Status = data.status.Value != null ? data.status.Value.Text : null;
             if (this is SelfUser Self)
             {
                 if (data.ProfileBackground.HasValue)
-                    Self.Background = data.ProfileBackground.ValueOrDefault() != null ? new Attachment(data.ProfileBackground.ValueOrDefault()) : null;
+                    Self.Background = data.ProfileBackground.Value != null ? new Attachment(data.ProfileBackground.Value) : null;
 
                 if (data.ProfileContent.HasValue)
-                    Self.ProfileBio = data.ProfileContent.ValueOrDefault();
+                    Self.ProfileBio = data.ProfileContent.Value;
             }
+
+            if (data.privileged.HasValue)
+                Privileged = data.privileged.Value;
         }
 
         internal User Clone()

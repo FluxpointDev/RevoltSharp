@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 using System;
 
 namespace RevoltSharp
@@ -22,7 +22,7 @@ namespace RevoltSharp
         public DateTime JoinedAt;
 
         [JsonProperty("timeout")]
-        public Option<DateTime> Timeout;
+        public Optional<DateTime> Timeout;
     }
     internal class ServerMemberIdsJson
     {

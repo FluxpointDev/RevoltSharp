@@ -1,14 +1,71 @@
-﻿using Optional;
+﻿using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace TestBot.Commands
 {
     public class CmdTest : ModuleBase
     {
+        [Command("testclass")]
+        public async Task TestClass(string type)
+        {
+            Console.WriteLine($"--- --- --- {type}");
+            switch (type)
+            {
+                case "user":
+                    Console.WriteLine("Got user");
+                    try
+                    {
+                        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.User, new JsonSerializerSettings
+                        {
+                            Formatting = Formatting.Indented,
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    break;
+                case "server":
+                    Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Server, new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                    break;
+                case "channel":
+                    Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Channel, new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                    break;
+                case "member":
+                    if (Context.Member == null)
+                        Console.WriteLine("NULL MEMBER!");
+                    Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Member, new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                    break;
+                case "message":
+                    Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Message, new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        MaxDepth = 1,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                    break;
+            }
+            Console.WriteLine("--- --- ---");
+        }
+
         [Command("test")]
         public async Task Test()
         {
@@ -23,7 +80,7 @@ namespace TestBot.Commands
             await Channel.DeleteChannelAsync();
             Console.WriteLine("- Delete");
             Console.WriteLine("-- Msg ---");
-            var Msg = await Context.Channel.SendMessageAsync("Ahh", null, new Embed[] { new RevoltSharp.EmbedBuilder
+            var Msg = await Context.Channel.SendMessageAsync("Ahh", null, new Embed[] { new EmbedBuilder
             {
                 Title = "T",
                 Description = "L",
@@ -33,7 +90,7 @@ namespace TestBot.Commands
             Console.WriteLine("- Create");
             await Context.Client.Rest.AddMessageReactionAsync(Msg.ChannelId, Msg.Id, Context.Client.GetEmoji("01GC7SSTBN4D4AGH6KDHMGFHFV").Id);
             Console.WriteLine("- Add reaction");
-            await Msg.EditMessageAsync(new Optional<string>("T"));
+            await Msg.EditMessageAsync(new Option<string>("T"));
             Console.WriteLine("- Edit");
             await Msg.DeleteMessageAsync();
             Console.WriteLine("- Delete");
@@ -51,7 +108,7 @@ namespace TestBot.Commands
             Console.WriteLine($"--- Messages ---\n" +
                 $"Upload Files: {Perms.UploadFiles} | Send Messages: {Perms.SendMessages} | Add Reaction: {Perms.AddReactions} | Embed Links: {Perms.EmbedLinks} | Masquerade: {Perms.Masquerade} | Manage Messages: {Perms.ManageMessages}");
             Console.WriteLine("--- Channel ---\n" +
-                $"View Channels: {Perms.ViewChannels} | Read Messages: {Perms.ReadMessageHistory} | Manage Webhooks: {Perms.ManageWebhooks} | Manage Channels: {Perms.ManageChannels}");
+                $"View Channels: {Perms.ViewChannels} | Manage Webhooks: {Perms.ManageWebhooks} | Manage Channels: {Perms.ManageChannels}");
             Console.WriteLine("--- Server ---\n" +
                 $"Change Avatar: {Perms.ChangeAvatar} | Change Nickname: {Perms.ChangeNickname} | Create Invites: {Perms.CreateInvites}");
             Console.WriteLine("--- Mod ---\n" +

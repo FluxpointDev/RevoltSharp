@@ -46,6 +46,9 @@ namespace RevoltSharp
 
         [JsonProperty("discoverable")]
         public bool Discoverable;
+
+        [JsonProperty("nsfw")]
+        public bool Nsfw;
     }
 
     internal class ServerSystemMessagesJson

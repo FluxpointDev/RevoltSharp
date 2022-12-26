@@ -14,8 +14,7 @@ namespace RevoltSharp
 
         public static async Task<User> GetUserAsync(this RevoltRestClient rest, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request.");
+            Conditions.UserIdEmpty(userId);
 
             if (rest.Client.WebSocket != null && rest.Client.WebSocket.UserCache.TryGetValue(userId, out User User))
                 return User;
@@ -37,8 +36,7 @@ namespace RevoltSharp
 
         public static async Task<Profile> GetProfileAsync(this RevoltRestClient rest, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new RevoltArgumentException("User id can't be empty for this request.");
+            Conditions.UserIdEmpty(userId);
 
             ProfileJson Data = await rest.SendRequestAsync<ProfileJson>(RequestType.Get, $"users/{userId}/profile");
             return new Profile(rest.Client, Data);

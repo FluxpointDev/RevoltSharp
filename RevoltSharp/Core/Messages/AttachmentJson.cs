@@ -21,6 +21,8 @@ namespace RevoltSharp
 
         [JsonProperty("size")]
         public int Size;
+
+
     }
     internal class AttachmentMetaJson
     {

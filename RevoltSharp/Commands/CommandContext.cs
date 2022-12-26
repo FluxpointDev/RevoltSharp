@@ -37,6 +37,8 @@ namespace RevoltSharp.Commands
             if (Channel is TextChannel channel)
             {
                 Server = channel.Server;
+                if (Server.InternalMembers.TryGetValue(msg.AuthorId, out ServerMember MB))
+                    Member = MB;
             }
         }
 

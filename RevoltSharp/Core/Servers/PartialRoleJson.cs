@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Optional;
+using Optionals;
 using System.Numerics;
 
 namespace RevoltSharp
@@ -7,18 +7,18 @@ namespace RevoltSharp
     internal class PartialRoleJson
     {
         [JsonProperty("name")]
-        public Option<string> Name;
+        public Optional<string> Name;
 
         [JsonProperty("permissions")]
-        public Option<PermissionsJson> Permissions;
+        public Optional<PermissionsJson> Permissions;
 
         [JsonProperty("hoist")]
-        public Option<bool> Hoist;
+        public Optional<bool> Hoist;
 
         [JsonProperty("rank")]
-        public Option<BigInteger> Rank;
+        public Optional<BigInteger> Rank;
 
         [JsonProperty("colour")]
-        public Option<string> Colour;
+        public Optional<string> Colour;
     }
 }

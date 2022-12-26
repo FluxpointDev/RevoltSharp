@@ -1,4 +1,5 @@
-﻿using Optional.Unsafe;
+﻿using Newtonsoft.Json;
+using Optionals;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,16 @@ namespace RevoltSharp
             InternalRoles = model.Roles != null
                 ? new ConcurrentDictionary<string, Role>(model.Roles.ToDictionary(x => x.Key, x => new Role(client, x.Value, model.Id, x.Key)))
                 : new ConcurrentDictionary<string, Role>();
-            Analytics = model.Analytics;
-            Discoverable = model.Discoverable;
+            HasAnalytics = model.Analytics;
+            IsDiscoverable = model.Discoverable;
+            IsNsfw = model.Nsfw;
+            SystemMessages = new ServerSystemMessages
+            {
+                UserBanned = model.SystemMessages.UserBanned.SomeNotNull(),
+                UserJoined = model.SystemMessages.UserJoined.SomeNotNull(),
+                UserKicked = model.SystemMessages.UserKicked.SomeNotNull(),
+                UserLeft = model.SystemMessages.UserLeft.SomeNotNull()
+            };
         }
 
         public string Id { get; internal set; }
@@ -35,7 +44,8 @@ namespace RevoltSharp
         internal HashSet<string> ChannelIds { get; set; }
 
         //public ServerCategory[] Categories;
-        //public ServerSystemMessages SystemMessages;
+        public ServerSystemMessages SystemMessages;
+
         internal ConcurrentDictionary<string, Role> InternalRoles { get; set; }
 
         internal ConcurrentDictionary<string, Emoji> InternalEmojis { get; set; } = new ConcurrentDictionary<string, Emoji>();
@@ -48,9 +58,11 @@ namespace RevoltSharp
 
         public Attachment Banner { get; internal set; }
 
-        public bool Analytics { get; internal set; }
+        public bool HasAnalytics { get; internal set; }
 
-        public bool Discoverable { get; internal set; }
+        public bool IsDiscoverable { get; internal set; }
+
+        public bool IsNsfw { get; internal set; }
 
         public ServerMember GetCachedMember(string userId)
         {
@@ -59,6 +71,7 @@ namespace RevoltSharp
             return null;
         }
 
+        [JsonIgnore]
         public IReadOnlyCollection<ServerMember> CachedMembers
             => (IReadOnlyCollection<ServerMember>)InternalMembers.Values;
 
@@ -69,6 +82,7 @@ namespace RevoltSharp
             return null;
         }
 
+        [JsonIgnore]
         public IReadOnlyCollection<Role> Roles
             => (IReadOnlyCollection<Role>)InternalRoles.Values;
 
@@ -79,6 +93,7 @@ namespace RevoltSharp
             return null;
         }
 
+        [JsonIgnore]
         public IReadOnlyCollection<Emoji> Emojis
             => (IReadOnlyCollection<Emoji>)InternalEmojis.Values;
 
@@ -113,19 +128,31 @@ namespace RevoltSharp
         internal void Update(PartialServerJson json)
         {
             if (json.Name.HasValue)
-                Name = json.Name.ValueOrDefault();
+                Name = json.Name.Value;
 
             if (json.Icon.HasValue)
-                Icon = new Attachment(json.Icon.ValueOrDefault());
+                Icon = new Attachment(json.Icon.Value);
 
             if (json.Banner.HasValue)
-                Banner = new Attachment(json.Icon.ValueOrDefault());
+                Banner = new Attachment(json.Icon.Value);
 
             if (json.DefaultPermissions.HasValue)
-                DefaultPermissions = new ServerPermissions(json.DefaultPermissions.ValueOrDefault());
+                DefaultPermissions = new ServerPermissions(json.DefaultPermissions.Value);
 
             if (json.Description.HasValue)
-                Description = json.Description.ValueOrDefault();
+                Description = json.Description.Value;
+
+            if (json.Analytics.HasValue)
+                HasAnalytics = json.Analytics.Value;
+
+            if (json.Discoverable.HasValue)
+                IsDiscoverable = json.Discoverable.Value;
+
+            if (json.Nsfw.HasValue)
+                IsNsfw = json.Nsfw.Value;
+
+            if (json.Owner.HasValue)
+                OwnerId = json.Owner.Value;
         }
 
         internal Server Clone()

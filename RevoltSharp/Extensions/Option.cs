@@ -1,8 +1,8 @@
 ﻿namespace RevoltSharp
 {
-    public class Optional<TValue>
+    public class Option<TValue>
     {
-        public Optional(TValue value)
+        public Option(TValue value)
         {
             Value = value;
         }

@@ -37,20 +37,19 @@
 
         public static string CodeBlock(string code, string language = null)
             => language is null ? $"```\n{code}\n```" : $"```{language}\n{code}\n```";
+    }
+    public enum HeadingFormat
+    {
+        H1 = 1,
 
-        public enum HeadingFormat
-        {
-            H1 = 1,
+        H2 = 2,
 
-            H2 = 2,
+        H3 = 3,
 
-            H3 = 3,
+        H4 = 4,
 
-            H4 = 4,
+        H5 = 5,
 
-            H5 = 5,
-
-            H6 = 6
-        }
+        H6 = 6
     }
 }
