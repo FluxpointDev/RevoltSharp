@@ -3,7 +3,6 @@ using RevoltSharp.Rest.Requests;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Optionals;
-using System;
 
 namespace RevoltSharp
 {

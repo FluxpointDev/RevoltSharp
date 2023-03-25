@@ -1,13 +1,11 @@
-﻿using Newtonsoft.Json;
-using Optionals;
+﻿using Microsoft.IO;
+using Newtonsoft.Json;
 using RevoltSharp.Core;
-using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +53,8 @@ namespace RevoltSharp.Rest
         public RevoltClient Client { get; private set; }
         internal HttpClient HttpClient;
         internal HttpClient FileHttpClient;
+
+        private static readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
 
         public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint)
             => InternalRequest(GetMethod(method), endpoint, null);
@@ -112,7 +112,15 @@ namespace RevoltSharp.Rest
 
             if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
             {
-                RetryRequest Retry = DeserializeJson<RetryRequest>(Req.Content.ReadAsStream());
+                RetryRequest Retry = null;
+                int BufferSizeRet = (int)Req.Content.Headers.ContentLength.Value;
+                using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSizeRet))
+                {
+                    await Req.Content.CopyToAsync(Stream);
+                    Stream.Position = 0;
+                    Retry = DeserializeJson<RetryRequest>(Stream);
+                }
+
                 if (Retry != null)
                 {
                     await Task.Delay(Retry.retry_after + 2);
@@ -130,7 +138,16 @@ namespace RevoltSharp.Rest
             if (Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
 
-            return Req.IsSuccessStatusCode ? new FileAttachment(DeserializeJson<FileAttachmentJson>(Req.Content.ReadAsStream()).id) : null;
+            if (!Req.IsSuccessStatusCode)
+                return null;
+
+            int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+            using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+            {
+                await Req.Content.CopyToAsync(Stream);
+                Stream.Position = 0;
+                return new FileAttachment(DeserializeJson<FileAttachmentJson>(Stream).id);
+            }
         }
 
         internal string GetUploadType(UploadFileType type)
@@ -188,7 +205,14 @@ namespace RevoltSharp.Rest
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
             {
-                RetryRequest Retry = DeserializeJson<RetryRequest>(Req.Content.ReadAsStream());
+                RetryRequest Retry = null;
+                int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+                using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+                {
+                    await Req.Content.CopyToAsync(Stream);
+                    Stream.Position = 0;
+                    Retry = DeserializeJson<RetryRequest>(Stream);
+                }
                 if (Retry != null)
                 {
                     await Task.Delay(Retry.retry_after + 2);
@@ -231,7 +255,16 @@ namespace RevoltSharp.Rest
             HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
             if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
             {
-                RetryRequest Retry = DeserializeJson<RetryRequest>(Req.Content.ReadAsStream());
+                RetryRequest Retry = null;
+
+                int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+                using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+                {
+                    await Req.Content.CopyToAsync(Stream);
+                    Stream.Position = 0;
+                    Retry = DeserializeJson<RetryRequest>(Stream);
+                }
+
                 if (Retry != null)
                 {
                     await Task.Delay(Retry.retry_after + 2);
@@ -253,7 +286,13 @@ namespace RevoltSharp.Rest
             TResponse Response = null;
             if (Req.IsSuccessStatusCode)
             {
-                Response = DeserializeJson<TResponse>(Req.Content.ReadAsStream());
+                int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+                using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+                {
+                    await Req.Content.CopyToAsync(Stream);
+                    Stream.Position = 0;
+                    Response = DeserializeJson<TResponse>(Stream);
+                }
                 if (Client.Config.Debug.LogRestResponseJson)
                     Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
             }
@@ -269,7 +308,7 @@ namespace RevoltSharp.Rest
             return sb.ToString();
         }
 
-        internal T DeserializeJson<T>(Stream jsonStream)
+        internal T DeserializeJson<T>(MemoryStream jsonStream)
         {
             using (TextReader text = new StreamReader(jsonStream))
             using (JsonReader reader = new JsonTextReader(text))

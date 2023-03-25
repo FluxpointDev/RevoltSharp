@@ -4,7 +4,6 @@ using RevoltSharp.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace TestBot.Commands
 {
@@ -165,7 +164,7 @@ namespace TestBot.Commands
         [Command("upload")]
         public async Task Upload()
         {
-            var Attach = await Context.Client.Rest.UploadFileAsync("C:/Users/Brandan/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png", RevoltSharp.Rest.RevoltRestClient.UploadFileType.Attachment);
+            var Attach = await Context.Client.Rest.UploadFileAsync("/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png", RevoltSharp.Rest.RevoltRestClient.UploadFileType.Attachment);
             
         }
 
@@ -245,7 +244,7 @@ namespace TestBot.Commands
                 new EmbedBuilder
                 {
                     Title = "Title Anime",
-                    Image = "C:/Users/Brandan/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png",
+                    Image = "Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png",
                     Color = new RevoltColor(0, 1, 0)
                 }.Build(),
             });
