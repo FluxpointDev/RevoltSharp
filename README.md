@@ -62,7 +62,7 @@ public class CommandHandler
     private void Client_OnMessageRecieved(Message msg)
         {
             UserMessage Message = msg as UserMessage;
-            if (Message.Author.IsBot)
+            if (Message == null || Message.Author.IsBot)
                 return;
             int argPos = 0;
             if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
