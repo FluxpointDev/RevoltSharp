@@ -18,10 +18,7 @@ namespace TestBot
         {
             // Yes ik i can use json file blah blah :p
             string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
-            Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
-            {
-                Debug = new ClientDebugConfig { LogRestRequestJson = true, LogRestRequest = true, LogWebSocketFull = true, LogWebSocketReady = true, LogWebSocketError = true, LogWebSocketUnknownEvent = true }
-            });
+            Client = new RevoltClient(Token, ClientMode.WebSocket);
             await Client.StartAsync();
             CommandHandler Commands = new CommandHandler(Client);
             Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);

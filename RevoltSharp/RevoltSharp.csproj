@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>4.0.4</Version>
+    <Version>4.0.5</Version>
     <Authors>Builderb</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway to get events.</Description>
     <Product>RevoltSharp</Product>
     <PackageProjectUrl>https://github.com/xXBuilderBXx/RevoltSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xXBuilderBXx/RevoltSharp</RepositoryUrl>
-    <PackageTags>revolt</PackageTags>
-    <PackageReleaseNotes>Updated newtonsoft to 13.0.3 and better response stream handling and memory usage.</PackageReleaseNotes>
+    <PackageTags>revolt,revolt bot,bot,revoltsharp</PackageTags>
+    <PackageReleaseNotes>Fix null client config causing issues.</PackageReleaseNotes>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

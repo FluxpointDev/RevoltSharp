@@ -31,7 +31,7 @@ namespace RevoltSharp
 
             Token = token;
             Config = config ?? new ClientConfig();
-            UserBot = config.UserBot;
+            UserBot = Config.UserBot;
             if (Config.Debug == null)
                 Config.Debug = new ClientDebugConfig();
             Serializer = new JsonSerializer();
@@ -46,7 +46,7 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "4.0.4";
+        public string Version { get; } = "4.0.5";
 
         internal bool UserBot { get; set; }
 
