@@ -60,15 +60,16 @@ public class CommandHandler
     public RevoltClient Client;
     public CommandService Service = new CommandService();
     private void Client_OnMessageRecieved(Message msg)
-    {
-        if (msg.Author.IsBot)
-            return;
-        int argPos = 0;
-        if (!(msg.HasCharPrefix('!', ref argPos) || msg.HasMentionPrefix(Client.CurrentUser, ref argPos)))
-            return;
-        CommandContext context = new CommandContext(Client, msg);
-        Service.ExecuteAsync(context, argPos, null);
-    }
+        {
+            UserMessage Message = msg as UserMessage;
+            if (Message.Author.IsBot)
+                return;
+            int argPos = 0;
+            if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+                return;
+            CommandContext context = new CommandContext(Client, Message);
+            Service.ExecuteAsync(context, argPos, null);
+        }
 }
 ```
 
