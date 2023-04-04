@@ -113,7 +113,9 @@ namespace RevoltSharp
             if (WebSocket != null)
             {
                 WebSocket.SetupWebsocket();
-                while (WebSocket.WebSocket == null || WebSocket.WebSocket.State != System.Net.WebSockets.WebSocketState.Open) { }
+                while (WebSocket.WebSocket == null || WebSocket.WebSocket.State != System.Net.WebSockets.WebSocketState.Open) {
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                }
             }
         }
 
