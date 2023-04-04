@@ -11,10 +11,10 @@ namespace RevoltSharp
 {
     public static class MessageHelper
     {
-        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null)
-            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds, masquerade, interactions);
+        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, string[] replies = null)
+            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds, masquerade, interactions, replies);
 
-        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null)
+        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, string[] replies = null)
         {
             Conditions.ChannelIdEmpty(channelId);
 
@@ -59,7 +59,8 @@ namespace RevoltSharp
                 {
                     reactions = interactions.Reactions.Select(x => x.Id).ToArray(),
                     restrict_reactions = interactions.RestrictReactions
-                })
+                }),
+                replies = replies == null ? Optional.None<string[]>() : Optional.Some(replies),
             });
             return Message.Create(rest.Client, Data);
         }
