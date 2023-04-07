@@ -67,9 +67,15 @@ namespace RevoltSharp.WebSocket
                         if (_firstConnected)
                         {
                             if (we.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
+                            {
+                                Console.WriteLine("[RevoltSharp] Client token may be invalid.");
                                 throw new RevoltException("Client token may be invalid.");
+                            }
                             else
+                            {
+                                Console.WriteLine("[RevoltSharp] Failed to connect to Revolt.");
                                 throw new RevoltException("Failed to connect to Revolt.");
+                            }   
                         }
                         
                     }
@@ -77,7 +83,11 @@ namespace RevoltSharp.WebSocket
                     {
                         Console.WriteLine("--- WebSocket Exception ---\n" + $"{ex}");
                         if (_firstConnected)
+                        {
+                            Console.WriteLine("[RevoltSharp] Failed to connect to Revolt.");
                             throw new RevoltException("Failed to connect to Revolt.");
+                        }
+                            
                     }
                     await Task.Delay(_firstError ? 3000 : 10000, CancellationToken);
                     _firstError = false;
