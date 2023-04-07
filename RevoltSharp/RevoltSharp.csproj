@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>4.0.5</Version>
+    <Version>4.0.6</Version>
     <Authors>Builderb</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway to get events.</Description>
@@ -10,7 +10,10 @@
     <PackageProjectUrl>https://github.com/xXBuilderBXx/RevoltSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xXBuilderBXx/RevoltSharp</RepositoryUrl>
     <PackageTags>revolt,revolt bot,bot,revoltsharp</PackageTags>
-    <PackageReleaseNotes>Fix null client config causing issues.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added support for replying to messages on SendMessageAsync() 
+- Better handling of websocket connection.
+- Added OnConnected client event.
+- Better handling of websocket first connect that will throw an exception and added a log message if it failed to connect or invalid token.</PackageReleaseNotes>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
