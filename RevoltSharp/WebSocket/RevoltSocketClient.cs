@@ -64,10 +64,20 @@ namespace RevoltSharp.WebSocket
                     catch (WebSocketException we)
                     {
                         Console.WriteLine("--- WebSocket Error ---\n" + $"{we}");
+                        if (_firstConnected)
+                        {
+                            if (we.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
+                                throw new RevoltException("Client token may be invalid.");
+                            else
+                                throw new RevoltException("Failed to connect to Revolt.");
+                        }
+                        
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("--- WebSocket Exception ---\n" + $"{ex}");
+                        if (_firstConnected)
+                            throw new RevoltException("Failed to connect to Revolt.");
                     }
                     await Task.Delay(_firstError ? 3000 : 10000, CancellationToken);
                     _firstError = false;
