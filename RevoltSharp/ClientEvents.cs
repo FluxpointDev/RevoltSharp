@@ -5,6 +5,7 @@
     /// </summary>
     public class ClientEvents
     {
+        public delegate void RevoltEvent();
         public delegate void RevoltEvent<TValue>(TValue value);
         public delegate void RevoltEvent<TValue, TValue2>(TValue value, TValue2 value2);
         public delegate void RevoltEvent<TValue, TValue2, TValue3>(TValue values, TValue2 values2, TValue3 value3);
@@ -135,6 +136,11 @@
         internal void InvokeWebSocketError(SocketError error)
         {
             OnWebSocketError?.Invoke(error);
+        }
+        
+        public event RevoltEvent OnConnected;
+        internal void InvokeConnected() {
+            OnConnected?.Invoke();
         }
 
         public event RevoltEvent<User, User> OnUserUpdated;

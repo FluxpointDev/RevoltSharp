@@ -139,6 +139,8 @@ namespace RevoltSharp.WebSocket
                             Console.WriteLine("[RevoltSharp] WebSocket Connected!");
                         else
                             Console.WriteLine("[RevoltSharp] WebSocket Reconnected!");
+                        
+                        Client.InvokeConnected();
 
                         _firstConnected = false;
                         await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
@@ -168,8 +170,10 @@ namespace RevoltSharp.WebSocket
                                     Console.WriteLine("[RevoltSharp] WebSocket session is invalid, check if your bot token is correct.");
                                 else
                                     Console.WriteLine("[RevoltSharp] WebSocket session was invalidated!");
+                                
                                 await Client.StopAsync();
                             }
+                            
                             Client.InvokeWebSocketError(new SocketError { Messaage = @event.Message, Type = @event.Error });
                         }
                         break;
@@ -237,6 +241,7 @@ namespace RevoltSharp.WebSocket
                                 Console.WriteLine(ex);
                                 Console.WriteLine("[RevoltSharp] Fatal error, could not parse ready event.\n" +
                                     "WebSocket connection has been stopped.");
+                                Client.InvokeWebSocketError(new SocketError() { Messaage = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = SocketErrorType.Unknown });
                                 await Client.StopAsync();
                             }
                         }

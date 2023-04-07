@@ -112,8 +112,19 @@ namespace RevoltSharp
 
             if (WebSocket != null)
             {
+                var tcs = new TaskCompletionSource();
+
+                void HandleConnected() => tcs.SetResult();
+                void HandleError(SocketError error) => tcs.SetException(new RevoltException(error.Messaage));
+
+                this.OnConnected += HandleConnected;
+                this.OnWebSocketError += HandleError;
+                
                 WebSocket.SetupWebsocket();
-                while (WebSocket.WebSocket == null || WebSocket.WebSocket.State != System.Net.WebSockets.WebSocketState.Open) { }
+                
+                await tcs.Task;
+                this.OnConnected -= HandleConnected;
+                this.OnWebSocketError -= HandleError;
             }
         }
 
