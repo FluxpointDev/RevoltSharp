@@ -249,5 +249,16 @@ namespace TestBot.Commands
                 }.Build(),
             });
         }
+        
+        // replies: space separated list of strings like so:
+        // +01GX79H9S8FZERHVA5S5E68AAY -01GX79H9S8FZERHVA5S5E68AAY
+        // + means mention, - means do not
+        [Command("reply")]
+        public async Task Reply([Remainder] string replies) {
+            await Context.Channel.SendMessageAsync("Hello", replies: replies.Split(" ").Select(id => new MessageReply() {
+                id = id[1..],
+                mention = id[0] == '+'
+            }).ToArray());
+        }
     }
 }

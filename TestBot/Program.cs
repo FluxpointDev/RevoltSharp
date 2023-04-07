@@ -21,7 +21,7 @@ namespace TestBot
             Client = new RevoltClient(Token, ClientMode.WebSocket);
             await Client.StartAsync();
             CommandHandler Commands = new CommandHandler(Client);
-            Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+            await Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
             await Task.Delay(-1);
         }
     }
@@ -31,11 +31,13 @@ namespace TestBot
         public CommandHandler(RevoltClient client)
         {
             Client = client;
-            client.OnMessageRecieved += Client_OnMessageRecieved;
+            client.OnMessageRecieved += message => {
+                Client_OnMessageRecieved(message).GetAwaiter().GetResult();
+            };
         }
         public RevoltClient Client;
         public CommandService Service = new CommandService();
-        private void Client_OnMessageRecieved(Message msg)
+        private async Task Client_OnMessageRecieved(Message msg)
         {
             UserMessage Message = msg as UserMessage;
             if (Message == null || Message.Author.IsBot)
@@ -44,7 +46,11 @@ namespace TestBot
             if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                 return;
             CommandContext context = new CommandContext(Client, Message);
-            Service.ExecuteAsync(context, argPos, null);
+            var result = await Service.ExecuteAsync(context, argPos, null);
+            Console.WriteLine(result);
+            if (result is ExecuteResult er) {
+                Console.WriteLine(er.Exception);
+            }
         }
     }
 }
