@@ -688,7 +688,7 @@ namespace RevoltSharp.WebSocket
                             }
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
                             ServerChannel SC = channel as ServerChannel;
-                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId);
+                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId);
                             Client.InvokeReactionAdded(emoji, SC, SM, await Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
                         }
                         break;
@@ -711,7 +711,7 @@ namespace RevoltSharp.WebSocket
                                 
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
                             ServerChannel SC = channel as ServerChannel;
-                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId);
+                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId);
                             Client.InvokeReactionRemoved(emoji, SC, SM, await Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
                         }
                         break;
