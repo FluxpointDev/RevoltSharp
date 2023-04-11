@@ -3,14 +3,17 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp; 
 
-public class Downloadable<T> {
-	private readonly Func<Task<T>> _downloader;
+public class Downloadable<TId, TDownload> {
+	private readonly Func<Task<TDownload>> _downloader;
+	
+	public TId Id { get; }
 
-	public Downloadable(Func<Task<T>> downloader) {
+	public Downloadable(TId id, Func<Task<TDownload>> downloader) {
+		Id = id;
 		_downloader = downloader;
 	}
 	
-	public Task<T> DownloadAsync() {
+	public Task<TDownload> DownloadAsync() {
 		return _downloader();
 	}
 }

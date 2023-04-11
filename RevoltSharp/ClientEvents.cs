@@ -170,16 +170,16 @@
             OnEmojiDeleted?.Invoke(server, emoji);
         }
 
-        public event RevoltEvent<Emoji, ServerChannel, ServerMember, Downloadable<Message>> OnReactionAdded;
+        public event RevoltEvent<Emoji, ServerChannel, Downloadable<string, ServerMember>, Downloadable<string, Message>> OnReactionAdded;
 
-        internal void InvokeReactionAdded(Emoji emoji, ServerChannel channel, ServerMember member, Downloadable<Message> messageDownload)
+        internal void InvokeReactionAdded(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> member, Downloadable<string, Message> messageDownload)
         {
             OnReactionAdded?.Invoke(emoji, channel, member, messageDownload);
         }
 
-        public event RevoltEvent<Emoji, ServerChannel, ServerMember, Downloadable<Message>> OnReactionRemoved;
+        public event RevoltEvent<Emoji, ServerChannel, Downloadable<string, ServerMember>, Downloadable<string, Message>> OnReactionRemoved;
 
-        internal void InvokeReactionRemoved(Emoji emoji, ServerChannel channel, ServerMember member, Downloadable<Message> messageDownload)
+        internal void InvokeReactionRemoved(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> member, Downloadable<string, Message> messageDownload)
         {
             OnReactionRemoved?.Invoke(emoji, channel, member, messageDownload);
         }
