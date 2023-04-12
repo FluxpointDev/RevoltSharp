@@ -9,6 +9,7 @@
         public delegate void RevoltEvent<TValue>(TValue value);
         public delegate void RevoltEvent<TValue, TValue2>(TValue value, TValue2 value2);
         public delegate void RevoltEvent<TValue, TValue2, TValue3>(TValue values, TValue2 values2, TValue3 value3);
+        public delegate void RevoltEvent<TValue, TValue2, TValue3, TValue4>(TValue values, TValue2 values2, TValue3 value3, TValue4 value4);
 
         /// <summary>
         /// Receive message events from websocket in a <see cref="TextChannel"/> or <seealso cref="GroupChannel"/>
@@ -169,18 +170,18 @@
             OnEmojiDeleted?.Invoke(server, emoji);
         }
 
-        public event RevoltEvent<Emoji, ServerChannel, ServerMember> OnReactionAdded;
+        public event RevoltEvent<Emoji, ServerChannel, Downloadable<string, ServerMember>, Downloadable<string, Message>> OnReactionAdded;
 
-        internal void InvokeReactionAdded(Emoji emoji, ServerChannel channel, ServerMember member)
+        internal void InvokeReactionAdded(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> member, Downloadable<string, Message> messageDownload)
         {
-            OnReactionAdded?.Invoke(emoji, channel, member);
+            OnReactionAdded?.Invoke(emoji, channel, member, messageDownload);
         }
 
-        public event RevoltEvent<Emoji, ServerChannel, ServerMember> OnReactionRemoved;
+        public event RevoltEvent<Emoji, ServerChannel, Downloadable<string, ServerMember>, Downloadable<string, Message>> OnReactionRemoved;
 
-        internal void InvokeReactionRemoved(Emoji emoji, ServerChannel channel, ServerMember member)
+        internal void InvokeReactionRemoved(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> member, Downloadable<string, Message> messageDownload)
         {
-            OnReactionRemoved?.Invoke(emoji, channel, member);
+            OnReactionRemoved?.Invoke(emoji, channel, member, messageDownload);
         }
     }
 }

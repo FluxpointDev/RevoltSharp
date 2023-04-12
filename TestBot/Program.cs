@@ -46,10 +46,23 @@ namespace TestBot
         public CommandHandler(RevoltClient client)
         {
             Client = client;
-            client.OnMessageRecieved += message => {
-                Client_OnMessageRecieved(message).GetAwaiter().GetResult();
-            };
+            client.OnMessageRecieved += message => Client_OnMessageRecieved(message).GetAwaiter().GetResult();
+            client.OnReactionAdded += Client_OnReactionAdded;
+            client.OnReactionRemoved += Client_OnReactionRemoved;
         }
+
+        private void Client_OnReactionAdded(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> memberDownload, Downloadable<string, Message> messageDownload) {
+            if (memberDownload.Id != Client.CurrentUser.Id) {
+                Client.Rest.AddMessageReactionAsync(channel.Id, messageDownload.Id, emoji.Id).GetAwaiter().GetResult();
+            }
+        }
+
+        private void Client_OnReactionRemoved(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> memberDownload, Downloadable<string, Message> messageDownload) {
+            if (memberDownload.Id != Client.CurrentUser.Id) {
+                Client.Rest.RemoveMessageReactionAsync(channel.Id, messageDownload.Id, emoji.Id, Client.CurrentUser.Id).GetAwaiter().GetResult();
+            }
+        }
+
         public RevoltClient Client;
         public CommandService Service = new CommandService();
         private async Task Client_OnMessageRecieved(Message msg)

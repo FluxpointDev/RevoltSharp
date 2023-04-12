@@ -68,7 +68,7 @@ namespace RevoltSharp
 
         public bool IsNsfw { get; internal set; }
 
-        public ServerMember GetCachedMember(string userId)
+        public ServerMember? GetCachedMember(string userId)
         {
             if (InternalMembers.TryGetValue(userId, out ServerMember member))
                 return member;

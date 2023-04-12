@@ -688,8 +688,9 @@ namespace RevoltSharp.WebSocket
                             }
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
                             ServerChannel SC = channel as ServerChannel;
-                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId);
-                            Client.InvokeReactionAdded(emoji, SC, SM);
+                            var SM = new Downloadable<string, ServerMember>(@event.UserId, async () => SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId));
+                            var message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                            Client.InvokeReactionAdded(emoji, SC, SM, message);
                         }
                         break;
                     case "MessageUnreact":
@@ -711,8 +712,9 @@ namespace RevoltSharp.WebSocket
                                 
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
                             ServerChannel SC = channel as ServerChannel;
-                            ServerMember SM = SC.Server.GetCachedMember(@event.UserId);
-                            Client.InvokeReactionRemoved(emoji, SC, SM);
+                            var SM = new Downloadable<string, ServerMember>(@event.UserId, async () => SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId));
+                            var message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                            Client.InvokeReactionRemoved(emoji, SC, SM, message);
                         }
                         break;
 
