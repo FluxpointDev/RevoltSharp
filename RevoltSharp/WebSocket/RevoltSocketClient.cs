@@ -118,7 +118,7 @@ namespace RevoltSharp.WebSocket
                     ms.Seek(0, SeekOrigin.Begin);
                     using (StreamReader reader = new StreamReader(ms, Encoding.UTF8))
                     {
-                        WebSocketMessage(await reader.ReadToEndAsync());
+                        _  = WebSocketMessage(await reader.ReadToEndAsync());
                     }
                 }
             }
@@ -330,6 +330,9 @@ namespace RevoltSharp.WebSocket
                                 channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
                                 ChannelCache.TryAdd(@event.ChannelId, channel);
                             }
+                            if (channel == null)
+                                return;
+
                             Client.InvokeMessageDeleted(channel, @event.Id);
                         }
                         break;
@@ -350,37 +353,38 @@ namespace RevoltSharp.WebSocket
                     case "ChannelUpdate":
                         {
                             ChannelUpdateEventJson @event = payload.ToObject<ChannelUpdateEventJson>(Client.Serializer);
-                            if (ChannelCache.TryGetValue(@event.Id, out Channel chan))
+                            if !(ChannelCache.TryGetValue(@event.Id, out Channel chan))
+                            return;
+
+                            if (@event.Clear.HasValue)
                             {
-                                if (@event.Clear.HasValue)
-                                {
-                                    if (@event.Data == null)
-                                        @event.Data = new PartialChannelJson();
+                                if (@event.Data == null)
+                                    @event.Data = new PartialChannelJson();
 
-                                    if (@event.Clear.Value.Contains("Icon"))
-                                        @event.Data.Icon = Optional.Some<AttachmentJson>(null);
+                                if (@event.Clear.Value.Contains("Icon"))
+                                    @event.Data.Icon = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.Value.Contains("Description"))
-                                        @event.Data.Description = Optional.Some<string>(null);
+                                if (@event.Clear.Value.Contains("Description"))
+                                    @event.Data.Description = Optional.Some<string>(null);
 
-                                }
-
-                                Channel clone = chan.Clone();
-                                chan.Update(@event.Data);
-                                Client.InvokeChannelUpdated(clone, chan);
                             }
+
+                            Channel clone = chan.Clone();
+                            chan.Update(@event.Data);
+                            Client.InvokeChannelUpdated(clone, chan);
+
                         }
                         break;
                     case "ChannelDelete":
                         {
                             ChannelDeleteEventJson @event = payload.ToObject<ChannelDeleteEventJson>(Client.Serializer);
-                            ChannelCache.TryRemove(@event.Id, out Channel chan);
+                            if (!ChannelCache.TryRemove(@event.Id, out Channel chan))
+                                return;
+
                             if (chan is ServerChannel sc)
                             {
                                 if (ServerCache.TryGetValue(sc.ServerId, out Server server))
-                                {
                                     server.ChannelIds.Remove(@event.Id);
-                                }
                             }
                             Client.InvokeChannelDeleted(chan);
                         }
@@ -410,6 +414,9 @@ namespace RevoltSharp.WebSocket
                                     user = await Client.Rest.GetUserAsync(@event.UserId);
                                     UserCache.TryAdd(user.Id, user);
                                 }
+                                if (user == null)
+                                    return;
+
                                 GroupChannel GC = (GroupChannel)ChannelCache[@event.Id];
                                 GC.AddUser(user);
                                 Client.InvokeGroupUserJoined(GC, user);
@@ -419,7 +426,9 @@ namespace RevoltSharp.WebSocket
                     case "ChannelGroupLeave":
                         {
                             ChannelGroupLeaveEventJson @event = payload.ToObject<ChannelGroupLeaveEventJson>(Client.Serializer);
-                            GroupChannel GC = (GroupChannel)ChannelCache[@event.Id];
+                            if (!ChannelCache.TryGetValue(@event.Id, out Channel Channel))
+                                return;
+                            GroupChannel GC = Channel as GroupChannel;
 
                             if (@event.UserId == CurrentUser.Id)
                             {
@@ -433,9 +442,15 @@ namespace RevoltSharp.WebSocket
                             }
                             else
                             {
-                                User user = await Client.Rest.GetUserAsync(@event.UserId);
-                                GC.RemoveUser(user, false);
-                                Client.InvokeGroupUserLeft(GC, user);
+                                UserCache.TryGetValue(@event.UserId, out User User);
+                                if (User == null)
+                                    User =  await Client.Rest.GetUserAsync(@event.UserId);
+
+                                if (User == null)
+                                    return;
+
+                                GC.RemoveUser(User, false);
+                                Client.InvokeGroupUserLeft(GC, User);
                             }
                         }
                         break;
@@ -454,32 +469,35 @@ namespace RevoltSharp.WebSocket
                     case "ServerUpdate":
                         {
                             ServerUpdateEventJson @event = payload.ToObject<ServerUpdateEventJson>(Client.Serializer);
-                            if (ServerCache.TryGetValue(@event.Id, out Server server))
+                            if (!ServerCache.TryGetValue(@event.Id, out Server server))
+                                return;
+
+                            if (@event.Clear.HasValue)
                             {
-                                if (@event.Clear.HasValue)
-                                {
-                                    if (@event.Data == null)
-                                        @event.Data = new PartialServerJson();
+                                if (@event.Data == null)
+                                    @event.Data = new PartialServerJson();
 
-                                    if (@event.Clear.Value.Contains("Icon"))
-                                        @event.Data.Icon = Optional.Some<AttachmentJson>(null);
+                                if (@event.Clear.Value.Contains("Icon"))
+                                    @event.Data.Icon = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.Value.Contains("Banner"))
-                                        @event.Data.Banner = Optional.Some<AttachmentJson>(null);
+                                if (@event.Clear.Value.Contains("Banner"))
+                                    @event.Data.Banner = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.Value.Contains("Description"))
-                                        @event.Data.Description = Optional.Some<string>(null);
-                                }
-                                Server cloned = server.Clone();
-                                server.Update(@event.Data);
-                                Client.InvokeServerUpdated(cloned, server);
+                                if (@event.Clear.Value.Contains("Description"))
+                                    @event.Data.Description = Optional.Some<string>(null);
                             }
+                            Server cloned = server.Clone();
+                            server.Update(@event.Data);
+                            Client.InvokeServerUpdated(cloned, server);
+
                         }
                         break;
                     case "ServerDelete":
                         {
                             ServerDeleteEventJson @event = payload.ToObject<ServerDeleteEventJson>(Client.Serializer);
-                            ServerCache.TryRemove(@event.Id, out Server server);
+                            if (!ServerCache.TryRemove(@event.Id, out Server server))
+                                return;
+
                             foreach (string c in server.ChannelIds)
                             {
                                 ChannelCache.TryRemove(c, out _);
@@ -494,14 +512,22 @@ namespace RevoltSharp.WebSocket
                     case "ServerMemberUpdate":
                         {
                             ServerMemberUpdateEventJson @event = payload.ToObject<ServerMemberUpdateEventJson>(Client.Serializer);
-                            Server server = ServerCache[@event.Id.Server];
-                            ServerMember Member = await server.GetMemberAsync(@event.Id.User);
+                            if (!ServerCache.TryGetValue(@event.Id.Server, out Server Server))
+                                return;
+
+                            Server.InternalMembers.TryGetValue(@event.Id.User, out ServerMember Member);
+                            if (Member == null)
+                                Member = await Server.GetMemberAsync(@event.Id.User);
+
+                            if (Member == null)
+                                return;
+
                             if (@event.Clear.HasValue)
                             {
                                 if (@event.Data == null)
                                     @event.Data = new PartialServerMemberJson();
 
-                                foreach(string s in @event.Clear.Value)
+                                foreach (string s in @event.Clear.Value)
                                 {
                                     switch (s)
                                     {
@@ -529,7 +555,6 @@ namespace RevoltSharp.WebSocket
                             ServerMemberJoinEventJson @event = payload.ToObject<ServerMemberJoinEventJson>(Client.Serializer);
                             if (@event.UserId == CurrentUser.Id)
                             {
-                               
                                 Server server = await Client.Rest.GetServerAsync(@event.Id);
                                 Console.WriteLine("[RevoltSharp] Joined Server: " + server.Name);
                                 server.AddMember(new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser));
@@ -537,12 +562,15 @@ namespace RevoltSharp.WebSocket
                             }
                             else
                             {
+                                if (!ServerCache.TryGetValue(@event.Id, out Server Server))
+                                    return;
+
                                 UserCache.TryGetValue(@event.UserId, out User user);
                                 if (user == null)
                                     user = await Client.Rest.GetUserAsync(@event.UserId);
-                                Server server = ServerCache[@event.Id];
+
                                 ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
-                                Client.InvokeMemberJoined(server, Member);
+                                Client.InvokeMemberJoined(Server, Member);
                             }
                         }
                         break;
@@ -551,7 +579,9 @@ namespace RevoltSharp.WebSocket
                             ServerMemberLeaveEventJson @event = payload.ToObject<ServerMemberLeaveEventJson>(Client.Serializer);
                             if (@event.UserId == CurrentUser.Id)
                             {
-                                ServerCache.TryRemove(@event.Id, out Server server);
+                                if (!ServerCache.TryRemove(@event.Id, out Server server))
+                                    return;
+
                                 Console.WriteLine("[RevoltSharp] Left Server: " + server.Name);
                                 foreach (ServerMember m in server.InternalMembers.Values)
                                 {
@@ -565,84 +595,86 @@ namespace RevoltSharp.WebSocket
                             }
                             else
                             {
-                                Server server = ServerCache[@event.Id];
-                                server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
+                                if (!ServerCache.TryGetValue(@event.Id, out Server Server))
+                                    return;
+                                Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
                                 if (Member == null)
                                 {
                                     User User = await Client.Rest.GetUserAsync(@event.UserId);
                                     Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, User);
                                 }
-                                server.RemoveMember(Member.User, false);
-                                Client.InvokeMemberLeft(server, Member);
+                                Server.RemoveMember(Member.User, false);
+                                Client.InvokeMemberLeft(Server, Member);
                             }
                         }
                         break;
                     case "ServerRoleUpdate":
                         {
                             ServerRoleUpdateEventJson @event = payload.ToObject<ServerRoleUpdateEventJson>(Client.Serializer);
-                            if (ServerCache.TryGetValue(@event.Id, out Server server))
+                            if (!ServerCache.TryGetValue(@event.Id, out Server server))
+                                return;
+
+                            if (server.InternalRoles.TryGetValue(@event.RoleId, out Role role))
                             {
-                                if (server.InternalRoles.TryGetValue(@event.RoleId, out Role role))
-                                {
-                                    Role cloned = role.Clone();
-                                    role.Update(@event.Data);
-                                    Client.InvokeRoleUpdated(cloned, role);
-                                }
-                                else
-                                {
-                                    Role newRole = new Role(Client, @event.Data, @event.Id, @event.RoleId);
-                                    server.InternalRoles.TryAdd(@event.RoleId, newRole);
-                                    Client.InvokeRoleCreated(newRole);
-                                }
+                                Role cloned = role.Clone();
+                                role.Update(@event.Data);
+                                Client.InvokeRoleUpdated(cloned, role);
                             }
+                            else
+                            {
+                                Role newRole = new Role(Client, @event.Data, @event.Id, @event.RoleId);
+                                server.InternalRoles.TryAdd(@event.RoleId, newRole);
+                                Client.InvokeRoleCreated(newRole);
+                            }
+
                         }
                         break;
                     case "ServerRoleDelete":
                         {
                             ServerRoleDeleteEventJson @event = payload.ToObject<ServerRoleDeleteEventJson>(Client.Serializer);
-                            if (ServerCache.TryGetValue(@event.Id, out Server server))
+                            if (!ServerCache.TryGetValue(@event.Id, out Server server))
+                                return;
+                            if (!server.InternalRoles.TryRemove(@event.RoleId, out Role role))
+                                return;
+
+                            foreach (ServerMember m in server.InternalMembers.Values)
                             {
-                                server.InternalRoles.TryRemove(@event.RoleId, out Role role);
-                                foreach (ServerMember m in server.InternalMembers.Values)
-                                {
-                                    m.InternalRoles.TryRemove(@event.RoleId, out _);
-                                }
-                                Client.InvokeRoleDeleted(role);
+                                m.InternalRoles.TryRemove(@event.RoleId, out _);
                             }
+                            Client.InvokeRoleDeleted(role);
                         }
                         break;
                     case "UserUpdate":
                         {
                             UserUpdateEventJson @event = payload.ToObject<UserUpdateEventJson>(Client.Serializer);
-                            if (UserCache.TryGetValue(@event.Id, out User user))
+                            if (!UserCache.TryGetValue(@event.Id, out User user))
+                                return;
+                            if (@event.Clear.HasValue)
                             {
-                                if (@event.Clear.HasValue)
-                                {
-                                    if (@event.Clear.Value.Contains("ProfileContent"))
-                                        @event.Data.ProfileContent = Optional.Some<string>("");
+                                if (@event.Clear.Value.Contains("ProfileContent"))
+                                    @event.Data.ProfileContent = Optional.Some<string>("");
 
-                                    if (@event.Clear.Value.Contains("StatusText"))
-                                        @event.Data.status = Optional.Some<UserStatusJson>(null);
+                                if (@event.Clear.Value.Contains("StatusText"))
+                                    @event.Data.status = Optional.Some<UserStatusJson>(null);
 
-                                    if (@event.Clear.Value.Contains("ProfileBackground"))
-                                        @event.Data.ProfileBackground = Optional.Some<AttachmentJson>(null);
+                                if (@event.Clear.Value.Contains("ProfileBackground"))
+                                    @event.Data.ProfileBackground = Optional.Some<AttachmentJson>(null);
 
-                                    if (@event.Clear.Value.Contains("Avatar"))
-                                        @event.Data.avatar = Optional.Some<AttachmentJson>(null);
-                                }
-                                if (@event.Id == CurrentUser.Id)
-                                {
-                                    SelfUser cloned = CurrentUser.Clone();
-                                    user.Update(@event.Data);
-                                    CurrentUser.Update(@event.Data);
-                                    Client.InvokeCurrentUserUpdated(cloned, CurrentUser);
-                                }
-                                else
-                                {
-                                    User cloned = user.Clone();
-                                    user.Update(@event.Data);
-                                    Client.InvokeUserUpdated(cloned, user);
-                                }
+                                if (@event.Clear.Value.Contains("Avatar"))
+                                    @event.Data.avatar = Optional.Some<AttachmentJson>(null);
+                            }
+                            if (@event.Id == CurrentUser.Id)
+                            {
+                                SelfUser cloned = CurrentUser.Clone();
+                                user.Update(@event.Data);
+                                CurrentUser.Update(@event.Data);
+                                Client.InvokeCurrentUserUpdated(cloned, CurrentUser);
+                            }
+                            else
+                            {
+                                User cloned = user.Clone();
+                                user.Update(@event.Data);
+                                Client.InvokeUserUpdated(cloned, user);
                             }
                         }
                         break;
@@ -654,19 +686,29 @@ namespace RevoltSharp.WebSocket
                     case "EmojiCreate":
                         {
                             ServerEmojiCreatedEventJson @event = payload.ToObject<ServerEmojiCreatedEventJson>(Client.Serializer);
-                            Emoji Emoji = new Emoji(Client, @event);
-                            EmojiCache.TryAdd(Emoji.Id, Emoji);
-                            ServerCache.TryGetValue(Emoji.ServerId, out Server Server);
-                            Server.InternalEmojis.TryAdd(Emoji.Id, Emoji);
-                            Client.InvokeEmojiCreated(Server, Emoji);
+                            Emoji AddedEmoji = new Emoji(Client, @event);
+
+                            EmojiCache.TryAdd(AddedEmoji.Id, AddedEmoji);
+
+                            ServerCache.TryGetValue(AddedEmoji.ServerId, out Server Server);
+                            if (Server != null)
+                                return;
+
+                            Server.InternalEmojis.TryAdd(AddedEmoji.Id, AddedEmoji);
+                            Client.InvokeEmojiCreated(Server, AddedEmoji);
                         }
                         break;
                     case "EmojiDelete":
                         {
                             ServerEmojiDeleteEventJson @event = payload.ToObject<ServerEmojiDeleteEventJson>(Client.Serializer);
-                            EmojiCache.TryRemove(@event.Id, out Emoji Emoji);
-                            ServerCache.TryGetValue(Emoji.ServerId, out Server Server);
-                            Server.InternalEmojis.TryRemove(Emoji.Id, out Emoji Emoji2);
+                            if (!EmojiCache.TryRemove(@event.Id, out Emoji Emoji))
+                                return;
+
+                            if (!ServerCache.TryGetValue(Emoji.ServerId, out Server Server))
+                                return;
+
+                            Server.InternalEmojis.TryRemove(Emoji.Id, out Emoji ServerEmoji);
+
                             Client.InvokeEmojiDeleted(Server, Emoji);
                         }
                         break;
@@ -687,7 +729,13 @@ namespace RevoltSharp.WebSocket
                                 }
                             }
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                            if (channel == null)
+                                return;
+
                             ServerChannel SC = channel as ServerChannel;
+                            if (SC == null)
+                                return;
+
                             var SM = new Downloadable<string, ServerMember>(@event.UserId, async () => SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId));
                             var message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
                             Client.InvokeReactionAdded(emoji, SC, SM, message);
@@ -711,7 +759,13 @@ namespace RevoltSharp.WebSocket
                             }
                                 
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                            if (channel == null)
+                                return;
+
                             ServerChannel SC = channel as ServerChannel;
+                            if (SC == null)
+                                return;
+
                             var SM = new Downloadable<string, ServerMember>(@event.UserId, async () => SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId));
                             var message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
                             Client.InvokeReactionRemoved(emoji, SC, SM, message);

@@ -19,7 +19,7 @@ namespace RevoltSharp
         /// <param name="token">Bot token to connect with.</param>
         /// <param name="mode">Use http for http requests only with no websocket.</param>
         /// <param name="config">Optional config stuff for the bot and lib.</param>
-        public RevoltClient(string token, ClientMode mode, ClientConfig config = null)
+        public RevoltClient(string token, ClientMode mode, ClientConfig? config = null)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace RevoltSharp
                 this.OnConnected += HandleConnected;
                 this.OnWebSocketError += HandleError;
                 
-                WebSocket.SetupWebsocket();
+                _ = WebSocket.SetupWebsocket();
                 
                 await tcs.Task;
                 this.OnConnected -= HandleConnected;
