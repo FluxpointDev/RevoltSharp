@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp.Commands
@@ -36,7 +37,7 @@ namespace RevoltSharp.Commands
         /// <inheritdoc />
         public override async Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)
         {
-            if (context.Message.AuthorId == "01FE57SEGM0CBQD6Y7X10VZQ49")
+            if (context.Client.Config.Owners.Any(x => x == context.User.Id))
                 return PreconditionResult.FromSuccess();
             return PreconditionResult.FromError(ErrorMessage ?? "Command can only be run by the owner of the bot.");
         }

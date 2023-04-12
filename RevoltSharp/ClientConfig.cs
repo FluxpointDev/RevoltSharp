@@ -26,6 +26,8 @@ namespace RevoltSharp
         /// Enabled by default, rest requests for POST/PUT/DELETE will throw a RevoltRestException
         /// </summary>
         public bool RestThrowException = true;
+
+        public string[] Owners = null;
     }
     public class ClientDebugConfig
     {
