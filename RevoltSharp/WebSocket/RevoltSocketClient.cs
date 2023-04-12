@@ -353,8 +353,8 @@ namespace RevoltSharp.WebSocket
                     case "ChannelUpdate":
                         {
                             ChannelUpdateEventJson @event = payload.ToObject<ChannelUpdateEventJson>(Client.Serializer);
-                            if !(ChannelCache.TryGetValue(@event.Id, out Channel chan))
-                            return;
+                            if (!ChannelCache.TryGetValue(@event.Id, out Channel chan))
+                                return;
 
                             if (@event.Clear.HasValue)
                             {

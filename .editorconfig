@@ -31,6 +31,15 @@ dotnet_diagnostic.CS8602.severity = none
 # IDE0090: Use 'new(...)'
 csharp_style_implicit_object_creation_when_type_is_apparent = false
 
+# CS8604: Possible null reference argument.
+dotnet_diagnostic.CS8604.severity = none
+
+# IDE0034: Simplify 'default' expression
+csharp_prefer_simple_default_expression = false
+
+# CS8601: Possible null reference assignment.
+dotnet_diagnostic.CS8601.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 
