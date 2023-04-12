@@ -42,8 +42,8 @@ namespace RevoltSharp.Commands.Builders
         internal CommandBuilder(ModuleBuilder module, string primaryAlias, Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> callback)
             : this(module)
         {
-            //Discord.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
-            //Discord.Preconditions.NotNull(callback, nameof(callback));
+            //.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
+            //.Preconditions.NotNull(callback, nameof(callback));
             
             Callback = callback;
             PrimaryAlias = primaryAlias;

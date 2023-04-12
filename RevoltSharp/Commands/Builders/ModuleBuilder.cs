@@ -44,7 +44,7 @@ namespace RevoltSharp.Commands.Builders
         internal ModuleBuilder(CommandService service, ModuleBuilder parent, string primaryAlias)
             : this(service, parent)
         {
-            //Discord.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
+            //.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
 
             _aliases = new List<string> { primaryAlias };
         }

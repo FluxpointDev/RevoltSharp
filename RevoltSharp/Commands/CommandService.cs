@@ -11,18 +11,17 @@ using RevoltSharp.Commands.Builders;
 namespace RevoltSharp.Commands
 {
     /// <summary>
-    ///     Provides a framework for building Discord commands.
+    ///     Provides a framework for building RevoltSharp bot commands.
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///         The service provides a framework for building Discord commands both dynamically via runtime builders or
+    ///         The service provides a framework for building RevoltSharp bot commands both dynamically via runtime builders or
     ///         statically via compile-time modules. To create a command module at compile-time, see
     ///         <see cref="ModuleBase" /> (most common); otherwise, see <see cref="ModuleBuilder" />.
     ///     </para>
     ///     <para>
     ///         This service also provides several events for monitoring command usages; such as
-    ///         <see cref="Discord.Commands.CommandService.Log" /> for any command-related log events, and
-    ///         <see cref="Discord.Commands.CommandService.CommandExecuted" /> for information about commands that have
+    ///         <see cref="CommandExecuted" /> for information about commands that have
     ///         been successfully executed.
     ///     </para>
     /// </remarks>

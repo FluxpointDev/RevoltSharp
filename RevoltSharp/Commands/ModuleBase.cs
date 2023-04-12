@@ -5,30 +5,22 @@ namespace RevoltSharp.Commands
 {
 
     /// <summary>
-    ///     Provides a base class for a command module to inherit from.
-    /// </summary>
-    /// <typeparam name="T">A class that implements <see cref="CommandContext"/>.</typeparam>
+    ///     Provides a base class for a command module to inherit from with a <see cref="CommandContext"/>.
+    ///  </summary>
     public abstract class ModuleBase : IModuleBase
     {
         /// <summary>
         ///     The underlying context of the command.
         /// </summary>
-        /// <seealso cref="T:Discord.Commands.CommandContext" />
-        /// <seealso cref="T:Discord.Commands.CommandContext" />
         public CommandContext Context { get; private set; }
 
         /// <summary>
         ///     Sends a message to the source channel.
         /// </summary>
         /// <param name="message">
-        /// Contents of the message; optional only if <paramref name="embed" /> is specified.
+        /// Contents of the message; optional only if <paramref name="embeds" /> is specified.
         /// </param>
-        /// <param name="isTTS">Specifies if Discord should read this <paramref name="message"/> aloud using text-to-speech.</param>
-        /// <param name="embed">An embed to be displayed alongside the <paramref name="message"/>.</param>
-        /// <param name="allowedMentions">
-        ///     Specifies if notifications are sent for mentioned users and roles in the <paramref name="message"/>.
-        ///     If <c>null</c>, all mentioned roles and users will be notified.
-        /// </param>
+        /// <param name="embeds">An embed to be displayed alongside the <paramref name="message"/>.</param>
         protected virtual async Task<Message> ReplyAsync(string message, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
         {
             return await Context.Channel.SendMessageAsync(message, attachments, embeds, masquerade).ConfigureAwait(false);
@@ -40,14 +32,7 @@ namespace RevoltSharp.Commands
         /// </summary>
         /// <param name="filePath">The file path of the file.</param>
         /// <param name="text">The message to be sent.</param>
-        /// <param name="isTTS">Whether the message should be read aloud by Discord or not.</param>
-        /// <param name="embed">The <see cref="EmbedType.Rich" /> <see cref="Embed" /> to be sent.</param>
-        /// <param name="options">The options to be used when sending the request.</param>
-        /// <param name="isSpoiler">Whether the message attachment should be hidden as a spoiler.</param>
-        /// <param name="allowedMentions">
-        ///     Specifies if notifications are sent for mentioned users and roles in the message <paramref name="text"/>.
-        ///     If <c>null</c>, all mentioned roles and users will be notified.
-        /// </param>
+        /// <param name="embeds">The <see cref="Embed" /> to be sent.</param>
         protected virtual async Task<Message> ReplyFileAsync(string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
         {
             if (string.IsNullOrEmpty(filePath))

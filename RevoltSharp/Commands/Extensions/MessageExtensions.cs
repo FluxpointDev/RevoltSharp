@@ -3,7 +3,7 @@ using System;
 namespace RevoltSharp.Commands
 {
     /// <summary>
-    ///     Provides extension methods for <see cref="IUserMessage" /> that relates to commands.
+    ///     Provides extension methods for <see cref="UserMessage" /> that relates to commands.
     /// </summary>
     public static class MessageExtensions
     {

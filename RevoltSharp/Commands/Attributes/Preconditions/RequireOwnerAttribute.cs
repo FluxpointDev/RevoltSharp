@@ -8,7 +8,7 @@ namespace RevoltSharp.Commands
     ///     Requires the command to be invoked by the owner of the bot.
     /// </summary>
     /// <remarks>
-    ///     This precondition will restrict the access of the command or module to the owner of the Discord application.
+    ///     This precondition will restrict the access of the command or module to the owner of the RevoltSharp bot.
     ///     If the precondition fails to be met, an erroneous <see cref="PreconditionResult"/> will be returned with the
     ///     message "Command can only be run by the owner of the bot."
     /// </remarks>
@@ -37,7 +37,7 @@ namespace RevoltSharp.Commands
         /// <inheritdoc />
         public override async Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)
         {
-            if (context.Client.Config.Owners.Any(x => x == context.User.Id))
+            if (context.Client.CurrentUser.OwnerId == context.User.Id || (context.Client.Config.Owners != null && context.Client.Config.Owners.Any(x => x == context.User.Id)))
                 return PreconditionResult.FromSuccess();
             return PreconditionResult.FromError(ErrorMessage ?? "Command can only be run by the owner of the bot.");
         }

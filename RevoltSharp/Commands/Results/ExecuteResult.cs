@@ -62,8 +62,8 @@ namespace RevoltSharp.Commands
             => new ExecuteResult(ex, CommandError.Exception, ex.Message);
         /// <summary>
         ///     Initializes a new <see cref="ExecuteResult" /> with a specified result; this may or may not be an
-        ///     successful execution depending on the <see cref="Discord.Commands.IResult.Error" /> and
-        ///     <see cref="Discord.Commands.IResult.ErrorReason" /> specified.
+        ///     successful execution depending on the <see cref="IResult.Error" /> and
+        ///     <see cref="IResult.ErrorReason" /> specified.
         /// </summary>
         /// <param name="result">The result to inherit from.</param>
         /// <returns>

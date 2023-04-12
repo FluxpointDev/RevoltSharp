@@ -198,22 +198,22 @@
         </member>
         <member name="T:RevoltSharp.Commands.OverrideTypeReaderAttribute">
             <summary>
-                Marks the <see cref="T:System.Type"/> to be read by the specified <see cref="!:Discord.Commands.TypeReader"/>.
+                Marks the <see cref="T:System.Type"/> to be read by the specified <see cref="!:RevoltSharp.Commands.TypeReader"/>.
             </summary>
             <remarks>
-                This attribute will override the <see cref="!:Discord.Commands.TypeReader"/> to be used when parsing for the
+                This attribute will override the <see cref="!:RevoltSharp.Commands.TypeReader"/> to be used when parsing for the
                 desired type in the command. This is useful when one wishes to use a particular 
-                <see cref="!:Discord.Commands.TypeReader"/> without affecting other commands that are using the same target
+                <see cref="!:RevoltSharp.Commands.TypeReader"/> without affecting other commands that are using the same target
                 type.
                 <note type="warning">
-                    If the given type reader does not inherit from <see cref="!:Discord.Commands.TypeReader"/>, an 
+                    If the given type reader does not inherit from <see cref="!:RevoltSharp.Commands.TypeReader"/>, an 
                     <see cref="T:System.ArgumentException"/> will be thrown.
                 </note>
             </remarks>
             <example>
                 In this example, the <see cref="T:System.TimeSpan"/> will be read by a custom 
-                <see cref="!:Discord.Commands.TypeReader"/>, <c>FriendlyTimeSpanTypeReader</c>, instead of the 
-                <see cref="T:RevoltSharp.Commands.TimeSpanTypeReader"/> shipped by Discord.Net.
+                <see cref="!:RevoltSharp.Commands.TypeReader"/>, <c>FriendlyTimeSpanTypeReader</c>, instead of the 
+                <see cref="T:RevoltSharp.Commands.TimeSpanTypeReader"/>.
                 <code language="cs">
                 [Command("time")]
                 public Task GetTimeAsync([OverrideTypeReader(typeof(FriendlyTimeSpanTypeReader))]TimeSpan time)
@@ -283,8 +283,8 @@
                 Requires the command to be invoked by the owner of the bot.
             </summary>
             <remarks>
-                This precondition will restrict the access of the command or module to the owner of the Discord application.
-                If the precondition fails to be met, an erroneous <see cref="T:RevoltSharp.Commands.PreconditionResult"/> will be returned with the
+				This precondition will restrict the access of the command or module to the owner of the Revolt bot application.
+				If the precondition fails to be met, an erroneous <see cref="T:RevoltSharp.Commands.PreconditionResult"/> will be returned with the
                 message "Command can only be run by the owner of the bot."
                 <note>
                 This precondition will only work if the account has a <see cref="!:TokenType"/> of <see cref="!:TokenType.Bot"/>
@@ -447,18 +447,18 @@
         </member>
         <member name="T:RevoltSharp.Commands.CommandService">
             <summary>
-                Provides a framework for building Discord commands.
-            </summary>
+				Provides a framework for building RevoltSharp bot commands.
+			</summary>
             <remarks>
                 <para>
-                    The service provides a framework for building Discord commands both dynamically via runtime builders or
-                    statically via compile-time modules. To create a command module at compile-time, see
-                    <see cref="T:RevoltSharp.Commands.ModuleBase" /> (most common); otherwise, see <see cref="T:RevoltSharp.Commands.Builders.ModuleBuilder" />.
+					The service provides a framework for building RevoltSharp bot commands both dynamically via runtime builders or
+					statically via compile-time modules. To create a command module at compile-time, see
+					<see cref="T:RevoltSharp.Commands.ModuleBase" /> (most common); otherwise, see <see cref="T:RevoltSharp.Commands.Builders.ModuleBuilder" />.
                 </para>
                 <para>
                     This service also provides several events for monitoring command usages; such as
-                    <see cref="!:Discord.Commands.CommandService.Log" /> for any command-related log events, and
-                    <see cref="!:Discord.Commands.CommandService.CommandExecuted" /> for information about commands that have
+                    <see cref="!:RevoltSharp.Commands.CommandService.Log" /> for any command-related log events, and
+                    <see cref="!:RevoltSharp.Commands.CommandService.CommandExecuted" /> for information about commands that have
                     been successfully executed.
                 </para>
             </remarks>
@@ -985,8 +985,8 @@
             <summary>
                 The underlying context of the command.
             </summary>
-            <seealso cref="T:Discord.Commands.CommandContext" />
-            <seealso cref="T:Discord.Commands.CommandContext" />
+            <seealso cref="T:RevoltSharp.Commands.CommandContext" />
+            <seealso cref="T:RevoltSharp.Commands.CommandContext" />
         </member>
         <member name="M:RevoltSharp.Commands.ModuleBase.ReplyAsync(System.String)">
             <summary>
@@ -995,7 +995,6 @@
             <param name="message">
             Contents of the message; optional only if <paramref name="embed" /> is specified.
             </param>
-            <param name="isTTS">Specifies if Discord should read this <paramref name="message"/> aloud using text-to-speech.</param>
             <param name="embed">An embed to be displayed alongside the <paramref name="message"/>.</param>
             <param name="allowedMentions">
                 Specifies if notifications are sent for mentioned users and roles in the <paramref name="message"/>.
@@ -1008,7 +1007,6 @@
             </summary>
             <param name="filePath">The file path of the file.</param>
             <param name="text">The message to be sent.</param>
-            <param name="isTTS">Whether the message should be read aloud by Discord or not.</param>
             <param name="embed">The <see cref="!:EmbedType.Rich" /> <see cref="T:RevoltSharp.Embed" /> to be sent.</param>
             <param name="options">The options to be used when sending the request.</param>
             <param name="isSpoiler">Whether the message attachment should be hidden as a spoiler.</param>
@@ -1131,8 +1129,8 @@
         <member name="M:RevoltSharp.Commands.ExecuteResult.FromError(RevoltSharp.Commands.IResult)">
             <summary>
                 Initializes a new <see cref="T:RevoltSharp.Commands.ExecuteResult" /> with a specified result; this may or may not be an
-                successful execution depending on the <see cref="!:Discord.Commands.IResult.Error" /> and
-                <see cref="!:Discord.Commands.IResult.ErrorReason" /> specified.
+                successful execution depending on the <see cref="!:RevoltSharp.Commands.IResult.Error" /> and
+                <see cref="!:RevoltSharp.Commands.IResult.ErrorReason" /> specified.
             </summary>
             <param name="result">The result to inherit from.</param>
             <returns>

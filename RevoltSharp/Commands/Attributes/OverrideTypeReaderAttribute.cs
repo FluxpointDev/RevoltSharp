@@ -19,7 +19,7 @@ namespace RevoltSharp.Commands
     /// <example>
     ///     In this example, the <see cref="TimeSpan"/> will be read by a custom 
     ///     <see cref="TypeReader"/>, <c>FriendlyTimeSpanTypeReader</c>, instead of the 
-    ///     <see cref="TimeSpanTypeReader"/> shipped by Discord.Net.
+    ///     <see cref="TimeSpanTypeReader"/>.
     ///     <code language="cs">
     ///     [Command("time")]
     ///     public Task GetTimeAsync([OverrideTypeReader(typeof(FriendlyTimeSpanTypeReader))]TimeSpan time)

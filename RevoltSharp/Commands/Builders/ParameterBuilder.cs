@@ -36,7 +36,7 @@ namespace RevoltSharp.Commands.Builders
         internal ParameterBuilder(CommandBuilder command, string name, Type type)
             : this(command)
         {
-            //Discord.Preconditions.NotNull(name, nameof(name));
+            //.Preconditions.NotNull(name, nameof(name));
 
             Name = name;
             SetType(type);
