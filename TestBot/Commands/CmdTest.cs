@@ -260,5 +260,14 @@ namespace TestBot.Commands
                 mention = id[0] == '+'
             }).ToArray());
         }
+        
+        [Command("countdown")]
+        public async Task Countdown() {
+            var message = await Context.Channel.SendMessageAsync("3");
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            await message.EditMessageAsync(new Option<string>("2"));
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            await message.EditMessageAsync(new Option<string>("1"));
+        }
     }
 }
