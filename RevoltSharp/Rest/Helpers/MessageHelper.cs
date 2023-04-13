@@ -111,7 +111,8 @@ namespace RevoltSharp
                 Req.content = Optional.Some(content.Value);
             if (embeds != null)
                 Req.embeds = Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
-            return await rest.SendRequestAsync<Message>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", Req);
+            MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", Req);
+            return Message.Create(rest.Client, Data);
         }
 
 
