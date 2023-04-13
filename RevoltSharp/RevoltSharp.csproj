@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>4.0.7</Version>
+    <Version>4.0.8</Version>
     <Authors>Builderb</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway to get events.</Description>
@@ -10,11 +10,7 @@
     <PackageProjectUrl>https://github.com/xXBuilderBXx/RevoltSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xXBuilderBXx/RevoltSharp</RepositoryUrl>
     <PackageTags>revolt,revolt bot,bot,revoltsharp</PackageTags>
-    <PackageReleaseNotes>- Fixed RequireOwner command attribute not working and added support for bot owner and config optional owners.
-- Added config option for owners.
-- Added downloadable message object to ReactionAdded and ReactionRemoved event.
-- Bunch of websocket event performance tweaks and error checks for stability and no events with null objects.
-- Fixed RevoltException not setting the base Exception message.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixes a few modify and edit functions causing exceptions after it has been complete.</PackageReleaseNotes>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
