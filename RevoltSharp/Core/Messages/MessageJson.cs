@@ -58,7 +58,7 @@ namespace RevoltSharp
         public string Avatar;
 
         [JsonProperty("colour")]
-        public string Color;
+        public Optional<string> Color;
     }
     internal class MessageSystemJson
     {

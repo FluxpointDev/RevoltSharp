@@ -48,16 +48,19 @@ namespace RevoltSharp
                 });
                 await Task.WhenAll(uploadTasks);
             }
+            if (string.IsNullOrEmpty(content))
+                content = null;
+
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             {
                 content = Optional.Some(content),
                 nonce = Optional.Some(Guid.NewGuid().ToString()),
                 attachments = attachments == null ? Optional.None<string[]>() : Optional.Some(attachments),
                 embeds = embeds == null ? Optional.None<EmbedJson[]>() : Optional.Some(embeds.Select(x => x.ToJson()).ToArray()),
-                masquerade = masquerade == null ? Optional.None<MessageMasqueradeJson>() : Optional.Some<MessageMasqueradeJson>(masquerade.ToJson()),
+                masquerade = masquerade == null ? Optional.None<MessageMasqueradeJson>() : Optional.Some(masquerade.ToJson()),
                 interactions = interactions == null ? Optional.None<MessageInteractionsJson>() : Optional.Some(new MessageInteractionsJson
                 {
-                    reactions = interactions.Reactions.Select(x => x.Id).ToArray(),
+                    reactions = interactions.Reactions == null ? new string[0] : interactions.Reactions.Select(x => x.Id).ToArray(),
                     restrict_reactions = interactions.RestrictReactions
                 }),
                 replies = replies == null ? Optional.None<MessageReply[]>() : Optional.Some(replies),
@@ -66,7 +69,7 @@ namespace RevoltSharp
         }
 
         public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
-            => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount);
+            => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
 
         public static async Task<IEnumerable<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
         {

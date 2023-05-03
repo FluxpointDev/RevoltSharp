@@ -178,15 +178,26 @@ namespace RevoltSharp
 
         internal EmbedJson ToJson()
         {
-            return new EmbedJson
-            {
-                icon_url = IconUrl,
-                url = Url,
-                title = Title,
-                description = Description,
-                media = Image == null ? null : Image,
-                colour =  Color == null ? Optional.None<string>() : (Color.IsEmpty ? Optional.None<string>() : Optional.Some(Color.Hex))
-            };
+            EmbedJson Json = new EmbedJson();
+            if (!string.IsNullOrEmpty(IconUrl))
+                Json.icon_url = IconUrl;
+
+            if (!string.IsNullOrEmpty(Url))
+                Json.url = Url;
+
+            if (!string.IsNullOrEmpty(Title))
+                Json.title = Title;
+
+            if (!string.IsNullOrEmpty(Description))
+                Json.description = Description;
+
+            if (!string.IsNullOrEmpty(Image))
+                Json.media = Image;
+
+            if (Color != null && !Color.IsEmpty)
+                Json.colour = Optional.Some(Color.Hex);
+
+            return Json;
         }
     }
     public class EmbedMedia

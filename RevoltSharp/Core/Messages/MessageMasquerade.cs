@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp
+﻿using Optionals;
+
+namespace RevoltSharp
 {
     public class MessageMasquerade
     {
@@ -12,7 +14,8 @@
         {
             Name = model.Name;
             Avatar = model.Avatar;
-            Color = string.IsNullOrEmpty(model.Color) ? null : new RevoltColor(model.Color);
+            if (model.Color.HasValue && model.Color.Value != null)
+                Color = new RevoltColor(model.Color.Value);
         }
         public string Name;
         public string Avatar;
@@ -20,12 +23,17 @@
 
         internal MessageMasqueradeJson ToJson()
         {
-            return new MessageMasqueradeJson
-            {
-                Name = Name,
-                Avatar = Avatar,
-                Color = Color == null ? "#ffffff" : Color.IsEmpty ? "#ffffff" : Color.Hex
-            };
+            MessageMasqueradeJson Json = new MessageMasqueradeJson();
+            if (!string.IsNullOrEmpty(Name))
+                Json.Name = Name;
+
+            if (!string.IsNullOrEmpty(Avatar))
+                Json.Avatar = Avatar;
+
+            if (Color != null && !Color.IsEmpty)
+                Json.Color = Optional.Some(Color.Hex);
+
+            return Json;
         }
     }
 }
