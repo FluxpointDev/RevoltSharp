@@ -23,6 +23,12 @@ namespace RevoltSharp
             Name = emoji;
         }
 
+        public Emoji(string emoji) : base(null)
+        {
+            Id = emoji;
+            Name = emoji;
+        }
+
         public string Id { get; internal set; }
 
         public string Name { get; internal set; }

@@ -9,6 +9,16 @@ namespace TestBot.Commands
 {
     public class CmdTest : ModuleBase
     {
+        [Command("emoji")]
+        public async Task Emoji()
+        {
+            await Context.Channel.SendMessageAsync("Emoji test", interactions: new MessageInteractions
+            {
+                Reactions = new Emoji[] { new Emoji("◀️"), new Emoji("▶️") },
+                RestrictReactions = true
+            });
+        }
+
         [Command("members")]
         public async Task RoleAll()
         {

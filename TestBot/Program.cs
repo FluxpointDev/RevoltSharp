@@ -48,8 +48,8 @@ namespace TestBot
         {
             Client = client;
             client.OnMessageRecieved += message => Client_OnMessageRecieved(message).GetAwaiter().GetResult();
-            client.OnReactionAdded += Client_OnReactionAdded;
-            client.OnReactionRemoved += Client_OnReactionRemoved;
+            //client.OnReactionAdded += Client_OnReactionAdded;
+            //client.OnReactionRemoved += Client_OnReactionRemoved;
         }
 
         private void Client_OnReactionAdded(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> memberDownload, Downloadable<string, Message> messageDownload) {
