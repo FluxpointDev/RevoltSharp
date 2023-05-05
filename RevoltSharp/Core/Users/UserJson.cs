@@ -14,7 +14,7 @@ namespace RevoltSharp
         public AttachmentJson Avatar;
 
         [JsonProperty("badges")]
-        public int Badges;
+        public ulong Badges;
 
         [JsonProperty("status")]
         public UserStatusJson Status;
@@ -33,6 +33,9 @@ namespace RevoltSharp
 
         [JsonProperty("privileged")]
         public bool Privileged;
+
+        [JsonProperty("flags")]
+        public ulong Flags;
     }
     internal class UserStatusJson
     {

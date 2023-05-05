@@ -19,6 +19,8 @@ namespace RevoltSharp
 
         public UserBadges Badges { get; }
 
+        public ulong Flags { get; internal set; }
+
         public BotData BotData { get; }
 
         public bool IsOnline { get; }
@@ -56,6 +58,7 @@ namespace RevoltSharp
             BotData = model.Bot != null ? new BotData { Owner = model.Bot.Owner } : null;
             Avatar = model.Avatar != null ? new Attachment(model.Avatar) : null;
             Badges = new UserBadges { Raw = model.Badges };
+            Flags = model.Flags;
             IsOnline = model.Online;
             Relationship = model.Relationship;
             Status = model.Status?.Text;
@@ -90,7 +93,7 @@ namespace RevoltSharp
     }
     public class UserBadges
     {
-        public int Raw { get; internal set; }
+        public ulong Raw { get; internal set; }
 
         public UserBadgeTypes Types
             => (UserBadgeTypes) Raw;
