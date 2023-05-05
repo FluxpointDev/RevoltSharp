@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using Optionals;
 
 namespace RevoltSharp.Commands
 {
@@ -214,7 +215,7 @@ namespace RevoltSharp.Commands
                     PreconditionResult result = await parameter.CheckPreconditionsAsync(context, argument, services).ConfigureAwait(false);
                     if (!result.IsSuccess)
                     {
-                        //await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                        Module.Service.InvokeCommandExecuted(Optional.Some(this), context, result);
                         return ExecuteResult.FromError(result);
                     }
                 }
@@ -247,21 +248,21 @@ namespace RevoltSharp.Commands
                 if (task is Task<IResult> resultTask)
                 {
                     IResult result = await resultTask.ConfigureAwait(false);
-                    //await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                    Module.Service.InvokeCommandExecuted(Optional.Some(this), context, result);
                     if (result is RuntimeResult execResult)
                         return execResult;
                 }
                 else if (task is Task<ExecuteResult> execTask)
                 {
                     ExecuteResult result = await execTask.ConfigureAwait(false);
-                    //await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                    Module.Service.InvokeCommandExecuted(Optional.Some(this), context, result);
                     return result;
                 }
                 else
                 {
                     await task.ConfigureAwait(false);
                     ExecuteResult result = ExecuteResult.FromSuccess();
-                    //await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                    Module.Service.InvokeCommandExecuted(Optional.Some(this), context, result);
                 }
 
                 ExecuteResult executeResult = ExecuteResult.FromSuccess();
@@ -277,7 +278,7 @@ namespace RevoltSharp.Commands
                 //await Module.Service._cmdLogger.ErrorAsync(wrappedEx).ConfigureAwait(false);
 
                 ExecuteResult result = ExecuteResult.FromError(ex);
-                //await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                Module.Service.InvokeCommandExecuted(Optional.Some(this), context, result);
 
                 if (Module.Service._throwOnError)
                 {

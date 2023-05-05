@@ -270,6 +270,12 @@ namespace TestBot.Commands
                 mention = id[0] == '+'
             }).ToArray());
         }
+
+        [Command("error")]
+        public async Task Error()
+        {
+            throw new Exception("This is a test error :)");
+        }
         
         [Command("countdown")]
         public async Task Countdown() {

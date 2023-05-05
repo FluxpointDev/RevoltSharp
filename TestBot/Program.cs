@@ -1,4 +1,5 @@
-﻿using RevoltSharp;
+﻿using Optionals;
+using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
 using System.Reflection;
@@ -20,15 +21,31 @@ namespace TestBot
             string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
             Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
             {
-                Debug = new ClientDebugConfig { LogRestRequestJson = false, LogRestRequest = true, LogWebSocketFull = false, LogWebSocketReady = false, LogWebSocketError = true, LogWebSocketUnknownEvent = true },
+                Debug = new ClientDebugConfig { LogRestRequestJson = false, LogRestRequest = false, LogWebSocketFull = false, LogWebSocketReady = false, LogWebSocketError = false, LogWebSocketUnknownEvent = false },
                 Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49" }
             });
             Client.OnReady += Client_OnReady;
             Client.OnWebSocketError += Client_OnWebSocketError;
             await Client.StartAsync();
             CommandHandler Commands = new CommandHandler(Client);
+            Commands.Service.OnCommandExecuted += Service_OnCommandExecuted;
             await Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
             await Task.Delay(-1);
+        }
+
+        private static void Service_OnCommandExecuted(Optional<CommandInfo> values, CommandContext values2, IResult value3)
+        {
+            if (value3.IsSuccess)
+                Console.WriteLine("Success message");
+            else
+            {
+                if (!values.HasValue)
+                    Console.WriteLine("Invalid command");
+                else
+                {
+                    values2.Channel.SendMessageAsync("Error: " + value3.ErrorReason);
+                }
+            }
         }
 
         private static void Client_OnReady(SelfUser value)
@@ -75,11 +92,8 @@ namespace TestBot
             if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                 return;
             CommandContext context = new CommandContext(Client, Message);
-            var result = await Service.ExecuteAsync(context, argPos, null);
-            Console.WriteLine(result);
-            if (result is ExecuteResult er) {
-                Console.WriteLine(er.Exception);
-            }
+            
+            _ = Service.ExecuteAsync(context, argPos, null);
         }
     }
 }

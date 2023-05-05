@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Optionals;
 using RevoltSharp.Commands.Builders;
 
 namespace RevoltSharp.Commands
@@ -27,6 +28,15 @@ namespace RevoltSharp.Commands
     /// </remarks>
     public class CommandService : IDisposable
     {
+        /// <summary>
+        /// A command has been executed and will return back success or failed
+        /// </summary>
+        public event ClientEvents.RevoltEvent<Optional<CommandInfo>, CommandContext, IResult> OnCommandExecuted;
+        internal void InvokeCommandExecuted(Optional<CommandInfo> command, CommandContext context, IResult result)
+        {
+            OnCommandExecuted?.Invoke(command, context, result);
+        }
+
         private readonly SemaphoreSlim _moduleLock;
         private readonly ConcurrentDictionary<Type, ModuleInfo> _typedModuleDefs;
         private readonly ConcurrentDictionary<Type, ConcurrentDictionary<Type, TypeReader>> _typeReaders;
@@ -479,12 +489,12 @@ namespace RevoltSharp.Commands
         internal async Task<IResult> ExecuteAsync(CommandContext context, string input, int argPos, IServiceProvider services, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
         {
             services = services ?? EmptyServiceProvider.Instance;
-                context.Prefix = context.Message.Content.Substring(0, argPos);
+            context.Prefix = context.Message.Content.Substring(0, argPos);
 
             SearchResult searchResult = Search(input);
             if (!searchResult.IsSuccess)
             {
-                //await _commandExecutedEvent.InvokeAsync(Optional.Create<CommandInfo>(), context, searchResult).ConfigureAwait(false);
+                InvokeCommandExecuted(Optional.None<CommandInfo>(), context, searchResult);
                 return searchResult;
             }
             
@@ -508,7 +518,7 @@ namespace RevoltSharp.Commands
                     .OrderByDescending(x => x.Key.Command.Priority)
                     .FirstOrDefault(x => !x.Value.IsSuccess);
                 context.Command = bestCandidate.Key.Command;
-                //await _commandExecutedEvent.InvokeAsync(bestCandidate.Key.Command, context, bestCandidate.Value).ConfigureAwait(false);
+                InvokeCommandExecuted(Optional.Some(bestCandidate.Key.Command), context, bestCandidate.Value);
                 return bestCandidate.Value;
             }
 
@@ -568,7 +578,7 @@ namespace RevoltSharp.Commands
                 KeyValuePair<CommandMatch, ParseResult> bestMatch = parseResults
                     .FirstOrDefault(x => !x.Value.IsSuccess);
                 context.Command = bestMatch.Key.Command;
-                //await _commandExecutedEvent.InvokeAsync(bestMatch.Key.Command, context, bestMatch.Value).ConfigureAwait(false);
+                InvokeCommandExecuted(Optional.Some(bestMatch.Key.Command), context, bestMatch.Value);
                 return bestMatch.Value;
             }
 
@@ -577,8 +587,8 @@ namespace RevoltSharp.Commands
             KeyValuePair<CommandMatch, ParseResult> chosenOverload = successfulParses[0];
             context.Command = chosenOverload.Key.Command;
             IResult result = await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services).ConfigureAwait(false);
-            //if (!result.IsSuccess && !(result is RuntimeResult || result is ExecuteResult)) // succesful results raise the event in CommandInfo#ExecuteInternalAsync (have to raise it there b/c deffered execution)
-            //    await _commandExecutedEvent.InvokeAsync(chosenOverload.Key.Command, context, result);
+            if (!result.IsSuccess && !(result is RuntimeResult || result is ExecuteResult)) // succesful results raise the event in CommandInfo#ExecuteInternalAsync (have to raise it there b/c deffered execution)
+                InvokeCommandExecuted(Optional.Some(chosenOverload.Key.Command), context, result);
             return result;
         }
 
