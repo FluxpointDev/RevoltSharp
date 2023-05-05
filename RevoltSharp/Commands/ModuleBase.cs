@@ -21,9 +21,9 @@ namespace RevoltSharp.Commands
         /// Contents of the message; optional only if <paramref name="embeds" /> is specified.
         /// </param>
         /// <param name="embeds">An embed to be displayed alongside the <paramref name="message"/>.</param>
-        protected virtual async Task<Message> ReplyAsync(string message, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
+        protected virtual async Task<UserMessage> ReplyAsync(string message, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
         {
-            return await Context.Channel.SendMessageAsync(message, attachments, embeds, masquerade).ConfigureAwait(false);
+            return await Context.Channel.SendMessageAsync(message, embeds, attachments, masquerade, interactions, replies).ConfigureAwait(false);
         }
 
 
@@ -33,12 +33,12 @@ namespace RevoltSharp.Commands
         /// <param name="filePath">The file path of the file.</param>
         /// <param name="text">The message to be sent.</param>
         /// <param name="embeds">The <see cref="Embed" /> to be sent.</param>
-        protected virtual async Task<Message> ReplyFileAsync(string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null)
+        protected virtual async Task<UserMessage> ReplyFileAsync(string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
         {
             if (string.IsNullOrEmpty(filePath))
                 throw new RevoltArgumentException("File path cannot be empty when uploading files.");
             FileAttachment File = await Context.Client.Rest.UploadFileAsync(filePath, Rest.RevoltRestClient.UploadFileType.Attachment);
-            return await Context.Channel.SendMessageAsync(text, new string[] { File.Id }, embeds, masquerade).ConfigureAwait(false);
+            return await Context.Channel.SendMessageAsync(text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
         }
       
 

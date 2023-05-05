@@ -12,9 +12,9 @@ namespace TestBot.Commands
         [Command("emoji")]
         public async Task Emoji()
         {
-            await Context.Channel.SendMessageAsync("Emoji test", interactions: new MessageInteractions
+            var Msg = await Context.Channel.SendMessageAsync("Emoji test", interactions: new MessageInteractions
             {
-                Reactions = new Emoji[] { new Emoji("◀️"), new Emoji("▶️") },
+                Reactions = new Emoji[] { new Emoji(":01GBP83S4WT512ET704ACPVPQW:") },
                 RestrictReactions = true
             });
         }
@@ -133,13 +133,13 @@ namespace TestBot.Commands
             await Channel.DeleteChannelAsync();
             Console.WriteLine("- Delete");
             Console.WriteLine("-- Msg ---");
-            var Msg = await Context.Channel.SendMessageAsync("Ahh", null, new Embed[] { new EmbedBuilder
+            var Msg = await Context.Channel.SendMessageAsync("Ahh", new Embed[] { new EmbedBuilder
             {
                 Title = "T",
                 Description = "L",
                 Color = new RevoltColor(0, 0, 1),
                 Url = "https://fluxpoint.dev"
-            }.Build() }, new MessageMasquerade("Ah"));
+            }.Build() }, masquerade: new MessageMasquerade("Ah"));
             Console.WriteLine("- Create");
             await Context.Client.Rest.AddMessageReactionAsync(Msg.ChannelId, Msg.Id, Context.Client.GetEmoji("01GC7SSTBN4D4AGH6KDHMGFHFV").Id);
             Console.WriteLine("- Add reaction");
@@ -187,7 +187,7 @@ namespace TestBot.Commands
         [Command("roles")]
         public async Task Role()
         {
-            await Context.Channel.SendMessageAsync("", null, new Embed[]
+            await Context.Channel.SendMessageAsync("", new Embed[]
             {
                 new EmbedBuilder
                 {
@@ -240,7 +240,7 @@ namespace TestBot.Commands
         [Command("embed")]
         public async Task Embed()
         {
-            await Context.Channel.SendMessageAsync("Hello", null, new RevoltSharp.Embed[]
+            await Context.Channel.SendMessageAsync("Hello", new RevoltSharp.Embed[]
             {
                 new EmbedBuilder
                 {

@@ -91,7 +91,6 @@ namespace RevoltSharp.Rest
         public Task<FileAttachment> UploadFileAsync(string path, UploadFileType type)
             => InternalUploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
 
-
         public Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
            => InternalUploadFileAsync(bytes, name, type);
 

@@ -1,27 +1,32 @@
-﻿using Optionals;
+﻿using Microsoft.VisualBasic;
+using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
+using System.Reflection.Metadata;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RevoltSharp
 {
     public static class MessageHelper
     {
-        public static Task<Message> SendMessageAsync(this Channel channel, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
-            => SendMessageAsync(channel.Client.Rest, channel.Id, content, attachments, embeds, masquerade, interactions, replies);
+        public static Task<UserMessage> SendMessageAsync(this Channel channel, string text, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
+            => SendMessageAsync(channel.Client.Rest, channel.Id, text, embeds, attachments, masquerade, interactions, replies);
 
-        public static async Task<Message> SendMessageAsync(this RevoltRestClient rest, string channelId, string content, string[] attachments = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
+        public static async Task<UserMessage> SendMessageAsync(this RevoltRestClient rest, string channelId, string text, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
         {
             Conditions.ChannelIdEmpty(channelId);
 
-            if (string.IsNullOrEmpty(content) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))
+            if (string.IsNullOrEmpty(text) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))
                 throw new RevoltArgumentException("Message content, attachments and embed can't be empty.");
 
-            if (content.Length > 2000)
+            if (text.Length > 2000)
                 throw new RevoltArgumentException("Message content can't be more than 2000");
 
             if (rest.Client.UserBot && embeds != null)
@@ -48,12 +53,12 @@ namespace RevoltSharp
                 });
                 await Task.WhenAll(uploadTasks);
             }
-            if (string.IsNullOrEmpty(content))
-                content = null;
+            if (string.IsNullOrEmpty(text))
+                text = null;
 
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
             {
-                content = Optional.Some(content),
+                content = Optional.Some(text),
                 nonce = Optional.Some(Guid.NewGuid().ToString()),
                 attachments = attachments == null ? Optional.None<string[]>() : Optional.Some(attachments),
                 embeds = embeds == null ? Optional.None<EmbedJson[]>() : Optional.Some(embeds.Select(x => x.ToJson()).ToArray()),
@@ -65,7 +70,28 @@ namespace RevoltSharp
                 }),
                 replies = replies == null ? Optional.None<MessageReply[]>() : Optional.Some(replies),
             });
-            return Message.Create(rest.Client, Data);
+            return Message.Create(rest.Client, Data) as UserMessage;
+        }
+
+        public static Task<UserMessage> SendFileAsync(this Channel channel, string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
+        => SendFileAsync(channel.Client.Rest, channel.Id, System.IO.File.ReadAllBytes(filePath), filePath.Split('/').Last().Split('\\').Last(), text, embeds, masquerade, interactions, replies);
+
+        public static Task<UserMessage> SendFileAsync(this Channel channel, byte[] bytes, string fileName, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
+        => SendFileAsync(channel.Client.Rest, channel.Id, bytes, fileName, text, embeds, masquerade, interactions, replies);
+
+        public static Task<UserMessage> SendFileAsync(this RevoltRestClient rest, string channelId, string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
+        => SendFileAsync(rest, channelId, System.IO.File.ReadAllBytes(filePath), filePath.Split('/').Last().Split('\\').Last(), text, embeds, masquerade, interactions, replies);
+
+        public static async Task<UserMessage> SendFileAsync(this RevoltRestClient rest, string channelId, byte[] bytes, string fileName, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
+        {
+            if (bytes == null || bytes.Length == 0)
+                throw new RevoltArgumentException("Invalid image file for uploading.");
+
+            if (string.IsNullOrEmpty(fileName))
+                throw new RevoltArgumentException("File name can't be empty on uploading.");
+
+            FileAttachment File = await rest.UploadFileAsync(bytes, fileName, Rest.RevoltRestClient.UploadFileType.Attachment);
+            return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
         }
 
         public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
@@ -101,10 +127,10 @@ namespace RevoltSharp
             return Message.Create(rest.Client, Data);
         }
 
-        public static Task<Message> EditMessageAsync(this Message msg, Option<string> content, Option<Embed[]> embeds = null)
+        public static Task<UserMessage> EditMessageAsync(this UserMessage msg, Option<string> content, Option<Embed[]> embeds = null)
             => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content, embeds);
 
-        public static async Task<Message> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content, Option<Embed[]> embeds = null)
+        public static async Task<UserMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content, Option<Embed[]> embeds = null)
         {
             Conditions.ChannelIdEmpty(channelId);
             Conditions.MessageIdEmpty(messageId);
@@ -115,7 +141,7 @@ namespace RevoltSharp
             if (embeds != null)
                 Req.embeds = Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", Req);
-            return Message.Create(rest.Client, Data);
+            return Message.Create(rest.Client, Data) as UserMessage;
         }
 
 

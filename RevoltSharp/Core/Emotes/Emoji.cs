@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace RevoltSharp
 {
     /// <summary>
@@ -25,6 +27,9 @@ namespace RevoltSharp
 
         public Emoji(string emoji) : base(null)
         {
+            if (emoji.StartsWith(':'))
+                emoji = emoji.Substring(1, emoji.Length - 2);
+            Console.WriteLine(emoji);
             Id = emoji;
             Name = emoji;
         }

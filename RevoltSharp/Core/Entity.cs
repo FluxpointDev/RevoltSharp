@@ -5,7 +5,7 @@ namespace RevoltSharp
     public abstract class Entity
     {
         [JsonIgnore]
-        public RevoltClient Client { get; }
+        internal RevoltClient Client { get; }
 
         protected Entity(RevoltClient client)
         {
