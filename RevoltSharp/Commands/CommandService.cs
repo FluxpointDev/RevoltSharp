@@ -28,10 +28,12 @@ namespace RevoltSharp.Commands
     /// </remarks>
     public class CommandService : IDisposable
     {
+        public delegate void CommandExecutedEvent<CommandInfo, Context, Result>(CommandInfo commandinfo, Context context, Result result);
+
         /// <summary>
         /// A command has been executed and will return back success or failed
         /// </summary>
-        public event ClientEvents.RevoltEvent<Optional<CommandInfo>, CommandContext, IResult> OnCommandExecuted;
+        public event CommandExecutedEvent<Optional<CommandInfo>, CommandContext, IResult> OnCommandExecuted;
         internal void InvokeCommandExecuted(Optional<CommandInfo> command, CommandContext context, IResult result)
         {
             OnCommandExecuted?.Invoke(command, context, result);
