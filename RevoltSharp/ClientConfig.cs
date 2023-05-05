@@ -1,5 +1,6 @@
 ﻿using RevoltSharp.Rest;
 using System.Net.Http;
+using RevoltSharp.Commands;
 
 namespace RevoltSharp
 {
@@ -31,7 +32,7 @@ namespace RevoltSharp
         public bool RestThrowException = true;
 
         /// <summary>
-        /// Useful for owner checks and also used for <see cref="RequireOwner"/>
+        /// Useful for owner checks and also used for <see cref="RequireOwnerAttribute"/> when using the built-in <see cref="CommandService"/> handler.
         /// </summary>
         public string[] Owners = null;
     }
