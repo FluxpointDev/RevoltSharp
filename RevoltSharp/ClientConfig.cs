@@ -5,6 +5,9 @@ namespace RevoltSharp
 {
     public class ClientConfig
     {
+        /// <summary>
+        /// User-Agent header shown when making rest requests.
+        /// </summary>
         public string UserAgent = "Revolt Bot (RevoltSharp)";
 
         /// <summary>
@@ -27,6 +30,9 @@ namespace RevoltSharp
         /// </summary>
         public bool RestThrowException = true;
 
+        /// <summary>
+        /// Useful for owner checks and also used for <see cref="RequireOwner"/>
+        /// </summary>
         public string[] Owners = null;
     }
     public class ClientDebugConfig

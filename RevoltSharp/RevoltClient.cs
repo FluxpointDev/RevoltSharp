@@ -31,15 +31,24 @@ namespace RevoltSharp
 
             Token = token;
             Config = config ?? new ClientConfig();
+            ConfigSafetyChecks();
             UserBot = Config.UserBot;
-            if (Config.Debug == null)
-                Config.Debug = new ClientDebugConfig();
             Serializer = new JsonSerializer();
             Serializer.Converters.Add(new OptionConverter());
             Rest = new RevoltRestClient(this);
             if (mode == ClientMode.WebSocket)
                 WebSocket = new RevoltSocketClient(this);
         }
+
+        private void ConfigSafetyChecks()
+        {
+            if (Config.Owners == null)
+                Config.Owners = new string[0];
+
+            if (Config.Debug == null)
+                Config.Debug = new ClientDebugConfig(); 
+        }
+        
 
         /// <summary>
         /// Revolt bot token used for http requests and websocket.
