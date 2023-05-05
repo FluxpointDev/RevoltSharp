@@ -1,16 +1,11 @@
-﻿using Microsoft.VisualBasic;
-using Optionals;
+﻿using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Mail;
-using System.Reflection.Metadata;
-using System.Threading.Channels;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RevoltSharp
 {

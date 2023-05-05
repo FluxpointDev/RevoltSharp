@@ -58,7 +58,7 @@ namespace TestBot.Commands
                 {
                     Console.WriteLine(ex.Message);
                 }
-                Count = Count + 1;
+                Count += 1;
             }
         }
 

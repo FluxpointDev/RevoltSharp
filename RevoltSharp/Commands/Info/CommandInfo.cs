@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Optionals;
 
@@ -17,7 +16,7 @@ namespace RevoltSharp.Commands
     /// </summary>
     /// <remarks>
     ///     This object contains the information of a command. This can include the module of the command, various
-    ///     descriptions regarding the command, and its <see cref="RunMode"/>.
+    ///     descriptions regarding the command.
     /// </remarks>
     [DebuggerDisplay("{Name,nq}")]
     public class CommandInfo
@@ -65,10 +64,6 @@ namespace RevoltSharp.Commands
         ///     Indicates whether extra arguments should be ignored for this command.
         /// </summary>
         public bool IgnoreExtraArgs { get; }
-        /// <summary>
-        ///     Gets the <see cref="RunMode" /> that is being used for the command.
-        /// </summary>
-        public RunMode RunMode { get; }
 
         /// <summary>
         ///     Gets a list of aliases defined by the <see cref="AliasAttribute" /> of the command.
@@ -95,7 +90,6 @@ namespace RevoltSharp.Commands
             Summary = builder.Summary;
             Remarks = builder.Remarks;
 
-            RunMode = (builder.RunMode == RunMode.Default ? service._defaultRunMode : builder.RunMode);
             Priority = builder.Priority;
 
             Aliases = module.Aliases
@@ -220,17 +214,10 @@ namespace RevoltSharp.Commands
                     }
                 }
 
-                switch (RunMode)
+                _ = Task.Run(async () =>
                 {
-                    case RunMode.Sync: //Always sync
-                        return await ExecuteInternalAsync(context, args, services).ConfigureAwait(false);
-                    case RunMode.Async: //Always async
-                        Task t2 = Task.Run(async () =>
-                        {
-                            await ExecuteInternalAsync(context, args, services).ConfigureAwait(false);
-                        });
-                        break;
-                }
+                    await ExecuteInternalAsync(context, args, services).ConfigureAwait(false);
+                });
                 return ExecuteResult.FromSuccess();
             }
             catch (Exception ex)
@@ -279,14 +266,6 @@ namespace RevoltSharp.Commands
 
                 ExecuteResult result = ExecuteResult.FromError(ex);
                 Module.Service.InvokeCommandExecuted(Optional.Some(this), context, result);
-
-                if (Module.Service._throwOnError)
-                {
-                    if (ex == originalEx)
-                        throw;
-                    else
-                        ExceptionDispatchInfo.Capture(ex).Throw();
-                }
 
                 return result;
             }

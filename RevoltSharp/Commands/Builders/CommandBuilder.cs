@@ -19,7 +19,6 @@ namespace RevoltSharp.Commands.Builders
         public string Summary { get; set; }
         public string Remarks { get; set; }
         public string PrimaryAlias { get; set; }
-        public RunMode RunMode { get; set; }
         public int Priority { get; set; }
         public bool IgnoreExtraArgs { get; set; }
 
@@ -63,11 +62,6 @@ namespace RevoltSharp.Commands.Builders
         public CommandBuilder WithRemarks(string remarks)
         {
             Remarks = remarks;
-            return this;
-        }
-        public CommandBuilder WithRunMode(RunMode runMode)
-        {
-            RunMode = runMode;
             return this;
         }
         public CommandBuilder WithPriority(int priority)

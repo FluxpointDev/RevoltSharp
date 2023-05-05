@@ -47,9 +47,8 @@ namespace RevoltSharp.Commands
         private readonly HashSet<ModuleInfo> _moduleDefs;
         private readonly CommandMap _map;
 
-        internal readonly bool _caseSensitive, _throwOnError, _ignoreExtraArgs;
+        internal readonly bool _caseSensitive, _ignoreExtraArgs;
         internal readonly char _separatorChar;
-        internal readonly RunMode _defaultRunMode;
         internal readonly IReadOnlyDictionary<char, char> _quotationMarkAliasMap;
 
         internal bool _isDisposed;
@@ -79,19 +78,14 @@ namespace RevoltSharp.Commands
         /// </summary>
         /// <param name="config">The configuration class.</param>
         /// <exception cref="InvalidOperationException">
-        /// The <see cref="RunMode"/> cannot be set to <see cref="RunMode.Default"/>.
         /// </exception>
         public CommandService(CommandServiceConfig config)
         {
             _caseSensitive = config.CaseSensitiveCommands;
-            _throwOnError = config.ThrowOnError;
             _ignoreExtraArgs = config.IgnoreExtraArgs;
             _separatorChar = config.SeparatorChar;
-            _defaultRunMode = config.DefaultRunMode;
             _quotationMarkAliasMap = (config.QuotationMarkAliasMap ?? new Dictionary<char, char>()).ToImmutableDictionary();
-            if (_defaultRunMode == RunMode.Default)
-                throw new InvalidOperationException("The default run mode cannot be set to Default.");
-
+           
             _moduleLock = new SemaphoreSlim(1, 1);
             _typedModuleDefs = new ConcurrentDictionary<Type, ModuleInfo>();
             _moduleDefs = new HashSet<ModuleInfo>();

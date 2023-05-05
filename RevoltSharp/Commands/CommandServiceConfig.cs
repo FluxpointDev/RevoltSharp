@@ -8,12 +8,6 @@ namespace RevoltSharp.Commands
     public class CommandServiceConfig
     {
         /// <summary>
-        ///     Gets or sets the default <see cref="RunMode" /> commands should have, if one is not specified on the
-        ///     Command attribute or builder.
-        /// </summary>
-        public RunMode DefaultRunMode { get; set; } = RunMode.Sync;
-
-        /// <summary>
         ///     Gets or sets the <see cref="char"/> that separates an argument with another.
         /// </summary>
         public char SeparatorChar { get; set; } = ' ';
@@ -22,11 +16,6 @@ namespace RevoltSharp.Commands
         ///     Gets or sets whether commands should be case-sensitive.
         /// </summary>
         public bool CaseSensitiveCommands { get; set; } = false;
-
-        /// <summary>
-        ///     Gets or sets whether <see cref="RunMode.Sync"/> commands should push exceptions up to the caller.
-        /// </summary>
-        public bool ThrowOnError { get; set; } = true;
 
         /// <summary>
         /// Collection of aliases for matching pairs of string delimiters.

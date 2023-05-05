@@ -156,7 +156,6 @@ namespace RevoltSharp.Commands
                 {
                     case CommandAttribute command:
                         builder.AddAliases(command.Text);
-                        builder.RunMode = command.RunMode;
                         builder.Name = builder.Name ?? command.Text;
                         builder.IgnoreExtraArgs = command.IgnoreExtraArgs ?? service._ignoreExtraArgs;
                         break;
