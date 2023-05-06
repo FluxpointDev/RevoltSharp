@@ -160,9 +160,9 @@ namespace RevoltSharp
         /// Get the current bot <see cref="User"/> after ready event.
         /// </summary>
         /// <remarks>
-        /// Using <see cref="ClientMode.Http"/> means this is always <see langword="null"/> or use <see cref="Rest"/> to get user.
+        /// Will be <see langword="null"/> if using <see cref="ClientMode.Http"/>.
         /// </remarks>
-        public SelfUser CurrentUser
+        public SelfUser? CurrentUser
             => WebSocket != null ? WebSocket.CurrentUser : null;
 
         public Server[] Servers
@@ -173,28 +173,28 @@ namespace RevoltSharp
 
 
 
-        public User GetUser(string id)
+        public User? GetUser(string id)
         {
             if (WebSocket != null && WebSocket.UserCache.TryGetValue(id, out User User))
                 return User;
             return null;
         }
 
-        public Channel GetChannel(string id)
+        public Channel? GetChannel(string id)
         {
             if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan))
                 return Chan;
             return null;
         }
 
-        public Server GetServer(string id)
+        public Server? GetServer(string id)
         {
             if (WebSocket != null && WebSocket.ServerCache.TryGetValue(id, out Server Server))
                 return Server;
             return null;
         }
 
-        public Emoji GetEmoji(string id)
+        public Emoji? GetEmoji(string id)
         {
             if (WebSocket != null)
             {

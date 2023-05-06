@@ -58,13 +58,22 @@
         public string ChannelId { get; internal set; }
 
         /// <summary>
-        /// Parent channel of the message
+        /// Channel that the Message is from.
         /// </summary>
-        public Channel Channel { get; internal set; }
+        /// <remarks>
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
+        /// </remarks>
+        public Channel? Channel { get; internal set; }
 
         public string ServerId { get; internal set; }
 
-        public Server Server => Client.GetServer(ServerId);
+        /// <summary>
+        /// Server that the Message is from.
+        /// </summary>
+        /// <remarks>
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/> or invalid channel context.
+        /// </remarks>
+        public Server? Server => Client.GetServer(ServerId);
 
         /// <summary>
         /// Id of the user who posted the message

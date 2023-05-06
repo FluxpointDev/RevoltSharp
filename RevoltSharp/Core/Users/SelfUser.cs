@@ -4,7 +4,13 @@
     {
         public string OwnerId => BotData.Owner;
 
-        public User Owner
+        /// <summary>
+        /// Get the Owner user of the bot.
+        /// </summary>
+        /// <remarks>
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
+        /// </remarks>
+        public User? Owner
             => Client.GetUser(OwnerId);
 
         public string ProfileBio { get; internal set; }

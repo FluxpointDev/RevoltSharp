@@ -29,10 +29,10 @@ namespace RevoltSharp
         /// Parent server of the channel
         /// </summary>
         /// <remarks>
-        /// Will be <see langword="null" /> if using http mode
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
         /// </remarks>
         [JsonIgnore]
-        public Server Server
+        public Server? Server
             => Client.GetServer(ServerId);
 
         /// <summary>

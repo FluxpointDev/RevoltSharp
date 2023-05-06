@@ -12,6 +12,12 @@ namespace RevoltSharp
 
         public string ServerId { get; internal set; }
 
+        /// <summary>
+        /// Server that the Member is from.
+        /// </summary>
+        /// <remarks>
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
+        /// </remarks>
         public Server? Server => Client.GetServer(ServerId);
 
         public string Nickname { get; internal set; }
@@ -28,7 +34,13 @@ namespace RevoltSharp
 
         internal ConcurrentDictionary<string, Role> InternalRoles { get; set;  }  = new ConcurrentDictionary<string, Role>();
 
-        public Role GetRole(string roleId)
+        /// <summary>
+        /// Get a role from the user.
+        /// </summary>
+        /// <remarks>
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/> or no Role found.
+        /// </remarks>
+        public Role? GetRole(string roleId)
         {
             if (InternalRoles.TryGetValue(roleId, out Role role))
                 return role;
@@ -43,14 +55,31 @@ namespace RevoltSharp
         public ServerPermissions Permissions { get; internal set; }
 
         #region UserProperties
+        [JsonIgnore]
         public string Username => User.Username;
+
+        [JsonIgnore]
         public string Status => User.Status;
+
+        [JsonIgnore]
         public Attachment? Avatar => User.Avatar;
+
+        [JsonIgnore]
         public UserBadges Badges => User.Badges;
+
+        [JsonIgnore]
         public BotData? BotData => User.BotData;
+
+        [JsonIgnore]
         public bool IsOnline => User.IsOnline;
+
+        [JsonIgnore]
         public bool Privileged => User.Privileged;
+
+        [JsonIgnore]
         public string Relationship => User.Relationship;
+
+        [JsonIgnore]
         public bool IsBot => User.IsBot;
         #endregion
 

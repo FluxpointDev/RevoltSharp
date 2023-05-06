@@ -12,7 +12,13 @@ namespace RevoltSharp
 
         public string ServerId { get; internal set; }
 
-        public Server Server => Client.GetServer(ServerId);
+        /// <summary>
+        /// Server that the Role is from.
+        /// </summary>
+        /// <remarks>
+        /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
+        /// </remarks>
+        public Server? Server => Client.GetServer(ServerId);
 
         public string Name { get; internal set; }
 

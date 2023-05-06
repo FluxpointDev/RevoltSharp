@@ -47,7 +47,7 @@ namespace RevoltSharp
            => (IReadOnlyCollection<GroupChannel>)InternalMutualGroups.Values;
 
         internal bool HasMutuals()
-           => InternalMutualGroups.Any() || InternalMutualGroups.Any();
+           => InternalMutualGroups.Any() || InternalMutualServers.Any();
 
         internal User(RevoltClient client, UserJson model)
             : base(client)
