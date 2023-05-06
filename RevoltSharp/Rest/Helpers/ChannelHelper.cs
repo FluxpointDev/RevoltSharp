@@ -125,7 +125,7 @@ namespace RevoltSharp
 
             if (owner != null)
             {
-                Conditions.UserIdEmpty(owner.Value);
+                Conditions.UserIdEmpty(owner.Value, "ModifyChannelAsync");
                 Req.owner = Optional.Some(owner.Value);
             }
 

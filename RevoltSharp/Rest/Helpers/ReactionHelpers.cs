@@ -37,6 +37,7 @@ namespace RevoltSharp
         {
             Conditions.ChannelIdEmpty(channelId, "RemoveMessageReactionAsync");
             Conditions.MessageIdEmpty(messageId, "RemoveMessageReactionAsync");
+            Conditions.EmojiIdEmpty(emojiId, "RemoveMessageReactionAsync");
 
             if (!removeAll)
                 Conditions.UserIdEmpty(userId, "RemoveMessageReactionAsync");

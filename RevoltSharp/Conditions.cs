@@ -85,5 +85,11 @@
             if (string.IsNullOrEmpty(roleId))
                 throw new RevoltArgumentException($"Role id can't be empty for the {request} request.");
         }
+
+        public static void RoleNameEmpty(string rolename, string request)
+        {
+            if (string.IsNullOrEmpty(rolename))
+                throw new RevoltArgumentException($"Role name can't be empty for the {request} request.");
+        }
     }
 }

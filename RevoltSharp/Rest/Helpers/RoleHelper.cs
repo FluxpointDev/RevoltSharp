@@ -12,8 +12,8 @@ namespace RevoltSharp
             => CreateRoleAsync(server.Client.Rest, server.Id, roleName);
         public static async Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string roleName)
         {
-            Conditions.ServerIdEmpty(serverId);
-
+            Conditions.ServerIdEmpty(serverId, "CreateRoleAsync");
+            Conditions.RoleIdEmpty
             if (string.IsNullOrEmpty(roleName))
                 throw new RevoltException("Role cannot be created with a empty name.");
 
@@ -34,8 +34,8 @@ namespace RevoltSharp
 
         public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
         {
-            Conditions.ServerIdEmpty(serverId);
-            Conditions.RoleIdEmpty(roleId);
+            Conditions.ServerIdEmpty(serverId, "ModifyRoleAsync");
+            Conditions.RoleIdEmpty(roleId, "ModifyRoleAsync");
             
             ModifyRoleRequest Req = new ModifyRoleRequest();
             if (name != null)
@@ -66,8 +66,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteRoleAsync(this RevoltRestClient rest, string serverId, string roleId)
         {
-            Conditions.ServerIdEmpty(serverId);
-            Conditions.RoleIdEmpty(roleId);
+            Conditions.ServerIdEmpty(serverId, "DeleteRoleAsync");
+            Conditions.RoleIdEmpty(roleId, "DeleteRoleAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/servers/{serverId}/roles/{roleId}");
         }

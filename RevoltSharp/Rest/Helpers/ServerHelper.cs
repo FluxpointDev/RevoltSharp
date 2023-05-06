@@ -14,7 +14,7 @@ namespace RevoltSharp
 
         public static async Task<Server> GetServerAsync(this RevoltRestClient rest, string serverId)
         {
-            Conditions.ServerIdEmpty(serverId);
+            Conditions.ServerIdEmpty(serverId, "GetServerAsync");
 
             ServerJson Server = await rest.SendRequestAsync<ServerJson>(RequestType.Get, $"/servers/{serverId}");
             return new Server(rest.Client, Server);
@@ -25,7 +25,7 @@ namespace RevoltSharp
 
         public static async Task<ServerBan[]> GetBansAsync(this RevoltRestClient rest, string serverId)
         {
-            Conditions.ServerIdEmpty(serverId);
+            Conditions.ServerIdEmpty(serverId, "GetBansAsync");
 
             ServerBansJson Bans = await rest.SendRequestAsync<ServerBansJson>(RequestType.Get, $"/servers/{serverId}/bans");
             IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client) { Id = x.Id, Avatar = x.Avatar == null ? null : new Attachment(x.Avatar), Username = x.Username, Reason = Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault().Reason} );
@@ -41,7 +41,7 @@ namespace RevoltSharp
            => LeaveServerAsync(user.Client.Rest, serverId);
         public static async Task<HttpResponseMessage> LeaveServerAsync(this RevoltRestClient rest, string serverId)
         {
-            Conditions.ServerIdEmpty(serverId);
+            Conditions.ServerIdEmpty(serverId, "LeaveServerAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/servers/{serverId}");
         }
