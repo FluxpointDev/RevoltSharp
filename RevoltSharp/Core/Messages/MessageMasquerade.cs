@@ -14,12 +14,14 @@ namespace RevoltSharp
         {
             Name = model.Name;
             Avatar = model.Avatar;
-            if (model.Color.HasValue && model.Color.Value != null)
+            if (model.Color.HasValue)
                 Color = new RevoltColor(model.Color.Value);
+            else
+                Color = new RevoltColor("");
         }
         public string Name;
         public string Avatar;
-        public RevoltColor? Color;
+        public RevoltColor Color;
 
         internal MessageMasqueradeJson ToJson()
         {

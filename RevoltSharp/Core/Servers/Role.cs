@@ -21,7 +21,7 @@ namespace RevoltSharp
 
         public BigInteger Rank { get; internal set; }
 
-        public RevoltColor? Color { get; internal set; }
+        public RevoltColor Color { get; internal set; }
 
         internal Role(RevoltClient client, RoleJson model, string serverId, string roleId)
             : base(client)
@@ -32,11 +32,9 @@ namespace RevoltSharp
             Color = new RevoltColor(model.Colour);
             IsHoisted = model.Hoist;
             Name = model.Name;
-
             Permissions = model.Permissions == null ? new ServerPermissions(0) : new ServerPermissions(model.Permissions.Allowed);
             Rank = model.Rank;
             ServerId = serverId;
-            Server = client.GetServer(ServerId);
         }
 
         internal Role(RevoltClient client, PartialRoleJson model, string serverId, string roleId)
@@ -48,6 +46,12 @@ namespace RevoltSharp
                 Permissions = new ServerPermissions(model.Permissions.Value.Allowed);
             else
                 Permissions = new ServerPermissions(0);
+
+            if (model.Colour.HasValue)
+                Color = new RevoltColor(model.Colour.Value);
+            else
+                Color = new RevoltColor("");
+
             ServerId = serverId;
         }
 
