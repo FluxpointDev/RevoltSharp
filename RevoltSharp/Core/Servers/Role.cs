@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Newtonsoft.Json;
+using System.Numerics;
 
 namespace RevoltSharp
 {

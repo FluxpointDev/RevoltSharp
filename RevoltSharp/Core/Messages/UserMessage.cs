@@ -35,6 +35,8 @@ namespace RevoltSharp
             Author = client.GetUser(model.Author);
             ChannelId = model.Channel;
             Channel = client.GetChannel(model.Channel);
+            if (Channel != null && Channel is ServerChannel SC)
+                ServerId = SC.ServerId;
             Nonce = model.Nonce;
             Content = model.Content;
             Masquerade = model.Masquerade == null ? null : new MessageMasquerade(model.Masquerade);

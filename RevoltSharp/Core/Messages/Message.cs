@@ -62,6 +62,10 @@
         /// </summary>
         public Channel Channel { get; internal set; }
 
+        public string ServerId { get; internal set; }
+
+        public Server Server => Client.GetServer(ServerId);
+
         /// <summary>
         /// Id of the user who posted the message
         /// </summary>

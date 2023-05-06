@@ -13,6 +13,9 @@
             Id = model.Id;
             ChannelId = model.Channel;
             Channel = client.GetChannel(ChannelId);
+            if (Channel != null && Channel is ServerChannel SC)
+                ServerId = SC.ServerId;
+
             AuthorId = model.Author;
             Content = type;
             if (Content != null)

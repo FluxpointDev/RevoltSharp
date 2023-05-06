@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace TestBot.Commands
 {
+    [RequireOwner]
     public class CmdTest : ModuleBase
     {
         [Command("emoji")]
@@ -85,7 +86,7 @@ namespace TestBot.Commands
                     Console.WriteLine("Got user");
                     try
                     {
-                        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.User, new JsonSerializerSettings
+                        Console.WriteLine(JsonConvert.SerializeObject(Context.User, new JsonSerializerSettings
                         {
                             Formatting = Formatting.Indented,
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -153,7 +154,7 @@ namespace TestBot.Commands
                 Url = "https://fluxpoint.dev"
             }.Build() }, masquerade: new MessageMasquerade("Ah"));
             Console.WriteLine("- Create");
-            await Context.Client.Rest.AddMessageReactionAsync(Msg.ChannelId, Msg.Id, Context.Client.GetEmoji("01GC7SSTBN4D4AGH6KDHMGFHFV").Id);
+            await Context.Client.Rest.AddMessageReactionAsync(Msg.ChannelId, Msg.Id, "01GC7SSTBN4D4AGH6KDHMGFHFV");
             Console.WriteLine("- Add reaction");
             await Msg.EditMessageAsync(new Option<string>("T"));
             Console.WriteLine("- Edit");
@@ -223,9 +224,9 @@ namespace TestBot.Commands
 
 
         [Command("memberroles")]
-        public async Task Roles()
+        public async Task Roles(string id)
         {
-            var Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
+            var Member = await Context.Server.GetMemberAsync(id);
             await ReplyAsync(String.Join(", ", Member.Roles.Select(x => x.Name)));
         }
 
@@ -266,7 +267,6 @@ namespace TestBot.Commands
                 new EmbedBuilder
                 {
                     Title = "Title Anime",
-                    Image = "Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png",
                     Color = new RevoltColor(0, 1, 0)
                 }.Build(),
             });
@@ -276,7 +276,8 @@ namespace TestBot.Commands
         // +01GX79H9S8FZERHVA5S5E68AAY -01GX79H9S8FZERHVA5S5E68AAY
         // + means mention, - means do not
         [Command("reply")]
-        public async Task Reply([Remainder] string replies) {
+        public async Task Reply([Remainder] string replies)
+        {
             await Context.Channel.SendMessageAsync("Hello", replies: replies.Split(" ").Select(id => new MessageReply() {
                 id = id[1..],
                 mention = id[0] == '+'
@@ -290,7 +291,8 @@ namespace TestBot.Commands
         }
         
         [Command("countdown")]
-        public async Task Countdown() {
+        public async Task Countdown() 
+        {
             var message = await Context.Channel.SendMessageAsync("3");
             await Task.Delay(TimeSpan.FromSeconds(1));
             await message.EditMessageAsync(new Option<string>("2"));
