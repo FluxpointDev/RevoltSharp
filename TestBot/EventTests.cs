@@ -10,25 +10,49 @@ namespace TestBot
             client.OnChannelCreated += Client_OnChannelCreated;
             client.OnChannelDeleted += Client_OnChannelDeleted;
             client.OnChannelUpdated += Client_OnChannelUpdated;
+
             client.OnCurrentUserUpdated += Client_OnCurrentUserUpdated;
+
             client.OnGroupJoined += Client_OnGroupJoined;
             client.OnGroupLeft += Client_OnGroupLeft;
             client.OnGroupUserJoined += Client_OnGroupUserJoined;
             client.OnGroupUserLeft += Client_OnGroupUserLeft;
+
             client.OnMemberJoined += Client_OnMemberJoined;
             client.OnMemberLeft += Client_OnMemberLeft;
+
             client.OnMessageDeleted += Client_OnMessageDeleted;
             client.OnMessageRecieved += Client_OnMessageRecieved;
             client.OnMessageUpdated += Client_OnMessageUpdated;
+
             client.OnReady += Client_OnReady;
+
             client.OnRoleCreated += Client_OnRoleCreated;
             client.OnRoleDeleted += Client_OnRoleDeleted;
             client.OnRoleUpdated += Client_OnRoleUpdated;
+
+            client.OnEmojiCreated += Client_OnEmojiCreated;
+            client.OnEmojiDeleted += Client_OnEmojiDeleted;
+
             client.OnServerJoined += Client_OnServerJoined;
             client.OnServerLeft += Client_OnServerLeft;
             client.OnServerUpdated += Client_OnServerUpdated;
+
             client.OnUserUpdated += Client_OnUserUpdated;
+
             client.OnWebSocketError += Client_OnWebSocketError;
+        }
+
+        private void Client_OnEmojiDeleted(Server server, Emoji emoji)
+        {
+            Console.WriteLine("--- EVENT: Emoji Deleted ---");
+            Console.WriteLine($"{server.Name}: {emoji.Name}");
+        }
+
+        private void Client_OnEmojiCreated(Server server, Emoji emoji)
+        {
+            Console.WriteLine("--- EVENT: Emoji Created ---");
+            Console.WriteLine($"{server.Name}: {emoji.Name}");
         }
 
         private void Client_OnWebSocketError(SocketError value)

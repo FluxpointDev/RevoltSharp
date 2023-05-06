@@ -51,7 +51,7 @@ namespace RevoltSharp
             else
             {
                 Dictionary<Emoji, User[]> React = new Dictionary<Emoji, User[]>();
-                foreach(var r in model.Reactions.Value)
+                foreach(KeyValuePair<string, string[]> r in model.Reactions.Value)
                 {
                     React.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray());
                 }

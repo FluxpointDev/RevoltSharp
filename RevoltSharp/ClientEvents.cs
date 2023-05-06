@@ -23,7 +23,7 @@
         public delegate void ChannelUserEvent<Channel, User>(Channel channel, User user);
         public delegate void ChannelUpdatedEvent<OldChannel, NewChannel>(OldChannel old_channel, NewChannel new_channel);
         public delegate void ServerUpdatedEvent<OldServer, NewServer>(OldServer old_server, NewServer new_server);
-        public delegate void ReactionEvent<Emoji, Channel, MemberCache, MessageCache>(Emoji emoji, Channel channel, MemberCache member_cache, MessageCache message_cache);
+        public delegate void ReactionEvent<Emoji, Channel, UserCache, MessageCache>(Emoji emoji, Channel channel, UserCache user_cache, MessageCache message_cache);
 
         /// <summary>
         /// Receive message events from websocket in a <see cref="TextChannel"/> or <seealso cref="GroupChannel"/>
@@ -194,16 +194,16 @@
             OnEmojiDeleted?.Invoke(server, emoji);
         }
 
-        public event ReactionEvent<Emoji, ServerChannel, Downloadable<string, ServerMember>, Downloadable<string, Message>> OnReactionAdded;
+        public event ReactionEvent<Emoji, Channel, Downloadable<string, User>, Downloadable<string, Message>> OnReactionAdded;
 
-        internal void InvokeReactionAdded(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> member, Downloadable<string, Message> messageDownload)
+        internal void InvokeReactionAdded(Emoji emoji, Channel channel, Downloadable<string, User> member, Downloadable<string, Message> messageDownload)
         {
             OnReactionAdded?.Invoke(emoji, channel, member, messageDownload);
         }
 
-        public event ReactionEvent<Emoji, ServerChannel, Downloadable<string, ServerMember>, Downloadable<string, Message>> OnReactionRemoved;
+        public event ReactionEvent<Emoji, Channel, Downloadable<string, User>, Downloadable<string, Message>> OnReactionRemoved;
 
-        internal void InvokeReactionRemoved(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> member, Downloadable<string, Message> messageDownload)
+        internal void InvokeReactionRemoved(Emoji emoji, Channel channel, Downloadable<string, User> member, Downloadable<string, Message> messageDownload)
         {
             OnReactionRemoved?.Invoke(emoji, channel, member, messageDownload);
         }

@@ -21,12 +21,17 @@ namespace TestBot
             string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
             Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
             {
-                Debug = new ClientDebugConfig { LogRestRequestJson = true, LogRestResponseJson = true, LogRestRequest = false, LogWebSocketFull = false, LogWebSocketReady = false, LogWebSocketError = false, LogWebSocketUnknownEvent = false },
+                Debug = new ClientDebugConfig { LogRestRequestJson = false, LogRestResponseJson = false, LogRestRequest = false, LogWebSocketFull = true, LogWebSocketReady = false, LogWebSocketError = false, LogWebSocketUnknownEvent = false },
                 Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49" }
             });
             Client.OnReady += Client_OnReady;
             Client.OnWebSocketError += Client_OnWebSocketError;
             await Client.StartAsync();
+            new EventTests(Client);
+            
+
+
+
             CommandHandler Commands = new CommandHandler(Client);
             Commands.Service.OnCommandExecuted += Service_OnCommandExecuted;
             await Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
@@ -55,7 +60,7 @@ namespace TestBot
 
         private static void Client_OnWebSocketError(SocketError value)
         {
-            Console.WriteLine("Error: " + value.Messaage);
+            Console.WriteLine("Socket Error: " + value.Messaage);
         }
     }
 

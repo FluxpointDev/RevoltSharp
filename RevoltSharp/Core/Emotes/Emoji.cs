@@ -10,7 +10,6 @@ namespace RevoltSharp
     {
         internal Emoji(RevoltClient client, EmojiJson model) : base(client)
         {
-            
             Id = model.Id;
             Name = model.Name;
             CreatorId = model.CreatorId;

@@ -119,7 +119,7 @@ namespace RevoltSharp
 
             if (WebSocket != null)
             {
-                var tcs = new TaskCompletionSource();
+                TaskCompletionSource tcs = new TaskCompletionSource();
 
                 void HandleConnected() => tcs.SetResult();
                 void HandleError(SocketError error) => tcs.SetException(new RevoltException(error.Messaage));
@@ -218,7 +218,7 @@ namespace RevoltSharp
         {
             if (WebSocket != null)
             {
-                foreach(var s in WebSocket.ServerCache.Values)
+                foreach(Server s in WebSocket.ServerCache.Values)
                 {
                     Role role = s.GetRole(id);
                     if (role != null)
@@ -234,7 +234,6 @@ namespace RevoltSharp
             {
                 if (WebSocket.EmojiCache.TryGetValue(id, out Emoji emoji))
                     return emoji;
-                return new Emoji(this, id);
             }
             return null;
         }

@@ -29,19 +29,19 @@ namespace RevoltSharp
 
             if (embeds != null && embeds.Any(x => !string.IsNullOrEmpty(x.Image)))
             {
-                var uploadTasks = embeds.Select(async x =>
+                IEnumerable<Task> uploadTasks = embeds.Select(async x =>
                 {
                     if (x.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || x.Image.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                     {
-                        var Bytes = await rest.FileHttpClient.GetByteArrayAsync(x.Image);
-                        var Upload = await rest.UploadFileAsync(Bytes, "image.png", RevoltRestClient.UploadFileType.Attachment);
+                        byte[] Bytes = await rest.FileHttpClient.GetByteArrayAsync(x.Image);
+                        FileAttachment Upload = await rest.UploadFileAsync(Bytes, "image.png", RevoltRestClient.UploadFileType.Attachment);
                         x.Image = Upload.Id;
                     }
                     else if (x.Image.Contains('/') || x.Image.Contains('\\'))
                     {
                         if (!System.IO.File.Exists(x.Image))
                             throw new RevoltArgumentException("Embed image url path does not exist.");
-                        var Upload = await rest.UploadFileAsync(x.Image, RevoltRestClient.UploadFileType.Attachment);
+                        FileAttachment Upload = await rest.UploadFileAsync(x.Image, RevoltRestClient.UploadFileType.Attachment);
                         x.Image = Upload.Id;
                     }
 
@@ -127,7 +127,7 @@ namespace RevoltSharp
             Conditions.ChannelIdEmpty(channelId, "EditMessageAsync");
             Conditions.MessageIdEmpty(messageId, "EditMessageAsync");
 
-            var Req = new SendMessageRequest();
+            SendMessageRequest Req = new SendMessageRequest();
             if (content != null)
                 Req.content = Optional.Some(content.Value);
             if (embeds != null)

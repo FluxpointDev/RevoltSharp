@@ -17,7 +17,7 @@ namespace RevoltSharp
             Recipents = model.Recipients != null ? model.Recipients.ToHashSet() : new HashSet<string>();
             if (client.WebSocket != null)
             {
-                foreach (var u in Recipents)
+                foreach (string u in Recipents)
                 {
                     if (client.WebSocket.UserCache.TryGetValue(u, out User user))
                     {

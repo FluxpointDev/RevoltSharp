@@ -79,7 +79,7 @@ namespace RevoltSharp
             bool HasDefault = DefaultPermissions.Has(permission);
             if (HasDefault)
                 return true;
-            foreach (var c in InternalRolePermissions)
+            foreach (KeyValuePair<string, ChannelPermissions> c in InternalRolePermissions)
             {
                 if (member.InternalRoles.ContainsKey(c.Key))
                 {
@@ -107,7 +107,7 @@ namespace RevoltSharp
 
             if (json.RolePermissions.HasValue)
             {
-                foreach (var i in json.RolePermissions.Value)
+                foreach (KeyValuePair<string, PermissionsJson> i in json.RolePermissions.Value)
                 {
                     if (InternalRolePermissions.ContainsKey(i.Key))
                         InternalRolePermissions[i.Key] = new ChannelPermissions(i.Value);

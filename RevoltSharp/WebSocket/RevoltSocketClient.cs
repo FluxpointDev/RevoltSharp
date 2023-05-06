@@ -148,8 +148,21 @@ namespace RevoltSharp.WebSocket
             
             try
             {
-                if (Client.Config.Debug.LogWebSocketFull && payload["type"].ToString() != "Ready")
-                    Console.WriteLine("--- WebSocket Response Json ---\n" + FormatJsonPretty(json));
+                if (Client.Config.Debug.LogWebSocketFull)
+                {
+                    switch (payload["type"].ToString())
+                    {
+                        case "Ready":
+                        case "UserUpdate":
+                        case "ChannelStartTyping":
+                        case "ChannelStopTyping":
+                            break;
+                        default:
+                            Console.WriteLine("--- WebSocket Response Json ---\n" + FormatJsonPretty(json));
+                            break;
+                    }
+                    
+                }
 
 
                 switch (payload["type"].ToString())
@@ -229,12 +242,15 @@ namespace RevoltSharp.WebSocket
                                 ChannelCache = new ConcurrentDictionary<string, Channel>(@event.Channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
 
 
-                                foreach (var m in @event.Members)
+                                foreach (ServerMemberJson m in @event.Members)
                                 {
                                     if (ServerCache.TryGetValue(m.Id.Server, out Server s))
                                         s.InternalMembers.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
                                 }
-                                foreach (var m in @event.Emojis)
+
+                                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(@event.Emojis));
+
+                                foreach (EmojiJson m in @event.Emojis)
                                 {
                                     Emoji Emote = new Emoji(Client, m);
                                     EmojiCache.TryAdd(m.Id, Emote);
@@ -402,7 +418,7 @@ namespace RevoltSharp.WebSocket
                                 GroupChannel GC = (GroupChannel)chan;
                                 Console.WriteLine("[RevoltSharp] Joined Group: " + GC.Name);
                                 ChannelCache.TryAdd(@event.Id, GC);
-                                foreach (var u in GC.Recipents)
+                                foreach (string u in GC.Recipents)
                                 {
                                     if (UserCache.TryGetValue(u, out User User))
                                         GC.AddUser(User);
@@ -690,11 +706,9 @@ namespace RevoltSharp.WebSocket
                         {
                             ServerEmojiCreatedEventJson @event = payload.ToObject<ServerEmojiCreatedEventJson>(Client.Serializer);
                             Emoji AddedEmoji = new Emoji(Client, @event);
-
                             EmojiCache.TryAdd(AddedEmoji.Id, AddedEmoji);
 
-                            ServerCache.TryGetValue(AddedEmoji.ServerId, out Server Server);
-                            if (Server != null)
+                            if (!ServerCache.TryGetValue(AddedEmoji.ServerId, out Server Server))
                                 return;
 
                             Server.InternalEmojis.TryAdd(AddedEmoji.Id, AddedEmoji);
@@ -731,17 +745,20 @@ namespace RevoltSharp.WebSocket
                                     emoji = Emote;
                                 }
                             }
+
                             ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
                             if (channel == null)
                                 return;
 
-                            ServerChannel SC = channel as ServerChannel;
-                            if (SC == null)
-                                return;
+                            Downloadable<string, User> DownloadUser = new Downloadable<string, User>(@event.UserId, async () =>
+                            {
+                                if (UserCache.TryGetValue(@event.UserId, out User User))
+                                    return User;
 
-                            var SM = new Downloadable<string, ServerMember>(@event.UserId, async () => SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId));
-                            var message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
-                            Client.InvokeReactionAdded(emoji, SC, SM, message);
+                                return await Client.Rest.GetUserAsync(@event.UserId);
+                            });
+                            Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                            Client.InvokeReactionAdded(emoji, channel, DownloadUser, message);
                         }
                         break;
                     case "MessageUnreact":
@@ -765,13 +782,15 @@ namespace RevoltSharp.WebSocket
                             if (channel == null)
                                 return;
 
-                            ServerChannel SC = channel as ServerChannel;
-                            if (SC == null)
-                                return;
+                            Downloadable<string, User> DownloadUser = new Downloadable<string, User>(@event.UserId, async () =>
+                            {
+                                if (UserCache.TryGetValue(@event.UserId, out User User))
+                                    return User;
 
-                            var SM = new Downloadable<string, ServerMember>(@event.UserId, async () => SC.Server.GetCachedMember(@event.UserId) ?? await Client.Rest.GetMemberAsync(SC.ServerId, @event.UserId));
-                            var message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
-                            Client.InvokeReactionRemoved(emoji, SC, SM, message);
+                                return await Client.Rest.GetUserAsync(@event.UserId);
+                            });
+                            Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                            Client.InvokeReactionRemoved(emoji, channel, DownloadUser, message);
                         }
                         break;
 

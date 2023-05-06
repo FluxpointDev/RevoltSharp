@@ -18,7 +18,7 @@ namespace Optionals.Collections
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            foreach (var option in source)
+            foreach (Optional<T> option in source)
             {
                 if (option.HasValue)
                 {
@@ -37,7 +37,7 @@ namespace Optionals.Collections
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            foreach (var option in source)
+            foreach (Optional<T, TException> option in source)
             {
                 if (option.HasValue)
                 {
@@ -56,7 +56,7 @@ namespace Optionals.Collections
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            foreach (var option in source)
+            foreach (Optional<T, TException> option in source)
             {
                 if (!option.HasValue)
                 {
@@ -79,12 +79,12 @@ namespace Optionals.Collections
 
             if (source is IDictionary<TKey, TValue> dictionary)
             {
-                return dictionary.TryGetValue(key, out var value) ? value.Some() : value.None();
+                return dictionary.TryGetValue(key, out TValue? value) ? value.Some() : value.None();
             }
 #if !NET35
             else if (source is IReadOnlyDictionary<TKey, TValue> readOnlyDictionary)
             {
-                return readOnlyDictionary.TryGetValue(key, out var value) ? value.Some() : value.None();
+                return readOnlyDictionary.TryGetValue(key, out TValue? value) ? value.Some() : value.None();
             }
 #endif
 
@@ -120,7 +120,7 @@ namespace Optionals.Collections
 #endif
             else
             {
-                using (var enumerator = source.GetEnumerator())
+                using (IEnumerator<TSource> enumerator = source.GetEnumerator())
                 {
                     if (enumerator.MoveNext())
                     {
@@ -144,7 +144,7 @@ namespace Optionals.Collections
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            foreach (var element in source)
+            foreach (TSource? element in source)
             {
                 if (predicate(element))
                 {
@@ -166,7 +166,7 @@ namespace Optionals.Collections
 
             if (source is IList<TSource> list)
             {
-                var count = list.Count;
+                int count = list.Count;
                 if (count > 0)
                 {
                     return list[count - 1].Some();
@@ -175,7 +175,7 @@ namespace Optionals.Collections
 #if !NET35
             else if (source is IReadOnlyList<TSource> readOnlyList)
             {
-                var count = readOnlyList.Count;
+                int count = readOnlyList.Count;
                 if (count > 0)
                 {
                     return readOnlyList[count - 1].Some();
@@ -184,7 +184,7 @@ namespace Optionals.Collections
 #endif
             else
             {
-                using (var enumerator = source.GetEnumerator())
+                using (IEnumerator<TSource> enumerator = source.GetEnumerator())
                 {
                     if (enumerator.MoveNext())
                     {
@@ -217,9 +217,9 @@ namespace Optionals.Collections
 
             if (source is IList<TSource> list)
             {
-                for (var i = list.Count - 1; i >= 0; --i)
+                for (int i = list.Count - 1; i >= 0; --i)
                 {
-                    var result = list[i];
+                    TSource? result = list[i];
                     if (predicate(result))
                     {
                         return result.Some();
@@ -229,9 +229,9 @@ namespace Optionals.Collections
 #if !NET35
             else if (source is IReadOnlyList<TSource> readOnlyList)
             {
-                for (var i = readOnlyList.Count - 1; i >= 0; --i)
+                for (int i = readOnlyList.Count - 1; i >= 0; --i)
                 {
-                    var result = readOnlyList[i];
+                    TSource? result = readOnlyList[i];
                     if (predicate(result))
                     {
                         return result.Some();
@@ -241,16 +241,16 @@ namespace Optionals.Collections
 #endif
             else
             {
-                using (var enumerator = source.GetEnumerator())
+                using (IEnumerator<TSource> enumerator = source.GetEnumerator())
                 {
                     while (enumerator.MoveNext())
                     {
-                        var result = enumerator.Current;
+                        TSource? result = enumerator.Current;
                         if (predicate(result))
                         {
                             while (enumerator.MoveNext())
                             {
-                                var element = enumerator.Current;
+                                TSource? element = enumerator.Current;
                                 if (predicate(element))
                                 {
                                     result = element;
@@ -296,14 +296,14 @@ namespace Optionals.Collections
 #endif
             else
             {
-                using (var enumerator = source.GetEnumerator())
+                using (IEnumerator<TSource> enumerator = source.GetEnumerator())
                 {
                     if (!enumerator.MoveNext())
                     {
                         return Optional.None<TSource>();
                     }
 
-                    var result = enumerator.Current;
+                    TSource? result = enumerator.Current;
                     if (!enumerator.MoveNext())
                     {
                         return result.Some();
@@ -326,11 +326,11 @@ namespace Optionals.Collections
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            using (var enumerator = source.GetEnumerator())
+            using (IEnumerator<TSource> enumerator = source.GetEnumerator())
             {
                 while (enumerator.MoveNext())
                 {
-                    var result = enumerator.Current;
+                    TSource? result = enumerator.Current;
                     if (predicate(result))
                     {
                         while (enumerator.MoveNext())
@@ -379,7 +379,7 @@ namespace Optionals.Collections
 #endif
                 else
                 {
-                    using (var enumerator = source.GetEnumerator())
+                    using (IEnumerator<TSource> enumerator = source.GetEnumerator())
                     {
                         while (enumerator.MoveNext())
                         {
