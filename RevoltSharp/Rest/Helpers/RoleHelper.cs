@@ -13,9 +13,7 @@ namespace RevoltSharp
         public static async Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string roleName)
         {
             Conditions.ServerIdEmpty(serverId, "CreateRoleAsync");
-            Conditions.RoleIdEmpty
-            if (string.IsNullOrEmpty(roleName))
-                throw new RevoltException("Role cannot be created with a empty name.");
+            Conditions.RoleNameEmpty(roleName, "CreateRoleAsync");
 
             RoleJson Json = await rest.SendRequestAsync<RoleJson>(RequestType.Post, $"/servers/{serverId}/roles", new CreateRoleRequest { name = roleName });
             if (Json == null)
