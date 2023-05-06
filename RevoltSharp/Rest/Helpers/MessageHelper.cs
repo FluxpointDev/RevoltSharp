@@ -16,13 +16,13 @@ namespace RevoltSharp
 
         public static async Task<UserMessage> SendMessageAsync(this RevoltRestClient rest, string channelId, string text, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
         {
-            Conditions.ChannelIdEmpty(channelId);
+            Conditions.ChannelIdEmpty(channelId, "SendMessageAsync");
 
             if (string.IsNullOrEmpty(text) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))
-                throw new RevoltArgumentException("Message content, attachments and embed can't be empty.");
+                throw new RevoltArgumentException("Message content, attachments and embed can't be empty on SendMessageAsync");
 
             if (text.Length > 2000)
-                throw new RevoltArgumentException("Message content can't be more than 2000");
+                throw new RevoltArgumentException("Message content can't be more than 2000 on SendMessageAsync");
 
             if (rest.Client.UserBot && embeds != null)
                 throw new RevoltRestException("Userbots cannot send embeds!", 401);
@@ -79,11 +79,8 @@ namespace RevoltSharp
 
         public static async Task<UserMessage> SendFileAsync(this RevoltRestClient rest, string channelId, byte[] bytes, string fileName, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
         {
-            if (bytes == null || bytes.Length == 0)
-                throw new RevoltArgumentException("Invalid image file for uploading.");
-
-            if (string.IsNullOrEmpty(fileName))
-                throw new RevoltArgumentException("File name can't be empty on uploading.");
+            Conditions.FileBytesEmpty(bytes, "SendFileAsync");
+            Conditions.FileNameEmpty(fileName, "SendFileAsync");
 
             FileAttachment File = await rest.UploadFileAsync(bytes, fileName, Rest.RevoltRestClient.UploadFileType.Attachment);
             return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
@@ -94,7 +91,7 @@ namespace RevoltSharp
 
         public static async Task<IEnumerable<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
         {
-            Conditions.ChannelIdEmpty(channelId);
+            Conditions.ChannelIdEmpty(channelId, "GetMessagesAsync");
 
             GetMessagesRequest Req = new GetMessagesRequest
             {
@@ -115,8 +112,8 @@ namespace RevoltSharp
 
         public static async Task<Message> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            Conditions.ChannelIdEmpty(channelId);
-            Conditions.MessageIdEmpty(messageId);
+            Conditions.ChannelIdEmpty(channelId, "GetMessageAsync");
+            Conditions.MessageIdEmpty(messageId, "GetMessageAsync");
 
             MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Get, $"channels/{channelId}/messages/{messageId}");
             return Message.Create(rest.Client, Data);
@@ -127,8 +124,8 @@ namespace RevoltSharp
 
         public static async Task<UserMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content, Option<Embed[]> embeds = null)
         {
-            Conditions.ChannelIdEmpty(channelId);
-            Conditions.MessageIdEmpty(messageId);
+            Conditions.ChannelIdEmpty(channelId, "EditMessageAsync");
+            Conditions.MessageIdEmpty(messageId, "EditMessageAsync");
 
             var Req = new SendMessageRequest();
             if (content != null)
@@ -151,8 +148,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            Conditions.ChannelIdEmpty(channelId);
-            Conditions.MessageIdEmpty(messageId);
+            Conditions.ChannelIdEmpty(channelId, "DeleteMessageAsync");
+            Conditions.MessageIdEmpty(messageId, "DeleteMessageAsync");
 
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");

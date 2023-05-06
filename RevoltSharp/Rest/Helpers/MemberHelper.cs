@@ -23,6 +23,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> AddRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
         {
+            Conditions.RoleIdEmpty(roleId, "AddRoleAsync");
+
             if (!member.RolesIds.Any(x => x == roleId))
                 return await rest.SendRequestAsync(RequestType.Patch, $"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
                 {
@@ -42,6 +44,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
         {
+            Conditions.RoleIdEmpty(roleId, "RemoveRoleAsync");
+
             if (member.Roles.Any(x => x.Id == roleId))
                 return await rest.SendRequestAsync(RequestType.Patch, $"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
                 {
@@ -55,8 +59,8 @@ namespace RevoltSharp
 
         public static async Task<ServerMember> GetMemberAsync(this RevoltRestClient rest, string serverId, string userId)
         {
-            Conditions.ServerIdEmpty(serverId);
-            Conditions.UserIdEmpty(userId);
+            Conditions.ServerIdEmpty(serverId, "GetMemberAsync");
+            Conditions.UserIdEmpty(userId, "GetMemberAsync");
 
             if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.InternalMembers.TryGetValue(userId, out ServerMember sm))
                 return sm;
@@ -76,7 +80,7 @@ namespace RevoltSharp
 
         public static async Task<ServerMember[]> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
         {
-            Conditions.ServerIdEmpty(serverId);
+            Conditions.ServerIdEmpty(serverId, "GetMembersAsync");
 
             MembersListJson List = await rest.SendRequestAsync<MembersListJson>(RequestType.Get, $"servers/{serverId}/members?exclude_offline=" + onlineOnly.ToString());
             HashSet<ServerMember> Members = new HashSet<ServerMember>();
@@ -97,9 +101,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> KickMemberAsync(this RevoltRestClient rest, string serverId, string userId)
         {
-            Conditions.ServerIdEmpty(serverId);
-
-            Conditions.UserIdEmpty(userId);
+            Conditions.ServerIdEmpty(serverId, "KickMemberAsync");
+            Conditions.UserIdEmpty(userId, "KickMemberAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"servers/{serverId}/members/{userId}");
         }
@@ -112,8 +115,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string reason = "")
         {
-            Conditions.ServerIdEmpty(serverId);
-            Conditions.UserIdEmpty(userId);
+            Conditions.ServerIdEmpty(serverId, "BanMemberAsync");
+            Conditions.UserIdEmpty(userId, "BanMemberAsync");
 
             ReasonRequest Req = new ReasonRequest();
             if (!string.IsNullOrEmpty(reason))
@@ -125,8 +128,8 @@ namespace RevoltSharp
             => UnbanMemberAsync(server.Client.Rest, server.Id, userId);
         public static async Task<HttpResponseMessage> UnbanMemberAsync(this RevoltRestClient rest, string serverId, string userId)
         {
-            Conditions.ServerIdEmpty(serverId);
-            Conditions.UserIdEmpty(userId);
+            Conditions.ServerIdEmpty(serverId, "UnbanMemberAsync");
+            Conditions.MemberIdEmpty(userId, "UnbanMemberAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"servers/{serverId}/bans/{userId}");
         }
@@ -146,6 +149,9 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string> nickname, Option<Attachment> avatar, Option<DateTime> timeout)
         {
+            Conditions.ServerIdEmpty(serverId, "ModifyMemberAsync");
+            Conditions.MemberIdEmpty(memberId, "ModifyMemberAsync");
+
             EditMemberRequest Req = new EditMemberRequest();
             if (nickname != null)
                 Req.nickname = new Optional<string>(nickname.Value);

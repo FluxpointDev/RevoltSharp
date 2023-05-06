@@ -17,7 +17,7 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<Emoji> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
         {
-            Conditions.EmojiIdEmpty(emojiId);
+            Conditions.EmojiIdEmpty(emojiId, "GetEmojiAsync");
 
             EmojiJson Emoji =  await rest.SendRequestAsync<EmojiJson>(RequestType.Get, $"/custom/emoji/{emojiId}");
             return Emoji == null ? null : new Emoji(rest.Client, Emoji);
@@ -36,7 +36,7 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<Emoji[]> GetEmojisAsync(this RevoltRestClient rest, string serverId)
         {
-            Conditions.ServerIdEmpty(serverId);
+            Conditions.ServerIdEmpty(serverId, "GetEmojisAsync");
 
             EmojiJson[] Json = await rest.SendRequestAsync<EmojiJson[]>(RequestType.Get, $"/servers/{serverId}/emojis");
             return Json.Select(x => new Emoji(rest.Client, x)).ToArray();
@@ -61,13 +61,9 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentId, string name, bool nsfw = false)
         {
-            if (string.IsNullOrEmpty(attachmentId))
-                throw new RevoltArgumentException("Attachment id can't be empty for this request.");
-
-            Conditions.ServerIdEmpty(serverId);
-
-            if (string.IsNullOrEmpty(name))
-                throw new RevoltArgumentException("Emoji name can't be empty for this request.");
+            Conditions.AttachmentIdEmpty(attachmentId, "CreateEmojiAsync");
+            Conditions.ServerIdEmpty(serverId, "CreateEmojiAsync");
+            Conditions.EmojiNameEmpty(name, "CreateEmojiAsync");
 
             EmojiJson Emoji = await rest.SendRequestAsync<EmojiJson>(RequestType.Put, $"/custom/emoji/{attachmentId}", new CreateEmojiRequest
             {
@@ -102,7 +98,7 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<HttpResponseMessage> DeleteEmojiAsync(this RevoltRestClient rest, string emojiId)
         {
-            Conditions.EmojiIdEmpty(emojiId);
+            Conditions.EmojiIdEmpty(emojiId, "DeleteEmojiAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/custom/emoji/{emojiId}");
         }

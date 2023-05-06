@@ -96,11 +96,8 @@ namespace RevoltSharp.Rest
 
         internal async Task<FileAttachment> InternalUploadFileAsync(byte[] bytes, string name, UploadFileType type)
         {
-            if (bytes == null || bytes.Length == 0)
-                throw new RevoltArgumentException("Image bytes is empty on file upload.");
-
-            if (string.IsNullOrEmpty(name))
-                throw new RevoltArgumentException("File upload name can't be empty for this request.");
+            Conditions.FileBytesEmpty(bytes, "SendFileAsync");
+            Conditions.FileNameEmpty(name, "SendFileAsync");
 
             HttpRequestMessage Mes = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
             MultipartFormDataContent MP = new System.Net.Http.MultipartFormDataContent("file");

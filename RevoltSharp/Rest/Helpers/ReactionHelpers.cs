@@ -14,9 +14,9 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> AddMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId)
         {
-            Conditions.ChannelIdEmpty(channelId);
-            Conditions.MessageIdEmpty(messageId);
-            Conditions.EmojiIdEmpty(emojiId);
+            Conditions.ChannelIdEmpty(channelId, "AddMessageReactionAsync");
+            Conditions.MessageIdEmpty(messageId, "AddMessageReactionAsync");
+            Conditions.EmojiIdEmpty(emojiId, "AddMessageReactionAsync");
 
             return await rest.SendRequestAsync(RequestType.Put, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}");
         }
@@ -35,11 +35,11 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> RemoveMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId, string userId, bool removeAll = false)
         {
-            Conditions.ChannelIdEmpty(channelId);
-            Conditions.MessageIdEmpty(messageId);
+            Conditions.ChannelIdEmpty(channelId, "RemoveMessageReactionAsync");
+            Conditions.MessageIdEmpty(messageId, "RemoveMessageReactionAsync");
 
             if (!removeAll)
-                Conditions.UserIdEmpty(userId);
+                Conditions.UserIdEmpty(userId, "RemoveMessageReactionAsync");
 
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}?" +
@@ -52,8 +52,8 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> RemoveAllMessageReactionsAsync(this RevoltRestClient rest, string channelId, string messageId)
         {
-            Conditions.ChannelIdEmpty(channelId);
-            Conditions.MessageIdEmpty(messageId);
+            Conditions.ChannelIdEmpty(channelId, "RemoveAllMessageReactionsAsync");
+            Conditions.MessageIdEmpty(messageId, "RemoveAllMessageReactionsAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}/reactions");
         }

@@ -12,8 +12,7 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> DeleteInviteAsync(this RevoltRestClient rest, string inviteId)
         {
-            if (string.IsNullOrEmpty(inviteId))
-                throw new RevoltArgumentException("Invite id can't be empty for this request.");
+            Conditions.InviteIdEmpty(inviteId, "DeleteInviteAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/invites/{inviteId}");
         }
@@ -23,7 +22,7 @@ namespace RevoltSharp
 
         public static async Task<Invite[]> GetInvitesAsync(this RevoltRestClient rest, string serverId)
         {
-            Conditions.ServerIdEmpty(serverId);
+            Conditions.ServerIdEmpty(serverId, "GetInvitesAsync");
 
             InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
             return Json.Select(x => new Invite(x)).ToArray();
@@ -47,7 +46,7 @@ namespace RevoltSharp
         /// <exception cref="RevoltArgumentException"></exception>
         public static async Task<CreatedInvite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
         {
-            Conditions.ChannelIdEmpty(channelId);
+            Conditions.ChannelIdEmpty(channelId, "CreateInviteAsync");
 
             CreateInviteJson Json = await rest.SendRequestAsync<CreateInviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
             return new CreatedInvite(Json);

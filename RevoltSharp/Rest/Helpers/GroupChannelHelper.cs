@@ -12,7 +12,7 @@ namespace RevoltSharp
 
         public static async Task<User[]> GetGroupChannelMembersAsync(this RevoltRestClient rest, string channelId)
         {
-            Conditions.ChannelIdEmpty(channelId);
+            Conditions.ChannelIdEmpty(channelId, "GetGroupChannelMembersAsync");
 
             UserJson[] List = await rest.SendRequestAsync<UserJson[]>(RequestType.Get, $"channels/{channelId}");
             
@@ -46,7 +46,7 @@ namespace RevoltSharp
 
         public static async Task<HttpResponseMessage> LeaveGroupChannelAsync(this RevoltRestClient rest, string channelId)
         {
-            Conditions.ChannelIdEmpty(channelId);
+            Conditions.ChannelIdEmpty(channelId, "LeaveGroupChannelAsync");
 
             return await rest.SendRequestAsync(RequestType.Delete, $"/channels/{channelId}");
         }
