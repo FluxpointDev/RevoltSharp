@@ -9,7 +9,7 @@
 
         public string ProfileBio { get; internal set; }
 
-        public Attachment Background { get; internal set; }
+        public Attachment? Background { get; internal set; }
 
         internal SelfUser(RevoltClient client, UserJson model)
             : base(client, model)

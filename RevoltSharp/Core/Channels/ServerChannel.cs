@@ -66,7 +66,7 @@ namespace RevoltSharp
         /// <remarks>
         /// This may be <see langword="null" />
         /// </remarks>
-        public Attachment Icon { get; internal set; }
+        public Attachment? Icon { get; internal set; }
 
         /// <summary>
         /// Check if a member has a permission for the channel
@@ -101,7 +101,7 @@ namespace RevoltSharp
 
             if (json.DefaultPermissions.HasValue)
                 DefaultPermissions = new ChannelPermissions(json.DefaultPermissions.Value);
-
+           
             if (json.Description.HasValue)
                 Description = json.Description.Value;
 

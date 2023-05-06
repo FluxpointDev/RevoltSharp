@@ -19,7 +19,7 @@ namespace RevoltSharp
         }
         public string Name;
         public string Avatar;
-        public RevoltColor Color;
+        public RevoltColor? Color;
 
         internal MessageMasqueradeJson ToJson()
         {

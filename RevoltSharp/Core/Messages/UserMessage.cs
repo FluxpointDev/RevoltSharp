@@ -25,7 +25,7 @@ namespace RevoltSharp
 
         public IReadOnlyDictionary<Emoji, User[]> Reactions { get; internal set; }
 
-        public MessageMasquerade Masquerade { get; internal set; }
+        public MessageMasquerade? Masquerade { get; internal set; }
 
         internal UserMessage(RevoltClient client, MessageJson model)
             : base(client)

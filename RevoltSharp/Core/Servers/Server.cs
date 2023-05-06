@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RevoltSharp
 {
@@ -41,6 +42,13 @@ namespace RevoltSharp
 
         public string OwnerId { get; internal set; }
 
+        public async Task<ServerMember> GetOwnerAsync()
+        {
+            if (InternalMembers.TryGetValue(OwnerId, out ServerMember SM))
+                return SM;
+            return await Client.Rest.GetMemberAsync(Id, OwnerId);
+        }
+
         public string Name { get; internal set; }
 
         public string Description { get; internal set; }
@@ -58,9 +66,9 @@ namespace RevoltSharp
 
         public ServerPermissions DefaultPermissions { get; internal set; }
 
-        public Attachment Icon { get; internal set; }
+        public Attachment? Icon { get; internal set; }
 
-        public Attachment Banner { get; internal set; }
+        public Attachment? Banner { get; internal set; }
 
         public bool HasAnalytics { get; internal set; }
 

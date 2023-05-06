@@ -12,11 +12,13 @@ namespace RevoltSharp
 
         public string ServerId { get; internal set; }
 
+        public Server? Server => Client.GetServer(ServerId);
+
         public string Nickname { get; internal set; }
 
         public User User { get; internal set; }
 
-        public Attachment ServerAvatar { get; internal set; }
+        public Attachment? ServerAvatar { get; internal set; }
 
         public string[] RolesIds { get; internal set; }
 
@@ -43,9 +45,9 @@ namespace RevoltSharp
         #region UserProperties
         public string Username => User.Username;
         public string Status => User.Status;
-        public Attachment Avatar => User.Avatar;
+        public Attachment? Avatar => User.Avatar;
         public UserBadges Badges => User.Badges;
-        public BotData BotData => User.BotData;
+        public BotData? BotData => User.BotData;
         public bool IsOnline => User.IsOnline;
         public bool Privileged => User.Privileged;
         public string Relationship => User.Relationship;

@@ -43,7 +43,7 @@ namespace RevoltSharp
         /// <summary>
         /// List of user ids in the channel
         /// </summary>
-        public HashSet<string> Recipents { get; internal set; }
+        internal HashSet<string> Recipents { get; set; }
 
         /// <summary>
         /// List of users in the channel
@@ -81,7 +81,7 @@ namespace RevoltSharp
         /// <remarks>
         /// This may be <see langword="null" />
         /// </remarks>
-        public Attachment Icon { get; internal set; }
+        public Attachment? Icon { get; internal set; }
 
         /// <summary>
         /// Channel has nsfw content
@@ -102,7 +102,7 @@ namespace RevoltSharp
 
             if (json.DefaultPermissions.HasValue)
                 Permissions = new ChannelPermissions(json.DefaultPermissions.Value.Allowed);
-
+           
             if (json.Nsfw.HasValue)
                 IsNsfw = json.Nsfw.Value;
 

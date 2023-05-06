@@ -15,13 +15,13 @@ namespace RevoltSharp
 
         public string Status { get; internal set; }
 
-        public Attachment Avatar { get; internal set; }
+        public Attachment? Avatar { get; internal set; }
 
         public UserBadges Badges { get; }
 
         public ulong Flags { get; internal set; }
 
-        public BotData BotData { get; }
+        public BotData? BotData { get; }
 
         public bool IsOnline { get; }
 

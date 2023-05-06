@@ -35,7 +35,7 @@ namespace RevoltSharp
         /// <summary>
         /// Embed color
         /// </summary>
-        public RevoltColor Color { get; set; }
+        public RevoltColor? Color { get; set; }
 
         /// <summary>
         /// Build the embed to use it in messages
@@ -74,7 +74,8 @@ namespace RevoltSharp
             Title = model.title;
             Description = model.description;
             Site = model.site_name;
-            Color = model.colour.HasValue == false ? new RevoltColor("") : new RevoltColor(model.colour.Value);
+            if (model.colour.HasValue)
+                Color = new RevoltColor(model.colour.Value);
             Image = model.image == null ? null : new EmbedMedia(model.image);
             Media = model.media == null ? null : new EmbedMedia(model.media as EmbedMediaJson);
             Video = model.video == null ? null : new EmbedMedia(model.video);
@@ -114,19 +115,19 @@ namespace RevoltSharp
         /// <summary>
         /// Embed color
         /// </summary>
-        public RevoltColor Color { get; internal set; } = new RevoltColor("");
+        public RevoltColor? Color { get; internal set; }
 
         /// <summary>
         /// Embed image attachment
         /// </summary>
-        public EmbedMedia Image { get; internal set; }
+        public EmbedMedia? Image { get; internal set; }
 
-        public EmbedMedia Media { get; internal set; }
+        public EmbedMedia? Media { get; internal set; }
 
         /// <summary>
         /// Embed video attachment
         /// </summary>
-        public EmbedMedia Video { get; internal set; }
+        public EmbedMedia? Video { get; internal set; }
 
         /// <summary>
         /// Embed provider
