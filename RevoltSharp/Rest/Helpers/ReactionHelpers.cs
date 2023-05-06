@@ -41,11 +41,9 @@ namespace RevoltSharp
             if (!removeAll)
                 Conditions.UserIdEmpty(userId);
 
-            return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}", new DeleteReactionRequest
-            {
-                user_id = userId,
-                remove_all = removeAll
-            });
+
+            return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}/reactions/{emojiId}?" +
+                $"user_id=" + userId + "&remove_all=" + removeAll.ToString());
         }
 
 

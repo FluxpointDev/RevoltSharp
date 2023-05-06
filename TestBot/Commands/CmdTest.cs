@@ -17,7 +17,19 @@ namespace TestBot.Commands
                 Reactions = new Emoji[] { new Emoji(":01GBP83S4WT512ET704ACPVPQW:") },
                 RestrictReactions = true
             });
+            Console.WriteLine(Context.Server.GetCachedMember(Context.Client.CurrentUser.Id).Permissions.ManageMessages.ToString());
+            MessageId = Msg.Id;
+
         }
+
+        [Command("removeemoji")]
+        public async Task EmojiRemove(string id)
+        {
+            Console.WriteLine(MessageId);
+            await Context.Client.Rest.RemoveMessageReactionAsync(Context.Channel.Id, MessageId, "01GBP83S4WT512ET704ACPVPQW", id);
+        }
+
+        public static string MessageId;
 
         [Command("members")]
         public async Task RoleAll()
