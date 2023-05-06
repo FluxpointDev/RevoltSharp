@@ -1,7 +1,7 @@
 ﻿namespace RevoltSharp
 {
     /// <summary>
-    /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> <see cref="ServerChannel" /> <see cref="UnknownServerChannel" /> and <see cref="UnknownChannel"/>
+    /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> <see cref="ServerChannel" /> <see cref="UnknownServerChannel" /> or <see cref="UnknownChannel"/>
     /// </summary>
     public abstract class Channel : Entity
     {

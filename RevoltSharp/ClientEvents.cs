@@ -6,6 +6,7 @@
     public class ClientEvents
     {
         public delegate void RevoltEvent();
+        public delegate void SelfUserEvent<SelfUser>(SelfUser selfuser);
         public delegate void SocketErrorEvent<SocketError>(SocketError error);
         public delegate void MessageEvent<Message>(Message message);
         public delegate void UserEvent<User>(User user);
@@ -155,7 +156,13 @@
         {
             OnWebSocketError?.Invoke(error);
         }
-        
+
+        public event SelfUserEvent<SelfUser> OnStarted;
+        internal void InvokeStarted(SelfUser user)
+        {
+            OnStarted?.Invoke(user);
+        }
+
         public event RevoltEvent OnConnected;
         internal void InvokeConnected() {
             OnConnected?.Invoke();

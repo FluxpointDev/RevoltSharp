@@ -37,7 +37,7 @@ namespace RevoltSharp.WebSocket
         internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
         internal ConcurrentDictionary<string, User> UserCache = new ConcurrentDictionary<string, User>();
         internal ConcurrentDictionary<string, Emoji> EmojiCache = new ConcurrentDictionary<string, Emoji>();
-        internal SelfUser CurrentUser;
+        internal SelfUser CurrentUser => Client.CurrentUser;
 
         internal async Task SetupWebsocket()
         {
@@ -206,18 +206,21 @@ namespace RevoltSharp.WebSocket
                                     Console.WriteLine("--- WebSocket Ready ---\n" + FormatJsonPretty(json));
 
                                 UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
-                                
-                                if (!Client.UserBot)
-                                    CurrentUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Relationship == "User" && x.Bot != null));
-                                else
-                                    CurrentUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Id == CurrentUser.Id));
 
-                                if (CurrentUser == null)
+                                SelfUser SocketSelfUser = null;
+                                if (!Client.UserBot)
+                                    SocketSelfUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Relationship == "User" && x.Bot != null));
+                                else
+                                    SocketSelfUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Id == CurrentUser.Id));
+
+                                if (SocketSelfUser == null)
                                 {
                                     Console.WriteLine("[RevoltSharp] Fatal error, could not load bot user.\n" +
                                         "WebSocket connection has been stopped.");
                                     await Client.StopAsync();
                                 }
+
+                                Client.CurrentUser = SocketSelfUser;
 
                                 // Update bot user from cache to use current user so mutual stuff and values are synced.
                                 UserCache.TryUpdate(CurrentUser.Id, CurrentUser, UserCache[CurrentUser.Id]);

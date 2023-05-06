@@ -3,6 +3,8 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -77,18 +79,22 @@ namespace RevoltSharp
         internal RevoltSocketClient WebSocket;
 
         internal bool FirstConnection = true;
+        internal bool IsConnected = false;
+
+        public SelfUser CurrentUser { get; internal set; }
 
         /// <summary>
-        /// Start the WebSocket connection to Revolt.
+        /// Start the Rest and Websocket to be used for the lib.
         /// </summary>
         /// <remarks>
-        /// Will throw a <see cref="RevoltException"/> if <see cref="ClientMode.Http"/>
+        /// Will throw a <see cref="RevoltException"/> if the token is incorrect or failed to login for the current user/bot.
         /// </remarks>
         /// <exception cref="RevoltException"></exception>
         public async Task StartAsync()
         {
             if (FirstConnection)
             {
+                FirstConnection = false;
                 QueryRequest Query = await Rest.SendRequestAsync<QueryRequest>(RequestType.Get, "/");
                 if (Query == null)
                 {
@@ -102,22 +108,14 @@ namespace RevoltSharp
                 Config.Debug.WebsocketUrl = Query.websocketUrl;
                 Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url + "/";
 
-                FirstConnection = false;
-            }
-
-            if (Config.UserBot)
-            {
                 UserJson SelfUser = await Rest.SendRequestAsync<UserJson>(RequestType.Get, "/users/@me");
                 if (SelfUser == null)
                     throw new RevoltException("Failed to login to user account.");
 
-                if (WebSocket != null)
-                    WebSocket.CurrentUser = new SelfUser(this, SelfUser);
-
-                Console.WriteLine($"[RevoltSharp] User login: {SelfUser.Username} ({SelfUser.Id})");
+                CurrentUser = new SelfUser(this, SelfUser);
+                Console.WriteLine($"[RevoltSharp] Started: {SelfUser.Username} ({SelfUser.Id})");
+                InvokeStarted(CurrentUser);
             }
-
-
 
             if (WebSocket != null)
             {
@@ -128,9 +126,9 @@ namespace RevoltSharp
 
                 this.OnConnected += HandleConnected;
                 this.OnWebSocketError += HandleError;
-                
+
                 _ = WebSocket.SetupWebsocket();
-                
+
                 await tcs.Task;
                 this.OnConnected -= HandleConnected;
                 this.OnWebSocketError -= HandleError;
@@ -153,24 +151,18 @@ namespace RevoltSharp
             {
                 WebSocket.StopWebSocket = true;
                 await WebSocket.WebSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", WebSocket.CancellationToken);
+                
             }
         }
 
         /// <summary>
-        /// Get the current bot <see cref="User"/> after ready event.
+        /// Get a list of Servers from the websocket client 
         /// </summary>
-        /// <remarks>
-        /// Will be <see langword="null"/> if using <see cref="ClientMode.Http"/>.
-        /// </remarks>
-        public SelfUser? CurrentUser
-            => WebSocket != null ? WebSocket.CurrentUser : null;
+        public IReadOnlyCollection<Server> Servers
+            => WebSocket != null ? (IReadOnlyCollection<Server>)WebSocket.ServerCache.Values : new ReadOnlyCollection<Server>(new List<Server>());
 
-        public Server[] Servers
-            => WebSocket != null ? WebSocket.ServerCache.Values.ToArray() : new Server[0];
-
-        public User[] Users
-           => WebSocket != null ? WebSocket.UserCache.Values.ToArray() : new User[0];
-
+        public IReadOnlyCollection<User> Users
+           => WebSocket != null ? (IReadOnlyCollection<User>)WebSocket.UserCache.Values : new ReadOnlyCollection<User>(new List<User>());
 
 
         public User? GetUser(string id)
@@ -187,10 +179,52 @@ namespace RevoltSharp
             return null;
         }
 
+        public GroupChannel? GetGroupChannel(string id)
+        {
+            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is GroupChannel GC)
+                return GC;
+            return null;
+        }
+
+        public DmChannel? GetDMChannel(string id)
+        {
+            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DmChannel DM)
+                return DM;
+            return null;
+        }
+
+        public TextChannel? GetTextChannel(string id)
+        {
+            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is TextChannel TC)
+                return TC;
+            return null;
+        }
+
+        public VoiceChannel? GetVoiceChannel(string id)
+        {
+            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is VoiceChannel VC)
+                return VC;
+            return null;
+        }
+
         public Server? GetServer(string id)
         {
             if (WebSocket != null && WebSocket.ServerCache.TryGetValue(id, out Server Server))
                 return Server;
+            return null;
+        }
+
+        public Role? GetRole(string id)
+        {
+            if (WebSocket != null)
+            {
+                foreach(var s in WebSocket.ServerCache.Values)
+                {
+                    Role role = s.GetRole(id);
+                    if (role != null)
+                        return role;
+                }
+            }
             return null;
         }
 

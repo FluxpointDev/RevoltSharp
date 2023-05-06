@@ -1,20 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace RevoltSharp
 {
-    internal class DmChannel : Channel
+    /// <summary>
+    /// A channel between the current bot/user and another user.
+    /// </summary>
+    public class DmChannel : Channel
     {
         internal DmChannel(RevoltClient client, ChannelJson model) : base(client)
         {
             Id = model.Id;
             Type = ChannelType.Dm;
             Active = model.Active;
-            Recipents = model.Recipients != null ? model.Recipients : new string[0];
+            InternalRecipents = model.Recipients != null ? model.Recipients : new string[0];
             LastMessageId = model.LastMessageId;
         }
 
+        /// <summary>
+        /// If the channel is still open for both users.
+        /// </summary>
         public bool Active { get; }
-        public IReadOnlyList<string> Recipents { get; }
+
+        public string UserId => InternalRecipents.FirstOrDefault(x => x != Client.CurrentUser?.Id);
+
+        internal IReadOnlyList<string> InternalRecipents;
         public string LastMessageId { get; }
 
         

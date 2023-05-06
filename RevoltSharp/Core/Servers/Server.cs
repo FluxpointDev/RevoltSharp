@@ -87,7 +87,8 @@ namespace RevoltSharp
         public IReadOnlyCollection<ServerMember> CachedMembers
             => (IReadOnlyCollection<ServerMember>)InternalMembers.Values;
 
-        public Role GetRole(string roleId)
+
+        public Role? GetRole(string roleId)
         {
             if (InternalRoles.TryGetValue(roleId, out Role role))
                 return role;
@@ -98,7 +99,7 @@ namespace RevoltSharp
         public IReadOnlyCollection<Role> Roles
             => (IReadOnlyCollection<Role>)InternalRoles.Values;
 
-        public Emoji GetEmoji(string emojiId)
+        public Emoji? GetEmoji(string emojiId)
         {
             if (InternalEmojis.TryGetValue(emojiId, out Emoji emoji))
                 return emoji;
@@ -109,7 +110,7 @@ namespace RevoltSharp
         public IReadOnlyCollection<Emoji> Emojis
             => (IReadOnlyCollection<Emoji>)InternalEmojis.Values;
 
-        public TextChannel GetTextChannel(string channelId)
+        public TextChannel? GetTextChannel(string channelId)
         {
             if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel chan))
                 return null;
@@ -123,7 +124,7 @@ namespace RevoltSharp
             return textChannel;
         }
 
-        public VoiceChannel GetVoiceChannel(string channelId)
+        public VoiceChannel? GetVoiceChannel(string channelId)
         {
             if (!Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel chan))
                 return null;
