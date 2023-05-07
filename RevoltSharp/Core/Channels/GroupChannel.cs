@@ -56,7 +56,7 @@ namespace RevoltSharp
 
 
         /// <summary>
-        /// Last message id to be posted in the channel
+        /// The last message id sent in this Group channel.
         /// </summary>
         public string LastMessageId { get; internal set; }
 

@@ -14,7 +14,7 @@
         }
 
         /// <summary>
-        /// Last message id to be posted in the channel
+        /// The last message id sent in this Text channel.
         /// </summary>
         public string LastMessageId { get; internal set; }
 

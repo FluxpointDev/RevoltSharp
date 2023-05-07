@@ -5,7 +5,6 @@ using RevoltSharp.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp
@@ -63,7 +62,7 @@ namespace RevoltSharp
         /// <summary>
         /// Version of the current RevoltSharp lib installed.
         /// </summary>
-        public string Version { get; } = "5.0.1";
+        public string Version { get; } = "5.0.2";
 
         internal bool UserBot { get; set; }
 

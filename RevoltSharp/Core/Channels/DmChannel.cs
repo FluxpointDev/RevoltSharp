@@ -4,7 +4,7 @@ using System.Linq;
 namespace RevoltSharp
 {
     /// <summary>
-    /// A channel between the current bot/user and another user.
+    /// A channel between the current user/bot account and another user.
     /// </summary>
     public class DMChannel : Channel
     {
@@ -22,12 +22,22 @@ namespace RevoltSharp
         /// </summary>
         public bool Active { get; internal set; }
 
+        /// <summary>
+        /// The user id for this DM channel.
+        /// </summary>
         public string UserId => InternalRecipents.FirstOrDefault(x => x != Client.CurrentUser?.Id);
 
-        internal IReadOnlyList<string> InternalRecipents;
-        public string LastMessageId { get; internal set; }
+        /// <summary>
+        /// The user for this DM channel.
+        /// </summary>
+        public User? User => Client.GetUser(UserId);
 
-        
+        internal IReadOnlyList<string> InternalRecipents;
+
+        /// <summary>
+        /// The last message id sent in this DM channel.
+        /// </summary>
+        public string LastMessageId { get; internal set; }
 
         internal override void Update(PartialChannelJson json)
         {

@@ -6,16 +6,16 @@
     public abstract class Channel : Entity
     {
         /// <summary>
-        /// Id of the channel
+        /// Id of the channel.
         /// </summary>
         public string Id { get; internal set; }
 
         /// <summary>
-        /// Type of channel to cast to 
+        /// The channel type to cast to.
         /// </summary>
         public ChannelType Type { get; internal set; }
 
-        public Channel(RevoltClient client)
+        internal Channel(RevoltClient client)
             : base(client)
         { }
 
