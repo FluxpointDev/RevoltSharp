@@ -42,10 +42,21 @@ namespace RevoltSharp
         /// This is only used when running Windows OS, if true then RevoltClient will not disable console quick edit mode for command prompt.
         /// </summary>
         public bool EnableConsoleQuickEdit { get; set; }
-        // This will be set once you run Client.StartAsync()
+
+        /// <summary>
+        /// This will be changed once you run Client.StartAsync()
+        /// </summary>
+        /// <remarks>
+        /// Defaults to https://autumn.revolt.chat
+        /// </remarks>
         public string UploadUrl { get; internal set; } = "https://autumn.revolt.chat/";
 
-        // This will be set once you run Client.StartAsync()
+        /// <summary>
+        /// This will be changed once you run Client.StartAsync()
+        /// </summary>
+        /// <remarks>
+        /// Defaults to wss://ws.revolt.chat
+        /// </remarks>
         public string WebsocketUrl { get; internal set; } = "wss://ws.revolt.chat";
 
         /// <summary>
