@@ -1,16 +1,15 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket.Events
+namespace RevoltSharp.WebSocket.Events;
+
+internal class ChannelAckEventJson
 {
-    internal class ChannelAckEventJson
-    {
-        [JsonProperty("id")]
-        public string Id;
+    [JsonProperty("id")]
+    public string Id;
 
-        [JsonProperty("user")]
-        public string UserId;
+    [JsonProperty("user")]
+    public string UserId;
 
-        [JsonProperty("messageId")]
-        public string MessageId;
-    }
+    [JsonProperty("messageId")]
+    public string MessageId;
 }

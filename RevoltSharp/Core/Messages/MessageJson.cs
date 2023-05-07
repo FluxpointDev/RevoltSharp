@@ -3,84 +3,83 @@ using Optionals;
 using System;
 using System.Collections.Generic;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+internal class MessageJson
 {
-    internal class MessageJson
-    {
-        [JsonProperty("_id")]
-        public string Id;
+    [JsonProperty("_id")]
+    public string Id;
 
-        [JsonProperty("type")]
-        public string Type;
+    [JsonProperty("type")]
+    public string Type;
 
-        [JsonProperty("nonce")]
-        public string Nonce;
+    [JsonProperty("nonce")]
+    public string Nonce;
 
-        [JsonProperty("channel")]
-        public string Channel;
+    [JsonProperty("channel")]
+    public string Channel;
 
-        [JsonProperty("author")]
-        public string Author;
+    [JsonProperty("author")]
+    public string Author;
 
-        [JsonProperty("content")]
-        public string Content;
+    [JsonProperty("content")]
+    public string Content;
 
-        [JsonProperty("attachments")]
-        public AttachmentJson[] Attachments;
+    [JsonProperty("attachments")]
+    public AttachmentJson[] Attachments;
 
-        [JsonProperty("mentions")]
-        public string[] Mentions;
+    [JsonProperty("mentions")]
+    public string[] Mentions;
 
-        [JsonProperty("replies")]
-        public string[] Replies;
+    [JsonProperty("replies")]
+    public string[] Replies;
 
-        [JsonProperty("embeds")]
-        public EmbedJson[] Embeds;
+    [JsonProperty("embeds")]
+    public EmbedJson[] Embeds;
 
-        [JsonProperty("system")]
-        public MessageSystemJson System;
+    [JsonProperty("system")]
+    public MessageSystemJson System;
 
-        [JsonProperty("edited")]
-        public Optional<DateTime> Edited;
+    [JsonProperty("edited")]
+    public Optional<DateTime> Edited;
 
-        [JsonProperty("reactions")]
-        public Optional<Dictionary<string, string[]>> Reactions;
+    [JsonProperty("reactions")]
+    public Optional<Dictionary<string, string[]>> Reactions;
 
-        [JsonProperty("masquerade")]
-        public MessageMasqueradeJson Masquerade;
-    }
-    internal class MessageMasqueradeJson
-    {
-        [JsonProperty("name")]
-        public string Name;
+    [JsonProperty("masquerade")]
+    public MessageMasqueradeJson Masquerade;
+}
+internal class MessageMasqueradeJson
+{
+    [JsonProperty("name")]
+    public string Name;
 
-        [JsonProperty("avatar")]
-        public string Avatar;
+    [JsonProperty("avatar")]
+    public string Avatar;
 
-        [JsonProperty("colour")]
-        public Optional<string> Color;
-    }
-    internal class MessageSystemJson
-    {
-        [JsonProperty("type")]
-        public string Type;
+    [JsonProperty("colour")]
+    public Optional<string> Color;
+}
+internal class MessageSystemJson
+{
+    [JsonProperty("type")]
+    public string Type;
 
-        [JsonProperty("id")]
-        public string Id;
+    [JsonProperty("id")]
+    public string Id;
 
-        [JsonProperty("by")]
-        public string By;
+    [JsonProperty("by")]
+    public string By;
 
-        [JsonProperty("name")]
-        public string Name;
+    [JsonProperty("name")]
+    public string Name;
 
-        [JsonProperty("from")]
-        public string From;
+    [JsonProperty("from")]
+    public string From;
 
-        [JsonProperty("to")]
-        public string To;
+    [JsonProperty("to")]
+    public string To;
 
-        [JsonProperty("content")]
-        public string Content;
-    }
+    [JsonProperty("content")]
+    public string Content;
 }

@@ -1,58 +1,57 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+internal class UserJson
 {
-    internal class UserJson
-    {
-        [JsonProperty("_id")]
-        public string Id;
+    [JsonProperty("_id")]
+    public string Id;
 
-        [JsonProperty("username")]
-        public string Username;
+    [JsonProperty("username")]
+    public string Username;
 
-        [JsonProperty("avatar")]
-        public AttachmentJson Avatar;
+    [JsonProperty("avatar")]
+    public AttachmentJson Avatar;
 
-        [JsonProperty("badges")]
-        public ulong Badges;
+    [JsonProperty("badges")]
+    public ulong Badges;
 
-        [JsonProperty("status")]
-        public UserStatusJson Status;
+    [JsonProperty("status")]
+    public UserStatusJson Status;
 
-        [JsonProperty("profile")]
-        public UserProfileJson Profile;
+    [JsonProperty("profile")]
+    public UserProfileJson Profile;
 
-        [JsonProperty("bot")]
-        public UserBotJson Bot;
+    [JsonProperty("bot")]
+    public UserBotJson Bot;
 
-        [JsonProperty("relationship")]
-        public string Relationship;
+    [JsonProperty("relationship")]
+    public string Relationship;
 
-        [JsonProperty("online")]
-        public bool Online;
+    [JsonProperty("online")]
+    public bool Online;
 
-        [JsonProperty("privileged")]
-        public bool Privileged;
+    [JsonProperty("privileged")]
+    public bool Privileged;
 
-        [JsonProperty("flags")]
-        public ulong Flags;
-    }
-    internal class UserStatusJson
-    {
-        [JsonProperty("text")]
-        public string Text;
-    }
-    internal class UserBotJson
-    {
-        [JsonProperty("owner")]
-        public string Owner;
-    }
-    internal class UserProfileJson
-    {
-        [JsonProperty("content")]
-        public string Content;
+    [JsonProperty("flags")]
+    public ulong Flags;
+}
+internal class UserStatusJson
+{
+    [JsonProperty("text")]
+    public string Text;
+}
+internal class UserBotJson
+{
+    [JsonProperty("owner")]
+    public string Owner;
+}
+internal class UserProfileJson
+{
+    [JsonProperty("content")]
+    public string Content;
 
-        [JsonProperty("background")]
-        public AttachmentJson Background;
-    }
+    [JsonProperty("background")]
+    public AttachmentJson Background;
 }

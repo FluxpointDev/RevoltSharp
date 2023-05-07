@@ -1,6 +1,5 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿namespace RevoltSharp.WebSocket.Events;
+
+internal class ChannelEventJson : ChannelJson
 {
-    internal class ChannelEventJson : ChannelJson
-    {
-    }
 }

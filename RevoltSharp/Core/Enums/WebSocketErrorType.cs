@@ -2,21 +2,20 @@
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+[JsonConverter(typeof(StringEnumConverter))]
+public enum SocketErrorType
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SocketErrorType
-    {
-        [EnumMember(Value = "LabelMe")]
-        Unknown,
+    [EnumMember(Value = "LabelMe")]
+    Unknown,
 
-        [EnumMember(Value = "InternalError")]
-        InternalServerError,
+    [EnumMember(Value = "InternalError")]
+    InternalServerError,
 
-        InvalidSession,
+    InvalidSession,
 
-        OnboardingNotFinished,
+    OnboardingNotFinished,
 
-        AlreadyAuthenticated
-    }
+    AlreadyAuthenticated
 }

@@ -1,8 +1,7 @@
-﻿namespace RevoltSharp
+﻿namespace RevoltSharp;
+
+public class MessageInteractions
 {
-    public class MessageInteractions
-    {
-        public Emoji[] Reactions;
-        public bool RestrictReactions;
-    }
+    public Emoji[] Reactions;
+    public bool RestrictReactions;
 }

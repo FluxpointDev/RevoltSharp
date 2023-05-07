@@ -1,16 +1,15 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket.Events
+namespace RevoltSharp.WebSocket.Events;
+
+internal class ServerJoinEventJson
 {
-    internal class ServerJoinEventJson
-    {
-        [JsonProperty("id")]
-        public string Id;
+    [JsonProperty("id")]
+    public string Id;
 
-        [JsonProperty("server")]
-        public ServerJson Server;
+    [JsonProperty("server")]
+    public ServerJson Server;
 
-        [JsonProperty("channels")]
-        public ChannelJson[] Channels;
-    }
+    [JsonProperty("channels")]
+    public ChannelJson[] Channels;
 }

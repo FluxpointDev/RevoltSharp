@@ -1,18 +1,17 @@
-﻿namespace RevoltSharp
+﻿namespace RevoltSharp;
+
+internal class SavedMessagesChannel : Channel
 {
-    internal class SavedMessagesChannel : Channel
+    internal SavedMessagesChannel(RevoltClient client, ChannelJson model) : base(client)
     {
-        internal SavedMessagesChannel(RevoltClient client, ChannelJson model) : base(client)
-        {
-            Id = model.Id;
-            Type = ChannelType.SavedMessages;
-            User = model.User;
-        }
+        Id = model.Id;
+        Type = ChannelType.SavedMessages;
+        User = model.User;
+    }
 
-        public string User { get; }
+    public string User { get; }
 
-        internal override void Update(PartialChannelJson json)
-        {
-        }
+    internal override void Update(PartialChannelJson json)
+    {
     }
 }

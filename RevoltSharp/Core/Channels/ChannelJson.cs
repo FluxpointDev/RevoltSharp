@@ -1,56 +1,55 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+internal class ChannelJson
 {
-    internal class ChannelJson
-    {
-        [JsonProperty("_id")]
-        public string Id;
+    [JsonProperty("_id")]
+    public string Id;
 
-        [JsonProperty("channel_type")]
-        public ChannelType ChannelType;
+    [JsonProperty("channel_type")]
+    public ChannelType ChannelType;
 
-        [JsonProperty("nonce")]
-        public string Nonce;
+    [JsonProperty("nonce")]
+    public string Nonce;
 
-        [JsonProperty("user")]
-        public string User;
+    [JsonProperty("user")]
+    public string User;
 
-        [JsonProperty("active")]
-        public bool Active;
+    [JsonProperty("active")]
+    public bool Active;
 
-        [JsonProperty("recipients")]
-        public string[] Recipients;
+    [JsonProperty("recipients")]
+    public string[] Recipients;
 
-        [JsonProperty("last_message_id")]
-        public string LastMessageId;
+    [JsonProperty("last_message_id")]
+    public string LastMessageId;
 
-        [JsonProperty("icon")]
-        public AttachmentJson Icon;
+    [JsonProperty("icon")]
+    public AttachmentJson Icon;
 
-        [JsonProperty("description")]
-        public string Description;
+    [JsonProperty("description")]
+    public string Description;
 
-        [JsonProperty("name")]
-        public string Name;
+    [JsonProperty("name")]
+    public string Name;
 
-        [JsonProperty("owner")]
-        public string Owner;
+    [JsonProperty("owner")]
+    public string Owner;
 
-        [JsonProperty("permissions")]
-        public ulong Permissions;
+    [JsonProperty("permissions")]
+    public ulong Permissions;
 
-        [JsonProperty("default_permissions")]
-        public PermissionsJson DefaultPermissions;
+    [JsonProperty("default_permissions")]
+    public PermissionsJson DefaultPermissions;
 
-        [JsonProperty("role_permissions")]
-        public Dictionary<string, PermissionsJson> RolePermissions;
+    [JsonProperty("role_permissions")]
+    public Dictionary<string, PermissionsJson> RolePermissions;
 
-        [JsonProperty("server")]
-        public string Server;
+    [JsonProperty("server")]
+    public string Server;
 
-        [JsonProperty("nsfw")]
-        public bool Nsfw;
-    }
+    [JsonProperty("nsfw")]
+    public bool Nsfw;
 }

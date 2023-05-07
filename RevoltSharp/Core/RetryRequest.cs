@@ -1,7 +1,6 @@
-﻿namespace RevoltSharp.Core
+﻿namespace RevoltSharp.Core;
+
+internal class RetryRequest
 {
-    internal class RetryRequest
-    {
-        public int retry_after;
-    }
+    public int retry_after;
 }

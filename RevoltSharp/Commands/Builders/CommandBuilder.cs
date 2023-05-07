@@ -3,136 +3,135 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace RevoltSharp.Commands.Builders
+namespace RevoltSharp.Commands.Builders;
+
+public class CommandBuilder
 {
-    public class CommandBuilder
+    private readonly List<PreconditionAttribute> _preconditions;
+    private readonly List<ParameterBuilder> _parameters;
+    private readonly List<Attribute> _attributes;
+    private readonly List<string> _aliases;
+
+    public ModuleBuilder Module { get; }
+    internal Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> Callback { get; set; }
+
+    public string Name { get; set; }
+    public string Summary { get; set; }
+    public string Remarks { get; set; }
+    public string PrimaryAlias { get; set; }
+    public int Priority { get; set; }
+    public bool IgnoreExtraArgs { get; set; }
+
+    public IReadOnlyList<PreconditionAttribute> Preconditions => _preconditions;
+    public IReadOnlyList<ParameterBuilder> Parameters => _parameters;
+    public IReadOnlyList<Attribute> Attributes => _attributes;
+    public IReadOnlyList<string> Aliases => _aliases;
+
+    //Automatic
+    internal CommandBuilder(ModuleBuilder module)
     {
-        private readonly List<PreconditionAttribute> _preconditions;
-        private readonly List<ParameterBuilder> _parameters;
-        private readonly List<Attribute> _attributes;
-        private readonly List<string> _aliases;
+        Module = module;
 
-        public ModuleBuilder Module { get; }
-        internal Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> Callback { get; set; }
+        _preconditions = new List<PreconditionAttribute>();
+        _parameters = new List<ParameterBuilder>();
+        _attributes = new List<Attribute>();
+        _aliases = new List<string>();
+    }
+    //User-defined
+    internal CommandBuilder(ModuleBuilder module, string primaryAlias, Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> callback)
+        : this(module)
+    {
+        //.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
+        //.Preconditions.NotNull(callback, nameof(callback));
+        
+        Callback = callback;
+        PrimaryAlias = primaryAlias;
+        _aliases.Add(primaryAlias);
+    }
 
-        public string Name { get; set; }
-        public string Summary { get; set; }
-        public string Remarks { get; set; }
-        public string PrimaryAlias { get; set; }
-        public int Priority { get; set; }
-        public bool IgnoreExtraArgs { get; set; }
+    public CommandBuilder WithName(string name)
+    {
+        Name = name;
+        return this;
+    }
+    public CommandBuilder WithSummary(string summary)
+    {
+        Summary = summary;
+        return this;
+    }
+    public CommandBuilder WithRemarks(string remarks)
+    {
+        Remarks = remarks;
+        return this;
+    }
+    public CommandBuilder WithPriority(int priority)
+    {
+        Priority = priority;
+        return this;
+    }
 
-        public IReadOnlyList<PreconditionAttribute> Preconditions => _preconditions;
-        public IReadOnlyList<ParameterBuilder> Parameters => _parameters;
-        public IReadOnlyList<Attribute> Attributes => _attributes;
-        public IReadOnlyList<string> Aliases => _aliases;
+    public CommandBuilder AddAliases(params string[] aliases)
+    {
+        for (int i = 0; i < aliases.Length; i++)
+        {
+            string alias = aliases[i] ?? "";
+            if (!_aliases.Contains(alias))
+                _aliases.Add(alias);
+        }
+        return this;
+    }
+    public CommandBuilder AddAttributes(params Attribute[] attributes)
+    {
+        _attributes.AddRange(attributes);
+        return this;
+    }
+    public CommandBuilder AddPrecondition(PreconditionAttribute precondition)
+    {
+        _preconditions.Add(precondition);
+        return this;
+    }
+    public CommandBuilder AddParameter<T>(string name, Action<ParameterBuilder> createFunc)
+    {
+        ParameterBuilder param = new ParameterBuilder(this, name, typeof(T));
+        createFunc(param);
+        _parameters.Add(param);
+        return this;
+    }
+    public CommandBuilder AddParameter(string name, Type type, Action<ParameterBuilder> createFunc)
+    {
+        ParameterBuilder param = new ParameterBuilder(this, name, type);
+        createFunc(param);
+        _parameters.Add(param);
+        return this;
+    }
+    internal CommandBuilder AddParameter(Action<ParameterBuilder> createFunc)
+    {
+        ParameterBuilder param = new ParameterBuilder(this);
+        createFunc(param);
+        _parameters.Add(param);
+        return this;
+    }
 
-        //Automatic
-        internal CommandBuilder(ModuleBuilder module)
-        {
-            Module = module;
+    /// <exception cref="InvalidOperationException">Only the last parameter in a command may have the Remainder or Multiple flag.</exception>
+    internal CommandInfo Build(ModuleInfo info, CommandService service)
+    {
+        //Default name to primary alias
+        if (Name == null)
+            Name = PrimaryAlias;
 
-            _preconditions = new List<PreconditionAttribute>();
-            _parameters = new List<ParameterBuilder>();
-            _attributes = new List<Attribute>();
-            _aliases = new List<string>();
-        }
-        //User-defined
-        internal CommandBuilder(ModuleBuilder module, string primaryAlias, Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> callback)
-            : this(module)
+        if (_parameters.Count > 0)
         {
-            //.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
-            //.Preconditions.NotNull(callback, nameof(callback));
-            
-            Callback = callback;
-            PrimaryAlias = primaryAlias;
-            _aliases.Add(primaryAlias);
-        }
+            ParameterBuilder lastParam = _parameters[_parameters.Count - 1];
 
-        public CommandBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-        public CommandBuilder WithSummary(string summary)
-        {
-            Summary = summary;
-            return this;
-        }
-        public CommandBuilder WithRemarks(string remarks)
-        {
-            Remarks = remarks;
-            return this;
-        }
-        public CommandBuilder WithPriority(int priority)
-        {
-            Priority = priority;
-            return this;
-        }
+            ParameterBuilder firstMultipleParam = _parameters.FirstOrDefault(x => x.IsMultiple);
+            if ((firstMultipleParam != null) && (firstMultipleParam != lastParam))
+                throw new InvalidOperationException($"Only the last parameter in a command may have the Multiple flag. Parameter: {firstMultipleParam.Name} in {PrimaryAlias}");
 
-        public CommandBuilder AddAliases(params string[] aliases)
-        {
-            for (int i = 0; i < aliases.Length; i++)
-            {
-                string alias = aliases[i] ?? "";
-                if (!_aliases.Contains(alias))
-                    _aliases.Add(alias);
-            }
-            return this;
-        }
-        public CommandBuilder AddAttributes(params Attribute[] attributes)
-        {
-            _attributes.AddRange(attributes);
-            return this;
-        }
-        public CommandBuilder AddPrecondition(PreconditionAttribute precondition)
-        {
-            _preconditions.Add(precondition);
-            return this;
-        }
-        public CommandBuilder AddParameter<T>(string name, Action<ParameterBuilder> createFunc)
-        {
-            ParameterBuilder param = new ParameterBuilder(this, name, typeof(T));
-            createFunc(param);
-            _parameters.Add(param);
-            return this;
-        }
-        public CommandBuilder AddParameter(string name, Type type, Action<ParameterBuilder> createFunc)
-        {
-            ParameterBuilder param = new ParameterBuilder(this, name, type);
-            createFunc(param);
-            _parameters.Add(param);
-            return this;
-        }
-        internal CommandBuilder AddParameter(Action<ParameterBuilder> createFunc)
-        {
-            ParameterBuilder param = new ParameterBuilder(this);
-            createFunc(param);
-            _parameters.Add(param);
-            return this;
+            ParameterBuilder firstRemainderParam = _parameters.FirstOrDefault(x => x.IsRemainder);
+            if ((firstRemainderParam != null) && (firstRemainderParam != lastParam))
+                throw new InvalidOperationException($"Only the last parameter in a command may have the Remainder flag. Parameter: {firstRemainderParam.Name} in {PrimaryAlias}");
         }
 
-        /// <exception cref="InvalidOperationException">Only the last parameter in a command may have the Remainder or Multiple flag.</exception>
-        internal CommandInfo Build(ModuleInfo info, CommandService service)
-        {
-            //Default name to primary alias
-            if (Name == null)
-                Name = PrimaryAlias;
-
-            if (_parameters.Count > 0)
-            {
-                ParameterBuilder lastParam = _parameters[_parameters.Count - 1];
-
-                ParameterBuilder firstMultipleParam = _parameters.FirstOrDefault(x => x.IsMultiple);
-                if ((firstMultipleParam != null) && (firstMultipleParam != lastParam))
-                    throw new InvalidOperationException($"Only the last parameter in a command may have the Multiple flag. Parameter: {firstMultipleParam.Name} in {PrimaryAlias}");
-
-                ParameterBuilder firstRemainderParam = _parameters.FirstOrDefault(x => x.IsRemainder);
-                if ((firstRemainderParam != null) && (firstRemainderParam != lastParam))
-                    throw new InvalidOperationException($"Only the last parameter in a command may have the Remainder flag. Parameter: {firstRemainderParam.Name} in {PrimaryAlias}");
-            }
-
-            return new CommandInfo(this, info, service);
-        }
+        return new CommandInfo(this, info, service);
     }
 }

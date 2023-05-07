@@ -2,34 +2,33 @@
 using Optionals;
 using System;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+internal class ServerMemberJson
 {
-    internal class ServerMemberJson
-    {
-        [JsonProperty("_id")]
-        public ServerMemberIdsJson Id;
+    [JsonProperty("_id")]
+    public ServerMemberIdsJson Id;
 
-        [JsonProperty("nickname")]
-        public string Nickname;
+    [JsonProperty("nickname")]
+    public string Nickname;
 
-        [JsonProperty("avatar")]
-        public AttachmentJson Avatar;
+    [JsonProperty("avatar")]
+    public AttachmentJson Avatar;
 
-        [JsonProperty("roles")]
-        public string[] Roles;
+    [JsonProperty("roles")]
+    public string[] Roles;
 
-        [JsonProperty("joined_at")]
-        public DateTime JoinedAt;
+    [JsonProperty("joined_at")]
+    public DateTime JoinedAt;
 
-        [JsonProperty("timeout")]
-        public Optional<DateTime> Timeout;
-    }
-    internal class ServerMemberIdsJson
-    {
-        [JsonProperty("server")]
-        public string Server;
+    [JsonProperty("timeout")]
+    public Optional<DateTime> Timeout;
+}
+internal class ServerMemberIdsJson
+{
+    [JsonProperty("server")]
+    public string Server;
 
-        [JsonProperty("user")]
-        public string User;
-    }
+    [JsonProperty("user")]
+    public string User;
 }

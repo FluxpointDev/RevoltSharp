@@ -1,17 +1,16 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 
-namespace RevoltSharp.WebSocket.Events
+namespace RevoltSharp.WebSocket.Events;
+
+internal class ChannelUpdateEventJson
 {
-    internal class ChannelUpdateEventJson
-    {
-        [JsonProperty("id")]
-        public string Id;
+    [JsonProperty("id")]
+    public string Id;
 
-        [JsonProperty("data")]
-        public PartialChannelJson Data;
+    [JsonProperty("data")]
+    public PartialChannelJson Data;
 
-        [JsonProperty("clear")]
-        public Optional<string[]> Clear;
-    }
+    [JsonProperty("clear")]
+    public Optional<string[]> Clear;
 }

@@ -1,7 +1,6 @@
-﻿namespace RevoltSharp.Rest.Requests
+﻿namespace RevoltSharp.Rest.Requests;
+
+internal class CreateRoleRequest : RevoltRequest
 {
-    internal class CreateRoleRequest : RevoltRequest
-    {
-        public string name;
-    }
+    public string name;
 }

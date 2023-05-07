@@ -1,11 +1,10 @@
 using System;
 
-namespace RevoltSharp.Commands
+namespace RevoltSharp.Commands;
+
+internal class EmptyServiceProvider : IServiceProvider
 {
-    internal class EmptyServiceProvider : IServiceProvider
-    {
-        public static readonly EmptyServiceProvider Instance = new EmptyServiceProvider();
-        
-        public object GetService(Type serviceType) => null;
-    }
+    public static readonly EmptyServiceProvider Instance = new EmptyServiceProvider();
+    
+    public object GetService(Type serviceType) => null;
 }

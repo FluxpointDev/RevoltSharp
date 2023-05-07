@@ -1,4 +1,3 @@
-﻿namespace RevoltSharp.Rest
-{
-    public interface RevoltRequest { }
-}
+﻿namespace RevoltSharp.Rest;
+
+public interface RevoltRequest { }

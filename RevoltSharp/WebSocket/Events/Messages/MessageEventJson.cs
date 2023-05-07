@@ -1,10 +1,9 @@
-﻿namespace RevoltSharp.WebSocket.Events
+﻿namespace RevoltSharp.WebSocket.Events;
+
+internal class MessageEventJson : MessageJson
 {
-    internal class MessageEventJson : MessageJson
+    internal Message ToEntity(RevoltClient client)
     {
-        internal Message ToEntity(RevoltClient client)
-        {
-            return Message.Create(client, this);
-        }
+        return Message.Create(client, this);
     }
 }

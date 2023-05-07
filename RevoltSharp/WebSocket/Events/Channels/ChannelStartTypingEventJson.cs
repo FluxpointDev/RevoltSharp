@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket.Events
-{
-    internal class ChannelStartTypingEventJson
-    {
-        [JsonProperty("id")]
-        public string Id;
+namespace RevoltSharp.WebSocket.Events;
 
-        [JsonProperty("user")]
-        public string UserId;
-    }
+internal class ChannelStartTypingEventJson
+{
+    [JsonProperty("id")]
+    public string Id;
+
+    [JsonProperty("user")]
+    public string UserId;
 }
