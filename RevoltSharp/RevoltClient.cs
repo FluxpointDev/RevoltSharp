@@ -11,12 +11,15 @@ using System.Threading.Tasks;
 namespace RevoltSharp
 {
     /// <summary>
-    /// Revolt bot client used to connect to the Revolt chat API and WebSocket with a bot.
+    /// Revolt client used to connect to the Revolt chat API and WebSocket with a user or bot token.
     /// </summary>
+    /// <remarks>
+    /// Docs: <see href="https://docs.fluxpoint.dev/revoltsharp"/>
+    /// </remarks>
     public class RevoltClient : ClientEvents
     {
         /// <summary>
-        /// Create a Revolt bot client.
+        /// Create a Revolt client that can be used for user or bot accounts.
         /// </summary>
         /// <param name="token">Bot token to connect with.</param>
         /// <param name="mode">Use http for http requests only with no websocket.</param>
@@ -57,7 +60,10 @@ namespace RevoltSharp
         /// </summary>
         public string Token { get; internal set; }
 
-        public string Version { get; } = "5.0.0";
+        /// <summary>
+        /// Version of the current RevoltSharp lib installed.
+        /// </summary>
+        public string Version { get; } = "5.0.1";
 
         internal bool UserBot { get; set; }
 
@@ -76,7 +82,7 @@ namespace RevoltSharp
         /// </remarks>
         public RevoltRestClient Rest { get; internal set; }
 
-        internal RevoltSocketClient WebSocket;
+        internal RevoltSocketClient? WebSocket;
 
         internal bool FirstConnection = true;
         internal bool IsConnected = false;
