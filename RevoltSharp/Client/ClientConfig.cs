@@ -38,7 +38,9 @@ namespace RevoltSharp
     }
     public class ClientDebugConfig
     {
-
+        /// <summary>
+        /// This is only used when running Windows OS, if true then RevoltClient will not disable console quick edit mode for command prompt.
+        /// </summary>
         public bool EnableConsoleQuickEdit { get; set; }
         // This will be set once you run Client.StartAsync()
         public string UploadUrl { get; internal set; } = "https://autumn.revolt.chat/";
