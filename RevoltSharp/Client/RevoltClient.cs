@@ -25,17 +25,21 @@ namespace RevoltSharp
         /// <param name="config">Optional config stuff for the bot and lib.</param>
         public RevoltClient(string token, ClientMode mode, ClientConfig? config = null)
         {
-            try
-            {
-                DisableConsoleQuickEdit.Go();
-            }
-            catch { }
             if (string.IsNullOrEmpty(token))
                 throw new RevoltArgumentException("Client token is missing!");
 
             Token = token;
             Config = config ?? new ClientConfig();
             ConfigSafetyChecks();
+
+            if (!Config.Debug.EnableConsoleQuickEdit)
+            {
+                try
+                {
+                    DisableConsoleQuickEdit.Go();
+                }
+                catch { }
+            }
             UserBot = Config.UserBot;
             Serializer = new JsonSerializer();
             Serializer.Converters.Add(new OptionConverter());

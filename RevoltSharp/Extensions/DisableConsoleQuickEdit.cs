@@ -18,7 +18,7 @@ namespace RevoltSharp
         /// <summary>
         /// Fix the console from freezing the bot due to checking for readinput in the console
         /// </summary>
-        public static bool Go()
+        internal static bool Go()
         {
             IntPtr consoleHandle = GetStdHandle(STD_INPUT_HANDLE);
             if (!GetConsoleMode(consoleHandle, out uint consoleMode)) return false;

@@ -38,6 +38,8 @@ namespace RevoltSharp
     }
     public class ClientDebugConfig
     {
+
+        public bool EnableConsoleQuickEdit { get; set; }
         // This will be set once you run Client.StartAsync()
         public string UploadUrl { get; internal set; } = "https://autumn.revolt.chat/";
 
