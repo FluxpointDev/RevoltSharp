@@ -25,7 +25,7 @@ namespace RevoltSharp.WebSocket
                 throw new RevoltException("Client config WEBSOCKET_URL is an invalid format.");
         }
 
-        private RevoltClient Client { get; }
+        internal RevoltClient Client { get; }
 
         private bool _firstConnected { get; set; } = true;
         private bool _firstError = true;
