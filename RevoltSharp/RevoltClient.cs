@@ -81,7 +81,7 @@ namespace RevoltSharp
         internal bool FirstConnection = true;
         internal bool IsConnected = false;
 
-        public SelfUser CurrentUser { get; internal set; }
+        public SelfUser? CurrentUser { get; internal set; }
 
         /// <summary>
         /// Start the Rest and Websocket to be used for the lib.
@@ -186,9 +186,9 @@ namespace RevoltSharp
             return null;
         }
 
-        public DmChannel? GetDMChannel(string id)
+        public DMChannel? GetDMChannel(string id)
         {
-            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DmChannel DM)
+            if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DMChannel DM)
                 return DM;
             return null;
         }

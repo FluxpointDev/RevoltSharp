@@ -11,7 +11,11 @@ namespace TestBot
             client.OnChannelDeleted += Client_OnChannelDeleted;
             client.OnChannelUpdated += Client_OnChannelUpdated;
 
+            client.OnConnected += Client_OnConnected;
             client.OnCurrentUserUpdated += Client_OnCurrentUserUpdated;
+
+            client.OnEmojiCreated += Client_OnEmojiCreated;
+            client.OnEmojiDeleted += Client_OnEmojiDeleted;
 
             client.OnGroupJoined += Client_OnGroupJoined;
             client.OnGroupLeft += Client_OnGroupLeft;
@@ -25,22 +29,49 @@ namespace TestBot
             client.OnMessageRecieved += Client_OnMessageRecieved;
             client.OnMessageUpdated += Client_OnMessageUpdated;
 
+            client.OnReactionAdded += Client_OnReactionAdded;
+            client.OnReactionRemoved += Client_OnReactionRemoved;
+
             client.OnReady += Client_OnReady;
 
             client.OnRoleCreated += Client_OnRoleCreated;
             client.OnRoleDeleted += Client_OnRoleDeleted;
             client.OnRoleUpdated += Client_OnRoleUpdated;
 
-            client.OnEmojiCreated += Client_OnEmojiCreated;
-            client.OnEmojiDeleted += Client_OnEmojiDeleted;
-
             client.OnServerJoined += Client_OnServerJoined;
             client.OnServerLeft += Client_OnServerLeft;
             client.OnServerUpdated += Client_OnServerUpdated;
 
+            client.OnStarted += Client_OnStarted;
+
             client.OnUserUpdated += Client_OnUserUpdated;
 
             client.OnWebSocketError += Client_OnWebSocketError;
+
+            
+        }
+
+        private void Client_OnStarted(SelfUser selfuser)
+        {
+            Console.WriteLine("--- EVENT: Started ---");
+            Console.WriteLine(selfuser.Username);
+        }
+
+        private void Client_OnReactionRemoved(Emoji emoji, Channel channel, Downloadable<string, User> user_cache, Downloadable<string, Message> message_cache)
+        {
+            Console.WriteLine("--- EVENT: Reaction removed ---");
+            Console.WriteLine($"{emoji.Name} - {channel.Id}");
+        }
+
+        private void Client_OnReactionAdded(Emoji emoji, Channel channel, Downloadable<string, User> user_cache, Downloadable<string, Message> message_cache)
+        {
+            Console.WriteLine("--- EVENT: Reaction added ---");
+            Console.WriteLine($"{emoji.Name} - {channel.Id}");
+        }
+
+        private void Client_OnConnected()
+        {
+            Console.WriteLine("--- EVENT: Connected ---");
         }
 
         private void Client_OnEmojiDeleted(Server server, Emoji emoji)
@@ -70,7 +101,7 @@ namespace TestBot
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(value2, Newtonsoft.Json.Formatting.Indented));
         }
 
-        private void Client_OnServerUpdated(Server value, Server value2)
+        private void Client_OnServerUpdated(Server value, Server value2, ServerUpdatedProperties props)
         {
             Console.WriteLine("--- EVENT: Server Updated ---");
             Console.WriteLine($"{value.Name}|{value2.Name}");
@@ -88,10 +119,11 @@ namespace TestBot
             Console.WriteLine(value.Name);
         }
 
-        private void Client_OnRoleUpdated(Role value, Role value2)
+        private void Client_OnRoleUpdated(Role value, Role value2, RoleUpdatedProperties props)
         {
             Console.WriteLine("--- EVENT: Role Updated ---");
             Console.WriteLine($"{value.Name} | {value2.Name}");
+            Console.Write($"{value.Color.Hex} | {value2.Color.Hex}");
         }
 
         private void Client_OnRoleDeleted(Role value)
@@ -112,10 +144,10 @@ namespace TestBot
             Console.WriteLine(value.Username);
         }
 
-        private void Client_OnMessageUpdated(Channel value, string message, string content)
+        private void Client_OnMessageUpdated(MessageUpdatedProperties message)
         {
             Console.WriteLine("--- EVENT: Message Updated ---");
-            Console.WriteLine(content);
+            Console.WriteLine(message.Content.Value);
         }
 
         private void Client_OnMessageRecieved(Message value)
@@ -178,7 +210,7 @@ namespace TestBot
                 Console.WriteLine("CHANGED");
         }
 
-        private void Client_OnChannelUpdated(Channel value, Channel value2)
+        private void Client_OnChannelUpdated(Channel value, Channel value2, ChannelUpdatedProperties props)
         {
             Console.WriteLine("--- EVENT: Channel Updated  ---");
             Console.WriteLine(value.Id);

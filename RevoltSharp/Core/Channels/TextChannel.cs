@@ -25,8 +25,8 @@
 
         internal override void Update(PartialChannelJson json)
         {
-            if (json.Nsfw.HasValue)
-                IsNsfw = json.Nsfw.Value;
+            if (json.IsNsfw.HasValue)
+                IsNsfw = json.IsNsfw.Value;
             base.Update(json);
         }
     }

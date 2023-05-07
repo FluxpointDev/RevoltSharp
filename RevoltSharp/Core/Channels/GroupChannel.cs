@@ -30,7 +30,7 @@ namespace RevoltSharp
             LastMessageId = model.LastMessageId;
             Name = model.Name;
             OwnerId = model.Owner;
-            Permissions = new ChannelPermissions(model.Permissions);
+            Permissions = new ChannelPermissions(model.Permissions, 0);
             Icon = model.Icon != null ? new Attachment(model.Icon) : null;
             IsNsfw = model.Nsfw;
         }
@@ -101,13 +101,13 @@ namespace RevoltSharp
                 Description = json.Description.Value;
 
             if (json.DefaultPermissions.HasValue)
-                Permissions = new ChannelPermissions(json.DefaultPermissions.Value.Allowed);
+                Permissions = new ChannelPermissions(json.DefaultPermissions.Value);
            
-            if (json.Nsfw.HasValue)
-                IsNsfw = json.Nsfw.Value;
+            if (json.IsNsfw.HasValue)
+                IsNsfw = json.IsNsfw.Value;
 
-            if (json.Owner.HasValue)
-                OwnerId = json.Owner.Value;
+            if (json.OwnerId.HasValue)
+                OwnerId = json.OwnerId.Value;
 
         }
 

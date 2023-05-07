@@ -32,8 +32,8 @@
             {
                 case ChannelType.SavedMessages:
                     return new SavedMessagesChannel(client, model);
-                case ChannelType.Dm:
-                    return new DmChannel(client, model);
+                case ChannelType.DM:
+                    return new DMChannel(client, model);
                 case ChannelType.Group:
                     return new GroupChannel(client, model);
                 case ChannelType.Text:

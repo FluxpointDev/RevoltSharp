@@ -109,8 +109,11 @@ namespace RevoltSharp
             {
                 foreach (KeyValuePair<string, PermissionsJson> i in json.RolePermissions.Value)
                 {
-                    if (InternalRolePermissions.ContainsKey(i.Key))
-                        InternalRolePermissions[i.Key] = new ChannelPermissions(i.Value);
+                    if (InternalRolePermissions.TryGetValue(i.Key, out ChannelPermissions CP))
+                    {
+                        CP.RawAllowed = i.Value.Allowed;
+                        CP.RawDenied = i.Value.Denied;
+                    }
                     else
                         InternalRolePermissions.Add(i.Key, new ChannelPermissions(i.Value));
                 }

@@ -6,12 +6,12 @@ namespace RevoltSharp
     /// <summary>
     /// A channel between the current bot/user and another user.
     /// </summary>
-    public class DmChannel : Channel
+    public class DMChannel : Channel
     {
-        internal DmChannel(RevoltClient client, ChannelJson model) : base(client)
+        internal DMChannel(RevoltClient client, ChannelJson model) : base(client)
         {
             Id = model.Id;
-            Type = ChannelType.Dm;
+            Type = ChannelType.DM;
             Active = model.Active;
             InternalRecipents = model.Recipients != null ? model.Recipients : new string[0];
             LastMessageId = model.LastMessageId;

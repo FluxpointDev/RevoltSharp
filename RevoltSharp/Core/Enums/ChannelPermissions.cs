@@ -17,9 +17,10 @@
             RawDenied = permissions.Denied;
         }
 
-        public ChannelPermissions(ulong permissions)
+        public ChannelPermissions(ulong allowed, ulong denied)
         {
-            RawAllowed = permissions;
+            RawAllowed = allowed;
+            RawDenied = denied;
         }
 
         internal bool Has(ChannelPermission permission)

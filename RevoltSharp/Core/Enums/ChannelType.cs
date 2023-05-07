@@ -22,6 +22,6 @@ namespace RevoltSharp
         Group,
 
         [EnumMember(Value = "DirectMessage")]
-        Dm
+        DM
     }
 }

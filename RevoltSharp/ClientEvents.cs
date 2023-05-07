@@ -11,18 +11,18 @@
         public delegate void MessageEvent<Message>(Message message);
         public delegate void UserEvent<User>(User user);
         public delegate void RoleEvent<Role>(Role role);
-        public delegate void RoleUpdatedEvent<OldRole, NewRole>(OldRole old_role, NewRole new_role);
+        public delegate void RoleUpdatedEvent<OldRole, NewRole, Properties>(OldRole old_role, NewRole new_role, Properties updated_props);
         public delegate void UserUpdatedEvent<OldUser, NewUser>(OldUser old_user, NewUser new_user);
         public delegate void ServerEvent<Server>(Server server);
         public delegate void ServerEmojiEvent<Server, Emoji>(Server server, Emoji emoji);
         public delegate void ServerUserEvent<Server, User>(Server server, User user);
         public delegate void ServerMemberEvent<Server, Member>(Server server, Member member);
-        public delegate void MessageUpdatedEvent<Channel, MessageId, Content>(Channel channel, MessageId message_id, Content content);
+        public delegate void MessageUpdatedEvent<Message>(Message message);
         public delegate void ChannelMessageIdEvent<Channel, MessageId>(Channel channel, MessageId message_id);
         public delegate void ChannelEvent<Channel>(Channel channel);
         public delegate void ChannelUserEvent<Channel, User>(Channel channel, User user);
-        public delegate void ChannelUpdatedEvent<OldChannel, NewChannel>(OldChannel old_channel, NewChannel new_channel);
-        public delegate void ServerUpdatedEvent<OldServer, NewServer>(OldServer old_server, NewServer new_server);
+        public delegate void ChannelUpdatedEvent<OldChannel, NewChannel, Properties>(OldChannel old_channel, NewChannel new_channel, Properties updated_props);
+        public delegate void ServerUpdatedEvent<OldServer, NewServer, Properties>(OldServer old_server, NewServer new_server, Properties updated_props);
         public delegate void ReactionEvent<Emoji, Channel, UserCache, MessageCache>(Emoji emoji, Channel channel, UserCache user_cache, MessageCache message_cache);
 
         /// <summary>
@@ -45,10 +45,10 @@
         }
 
         
-        public event MessageUpdatedEvent<Channel, string, string> OnMessageUpdated;
-        internal void InvokeMessageUpdated(Channel chan, string message, string content)
+        public event MessageUpdatedEvent<MessageUpdatedProperties> OnMessageUpdated;
+        internal void InvokeMessageUpdated(MessageUpdatedProperties props)
         {
-            OnMessageUpdated?.Invoke(chan, message, content);
+            OnMessageUpdated?.Invoke(props);
         }
 
         public event ChannelMessageIdEvent<Channel, string> OnMessageDeleted;
@@ -57,18 +57,23 @@
             OnMessageDeleted?.Invoke(chan, msg);
         }
 
-        
-        public event ChannelEvent<Channel> OnChannelCreated;
-        internal void InvokeChannelCreated(Channel chan)
+        public event ChannelEvent<DMChannel> OnDMChannelOpened;
+        internal void InvokeDMChannelOpened(DMChannel chan)
+        {
+            OnDMChannelOpened?.Invoke(chan);
+        }
+
+        public event ChannelEvent<ServerChannel> OnChannelCreated;
+        internal void InvokeChannelCreated(ServerChannel chan)
         {
             OnChannelCreated?.Invoke(chan);
         }
 
         
-        public event ChannelUpdatedEvent<Channel, Channel> OnChannelUpdated;
-        internal void InvokeChannelUpdated(Channel old, Channel newc)
+        public event ChannelUpdatedEvent<Channel, Channel, ChannelUpdatedProperties> OnChannelUpdated;
+        internal void InvokeChannelUpdated(Channel old, Channel newc, ChannelUpdatedProperties props)
         {
-            OnChannelUpdated?.Invoke(old, newc);
+            OnChannelUpdated?.Invoke(old, newc, props);
         }
 
         public event ChannelEvent<Channel> OnChannelDeleted;
@@ -103,10 +108,10 @@
         }
 
 
-        public event ServerUpdatedEvent<Server, Server> OnServerUpdated;
-        internal void InvokeServerUpdated(Server old, Server news)
+        public event ServerUpdatedEvent<Server, Server, ServerUpdatedProperties> OnServerUpdated;
+        internal void InvokeServerUpdated(Server old, Server news, ServerUpdatedProperties props)
         {
-            OnServerUpdated?.Invoke(old, news);
+            OnServerUpdated?.Invoke(old, news, props);
         }
 
         public event ServerUserEvent<Server, SelfUser> OnServerJoined;
@@ -145,10 +150,10 @@
             OnRoleDeleted?.Invoke(role);
         }
 
-        public event RoleUpdatedEvent<Role, Role> OnRoleUpdated;
-        internal void InvokeRoleUpdated(Role old, Role newr)
+        public event RoleUpdatedEvent<Role, Role, RoleUpdatedProperties> OnRoleUpdated;
+        internal void InvokeRoleUpdated(Role old, Role newr, RoleUpdatedProperties props)
         {
-            OnRoleUpdated?.Invoke(old, newr);
+            OnRoleUpdated?.Invoke(old, newr, props);
         }
 
         public event SocketErrorEvent<SocketError> OnWebSocketError;

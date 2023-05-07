@@ -10,7 +10,7 @@ namespace RevoltSharp
         public Optional<string> Name { get; set; }
 
         [JsonProperty("icon")]
-        public Optional<AttachmentJson> Icon { get; set; }
+        public Optional<AttachmentJson?> Icon { get; set; }
 
         [JsonProperty("description")]
         public Optional<string> Description { get; set; }
@@ -22,9 +22,9 @@ namespace RevoltSharp
         public Optional<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
 
         [JsonProperty("nsfw")]
-        public Optional<bool> Nsfw { get; set; }
+        public Optional<bool> IsNsfw { get; set; }
 
         [JsonProperty("owner")]
-        public Optional<string> Owner { get; set; }
+        public Optional<string> OwnerId { get; set; }
     }
 }

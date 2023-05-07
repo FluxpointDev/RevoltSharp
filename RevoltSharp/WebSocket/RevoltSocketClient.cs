@@ -327,16 +327,13 @@ namespace RevoltSharp.WebSocket
                     case "MessageUpdate":
                         {
                             MessageUpdateEventJson @event = payload.ToObject<MessageUpdateEventJson>(Client.Serializer);
-                            if (@event.Data.Author == "00000000000000000000000000")
-                                return;
-
                             ChannelCache.TryGetValue(@event.Channel, out Channel channel);
                             if (channel == null)
                             {
                                 channel = await Client.Rest.GetChannelAsync(@event.Channel);
                                 ChannelCache.TryAdd(channel.Id, channel);
                             }
-                            Client.InvokeMessageUpdated(channel, @event.Id, @event.Data.Content?.ToString());
+                            Client.InvokeMessageUpdated(new MessageUpdatedProperties(this, @event));
                         }
                         break;
                     case "MessageDelete":
@@ -365,8 +362,23 @@ namespace RevoltSharp.WebSocket
                             {
                                 ServerCache.TryGetValue(@event.Server, out Server server);
                                 server.ChannelIds.Add(chan.Id);
+                                Client.InvokeChannelCreated(chan as ServerChannel);
                             }
-                            Client.InvokeChannelCreated(chan);
+                            else if (@event.ChannelType == ChannelType.Group)
+                            {
+                                GroupChannel GC = chan as GroupChannel;
+                                foreach (string u in GC.Recipents)
+                                {
+                                    if (UserCache.TryGetValue(u, out User User))
+                                        GC.AddUser(User);
+                                }
+
+                                Client.InvokeGroupJoined(GC, CurrentUser);
+                            }
+                            else if (@event.ChannelType == ChannelType.DM)
+                            {
+                                Client.InvokeDMChannelOpened(chan as DMChannel);
+                            }
                         }
                         break;
                     case "ChannelUpdate":
@@ -381,16 +393,18 @@ namespace RevoltSharp.WebSocket
                                     @event.Data = new PartialChannelJson();
 
                                 if (@event.Clear.Value.Contains("Icon"))
-                                    @event.Data.Icon = Optional.Some<AttachmentJson>(null);
+                                    @event.Data.Icon = Optional.Some<AttachmentJson?>(null);
 
                                 if (@event.Clear.Value.Contains("Description"))
                                     @event.Data.Description = Optional.Some<string>(null);
+
+                                
 
                             }
 
                             Channel clone = chan.Clone();
                             chan.Update(@event.Data);
-                            Client.InvokeChannelUpdated(clone, chan);
+                            Client.InvokeChannelUpdated(clone, chan, new ChannelUpdatedProperties(chan, @event.Data));
 
                         }
                         break;
@@ -413,10 +427,9 @@ namespace RevoltSharp.WebSocket
                             ChannelGroupJoinEventJson @event = payload.ToObject<ChannelGroupJoinEventJson>(Client.Serializer);
                             if (@event.UserId == CurrentUser.Id)
                             {
-                                
+                                // Might be obsolete
                                 Channel chan = await Client.Rest.GetChannelAsync(@event.Id);
                                 GroupChannel GC = (GroupChannel)chan;
-                                Console.WriteLine("[RevoltSharp] Joined Group: " + GC.Name);
                                 ChannelCache.TryAdd(@event.Id, GC);
                                 foreach (string u in GC.Recipents)
                                 {
@@ -453,10 +466,14 @@ namespace RevoltSharp.WebSocket
                             {
                                 Console.WriteLine("[RevoltSharp] Left Group: " + GC.Name);
                                 ChannelCache.TryRemove(@event.Id, out Channel chan);
-                                foreach (User u in GC.CachedUsers.Values)
+                                _ = Task.Run(async () =>
                                 {
-                                    GC.RemoveUser(u, true);
-                                }
+                                    foreach (User u in GC.CachedUsers.Values)
+                                    {
+                                        GC.RemoveUser(u, true);
+                                    }
+                                });
+                                
                                 Client.InvokeGroupLeft(GC, CurrentUser);
                             }
                             else
@@ -507,7 +524,7 @@ namespace RevoltSharp.WebSocket
                             }
                             Server cloned = server.Clone();
                             server.Update(@event.Data);
-                            Client.InvokeServerUpdated(cloned, server);
+                            Client.InvokeServerUpdated(cloned, server, new ServerUpdatedProperties(server, @event.Data));
 
                         }
                         break;
@@ -517,14 +534,18 @@ namespace RevoltSharp.WebSocket
                             if (!ServerCache.TryRemove(@event.Id, out Server server))
                                 return;
 
-                            foreach (string c in server.ChannelIds)
+                            _ = Task.Run(async () =>
                             {
-                                ChannelCache.TryRemove(c, out _);
-                            }
-                            foreach (ServerMember m in server.InternalMembers.Values)
-                            {
-                                server.RemoveMember(m.User, true);
-                            }
+                                foreach (string c in server.ChannelIds)
+                                {
+                                    ChannelCache.TryRemove(c, out _);
+                                }
+                                foreach (ServerMember m in server.InternalMembers.Values)
+                                {
+                                    server.RemoveMember(m.User, true);
+                                }
+                            });
+                            
                             Client.InvokeServerLeft(server);
                         }
                         break;
@@ -602,14 +623,18 @@ namespace RevoltSharp.WebSocket
                                     return;
 
                                 Console.WriteLine("[RevoltSharp] Left Server: " + server.Name);
-                                foreach (ServerMember m in server.InternalMembers.Values)
+                                _ = Task.Run(async () =>
                                 {
-                                    server.RemoveMember(m.User, true);
-                                }
-                                foreach (string c in server.ChannelIds)
-                                {
-                                    ChannelCache.TryRemove(c, out _);
-                                }
+                                    foreach (ServerMember m in server.InternalMembers.Values)
+                                    {
+                                        server.RemoveMember(m.User, true);
+                                    }
+                                    foreach (string c in server.ChannelIds)
+                                    {
+                                        ChannelCache.TryRemove(c, out _);
+                                    }
+                                });
+                                
                                 Client.InvokeServerLeft(server);
                             }
                             else
@@ -630,18 +655,18 @@ namespace RevoltSharp.WebSocket
                     case "ServerRoleUpdate":
                         {
                             ServerRoleUpdateEventJson @event = payload.ToObject<ServerRoleUpdateEventJson>(Client.Serializer);
-                            if (!ServerCache.TryGetValue(@event.Id, out Server server))
+                            if (!ServerCache.TryGetValue(@event.ServerId, out Server server))
                                 return;
 
                             if (server.InternalRoles.TryGetValue(@event.RoleId, out Role role))
                             {
                                 Role cloned = role.Clone();
                                 role.Update(@event.Data);
-                                Client.InvokeRoleUpdated(cloned, role);
+                                Client.InvokeRoleUpdated(cloned, role, new RoleUpdatedProperties(role, @event.Data));
                             }
                             else
                             {
-                                Role newRole = new Role(Client, @event.Data, @event.Id, @event.RoleId);
+                                Role newRole = new Role(Client, @event.Data, @event.ServerId, @event.RoleId);
                                 server.InternalRoles.TryAdd(@event.RoleId, newRole);
                                 Client.InvokeRoleCreated(newRole);
                             }
@@ -656,10 +681,21 @@ namespace RevoltSharp.WebSocket
                             if (!server.InternalRoles.TryRemove(@event.RoleId, out Role role))
                                 return;
 
-                            foreach (ServerMember m in server.InternalMembers.Values)
+                            _ = Task.Run(async () =>
                             {
-                                m.InternalRoles.TryRemove(@event.RoleId, out _);
-                            }
+                                foreach (var c in Client.WebSocket.ChannelCache.Values)
+                                {
+                                    if (c is ServerChannel SC)
+                                    {
+                                        SC.InternalRolePermissions.Remove(@event.RoleId);
+                                    }
+                                }
+
+                                foreach (ServerMember m in server.InternalMembers.Values)
+                                {
+                                    m.InternalRoles.TryRemove(@event.RoleId, out _);
+                                }
+                            });
                             Client.InvokeRoleDeleted(role);
                         }
                         break;

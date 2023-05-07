@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Optionals;
+using System;
 
 namespace RevoltSharp.WebSocket.Events
 {
@@ -11,6 +13,17 @@ namespace RevoltSharp.WebSocket.Events
         public string Channel;
 
         [JsonProperty("data")]
-        public MessageJson Data;
+        public MessageUpdatedJson Data;
+    }
+    internal class MessageUpdatedJson
+    {
+        [JsonProperty("content")]
+        public Optional<string> Content;
+
+        [JsonProperty("embeds")]
+        public Optional<EmbedJson[]> Embeds;
+
+        [JsonProperty("edited")]
+        public DateTime Edited;
     }
 }
