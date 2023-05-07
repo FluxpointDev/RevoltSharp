@@ -66,7 +66,7 @@ namespace RevoltSharp
         /// <summary>
         /// Version of the current RevoltSharp lib installed.
         /// </summary>
-        public string Version { get; } = "5.0.2";
+        public string Version { get; } = "5.0.3";
 
         internal bool UserBot { get; set; }
 
