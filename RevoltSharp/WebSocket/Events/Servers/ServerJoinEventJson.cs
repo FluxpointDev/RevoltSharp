@@ -8,9 +8,9 @@ namespace RevoltSharp.WebSocket.Events
         public string Id;
 
         [JsonProperty("server")]
-        public Server Server;
+        public ServerJson Server;
 
         [JsonProperty("channels")]
-        public ServerChannel[] Channels;
+        public ChannelJson[] Channels;
     }
 }

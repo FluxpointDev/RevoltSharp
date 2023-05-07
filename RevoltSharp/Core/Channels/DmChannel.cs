@@ -20,17 +20,19 @@ namespace RevoltSharp
         /// <summary>
         /// If the channel is still open for both users.
         /// </summary>
-        public bool Active { get; }
+        public bool Active { get; internal set; }
 
         public string UserId => InternalRecipents.FirstOrDefault(x => x != Client.CurrentUser?.Id);
 
         internal IReadOnlyList<string> InternalRecipents;
-        public string LastMessageId { get; }
+        public string LastMessageId { get; internal set; }
 
         
 
         internal override void Update(PartialChannelJson json)
         {
+            if (json.Active.HasValue)
+                Active = json.Active.Value;
         }
     }
 }

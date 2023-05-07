@@ -9,9 +9,6 @@ namespace RevoltSharp
         [JsonProperty("_id")]
         public string Id;
 
-        [JsonProperty("nonce")]
-        public string Nonce;
-
         [JsonProperty("owner")]
         public string Owner;
 

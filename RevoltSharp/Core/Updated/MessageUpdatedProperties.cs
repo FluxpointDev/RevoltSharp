@@ -28,17 +28,17 @@ namespace RevoltSharp
 
         private RevoltSocketClient Client;
 
-        public Optional<string> Content;
+        public Optional<string> Content { get; private set; }
 
-        public Option<MessageEmbed[]> Embeds;
+        public Option<MessageEmbed[]> Embeds { get; private set; }
 
-        public DateTime Edited;
+        public DateTime Edited { get; private set; }
 
-        public string ChannelId;
+        public string ChannelId { get; private set; }
 
         public Channel? Channel => Client.ChannelCache.GetValueOrDefault(ChannelId);
 
-        public string ServerId;
+        public string ServerId { get; private set; }
 
         public Server? Server => Client.ServerCache.GetValueOrDefault(ServerId);
 

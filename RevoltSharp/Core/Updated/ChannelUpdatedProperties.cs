@@ -13,6 +13,7 @@ namespace RevoltSharp
         internal ChannelUpdatedProperties(Channel channel, PartialChannelJson json)
         {
             Name = json.Name;
+            Active = json.Active;
             if (json.Icon.HasValue)
                 Icon = new Optional<Attachment?>(json.Icon.Value != null ? new Attachment(json.Icon.Value) : null);
 
@@ -31,12 +32,13 @@ namespace RevoltSharp
             OwnerId = json.OwnerId;
         }
 
-        public Optional<string> Name { get; set; }
-        public Optional<Attachment?> Icon { get; set; }
-        public Optional<string> Description { get; set; }
-        public Optional<ChannelPermissions> DefaultPermissions { get; set; }
-        public Optional<Dictionary<string, ChannelPermissions>> RolePermissions { get; set; }
-        public Optional<bool> Nsfw { get; set; }
-        public Optional<string> OwnerId { get; set; }
+        public Optional<string> Name { get; private set; }
+        public Optional<bool> Active { get; private set; }
+        public Optional<Attachment?> Icon { get; private set; }
+        public Optional<string> Description { get; private set; }
+        public Optional<ChannelPermissions> DefaultPermissions { get; private set; }
+        public Optional<Dictionary<string, ChannelPermissions>> RolePermissions { get; private set; }
+        public Optional<bool> Nsfw { get; private set; }
+        public Optional<string> OwnerId { get; private set; }
     }
 }

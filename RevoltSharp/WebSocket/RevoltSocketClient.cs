@@ -241,14 +241,11 @@ namespace RevoltSharp.WebSocket
                                 ServerCache = new ConcurrentDictionary<string, Server>(@event.Servers.ToDictionary(x => x.Id, x => new Server(Client, x)));
                                 ChannelCache = new ConcurrentDictionary<string, Channel>(@event.Channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
 
-
                                 foreach (ServerMemberJson m in @event.Members)
                                 {
                                     if (ServerCache.TryGetValue(m.Id.Server, out Server s))
                                         s.InternalMembers.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
                                 }
-
-                                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(@event.Emojis));
 
                                 foreach (EmojiJson m in @event.Emojis)
                                 {
@@ -309,6 +306,9 @@ namespace RevoltSharp.WebSocket
                                     break;
                                 case ChannelType.Text:
                                     (channel as TextChannel).LastMessageId = @event.Id;
+                                    break;
+                                case ChannelType.DM:
+                                    (channel as DMChannel).LastMessageId = @event.Id;
                                     break;
                             }
 
@@ -397,8 +397,6 @@ namespace RevoltSharp.WebSocket
 
                                 if (@event.Clear.Value.Contains("Description"))
                                     @event.Data.Description = Optional.Some<string>(null);
-
-                                
 
                             }
 
@@ -494,12 +492,17 @@ namespace RevoltSharp.WebSocket
                     case "ServerCreate":
                         {
                             ServerJoinEventJson @event = payload.ToObject<ServerJoinEventJson>(Client.Serializer);
-                            ServerCache.TryAdd(@event.Server.Id, @event.Server);
-                            foreach (ServerChannel c in @event.Channels)
+                            Server server = new Server(Client, @event.Server);
+                            ServerCache.TryAdd(@event.Server.Id, server);
+                            foreach (ChannelJson c in @event.Channels)
                             {
-                                ChannelCache.TryAdd(c.Id, c);
+                                TextChannel Chan = Channel.Create(Client, c) as TextChannel;
+                                if (Chan == null)
+                                    continue;
+
+                                ChannelCache.TryAdd(c.Id, Chan);
                             }
-                            Client.InvokeServerJoined(@event.Server, CurrentUser);
+                            Client.InvokeServerJoined(server, CurrentUser);
                         }
                         break;
                     case "ServerUpdate":
@@ -683,7 +686,7 @@ namespace RevoltSharp.WebSocket
 
                             _ = Task.Run(async () =>
                             {
-                                foreach (var c in Client.WebSocket.ChannelCache.Values)
+                                foreach (Channel c in Client.WebSocket.ChannelCache.Values)
                                 {
                                     if (c is ServerChannel SC)
                                     {

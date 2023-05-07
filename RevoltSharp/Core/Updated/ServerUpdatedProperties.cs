@@ -31,10 +31,10 @@ namespace RevoltSharp
         public Optional<Attachment?> Banner { get; set; }
         public Optional<string> Description { get; set; }
         public Optional<ulong> DefaultPermissions { get; set; }
-        public Optional<bool> Analytics;
-        public Optional<bool> Discoverable;
-        public Optional<bool> Nsfw;
-        public Optional<string> Owner;
-        public Optional<ServerSystemMessages> SystemMessages;
+        public Optional<bool> Analytics { get; private set; }
+        public Optional<bool> Discoverable { get; private set; }
+        public Optional<bool> Nsfw { get; private set; }
+        public Optional<string> Owner { get; private set; }
+        public Optional<ServerSystemMessages> SystemMessages { get; private set; }
     }
 }
