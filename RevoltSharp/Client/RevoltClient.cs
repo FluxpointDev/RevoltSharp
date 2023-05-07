@@ -176,56 +176,56 @@ public class RevoltClient : ClientEvents
 
     public User? GetUser(string id)
     {
-        if (WebSocket != null && WebSocket.UserCache.TryGetValue(id, out User User))
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.UserCache.TryGetValue(id, out User User))
             return User;
         return null;
     }
 
     public Channel? GetChannel(string id)
     {
-        if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan))
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan))
             return Chan;
         return null;
     }
 
     public GroupChannel? GetGroupChannel(string id)
     {
-        if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is GroupChannel GC)
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is GroupChannel GC)
             return GC;
         return null;
     }
 
     public DMChannel? GetDMChannel(string id)
     {
-        if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DMChannel DM)
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DMChannel DM)
             return DM;
         return null;
     }
 
     public TextChannel? GetTextChannel(string id)
     {
-        if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is TextChannel TC)
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is TextChannel TC)
             return TC;
         return null;
     }
 
     public VoiceChannel? GetVoiceChannel(string id)
     {
-        if (WebSocket != null && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is VoiceChannel VC)
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is VoiceChannel VC)
             return VC;
         return null;
     }
 
     public Server? GetServer(string id)
     {
-        if (WebSocket != null && WebSocket.ServerCache.TryGetValue(id, out Server Server))
+        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ServerCache.TryGetValue(id, out Server Server))
             return Server;
         return null;
     }
 
     public Role? GetRole(string id)
     {
-        if (WebSocket != null)
+        if (WebSocket != null && !string.IsNullOrEmpty(id))
         {
             foreach(Server s in WebSocket.ServerCache.Values)
             {
@@ -239,7 +239,7 @@ public class RevoltClient : ClientEvents
 
     public Emoji? GetEmoji(string id)
     {
-        if (WebSocket != null)
+        if (WebSocket != null && !string.IsNullOrEmpty(id))
         {
             if (WebSocket.EmojiCache.TryGetValue(id, out Emoji emoji))
                 return emoji;

@@ -1,7 +1,7 @@
 ﻿namespace RevoltSharp;
 
 /// <summary>
-/// Server text channel that members can talk in
+/// Server text channel that members can talk in.
 /// </summary>
 public class TextChannel : ServerChannel
 {
@@ -19,7 +19,7 @@ public class TextChannel : ServerChannel
     public string LastMessageId { get; internal set; }
 
     /// <summary>
-    /// Channel has nsfw content
+    /// Channel has nsfw content.
     /// </summary>
     public bool IsNsfw { get; internal set; }
 

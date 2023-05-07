@@ -46,6 +46,9 @@ public class ServerChannel : Channel
     
     internal Dictionary<string, ChannelPermissions> InternalRolePermissions { get; set; }
 
+    /// <summary>
+    /// Role permission for the channel that wil override default permissions
+    /// </summary>
     [JsonIgnore]
     public IReadOnlyCollection<ChannelPermissions> RolePermissions
         => InternalRolePermissions.Values;

@@ -40,16 +40,13 @@ public class GroupChannel : Channel
     /// </summary>
     public ChannelPermissions Permissions { get; internal set; }
 
-    /// <summary>
-    /// List of user ids in the channel
-    /// </summary>
     internal HashSet<string> Recipents { get; set; }
+
+    internal ConcurrentDictionary<string, User> CachedUsers { get; set; } = new ConcurrentDictionary<string, User>();
 
     /// <summary>
     /// List of users in the channel
     /// </summary>
-    internal ConcurrentDictionary<string, User> CachedUsers { get; set; } = new ConcurrentDictionary<string, User>();
-
     [JsonIgnore]
     public IReadOnlyCollection<User> Users
         => (IReadOnlyCollection<User>)CachedUsers.Values;
@@ -64,6 +61,8 @@ public class GroupChannel : Channel
     /// Owner of the channel
     /// </summary>
     public string OwnerId { get; internal set; }
+
+    public User? Owner => Client.GetUser(OwnerId);
 
     /// <summary>
     /// Name of the channel
