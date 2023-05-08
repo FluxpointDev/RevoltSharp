@@ -11,6 +11,13 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("dm")]
+    public async Task DM()
+    {
+        var DM = await Context.User.GetDMChannelAsync();
+        await DM.SendMessageAsync("Hi :)");
+    }
+
     [Command("mystatus")]
     public async Task MyStatus()
     {

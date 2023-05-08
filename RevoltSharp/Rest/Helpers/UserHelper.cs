@@ -42,4 +42,18 @@ public static class UserHelper
         return new Profile(rest.Client, Data);
     }
 
+
+    public static Task<DMChannel?> GetDMChannelAsync(this User user)
+        => GetUserDMChannelAsync(user.Client.Rest, user.Id);
+
+    public static async Task<DMChannel?> GetUserDMChannelAsync(this RevoltRestClient rest, string userId)
+    {
+        Conditions.UserIdEmpty(userId, "GetUserDMChannel");
+
+        ChannelJson Data = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, $"users/{userId}/dm");
+        if (Data == null)
+            return null;
+        return Channel.Create(rest.Client, Data) as DMChannel;
+    }
+
 }
