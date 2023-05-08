@@ -68,6 +68,9 @@ public class ServerMember : Entity
     public UserBadges Badges => User.Badges;
 
     [JsonIgnore]
+    public UserFlags Flags => User.Flags;
+
+    [JsonIgnore]
     public BotData? BotData => User.BotData;
 
     [JsonIgnore]

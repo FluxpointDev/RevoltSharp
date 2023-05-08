@@ -19,7 +19,7 @@ public class User : Entity
 
     public UserBadges Badges { get; }
 
-    public ulong Flags { get; internal set; }
+    public UserFlags Flags { get; internal set; }
 
     public BotData? BotData { get; }
 
@@ -57,8 +57,8 @@ public class User : Entity
         Username = model.Username;
         BotData = model.Bot != null ? new BotData { Owner = model.Bot.Owner } : null;
         Avatar = model.Avatar != null ? new Attachment(model.Avatar) : null;
-        Badges = new UserBadges { Raw = model.Badges };
-        Flags = model.Flags;
+        Badges = new UserBadges(model.Badges);
+        Flags = new UserFlags(model.Flags);
         IsOnline = model.Online;
         Relationship = model.Relationship;
         Status = model.Status?.Text;
@@ -93,13 +93,34 @@ public class User : Entity
 }
 public class UserBadges
 {
+    internal UserBadges(ulong value)
+    {
+        Raw = value;
+        Types = (UserBadgeTypes)Raw;
+    }
+
     public ulong Raw { get; internal set; }
 
-    public UserBadgeTypes Types
-        => (UserBadgeTypes) Raw;
+    public bool HasBadge(UserBadgeTypes type) => Types.HasFlag(type);
+
+    internal UserBadgeTypes Types;
+}
+public class UserFlags
+{
+    internal UserFlags(ulong value)
+    {
+        Raw = value;
+        Types = (UserFlagTypes)Raw;
+    }
+    public ulong Raw { get; internal set; }
+
+    public bool HasFlag(UserFlagTypes type) => Types.HasFlag(type);
+
+    internal UserFlagTypes Types;
 }
 public class BotData
 {
+    internal BotData() { }
     public string Owner { get; internal set; }
 }
 [Flags]
@@ -109,8 +130,22 @@ public enum UserBadgeTypes
     Translator = 2,
     Supporter = 4,
     ResponsibleDisclosure = 8,
-    EarlyAdopter = 256
+    Founder = 16,
+    PlatformModeration = 32,
+    ActiveSupporter = 64,
+    Paw = 128,
+    EarlyAdopter = 256,
+    ReservedRelevantJokeBadge1 = 512,
+    ReservedRelevantJokeBadge2 = 1024
 }
+[Flags]
+public enum UserFlagTypes
+{
+    Suspended = 1,
+    Deleted = 2,
+    Banned = 4
+}
+
 public enum UserStatusType
 {
     Online, Idle, Busy, Invisible
