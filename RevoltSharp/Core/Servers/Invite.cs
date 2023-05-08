@@ -12,7 +12,7 @@ public class Invite : Entity
         ChannelName = model.ChannelName;
         ChannelDescription = model.ChannelDescription;
         CreatorName = model.CreatorName;
-        CreatorAvatar = model.CreatorAvatar != null ? new Attachment(model.CreatorAvatar) : null;
+        CreatorAvatar = Attachment.Create(client, model.CreatorAvatar);
         if (model.ChannelType == "Server")
             IsServer = true;
         else if (model.ChannelType == "Group")

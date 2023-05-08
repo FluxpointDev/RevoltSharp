@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace RevoltSharp;
 
@@ -13,7 +14,7 @@ public class User : CreatedEntity
 
     public string Username { get; internal set; }
 
-    public string Status { get; internal set; }
+    public UserStatus Status { get; internal set; }
 
     public Attachment? Avatar { get; internal set; }
 
@@ -55,30 +56,45 @@ public class User : CreatedEntity
         Model = model;
         Id = model.Id;
         Username = model.Username;
-        BotData = model.Bot != null ? new BotData { Owner = model.Bot.Owner } : null;
-        Avatar = model.Avatar != null ? new Attachment(model.Avatar) : null;
+        BotData = BotData.Create(model.Bot);
+        Avatar = Attachment.Create(client, model.Avatar);
         Badges = new UserBadges(model.Badges);
         Flags = new UserFlags(model.Flags);
         IsOnline = model.Online;
         Relationship = model.Relationship;
-        Status = model.Status?.Text;
+        if (model.Status != null && Enum.TryParse(model.Status.Text, out UserStatus ST))
+            Status = ST;
+        else
+            Status = UserStatus.Unknown;
+        
         Privileged = model.Privileged;
     }
     public bool HasBadge(UserBadgeTypes type)
         => Badges.Types.HasFlag(type);
 
+    public string GetDefaultAvatarUrl()
+        => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
+
+    public string GetAvatarOrDefaultUrl()
+        => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
+
     internal void Update(PartialUserJson data)
     {
         if (data.avatar.HasValue)
-            Avatar = data.avatar.Value != null ? new Attachment(data.avatar.Value) : null;
+            Avatar = Attachment.Create(Client, data.avatar.Value);
         
         if (data.status.HasValue)
-            Status = data.status.Value != null ? data.status.Value.Text : null;
+        {
+            if (data.status.Value != null && Enum.TryParse(data.status.Value.Text, out UserStatus ST))
+                Status = ST;
+            else
+                Status = UserStatus.Unknown;
+        }
         
         if (this is SelfUser Self)
         {
             if (data.ProfileBackground.HasValue)
-                Self.Background = data.ProfileBackground.Value != null ? new Attachment(data.ProfileBackground.Value) : null;
+                Self.Background = Attachment.Create(Client, data.ProfileBackground.Value);
 
             if (data.ProfileContent.HasValue)
                 Self.ProfileBio = data.ProfileContent.Value;
@@ -107,6 +123,10 @@ public class User : CreatedEntity
     {
         return (User)this.MemberwiseClone();
     }
+}
+public enum UserStatus
+{
+    Unknown, Online, Idle, Focus, Busy, Invisible
 }
 public class UserBadges
 {
@@ -137,8 +157,18 @@ public class UserFlags
 }
 public class BotData
 {
-    internal BotData() { }
-    public string Owner { get; internal set; }
+    private BotData(UserBotJson json)
+    {
+        Owner = json.Owner;
+    }
+
+    internal static BotData? Create(UserBotJson json)
+    {
+        if (json != null)
+            return new BotData(json);
+        return null;
+    }
+    public string Owner { get; }
 }
 [Flags]
 public enum UserBadgeTypes

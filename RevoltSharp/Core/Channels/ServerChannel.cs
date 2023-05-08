@@ -17,7 +17,7 @@ public class ServerChannel : Channel
         InternalRolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(x.Value)) : new Dictionary<string, ChannelPermissions>();
         Name = model.Name;
         Description = model.Description;
-        Icon = model.Icon != null ? new Attachment(model.Icon) : null;
+        Icon = Attachment.Create(client, model.Icon);
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class ServerChannel : Channel
             Name = json.Name.Value;
 
         if (json.Icon.HasValue)
-            Icon = new Attachment(json.Icon.Value);
+            Icon = Attachment.Create(Client, json.Icon.Value);
 
         if (json.DefaultPermissions.HasValue)
             DefaultPermissions = new ChannelPermissions(json.DefaultPermissions.Value);

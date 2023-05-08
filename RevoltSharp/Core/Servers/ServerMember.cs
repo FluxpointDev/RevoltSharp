@@ -59,7 +59,7 @@ public class ServerMember : Entity
     public string Username => User.Username;
 
     [JsonIgnore]
-    public string Status => User.Status;
+    public UserStatus Status => User.Status;
 
     [JsonIgnore]
     public Attachment? Avatar => User.Avatar;
@@ -96,7 +96,7 @@ public class ServerMember : Entity
         JoinedAt = sModel.JoinedAt;
         if (sModel.Timeout.HasValue)
             Timeout = sModel.Timeout.Value;
-        ServerAvatar = sModel.Avatar != null ? new Attachment(sModel.Avatar) : null;
+        ServerAvatar = Attachment.Create(client, sModel.Avatar);
         RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
         Server server = client.GetServer(ServerId);
         server.AddMember(this);
@@ -110,7 +110,7 @@ public class ServerMember : Entity
             Nickname = json.Nickname.Value;
 
         if (json.Avatar.HasValue)
-            ServerAvatar = json.Avatar.Value == null ? null : new Attachment(json.Avatar.Value);
+            ServerAvatar = Attachment.Create(Client, json.Avatar.Value);
 
         if (json.Roles.HasValue)
         {

@@ -20,9 +20,11 @@ public class SelfUser : User
     internal SelfUser(RevoltClient client, UserJson model)
         : base(client, model)
     {
+        if (model.Profile == null)
+            return;
 
-        ProfileBio = model.Profile?.Content;
-        Background = model.Profile?.Background != null ? new Attachment(model.Profile.Background) : null;
+        ProfileBio = model.Profile.Content;
+        Background = Attachment.Create(client, model.Profile.Background);
     }
 
 

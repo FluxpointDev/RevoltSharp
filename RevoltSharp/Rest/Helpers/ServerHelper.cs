@@ -28,7 +28,7 @@ public static class ServerHelper
         Conditions.ServerIdEmpty(serverId, "GetBansAsync");
 
         ServerBansJson Bans = await rest.SendRequestAsync<ServerBansJson>(RequestType.Get, $"/servers/{serverId}/bans");
-        IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client) { Id = x.Id, Avatar = x.Avatar == null ? null : new Attachment(x.Avatar), Username = x.Username, Reason = Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault().Reason} );
+        IEnumerable<ServerBan> BanList = Bans.Users.Select(x => new ServerBan(rest.Client, x, Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault()));
         return BanList.ToArray();
     }
 

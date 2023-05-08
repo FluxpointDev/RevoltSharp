@@ -3,9 +3,9 @@
 /// <summary>
 /// Revolt file attachment for messages which could by any type including an image.
 /// </summary>
-public class Attachment 
+public class Attachment : CreatedEntity
 {
-    internal Attachment(AttachmentJson model)
+    private Attachment(RevoltClient client, AttachmentJson model) : base(client, model.Id)
     {
         Id = model.Id;
         Tag = model.Tag;
@@ -50,6 +50,16 @@ public class Attachment
     /// The height of the image if the file is an image type.
     /// </summary>
     public int Height { get; }
+
+    public string GetUrl()
+        => Client.Config.Debug.UploadUrl + Tag + "/" + Id + "/" + Filename;
+
+    internal static Attachment? Create(RevoltClient client, AttachmentJson model)
+    {
+        if (model != null)
+            return new Attachment(client, model);
+        return null;
+    }
 
     internal AttachmentJson ToJson()
     {

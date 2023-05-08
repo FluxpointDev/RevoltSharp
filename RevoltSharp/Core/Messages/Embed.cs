@@ -57,7 +57,7 @@ public class EmbedBuilder
 
 public class MessageEmbed
 {
-    internal MessageEmbed(EmbedJson model)
+    private MessageEmbed(EmbedJson model)
     {
         Type = model.type;
         switch (Type)
@@ -82,6 +82,13 @@ public class MessageEmbed
         Media = model.media == null ? null : new EmbedMedia(model.media as EmbedMediaJson);
         Video = model.video == null ? null : new EmbedMedia(model.video);
         Provider = model.special == null ? EmbedProviderType.None : model.special.Type;
+    }
+
+    internal static MessageEmbed? Create(EmbedJson model)
+    {
+        if (model != null)
+            return new MessageEmbed(model);
+        return null;
     }
 
     /// <summary>

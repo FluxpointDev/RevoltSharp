@@ -51,11 +51,20 @@ public class RevoltClient : ClientEvents
 
     private void ConfigSafetyChecks()
     {
+        if (string.IsNullOrEmpty(Config.ApiUrl))
+            throw new RevoltException("Config API Url is missing");
+
+        if (!Config.ApiUrl.EndsWith('/'))
+            Config.ApiUrl += "/";
+
+        if (string.IsNullOrEmpty(Config.UserAgent))
+            throw new RevoltException("Config UserAgent is missing");
+
         if (Config.Owners == null)
             Config.Owners = new string[0];
 
         if (Config.Debug == null)
-            Config.Debug = new ClientDebugConfig(); 
+            Config.Debug = new ClientDebugConfig();
     }
     
 
@@ -116,7 +125,10 @@ public class RevoltClient : ClientEvents
                 throw new RevoltException("[RevoltSharp] Server Image server url is an invalid format.");
 
             Config.Debug.WebsocketUrl = Query.websocketUrl;
-            Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url + "/";
+            Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url;
+
+            if (!Config.Debug.UploadUrl.EndsWith('/'))
+                Config.Debug.UploadUrl += '/';
 
             UserJson SelfUser = await Rest.SendRequestAsync<UserJson>(RequestType.Get, "/users/@me");
             if (SelfUser == null)

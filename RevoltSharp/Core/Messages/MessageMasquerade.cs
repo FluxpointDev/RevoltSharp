@@ -10,7 +10,7 @@ public class MessageMasquerade
         Avatar = avatar;
         Color = color == null ? new RevoltColor("") : color;
     }
-    internal MessageMasquerade(MessageMasqueradeJson model)
+    private MessageMasquerade(MessageMasqueradeJson model)
     {
         Name = model.Name;
         Avatar = model.Avatar;
@@ -19,6 +19,14 @@ public class MessageMasquerade
         else
             Color = new RevoltColor("");
     }
+
+    internal static MessageMasquerade? Create(MessageMasqueradeJson model)
+    {
+        if (model != null)
+            return new MessageMasquerade(model);
+        return null;
+    }
+
     public string Name { get; }
     public string Avatar { get; }
     public RevoltColor Color { get; }

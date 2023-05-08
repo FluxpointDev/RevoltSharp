@@ -10,7 +10,7 @@ public class ChannelUpdatedProperties
         Name = json.Name;
         Active = json.Active;
         if (json.Icon.HasValue)
-            Icon = new Optional<Attachment?>(json.Icon.Value != null ? new Attachment(json.Icon.Value) : null);
+            Icon = new Optional<Attachment?>(Attachment.Create(channel.Client, json.Icon.Value));
 
         Description = json.Description;
 

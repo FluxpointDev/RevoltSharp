@@ -31,7 +31,7 @@ public class GroupChannel : Channel
         Name = model.Name;
         OwnerId = model.Owner;
         Permissions = new ChannelPermissions(model.Permissions, 0);
-        Icon = model.Icon != null ? new Attachment(model.Icon) : null;
+        Icon = Attachment.Create(client, model.Icon);
         IsNsfw = model.Nsfw;
     }
 
@@ -94,7 +94,7 @@ public class GroupChannel : Channel
             Name = json.Name.Value;
 
         if (json.Icon.HasValue)
-            Icon = new Attachment(json.Icon.Value);
+            Icon = Attachment.Create(Client, json.Icon.Value);
 
         if (json.Description.HasValue)
             Description = json.Description.Value;

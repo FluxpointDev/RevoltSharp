@@ -14,8 +14,8 @@ public class Server : CreatedEntity
         Name = model.Name;
         DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
         Description = model.Description;
-        Banner = model.Banner != null ? new Attachment(model.Banner) : null;
-        Icon = model.Icon != null ? new Attachment(model.Icon) : null;
+        Banner = Attachment.Create(client, model.Banner);
+        Icon = Attachment.Create(client, model.Icon);
         ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
         OwnerId = model.Owner;
         InternalRoles = model.Roles != null
@@ -133,10 +133,10 @@ public class Server : CreatedEntity
             Name = json.Name.Value;
 
         if (json.Icon.HasValue)
-            Icon = new Attachment(json.Icon.Value);
+            Icon = Attachment.Create(Client, json.Icon.Value);
 
         if (json.Banner.HasValue)
-            Banner = new Attachment(json.Icon.Value);
+            Banner = Attachment.Create(Client, json.Icon.Value);
 
         if (json.DefaultPermissions.HasValue)
             DefaultPermissions = new ServerPermissions(json.DefaultPermissions.Value);

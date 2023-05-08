@@ -9,6 +9,6 @@ public class Profile : Entity
         : base(client)
     {
         Bio = model.Content;
-        Background = model.Background != null ? new Attachment(model.Background) : null;
+        Background = Attachment.Create(client, model.Background);
     }
 }

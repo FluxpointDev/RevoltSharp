@@ -39,13 +39,13 @@ public class UserMessage : Message
             ServerId = SC.ServerId;
         Nonce = model.Nonce;
         Content = model.Content;
-        Masquerade = model.Masquerade == null ? null : new MessageMasquerade(model.Masquerade);
-        Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => new Attachment(a)));
+        Masquerade = MessageMasquerade.Create(model.Masquerade);
+        Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => Attachment.Create(client, a)));
         Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
         Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
         if (model.Edited.HasValue)
             EditedAt = model.Edited.Value;
-        Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => new MessageEmbed(x)));
+        Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(x)));
         if (!model.Reactions.HasValue)
             Reactions = new Dictionary<Emoji, User[]>();
         else
