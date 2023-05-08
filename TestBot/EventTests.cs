@@ -89,7 +89,7 @@ public class EventTests
     private void Client_OnWebSocketError(SocketError value)
     {
         Console.WriteLine("--- EVENT: WebSocket Error ---");
-        Console.WriteLine(value.Messaage);
+        Console.WriteLine(value.Message);
     }
 
     private void Client_OnUserUpdated(User value, User value2)

@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace RevoltSharp;
+﻿namespace RevoltSharp;
 
 /// <summary>
 /// Server or default emoji
@@ -51,7 +48,7 @@ public class Emoji : Entity
 
     public string CreatorId { get; internal set; }
 
-    public User? Creator { get; internal set }
+    public User? Creator { get; internal set; }
 
     public bool IsAnimated { get; internal set; }
 

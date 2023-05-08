@@ -17,7 +17,7 @@ public class ChannelPermissions
         RawDenied = permissions.Denied;
     }
 
-    public ChannelPermissions(ulong allowed, ulong denied)
+    internal ChannelPermissions(ulong allowed, ulong denied)
     {
         RawAllowed = allowed;
         RawDenied = denied;
@@ -32,7 +32,6 @@ public class ChannelPermissions
     public bool ManageChannel => Has(ChannelPermission.ManageChannel);
     public bool ManagePermissions => Has(ChannelPermission.ManagePermissions);
     public bool ViewChanel => Has(ChannelPermission.ViewChannel);
-    //public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
     public bool SendMessages => Has(ChannelPermission.SendMessages);
     public bool ManageMessages => Has(ChannelPermission.ManageMessages);
     public bool ManageWebhooks => Has(ChannelPermission.ManageWebhooks);

@@ -1,7 +1,13 @@
 namespace RevoltSharp;
 
-	public class MessageReply
+public class MessageReply
+{
+	public MessageReply(string messageId, bool isMention)
 	{
-		public string id;
-		public bool mention;
-	}
+        MessageId = messageId;
+        IsMention = isMention;
+
+    }
+    public string MessageId { get; }
+    public bool IsMention { get; }
+}

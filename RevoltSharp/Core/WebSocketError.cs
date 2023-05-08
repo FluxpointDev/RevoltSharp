@@ -2,6 +2,6 @@
 
 public class SocketError
 {
-    public string Messaage;
-    public SocketErrorType Type;
+    public string Message { get; internal set; }
+    public SocketErrorType Type { get; internal set; }
 }

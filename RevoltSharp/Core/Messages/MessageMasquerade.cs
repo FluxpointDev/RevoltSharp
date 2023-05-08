@@ -19,9 +19,9 @@ public class MessageMasquerade
         else
             Color = new RevoltColor("");
     }
-    public string Name;
-    public string Avatar;
-    public RevoltColor Color;
+    public string Name { get; }
+    public string Avatar { get; }
+    public RevoltColor Color { get; }
 
     internal MessageMasqueradeJson ToJson()
     {

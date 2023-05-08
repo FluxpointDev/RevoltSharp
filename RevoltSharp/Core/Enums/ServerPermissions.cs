@@ -6,12 +6,12 @@
 public class ServerPermissions
 {
     public static ulong AllServerPermissions = 61503;
-    public ServerPermissions(ulong permissions)
+    internal ServerPermissions(ulong permissions)
     {
         RawServer = permissions;
     }
 
-    public ServerPermissions(Server server, ServerMember member)
+    internal ServerPermissions(Server server, ServerMember member)
     {
         if (server.OwnerId == member.Id)
         {

@@ -1,12 +1,5 @@
-﻿using Newtonsoft.Json;
-using Optionals;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using Optionals;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevoltSharp;
 

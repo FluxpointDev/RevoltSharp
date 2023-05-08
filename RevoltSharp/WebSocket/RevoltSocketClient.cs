@@ -207,7 +207,7 @@ internal class RevoltSocketClient
                             await Client.StopAsync();
                         }
                         
-                        Client.InvokeWebSocketError(new SocketError { Messaage = @event.Message, Type = @event.Error });
+                        Client.InvokeWebSocketError(new SocketError { Message = @event.Message, Type = @event.Error });
                     }
                     break;
                 case "Ready":
@@ -277,7 +277,7 @@ internal class RevoltSocketClient
                             Console.WriteLine(ex);
                             Console.WriteLine("[RevoltSharp] Fatal error, could not parse ready event.\n" +
                                 "WebSocket connection has been stopped.");
-                            Client.InvokeWebSocketError(new SocketError() { Messaage = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = SocketErrorType.Unknown });
+                            Client.InvokeWebSocketError(new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = SocketErrorType.Unknown });
                             await Client.StopAsync();
                         }
                     }

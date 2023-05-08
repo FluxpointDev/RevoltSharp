@@ -1,5 +1,4 @@
-﻿using RevoltSharp.Rest.Requests;
-using RevoltSharp.Rest;
+﻿using RevoltSharp.Rest;
 using System.Net.Http;
 using System.Threading.Tasks;
 

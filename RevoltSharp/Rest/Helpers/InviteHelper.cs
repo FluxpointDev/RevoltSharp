@@ -25,7 +25,7 @@ public static class InviteHelper
         Conditions.ServerIdEmpty(serverId, "GetInvitesAsync");
 
         InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
-        return Json.Select(x => new Invite(x)).ToArray();
+        return Json.Select(x => new Invite(rest.Client, x)).ToArray();
     }
 
 
@@ -49,6 +49,6 @@ public static class InviteHelper
         Conditions.ChannelIdEmpty(channelId, "CreateInviteAsync");
 
         CreateInviteJson Json = await rest.SendRequestAsync<CreateInviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
-        return new CreatedInvite(Json);
+        return new CreatedInvite(rest.Client, Json);
     }
 }

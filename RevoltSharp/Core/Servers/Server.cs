@@ -11,7 +11,7 @@ public class Server : Entity
     internal Server(RevoltClient client, ServerJson model) : base(client)
     {
         Id = model.Id;
-            Name = model.Name;
+        Name = model.Name;
         DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
         Description = model.Description;
         Banner = model.Banner != null ? new Attachment(model.Banner) : null;
@@ -24,18 +24,7 @@ public class Server : Entity
         HasAnalytics = model.Analytics;
         IsDiscoverable = model.Discoverable;
         IsNsfw = model.Nsfw;
-        if (model.SystemMessages == null)
-            SystemMessages = new ServerSystemMessages();
-        else
-        {
-            SystemMessages = new ServerSystemMessages
-            {
-                UserBanned = model.SystemMessages.UserBanned,
-                UserJoined = model.SystemMessages.UserJoined,
-                UserKicked = model.SystemMessages.UserKicked,
-                UserLeft = model.SystemMessages.UserLeft
-            };
-        }
+        SystemMessages = new ServerSystemMessages(client, model.SystemMessages);
     }
 
     public string Id { get; internal set; }
@@ -169,13 +158,7 @@ public class Server : Entity
 
         if (json.SystemMessages.HasValue)
         {
-            SystemMessages = new ServerSystemMessages
-            {
-                UserBanned = json.SystemMessages.Value.UserBanned,
-                UserJoined = json.SystemMessages.Value.UserJoined,
-                UserKicked = json.SystemMessages.Value.UserKicked,
-                UserLeft = json.SystemMessages.Value.UserLeft
-            };
+            SystemMessages = new ServerSystemMessages(Client, json.SystemMessages.Value);
         }
     }
 

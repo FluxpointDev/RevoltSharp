@@ -11,7 +11,6 @@ public enum ChannelPermission
     ManageChannel = 1 << 0,
     ManagePermissions = 1 << 2,
     ViewChannel = 1 << 20,
-    //ReadMessageHistory = 1 << 21,
     SendMessages = 1 << 22,
     ManageMessages = 1 << 23,
     ManageWebhooks = 1 << 24,

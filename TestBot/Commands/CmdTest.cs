@@ -28,11 +28,8 @@ public class CmdTest : ModuleBase
     [Command("emojimsg")]
     public async Task EmojiMsg()
     {
-        UserMessage Msg = await Context.Channel.SendMessageAsync("Emoji test", interactions: new MessageInteractions
-        {
-            Reactions = new Emoji[] { new Emoji(":01GBP83S4WT512ET704ACPVPQW:") },
-            RestrictReactions = true
-        });
+        UserMessage Msg = await Context.Channel.SendMessageAsync("Emoji test", 
+            interactions: new MessageInteractions(new Emoji[] { new Emoji(":01GBP83S4WT512ET704ACPVPQW:") }, true));
         Console.WriteLine(Context.Server.GetCachedMember(Context.Client.CurrentUser.Id).Permissions.ManageMessages.ToString());
         MessageId = Msg.Id;
 
@@ -255,14 +252,10 @@ public class CmdTest : ModuleBase
     [Command("testreaction")]
     public async Task TestReaction()
     {
-        await Context.Channel.SendMessageAsync("Test", interactions: new MessageInteractions
-        {
-            Reactions = new Emoji[]
+        await Context.Channel.SendMessageAsync("Test", interactions: new MessageInteractions(new Emoji[]
             {
                 Context.Server.GetEmoji("01GBP83S4WT512ET704ACPVPQW")
-            },
-            RestrictReactions = true
-        });
+            }, true));
     }
 
     [Command("embed")]
@@ -293,10 +286,8 @@ public class CmdTest : ModuleBase
     [Command("reply")]
     public async Task Reply([Remainder] string replies)
     {
-        await Context.Channel.SendMessageAsync("Hello", replies: replies.Split(" ").Select(id => new MessageReply() {
-            id = id[1..],
-            mention = id[0] == '+'
-        }).ToArray());
+        await Context.Channel.SendMessageAsync("Hello", replies: replies.Split(" ").Select(id => new MessageReply(id = id[1..],
+            id[0] == '+')).ToArray());
     }
 
     [Command("error")]

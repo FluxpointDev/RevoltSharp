@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
@@ -131,7 +132,7 @@ public class RevoltClient : ClientEvents
             TaskCompletionSource tcs = new TaskCompletionSource();
 
             void HandleConnected() => tcs.SetResult();
-            void HandleError(SocketError error) => tcs.SetException(new RevoltException(error.Messaage));
+            void HandleError(SocketError error) => tcs.SetException(new RevoltException(error.Message));
 
             this.OnConnected += HandleConnected;
             this.OnWebSocketError += HandleError;
@@ -199,6 +200,13 @@ public class RevoltClient : ClientEvents
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DMChannel DM)
             return DM;
+        return null;
+    }
+
+    public TextChannel? GetTextChannel(Optional<string> channelId)
+    {
+        if (WebSocket != null && channelId.HasValue && !string.IsNullOrEmpty(channelId.Value) && WebSocket.ChannelCache.TryGetValue(channelId.Value, out Channel Chan) && Chan is TextChannel TC)
+            return TC;
         return null;
     }
 

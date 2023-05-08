@@ -3,9 +3,9 @@
 /// <summary>
 /// Server invite
 /// </summary>
-public class Invite
+public class Invite : Entity
 {
-    internal Invite(InviteJson model)
+    internal Invite(RevoltClient client, InviteJson model) : base(client)
     {
         Code = model.Code;
         ChannelId = model.ChannelId;
@@ -20,6 +20,9 @@ public class Invite
     }
     public string Code { get; internal set; }
     public string ChannelId { get; internal set; }
+
+    public Channel? Channel => Client.GetChannel(ChannelId);
+
     public string ChannelName { get; internal set; }
     public string ChannelDescription { get; internal set; }
     public string CreatorName { get; internal set; }
@@ -28,9 +31,9 @@ public class Invite
     public bool IsGroup { get; internal set; }
 }
 
-public class CreatedInvite
+public class CreatedInvite : Entity
 {
-    internal CreatedInvite(CreateInviteJson model)
+    internal CreatedInvite(RevoltClient client, CreateInviteJson model) : base(client)
     {
         Code = model.Code;
         CreatorId = model.CreatorId;
@@ -44,7 +47,9 @@ public class CreatedInvite
     public string Code { get; internal set; }
     public string CreatorId { get; internal set; }
 
+    public User? Creator => Client.GetUser(CreatorId);
     public string ChannelId { get; internal set; }
+    public Channel? Channel => Client.GetChannel(ChannelId);
     public bool IsServer { get; internal set; }
     public bool IsGroup { get; internal set; }
 }

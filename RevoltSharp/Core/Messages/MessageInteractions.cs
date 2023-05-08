@@ -2,6 +2,11 @@
 
 public class MessageInteractions
 {
-    public Emoji[] Reactions;
-    public bool RestrictReactions;
+    public MessageInteractions(Emoji[] reactions, bool restricted = false)
+    {
+        Reactions = reactions;
+        RestrictReactions = restricted;
+    }
+    public Emoji[] Reactions { get; }
+    public bool RestrictReactions { get; }
 }

@@ -2,6 +2,7 @@
 using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -28,29 +29,13 @@ class Program
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
         new EventTests(Client);
-        
 
 
 
-        CommandHandler Commands = new CommandHandler(Client);
-        Commands.Service.OnCommandExecuted += Service_OnCommandExecuted;
-        await Commands.Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+
+        CommandHandler CommandHandler = new CommandHandler(Client);
+        CommandHandler.LoadCommands();
         await Task.Delay(-1);
-    }
-
-    private static void Service_OnCommandExecuted(Optional<CommandInfo> values, CommandContext values2, IResult value3)
-    {
-        if (value3.IsSuccess)
-            Console.WriteLine("Success message");
-        else
-        {
-            if (!values.HasValue)
-                Console.WriteLine("Invalid command");
-            else
-            {
-                values2.Channel.SendMessageAsync("Error: " + value3.ErrorReason);
-            }
-        }
     }
 
     private static void Client_OnReady(SelfUser value)
@@ -60,7 +45,7 @@ class Program
 
     private static void Client_OnWebSocketError(SocketError value)
     {
-        Console.WriteLine("Socket Error: " + value.Messaage);
+        Console.WriteLine("Socket Error: " + value.Message);
     }
 }
 
@@ -69,35 +54,46 @@ public class CommandHandler
     public CommandHandler(RevoltClient client)
     {
         Client = client;
-        client.OnMessageRecieved += message => Client_OnMessageRecieved(message).GetAwaiter().GetResult();
-        //client.OnReactionAdded += Client_OnReactionAdded;
-        //client.OnReactionRemoved += Client_OnReactionRemoved;
+        Client.OnMessageRecieved += Client_OnMessageRecieved;
+        Service.OnCommandExecuted += Service_OnCommandExecuted;
     }
+    private RevoltClient Client;
+    private CommandService Service = new CommandService();
 
-    private void Client_OnReactionAdded(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> memberDownload, Downloadable<string, Message> messageDownload) {
-        if (memberDownload.Id != Client.CurrentUser.Id) {
-            Client.Rest.AddMessageReactionAsync(channel.Id, messageDownload.Id, emoji.Id).GetAwaiter().GetResult();
-        }
+    // Change this prefix
+    public const string Prefix = "!";
+
+    public async Task LoadCommands()
+    {
+        await Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
     }
+    
 
-    private void Client_OnReactionRemoved(Emoji emoji, ServerChannel channel, Downloadable<string, ServerMember> memberDownload, Downloadable<string, Message> messageDownload) {
-        if (memberDownload.Id != Client.CurrentUser.Id) {
-            Client.Rest.RemoveMessageReactionAsync(channel.Id, messageDownload.Id, emoji.Id, Client.CurrentUser.Id).GetAwaiter().GetResult();
-        }
-    }
-
-    public RevoltClient Client;
-    public CommandService Service = new CommandService();
-    private async Task Client_OnMessageRecieved(Message msg)
+    private void Client_OnMessageRecieved(Message msg)
     {
         UserMessage Message = msg as UserMessage;
         if (Message == null || Message.Author.IsBot)
             return;
         int argPos = 0;
-        if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+        if (!(Message.HasStringPrefix(Prefix, ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
             return;
         CommandContext context = new CommandContext(Client, Message);
         
         _ = Service.ExecuteAsync(context, argPos, null);
+    }
+
+    private void Service_OnCommandExecuted(Optional<CommandInfo> commandinfo, CommandContext context, IResult result)
+    {
+        if (result.IsSuccess)
+            Console.WriteLine("Success command: " + commandinfo.Value.Name);
+        else
+        {
+            if (!commandinfo.HasValue)
+                Console.WriteLine("Invalid command: " + context.Message.Content);
+            else
+            {
+                context.Channel.SendMessageAsync("Error: " + result.ErrorReason);
+            }
+        }
     }
 }
