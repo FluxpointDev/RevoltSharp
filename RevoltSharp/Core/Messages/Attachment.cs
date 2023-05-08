@@ -10,10 +10,15 @@ public class Attachment : CreatedEntity
         Id = model.Id;
         Tag = model.Tag;
         Filename = model.Filename;
-        Type = model.Metadata.Type;
         Size = model.Size;
-        Width = model.Metadata.Width;
-        Height = model.Metadata.Height;
+        if (model.Metadata != null)
+        {
+            Type = model.Metadata.Type;
+            Width = model.Metadata.Width;
+            Height = model.Metadata.Height;
+        }
+        Deleted = model.Deleted;
+        Reported = model.Reported;
     }
 
     /// <summary>
@@ -50,6 +55,16 @@ public class Attachment : CreatedEntity
     /// The height of the image if the file is an image type.
     /// </summary>
     public int Height { get; }
+    
+    /// <summary>
+    /// File has been deleted.
+    /// </summary>
+    public bool Deleted { get; }
+
+    /// <summary>
+    /// File has been reported by a user.
+    /// </summary>
+    public bool Reported { get; }
 
     public string GetUrl()
         => Client.Config.Debug.UploadUrl + Tag + "/" + Id + "/" + Filename;

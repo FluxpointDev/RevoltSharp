@@ -22,6 +22,11 @@ internal class AttachmentJson
     [JsonProperty("size")]
     public int Size;
 
+    [JsonProperty("deleted")]
+    public bool Deleted;
+
+    [JsonProperty("reported")]
+    public bool Reported;
 
 }
 internal class AttachmentMetaJson
