@@ -18,7 +18,7 @@ public class MessageUpdatedProperties
             if (json.Data.Embeds.Value == null || !json.Data.Embeds.Value.Any())
                 Embeds = new Option<MessageEmbed[]>(new MessageEmbed[0]);
             else
-                Embeds = new Option<MessageEmbed[]>(json.Data.Embeds.Value.Select(x => new MessageEmbed(x)).ToArray());
+                Embeds = new Option<MessageEmbed[]>(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)).ToArray());
         }
         Edited = json.Data.Edited;
         ChannelId = json.Channel;
