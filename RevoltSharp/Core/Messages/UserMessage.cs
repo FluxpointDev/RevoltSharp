@@ -28,7 +28,7 @@ public class UserMessage : Message
     public MessageMasquerade? Masquerade { get; internal set; }
 
     internal UserMessage(RevoltClient client, MessageJson model)
-        : base(client)
+        : base(client, model)
     {
         Id = model.Id;
         AuthorId = model.Author;

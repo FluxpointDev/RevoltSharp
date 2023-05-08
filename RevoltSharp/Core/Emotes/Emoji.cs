@@ -3,9 +3,9 @@
 /// <summary>
 /// Server or default emoji
 /// </summary>
-public class Emoji : Entity
+public class Emoji : CreatedEntity
 {
-    internal Emoji(RevoltClient client, EmojiJson model) : base(client)
+    internal Emoji(RevoltClient client, EmojiJson model) : base(client, model.Id)
     {
         Id = model.Id;
         Name = model.Name;
@@ -15,13 +15,13 @@ public class Emoji : Entity
         IsNsfw = model.Nsfw;
     }
 
-    internal Emoji(RevoltClient client, string emoji) : base(client)
+    internal Emoji(RevoltClient client, string emoji) : base(client, emoji)
     {
         Id = emoji;
         Name = emoji;
     }
 
-    public Emoji(string emoji) : base(null)
+    public Emoji(string emoji) : base(null, emoji)
     {
         if (emoji.StartsWith(':'))
             emoji = emoji.Substring(1, emoji.Length - 2);

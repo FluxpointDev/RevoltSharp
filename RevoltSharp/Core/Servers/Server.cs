@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
-public class Server : Entity
+public class Server : CreatedEntity
 {
-    internal Server(RevoltClient client, ServerJson model) : base(client)
+    internal Server(RevoltClient client, ServerJson model) : base(client, model.Id)
     {
         Id = model.Id;
         Name = model.Name;

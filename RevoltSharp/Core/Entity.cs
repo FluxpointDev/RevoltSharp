@@ -18,7 +18,16 @@ public abstract class CreatedEntity : Entity
 {
     internal CreatedEntity(RevoltClient client, string id) : base(client)
     {
-        Created = Ulid.Parse(id).Time;
+        if (id.StartsWith(':'))
+        {
+            if (Ulid.TryParse(id.Substring(1, id.Length - 2), out Ulid ID))
+                Created = ID.Time;
+        }
+        else
+        {
+            if (Ulid.TryParse(id, out Ulid ID))
+                Created = ID.Time;
+        }
     }
 
     public DateTimeOffset Created { get; internal set; } 

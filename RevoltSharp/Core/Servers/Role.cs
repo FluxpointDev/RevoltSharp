@@ -5,7 +5,7 @@ namespace RevoltSharp;
 /// <summary>
 /// Server role
 /// </summary>
-public class Role : Entity
+public class Role : CreatedEntity
 {
     public string Id { get; internal set; }
 
@@ -30,7 +30,7 @@ public class Role : Entity
     public RevoltColor Color { get; internal set; }
 
     internal Role(RevoltClient client, RoleJson model, string serverId, string roleId)
-        : base(client)
+        : base(client, roleId)
     {
 
         Id = roleId;
@@ -44,7 +44,7 @@ public class Role : Entity
     }
 
     internal Role(RevoltClient client, PartialRoleJson model, string serverId, string roleId)
-        : base(client)
+        : base(client, roleId)
     {
         Id = roleId;
         Name = model.Name.Value;

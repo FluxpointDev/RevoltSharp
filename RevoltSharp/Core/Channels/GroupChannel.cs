@@ -10,7 +10,7 @@ namespace RevoltSharp;
 /// </summary>
 public class GroupChannel : Channel
 {
-    internal GroupChannel(RevoltClient client, ChannelJson model) : base(client)
+    internal GroupChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Id = model.Id;
         Type = ChannelType.Group;

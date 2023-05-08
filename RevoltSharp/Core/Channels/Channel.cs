@@ -3,7 +3,7 @@
 /// <summary>
 /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> <see cref="ServerChannel" /> <see cref="UnknownServerChannel" /> or <see cref="UnknownChannel"/>
 /// </summary>
-public abstract class Channel : Entity
+public abstract class Channel : CreatedEntity
 {
     /// <summary>
     /// Id of the channel.
@@ -15,8 +15,8 @@ public abstract class Channel : Entity
     /// </summary>
     public ChannelType Type { get; internal set; }
 
-    internal Channel(RevoltClient client)
-        : base(client)
+    internal Channel(RevoltClient client, ChannelJson model)
+        : base(client, model?.Id)
     { }
 
     internal abstract void Update(PartialChannelJson json);

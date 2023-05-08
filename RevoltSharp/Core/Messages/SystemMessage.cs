@@ -8,7 +8,7 @@ public class SystemMessage<Type> : Message where Type : SystemType
 {
     public Type Content { get; internal set; }
     internal SystemMessage(RevoltClient client, MessageJson model, Type type)
-        : base(client)
+        : base(client, model)
     {
         Id = model.Id;
         ChannelId = model.Channel;

@@ -9,7 +9,7 @@ namespace RevoltSharp;
 /// </summary>
 public class ServerChannel : Channel
 {
-    internal ServerChannel(RevoltClient client, ChannelJson model) : base(client)
+    internal ServerChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Id = model.Id;
         ServerId = model.Server;

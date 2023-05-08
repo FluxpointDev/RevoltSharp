@@ -5,7 +5,7 @@
 /// </summary>
 public class UnknownChannel : Channel
 {
-    internal UnknownChannel(RevoltClient client, ChannelJson model) : base(client)
+    internal UnknownChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Id = model.Id;
         Type = ChannelType.Unknown;

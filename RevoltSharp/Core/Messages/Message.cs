@@ -3,10 +3,10 @@
 /// <summary>
 /// Base chat messages that can be casted to <see cref="UserMessage"/> or <see cref="SystemMessage{Type}"/>
 /// </summary>
-public abstract class Message : Entity
+public abstract class Message : CreatedEntity
 {
-    public Message(RevoltClient client)
-        : base(client)
+    internal Message(RevoltClient client, MessageJson model)
+        : base(client, model?.Id)
     { }
 
     internal static Message Create(RevoltClient client, MessageJson model)

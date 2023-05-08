@@ -8,7 +8,7 @@ namespace RevoltSharp;
 /// </summary>
 public class DMChannel : Channel
 {
-    internal DMChannel(RevoltClient client, ChannelJson model) : base(client)
+    internal DMChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Id = model.Id;
         Type = ChannelType.DM;
