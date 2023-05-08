@@ -96,6 +96,8 @@ public static class MemberHelper
         => KickMemberAsync(server.Client.Rest, server.Id, userId);
     public static Task<HttpResponseMessage> KickMemberAsync(this Server server, ServerMember member)
         => KickMemberAsync(server.Client.Rest, server.Id, member.Id);
+    public static Task<HttpResponseMessage> KickMemberAsync(this Server server, User user)
+        => KickMemberAsync(server.Client.Rest, server.Id, user.Id);
     public static Task<HttpResponseMessage> KickAsync(this ServerMember member)
         => KickMemberAsync(member.Client.Rest, member.ServerId, member.Id);
 
@@ -110,6 +112,8 @@ public static class MemberHelper
         => BanMemberAsync(server.Client.Rest, server.Id, userId, reason);
     public static Task<HttpResponseMessage> BanMemberAsync(this Server server, ServerMember member, string reason = "")
         => BanMemberAsync(server.Client.Rest, server.Id, member.Id, reason);
+    public static Task<HttpResponseMessage> BanMemberAsync(this Server server, User user, string reason = "")
+        => BanMemberAsync(server.Client.Rest, server.Id, user.Id, reason);
     public static Task<HttpResponseMessage> BanAsync(this ServerMember member, string reason = "")
         => BanMemberAsync(member.Client.Rest, member.ServerId, member.Id, reason);
 
@@ -124,9 +128,13 @@ public static class MemberHelper
 
         return await rest.SendRequestAsync(RequestType.Put, $"servers/{serverId}/bans/{userId}", Req);
     }
-    public static Task<HttpResponseMessage> UnbanMemberAsync(this Server server, string userId)
-        => UnbanMemberAsync(server.Client.Rest, server.Id, userId);
-    public static async Task<HttpResponseMessage> UnbanMemberAsync(this RevoltRestClient rest, string serverId, string userId)
+    public static Task<HttpResponseMessage> UnBanMemberAsync(this Server server, string userId)
+        => UnBanMemberAsync(server.Client.Rest, server.Id, userId);
+
+    public static Task<HttpResponseMessage> UnBanMemberAsync(this Server server, User user)
+        => UnBanMemberAsync(server.Client.Rest, server.Id, user.Id);
+
+    public static async Task<HttpResponseMessage> UnBanMemberAsync(this RevoltRestClient rest, string serverId, string userId)
     {
         Conditions.ServerIdEmpty(serverId, "UnbanMemberAsync");
         Conditions.MemberIdEmpty(userId, "UnbanMemberAsync");

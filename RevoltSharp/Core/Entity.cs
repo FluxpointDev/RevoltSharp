@@ -21,14 +21,14 @@ public abstract class CreatedEntity : Entity
         if (id.StartsWith(':'))
         {
             if (Ulid.TryParse(id.Substring(1, id.Length - 2), out Ulid ID))
-                Created = ID.Time;
+                CreatedAt = ID.Time;
         }
         else
         {
             if (Ulid.TryParse(id, out Ulid ID))
-                Created = ID.Time;
+                CreatedAt = ID.Time;
         }
     }
 
-    public DateTimeOffset Created { get; internal set; } 
+    public DateTimeOffset CreatedAt { get; internal set; } 
 }

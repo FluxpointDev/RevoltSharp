@@ -13,7 +13,7 @@ public class ServerMember : Entity
 
     public string MemberId { get; }
 
-    public DateTimeOffset Joined { get; internal set; }
+    public DateTimeOffset JoinedAt { get; internal set; }
 
     public string ServerId { get; internal set; }
 
@@ -43,8 +43,6 @@ public class ServerMember : Entity
         => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
 
     public string[] RolesIds { get; internal set; }
-
-    public DateTime JoinedAt { get; internal set; }
 
     public DateTime? Timeout { get; internal set; }
 
@@ -109,11 +107,11 @@ public class ServerMember : Entity
     {
         MemberId = sModel.Id.User;
         if (Ulid.TryParse(MemberId, out Ulid UID))
-            Joined = UID.Time;
+            JoinedAt = UID.Time;
         User = user != null ? user : new User(Client, uModel);
         ServerId = sModel.Id.Server;
         Nickname = sModel.Nickname;
-        JoinedAt = sModel.JoinedAt;
+        //JoinedAt = sModel.JoinedAt;
         if (sModel.Timeout.HasValue)
             Timeout = sModel.Timeout.Value;
         ServerAvatar = Attachment.Create(client, sModel.Avatar);

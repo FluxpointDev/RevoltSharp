@@ -57,7 +57,11 @@ public class Server : CreatedEntity
 
     public Attachment? Icon { get; internal set; }
 
+    public string GetIconUrl() => Icon != null ? Icon.GetUrl() : string.Empty;
+
     public Attachment? Banner { get; internal set; }
+
+    public string GetBannerUrl() => Banner != null ? Banner.GetUrl() : string.Empty;
 
     public bool HasAnalytics { get; internal set; }
 
