@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
+using RevoltSharp.Internal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,13 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("datetest")]
+    public async Task DateTest(string id)
+    {
+        Ulid ulid = Ulid.Parse(id);
+        await ReplyAsync($"Time: {ulid.Time.ToString()}");
+    }
+
     [Command("emoji")]
     public async Task Emoji(string id)
     {

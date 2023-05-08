@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace RevoltSharp;
 
-public class User : Entity
+public class User : CreatedEntity
 {
     public string Id { get; }
 
-    public string Username { get; }
+    public string Username { get; internal set; }
 
     public string Status { get; internal set; }
 
@@ -50,7 +50,7 @@ public class User : Entity
        => InternalMutualGroups.Any() || InternalMutualServers.Any();
 
     internal User(RevoltClient client, UserJson model)
-        : base(client)
+        : base(client, model.Id)
     {
         Model = model;
         Id = model.Id;
@@ -71,8 +71,10 @@ public class User : Entity
     {
         if (data.avatar.HasValue)
             Avatar = data.avatar.Value != null ? new Attachment(data.avatar.Value) : null;
+        
         if (data.status.HasValue)
             Status = data.status.Value != null ? data.status.Value.Text : null;
+        
         if (this is SelfUser Self)
         {
             if (data.ProfileBackground.HasValue)
@@ -84,6 +86,21 @@ public class User : Entity
 
         if (data.privileged.HasValue)
             Privileged = data.privileged.Value;
+
+        if (data.Username.HasValue)
+            Username = data.Username.Value;
+
+        if (data.Badges.HasValue)
+        {
+            Badges.Raw = data.Badges.Value;
+            Badges.Types = (UserBadgeTypes)Badges.Raw;
+        }
+
+        if (data.Flags.HasValue)
+        {
+            Flags.Raw = data.Flags.Value;
+            Flags.Types = (UserFlagTypes)Flags.Raw;
+        }
     }
 
     internal User Clone()

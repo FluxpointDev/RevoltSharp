@@ -16,4 +16,13 @@ internal class PartialUserJson
     public Optional<AttachmentJson> avatar;
 
     public Optional<bool> privileged;
+
+    [JsonProperty("username")]
+    public Optional<string> Username;
+
+    [JsonProperty("badges")]
+    public Optional<ulong> Badges;
+
+    [JsonProperty("flags")]
+    public Optional<ulong> Flags;
 }
