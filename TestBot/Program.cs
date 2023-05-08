@@ -28,7 +28,7 @@ class Program
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
-        new EventTests(Client);
+        //new EventTests(Client);
 
 
 

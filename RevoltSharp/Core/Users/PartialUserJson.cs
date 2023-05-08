@@ -15,6 +15,8 @@ internal class PartialUserJson
 
     public Optional<AttachmentJson> avatar;
 
+    public Optional<bool> online;
+
     public Optional<bool> privileged;
 
     [JsonProperty("username")]

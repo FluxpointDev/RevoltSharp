@@ -41,6 +41,9 @@ internal class UserStatusJson
 {
     [JsonProperty("text")]
     public string Text;
+
+    [JsonProperty("presence")]
+    public string Presence;
 }
 internal class UserBotJson
 {

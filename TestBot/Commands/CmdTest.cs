@@ -11,6 +11,13 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("mystatus")]
+    public async Task MyStatus()
+    {
+        string Status = Context.User.Status.Type.ToString();
+        await Context.Channel.SendMessageAsync("Status: " + Status);
+    }
+
     [Command("datetest")]
     public async Task DateTest(string id)
     {

@@ -24,7 +24,7 @@ public class User : CreatedEntity
 
     public BotData? BotData { get; }
 
-    public bool IsOnline { get; }
+    public bool IsOnline => (Status.Type != UserStatusType.Offline && Status.Type != UserStatusType.Invisible);
 
     public bool Privileged { get; internal set; }
 
@@ -56,16 +56,26 @@ public class User : CreatedEntity
         Model = model;
         Id = model.Id;
         Username = model.Username;
+        Status = new UserStatus();
+        if (model.Online)
+            Status.Type = UserStatusType.Online;
+        else
+            Status.Type = UserStatusType.Offline;
+        if (model.Status != null)
+        {
+            Status.Text = model.Status.Text;
+            if (model.Status != null && Enum.TryParse(model.Status.Presence, out UserStatusType ST))
+                Status.Type = ST;
+            else
+                Status.Type = UserStatusType.Offline;
+        }
+        
         BotData = BotData.Create(model.Bot);
         Avatar = Attachment.Create(client, model.Avatar);
         Badges = new UserBadges(model.Badges);
         Flags = new UserFlags(model.Flags);
-        IsOnline = model.Online;
         Relationship = model.Relationship;
-        if (model.Status != null && Enum.TryParse(model.Status.Text, out UserStatus ST))
-            Status = ST;
-        else
-            Status = UserStatus.Unknown;
+        
         
         Privileged = model.Privileged;
     }
@@ -83,12 +93,25 @@ public class User : CreatedEntity
         if (data.avatar.HasValue)
             Avatar = Attachment.Create(Client, data.avatar.Value);
         
+        if (data.online.HasValue)
+        {
+            if (data.online.Value)
+                Status.Type = UserStatusType.Online;
+            else
+                Status.Type = UserStatusType.Offline;
+        }
+
         if (data.status.HasValue)
         {
-            if (data.status.Value != null && Enum.TryParse(data.status.Value.Text, out UserStatus ST))
-                Status = ST;
-            else
-                Status = UserStatus.Unknown;
+            if (data.status.Value != null)
+            {
+                Status.Text = data.status.Value.Text;
+                if (data.status.Value != null && Enum.TryParse(data.status.Value.Presence, out UserStatusType ST))
+                    Status.Type = ST;
+                else
+                    Status.Type = UserStatusType.Offline;
+            }
+
         }
         
         if (this is SelfUser Self)
@@ -124,9 +147,10 @@ public class User : CreatedEntity
         return (User)this.MemberwiseClone();
     }
 }
-public enum UserStatus
+public class UserStatus
 {
-    Unknown, Online, Idle, Focus, Busy, Invisible
+    public string Text { get; internal set; }
+    public UserStatusType Type { get; internal set; }
 }
 public class UserBadges
 {
@@ -195,5 +219,5 @@ public enum UserFlagTypes
 
 public enum UserStatusType
 {
-    Online, Idle, Busy, Invisible
+    Offline, Online, Idle, Focus, Busy, Invisible
 }
