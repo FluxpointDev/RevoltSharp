@@ -8,5 +8,8 @@ internal class UserRelationshipEventJson
     public string Id;
 
     [JsonProperty("user")]
-    public string User;
+    public UserJson User;
+
+    [JsonProperty("status")]
+    public string Status;
 }

@@ -739,6 +739,8 @@ internal class RevoltSocketClient
                 case "UserRelationship":
                     {
                         UserRelationshipEventJson @event = payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
+                        if (UserCache.TryGetValue(@event.User.Id, out User user))
+                            user.Relationship = @event.Status;
                     }
                     break;
                 case "EmojiCreate":

@@ -28,9 +28,11 @@ public class User : CreatedEntity
 
     public bool Privileged { get; internal set; }
 
-    public string Relationship { get; }
+    public string Relationship { get; internal set; }
 
     public bool IsBot => BotData != null;
+
+    public bool IsBlocked => Relationship == "Blocked";
 
     [JsonIgnore]
     internal UserJson Model { get; }
