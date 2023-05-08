@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RevoltSharp.Internal;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,6 +10,10 @@ namespace RevoltSharp;
 public class ServerMember : Entity
 {
     public string Id => User.Id;
+
+    public string MemberId { get; }
+
+    public DateTimeOffset Joined { get; internal set; }
 
     public string ServerId { get; internal set; }
 
@@ -24,13 +29,26 @@ public class ServerMember : Entity
 
     public User User { get; internal set; }
 
+    public string CurrentName => !string.IsNullOrEmpty(Nickname) ? Nickname : User.Username;
+
     public Attachment? ServerAvatar { get; internal set; }
+
+    public string GetDefaultAvatarUrl()
+        => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
+
+    public string GetServerAvatarUrl()
+        => Avatar != null ? Avatar.GetUrl() : string.Empty;
+
+    public string GetServerAvatarOrDefaultUrl()
+        => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
 
     public string[] RolesIds { get; internal set; }
 
     public DateTime JoinedAt { get; internal set; }
 
     public DateTime? Timeout { get; internal set; }
+
+    public bool IsTimedOut => Timeout.HasValue;
 
     internal ConcurrentDictionary<string, Role> InternalRoles { get; set;  }  = new ConcurrentDictionary<string, Role>();
 
@@ -50,7 +68,6 @@ public class ServerMember : Entity
     [JsonIgnore]
     public IReadOnlyCollection<Role> Roles
         => (IReadOnlyCollection<Role>)InternalRoles.Values;
-
 
     public ServerPermissions Permissions { get; internal set; }
 
@@ -80,7 +97,7 @@ public class ServerMember : Entity
     public bool Privileged => User.Privileged;
 
     [JsonIgnore]
-    public string Relationship => User.Relationship;
+    public UserRelationship Relationship => User.Relationship;
 
     [JsonIgnore]
     public bool IsBot => User.IsBot;
@@ -90,6 +107,9 @@ public class ServerMember : Entity
 
     internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
     {
+        MemberId = sModel.Id.User;
+        if (Ulid.TryParse(MemberId, out Ulid UID))
+            Joined = UID.Time;
         User = user != null ? user : new User(Client, uModel);
         ServerId = sModel.Id.Server;
         Nickname = sModel.Nickname;
@@ -98,10 +118,17 @@ public class ServerMember : Entity
             Timeout = sModel.Timeout.Value;
         ServerAvatar = Attachment.Create(client, sModel.Avatar);
         RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
-        Server server = client.GetServer(ServerId);
-        server.AddMember(this);
-        InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
-        Permissions = new ServerPermissions(server, this);
+        Server Server = client.GetServer(ServerId);
+        if (Server != null)
+        {
+            InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => Server.InternalRoles[x]));
+            Permissions = new ServerPermissions(Server, this);
+        }
+        else
+        {
+            InternalRoles = new ConcurrentDictionary<string, Role>();
+            Permissions = new ServerPermissions(0);
+        }
     }
 
     internal void Update(PartialServerMemberJson json)

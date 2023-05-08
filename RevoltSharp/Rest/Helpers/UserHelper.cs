@@ -56,4 +56,29 @@ public static class UserHelper
         return Channel.Create(rest.Client, Data) as DMChannel;
     }
 
+    public static Task<User?> BlockUserAsync(this User user)
+        => BlockUserAsync(user.Client.Rest, user.Id);
+
+    public static async Task<User?> BlockUserAsync(this RevoltRestClient rest, string userId)
+    {
+        Conditions.UserIdEmpty(userId, "BlockUserAsync");
+
+        UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Put, $"users/{userId}/block");
+        if (Data == null)
+            return null;
+        return new User(rest.Client, Data);
+    }
+
+    public static Task<User?> UnBlockUserAsync(this User user)
+        => UnBlockUserAsync(user.Client.Rest, user.Id);
+
+    public static async Task<User?> UnBlockUserAsync(this RevoltRestClient rest, string userId)
+    {
+        Conditions.UserIdEmpty(userId, "UnBlockUserAsync");
+
+        UserJson Data = await rest.SendRequestAsync<UserJson>(RequestType.Delete, $"users/{userId}/block");
+        if (Data == null)
+            return null;
+        return new User(rest.Client, Data);
+    }
 }

@@ -600,7 +600,8 @@ internal class RevoltSocketClient
                         {
                             Server server = await Client.Rest.GetServerAsync(@event.Id);
                             Console.WriteLine("[RevoltSharp] Joined Server: " + server.Name);
-                            server.AddMember(new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser));
+                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser);
+                            server.AddMember(Member);
                             Client.InvokeServerJoined(server, CurrentUser);
                         }
                         else
@@ -613,6 +614,7 @@ internal class RevoltSocketClient
                                 user = await Client.Rest.GetUserAsync(@event.UserId);
 
                             ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
+                            Server.AddMember(Member);
                             Client.InvokeMemberJoined(Server, Member);
                         }
                     }
@@ -739,8 +741,13 @@ internal class RevoltSocketClient
                 case "UserRelationship":
                     {
                         UserRelationshipEventJson @event = payload.ToObject<UserRelationshipEventJson>(Client.Serializer);
-                        if (UserCache.TryGetValue(@event.User.Id, out User user))
-                            user.Relationship = @event.Status;
+                        if (!UserCache.TryGetValue(@event.User.Id, out User user))
+                            return;
+
+                        if (!string.IsNullOrEmpty(@event.Status) && Enum.TryParse(@event.Status, ignoreCase: true, out UserRelationship UR))
+                            user.Relationship = UR;
+                        else
+                            user.Relationship = UserRelationship.None;
                     }
                     break;
                 case "EmojiCreate":

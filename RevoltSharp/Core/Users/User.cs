@@ -18,6 +18,12 @@ public class User : CreatedEntity
 
     public Attachment? Avatar { get; internal set; }
 
+    public string GetDefaultAvatarUrl()
+        => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
+
+    public string GetAvatarOrDefaultUrl()
+        => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
+
     public UserBadges Badges { get; }
 
     public UserFlags Flags { get; internal set; }
@@ -28,11 +34,11 @@ public class User : CreatedEntity
 
     public bool Privileged { get; internal set; }
 
-    public string Relationship { get; internal set; }
+    public UserRelationship Relationship { get; internal set; }
 
     public bool IsBot => BotData != null;
 
-    public bool IsBlocked => Relationship == "Blocked";
+    public bool IsBlocked => (Relationship == UserRelationship.Blocked || Relationship == UserRelationship.BlockedOther);
 
     [JsonIgnore]
     internal UserJson Model { get; }
@@ -66,29 +72,30 @@ public class User : CreatedEntity
         if (model.Status != null)
         {
             Status.Text = model.Status.Text;
-            if (model.Status != null && Enum.TryParse(model.Status.Presence, out UserStatusType ST))
+            if (model.Status != null && Enum.TryParse(model.Status.Presence, ignoreCase: true, out UserStatusType ST))
                 Status.Type = ST;
             else
                 Status.Type = UserStatusType.Offline;
         }
-        
+        else
+            Status.Type = UserStatusType.Offline;
+
         BotData = BotData.Create(model.Bot);
         Avatar = Attachment.Create(client, model.Avatar);
         Badges = new UserBadges(model.Badges);
         Flags = new UserFlags(model.Flags);
-        Relationship = model.Relationship;
-        
-        
+
+        if (!string.IsNullOrEmpty(model.Relationship) && Enum.TryParse(model.Relationship, ignoreCase: true, out UserRelationship UR))
+            Relationship = UR;
+        else
+            Relationship = UserRelationship.None;
+
         Privileged = model.Privileged;
     }
     public bool HasBadge(UserBadgeTypes type)
         => Badges.Types.HasFlag(type);
 
-    public string GetDefaultAvatarUrl()
-        => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
-
-    public string GetAvatarOrDefaultUrl()
-        => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
+    
 
     internal void Update(PartialUserJson data)
     {
@@ -103,17 +110,13 @@ public class User : CreatedEntity
                 Status.Type = UserStatusType.Offline;
         }
 
-        if (data.status.HasValue)
+        if (data.status.HasValue && data.status.Value != null)
         {
-            if (data.status.Value != null)
-            {
-                Status.Text = data.status.Value.Text;
-                if (data.status.Value != null && Enum.TryParse(data.status.Value.Presence, out UserStatusType ST))
-                    Status.Type = ST;
-                else
-                    Status.Type = UserStatusType.Offline;
-            }
-
+            Status.Text = data.status.Value.Text;
+            if (data.status.Value != null && Enum.TryParse(data.status.Value.Presence, ignoreCase: true, out UserStatusType ST))
+                Status.Type = ST;
+            else
+                Status.Type = UserStatusType.Offline;
         }
         
         if (this is SelfUser Self)
@@ -149,6 +152,7 @@ public class User : CreatedEntity
         return (User)this.MemberwiseClone();
     }
 }
+
 public class UserStatus
 {
     public string Text { get; internal set; }
@@ -222,4 +226,8 @@ public enum UserFlagTypes
 public enum UserStatusType
 {
     Offline, Online, Idle, Focus, Busy, Invisible
+}
+public enum UserRelationship
+{
+    None, User, Friend, Outgoing, Incoming, Blocked, BlockedOther
 }
