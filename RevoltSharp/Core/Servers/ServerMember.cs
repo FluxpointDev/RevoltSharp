@@ -99,6 +99,15 @@ public class ServerMember : Entity
 
     [JsonIgnore]
     public bool IsBot => User.IsBot;
+
+    [JsonIgnore]
+    public bool IsBlocked => User.IsBlocked;
+
+    [JsonIgnore]
+    public IReadOnlyCollection<Server> MutualServers => User.MutualServers;
+
+    [JsonIgnore]
+    public IReadOnlyCollection<GroupChannel> MutualGroups => User.MutualGroups;
     #endregion
 
 

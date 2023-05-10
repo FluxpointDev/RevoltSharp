@@ -40,9 +40,6 @@ public class User : CreatedEntity
 
     public bool IsBlocked => (Relationship == UserRelationship.Blocked || Relationship == UserRelationship.BlockedOther);
 
-    [JsonIgnore]
-    internal UserJson Model { get; }
-
     internal ConcurrentDictionary<string, Server> InternalMutualServers { get; set; } = new ConcurrentDictionary<string, Server>();
 
     [JsonIgnore]
@@ -61,7 +58,6 @@ public class User : CreatedEntity
     internal User(RevoltClient client, UserJson model)
         : base(client, model.Id)
     {
-        Model = model;
         Id = model.Id;
         Username = model.Username;
         Status = new UserStatus();
@@ -92,10 +88,6 @@ public class User : CreatedEntity
 
         Privileged = model.Privileged;
     }
-    public bool HasBadge(UserBadgeTypes type)
-        => Badges.Types.HasFlag(type);
-
-    
 
     internal void Update(PartialUserJson data)
     {
