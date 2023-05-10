@@ -2,7 +2,6 @@
 using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 

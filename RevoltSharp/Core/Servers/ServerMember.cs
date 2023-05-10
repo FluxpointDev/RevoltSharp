@@ -7,40 +7,84 @@ using System.Linq;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// A user that is a member of a server.
+/// </summary>
 public class ServerMember : Entity
 {
+    /// <summary>
+    /// User ID of the parent user object.
+    /// </summary>
     public string Id => User.Id;
 
+    /// <summary>
+    /// Member ID of the user.
+    /// </summary>
     public string MemberId { get; }
+
+    /// <summary>
+    /// UTC date time of when the user joined the server.
+    /// </summary>
 
     public DateTimeOffset JoinedAt { get; internal set; }
 
+    /// <summary>
+    /// Server ID that the user is in.
+    /// </summary>
     public string ServerId { get; internal set; }
 
     /// <summary>
-    /// Server that the Member is from.
+    /// Server that the Member is in.
     /// </summary>
     /// <remarks>
     /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
     /// </remarks>
     public Server? Server => Client.GetServer(ServerId);
 
+    /// <summary>
+    /// Custom server nickname that user has set.
+    /// </summary>
     public string Nickname { get; internal set; }
 
+    /// <summary>
+    /// The parent user object of this member.
+    /// </summary>
     public User User { get; internal set; }
 
+    /// <summary>
+    /// Get the current name of this user from the nickname or username.
+    /// </summary>
     public string CurrentName => !string.IsNullOrEmpty(Nickname) ? Nickname : User.Username;
 
+    /// <summary>
+    /// The avatar attachment for the custom member's avatar.
+    /// </summary>
     public Attachment? ServerAvatar { get; internal set; }
 
+    /// <inheritdoc cref="User.GetDefaultAvatarUrl()" />
     public string GetDefaultAvatarUrl()
         => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
 
+    /// <summary>
+    /// Get the avatar url for this member which may be empty.
+    /// </summary>
+    /// <returns>URL of the image</returns>
     public string GetServerAvatarUrl()
         => Avatar != null ? Avatar.GetUrl() : string.Empty;
 
+    /// <summary>
+    /// Get the avatar url of this member or the default Revolt avatar.
+    /// </summary>
+    /// <returns>URL of the image</returns>
     public string GetServerAvatarOrDefaultUrl()
         => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
+
+    /// <summary>
+    /// Get the avatar url for the member, parent user or default Revolt avatar.
+    /// </summary>
+    /// <returns></returns>
+    public string GetServerAvatarOrUserAvatarOrDefaultUrl()
+        => Avatar != null ? Avatar.GetUrl() : User.GetAvatarOrDefaultUrl();
 
     public string[] RolesIds { get; internal set; }
 
@@ -70,42 +114,55 @@ public class ServerMember : Entity
     public ServerPermissions Permissions { get; internal set; }
 
     #region UserProperties
+    /// <inheritdoc cref="User.Username"/>
     [JsonIgnore]
     public string Username => User.Username;
 
+    /// <inheritdoc cref="User.Status"/>
     [JsonIgnore]
     public UserStatus Status => User.Status;
 
+    /// <inheritdoc cref="User.Avatar"/>
     [JsonIgnore]
     public Attachment? Avatar => User.Avatar;
 
+    /// <inheritdoc cref="User.Badges"/>
     [JsonIgnore]
     public UserBadges Badges => User.Badges;
 
+    /// <inheritdoc cref="User.Flags"/>
     [JsonIgnore]
     public UserFlags Flags => User.Flags;
 
+    /// <inheritdoc cref="User.BotData"/>
     [JsonIgnore]
     public BotData? BotData => User.BotData;
 
+    /// <inheritdoc cref="User.IsOnline"/>
     [JsonIgnore]
     public bool IsOnline => User.IsOnline;
 
+    /// <inheritdoc cref="User.Privileged"/>
     [JsonIgnore]
     public bool Privileged => User.Privileged;
 
+    /// <inheritdoc cref="User.Relationship"/>
     [JsonIgnore]
     public UserRelationship Relationship => User.Relationship;
 
+    /// <inheritdoc cref="User.IsBot"/>
     [JsonIgnore]
     public bool IsBot => User.IsBot;
 
+    /// <inheritdoc cref="User.IsBlocked"/>
     [JsonIgnore]
     public bool IsBlocked => User.IsBlocked;
 
+    /// <inheritdoc cref="User.MutualServers"/>
     [JsonIgnore]
     public IReadOnlyCollection<Server> MutualServers => User.MutualServers;
 
+    /// <inheritdoc cref="User.MutualGroups"/>
     [JsonIgnore]
     public IReadOnlyCollection<GroupChannel> MutualGroups => User.MutualGroups;
     #endregion

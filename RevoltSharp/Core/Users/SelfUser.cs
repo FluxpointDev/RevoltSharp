@@ -2,7 +2,7 @@
 
 public class SelfUser : User
 {
-    public string OwnerId => BotData.Owner;
+    public string OwnerId => BotData.OwnerId;
 
     /// <summary>
     /// Get the Owner user of the bot.
