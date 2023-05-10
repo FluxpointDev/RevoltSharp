@@ -183,7 +183,7 @@ public class Server : CreatedEntity
             InternalMembers.TryRemove(user.Id, out _);
 
         user.InternalMutualServers.TryRemove(Id, out _);
-        if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals())
+        if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals)
         {
             user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);
         }

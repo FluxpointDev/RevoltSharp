@@ -133,7 +133,7 @@ public class GroupChannel : Channel
             catch { }
         }
         user.InternalMutualGroups.TryRemove(Id, out _);
-        if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals())
+        if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals)
         {
             user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);
         }
