@@ -59,6 +59,9 @@ public class ServerMember : Entity
     /// <summary>
     /// The avatar attachment for the custom member's avatar.
     /// </summary>
+    /// <remarks>
+    /// Will be <see langword="null" /> if member has no avatar set.
+    /// </remarks>
     public Attachment? ServerAvatar { get; internal set; }
 
     /// <inheritdoc cref="User.GetDefaultAvatarUrl()" />
@@ -66,7 +69,7 @@ public class ServerMember : Entity
         => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
 
     /// <summary>
-    /// Get the avatar url for this member which may be empty.
+    /// Get the avatar url for this member, may be empty.
     /// </summary>
     /// <returns>URL of the image</returns>
     public string GetServerAvatarUrl()
@@ -86,23 +89,38 @@ public class ServerMember : Entity
     public string GetServerAvatarOrUserAvatarOrDefaultUrl()
         => Avatar != null ? Avatar.GetUrl() : User.GetAvatarOrDefaultUrl();
 
+    /// <summary>
+    /// List of role IDs that the member has.
+    /// </summary>
     public string[] RolesIds { get; internal set; }
 
+    /// <summary>
+    /// The member is timed out/muted with the specified date time.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="ServerMember.Timeout"/>.HasValue will be <see langword="false" /> if member is not timed out/muted.
+    /// </remarks>
     public DateTime? Timeout { get; internal set; }
 
+    /// <summary>
+    /// The member is currently timed out/muted.
+    /// </summary>
+    /// <remarks>
+    /// They will not be able to send messsages in the server.
+    /// </remarks>
     public bool IsTimedOut => Timeout.HasValue;
 
     internal ConcurrentDictionary<string, Role> InternalRoles { get; set;  }  = new ConcurrentDictionary<string, Role>();
 
     /// <summary>
-    /// Get a role from the user.
+    /// Get a role the member has.
     /// </summary>
     /// <remarks>
     /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/> or no Role found.
     /// </remarks>
     public Role? GetRole(string roleId)
     {
-        if (InternalRoles.TryGetValue(roleId, out Role role))
+        if (InternalRoles.TryGetValue(roleId, out Role role) && roleId.Contains(role.Id))
             return role;
         return null;
     }
@@ -111,6 +129,9 @@ public class ServerMember : Entity
     public IReadOnlyCollection<Role> Roles
         => (IReadOnlyCollection<Role>)InternalRoles.Values;
 
+    /// <summary>
+    /// The member has these permissions in the server.
+    /// </summary>
     public ServerPermissions Permissions { get; internal set; }
 
     #region UserProperties
