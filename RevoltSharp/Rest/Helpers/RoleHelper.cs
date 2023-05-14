@@ -21,13 +21,13 @@ public static class RoleHelper
         return new Role(rest.Client, Json, serverId, Json.Id);
     }
 
-    public static Task<Role> ModifyAsync(this Role role, Option<string> name, Option<string> color, Option<bool> hoist, Option<int> rank)
+    public static Task<Role> ModifyAsync(this Role role, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
         => ModifyRoleAsync(role.Client.Rest, role.ServerId, role.Id, name, color, hoist, rank);
 
-    public static Task<Role> ModifyRoleAsync(this Server server, Role role, Option<string> name, Option<string> color, Option<bool> hoist, Option<int> rank)
+    public static Task<Role> ModifyRoleAsync(this Server server, Role role, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
         => ModifyRoleAsync(server.Client.Rest, server.Id, role.Id, name, color, hoist, rank);
 
-    public static Task<Role> ModifyRoleAsync(this Server server, string roleId, Option<string> name, Option<string> color, Option<bool> hoist, Option<int> rank)
+    public static Task<Role> ModifyRoleAsync(this Server server, string roleId, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
         => ModifyRoleAsync(server.Client.Rest, server.Id, roleId, name, color, hoist, rank);
 
     public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
@@ -37,16 +37,21 @@ public static class RoleHelper
         
         ModifyRoleRequest Req = new ModifyRoleRequest();
         if (name != null)
+        {
+            Conditions.RoleNameEmpty(name.Value, "ModifyRoleAsync");
             Req.name = Optional.Some(name.Value);
+        }
+
         if (color != null)
         {
             if (string.IsNullOrEmpty(color.Value))
-                Req.remove = Optional.Some(new string[] { "Color" });
+                Req.RemoveValue("Colour");
             else
                 Req.colour = Optional.Some(color.Value);
         }
         if (hoist != null)
             Req.hoist = Optional.Some(hoist.Value);
+
         if (rank != null)
             Req.rank = Optional.Some(rank.Value);
 

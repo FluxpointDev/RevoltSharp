@@ -1,28 +1,78 @@
 ﻿using Newtonsoft.Json.Linq;
+using Optionals;
 using System;
 using System.Collections.Generic;
 
 namespace RevoltSharp.Rest;
 
-public class ModifySelfRequest
+internal class ModifySelfRequest
 {
-    public static Dictionary<string, object> Create(Option<string> avatar, Option<string> statusText, Option<UserStatusType> statusType, Option<string> profileBio, Option<string> profileBackground)
+    internal static Dictionary<string, object> Create(Option<string> avatar, Option<string> statusText, Option<UserStatusType> statusType, Option<string> profileBio, Option<string> profileBackground)
     {
         Dictionary<string, object> Values = new Dictionary<string, object>();
+        Optionals.Optional<List<string>> Remove = Optionals.Optional.None<List<string>>();
         if (avatar != null)
-            Values.Add("avatar", avatar.Value);
+        {
+            if (string.IsNullOrEmpty(avatar.Value))
+            {
+                if (!Remove.HasValue)
+                    Remove = new Optional<List<string>>(new List<string>());
+
+                Remove.Value.Add("Avatar");
+            }
+            else
+                Values.Add("avatar", avatar.Value);
+        }
+
         JObject Status = new JObject();
         if (statusText != null)
-            Status.Add("text", statusText.Value);
+        {
+            if (string.IsNullOrEmpty(statusText.Value))
+            {
+                if (!Remove.HasValue)
+                    Remove = new Optional<List<string>>(new List<string>());
+
+                Remove.Value.Add("Status.Text");
+            }
+            else
+                Status.Add("text", statusText.Value);
+        }
+
         if (statusType != null)
-            Status.Add("presence", statusType.Value.ToString());
+                Status.Add("presence", statusType.Value.ToString());
+        
+            
         JObject Profile = new JObject();
         if (profileBio != null)
-            Profile.Add("content", profileBio.Value);
+        {
+            if (string.IsNullOrEmpty(profileBio.Value))
+            {
+                if (!Remove.HasValue)
+                    Remove = new Optional<List<string>>(new List<string>());
+
+                Remove.Value.Add("Profile.Content");
+            }
+            else
+                Profile.Add("content", profileBio.Value);
+        }
+            
         if (profileBackground != null)
-            Profile.Add("background", profileBackground.Value);
+        {
+            if (string.IsNullOrEmpty(profileBackground.Value))
+            {
+                if (!Remove.HasValue)
+                    Remove = new Optional<List<string>>(new List<string>());
+
+                Remove.Value.Add("Profile.Background");
+            }
+            else
+                Profile.Add("background", profileBackground.Value);
+        }
+            
         Values.Add("status", Status);
         Values.Add("profile", Profile);
+        if (Remove.HasValue)
+            Values.Add("remove", Remove.Value);
         return Values;
     }
 }

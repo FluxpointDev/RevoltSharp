@@ -119,10 +119,10 @@ public static class MessageHelper
         return Message.Create(rest.Client, Data);
     }
 
-    public static Task<UserMessage> EditMessageAsync(this UserMessage msg, Option<string> content, Option<Embed[]> embeds = null)
+    public static Task<UserMessage> EditMessageAsync(this UserMessage msg, Option<string> content = null, Option<Embed[]> embeds = null)
         => EditMessageAsync(msg.Client.Rest, msg.ChannelId, msg.Id, content, embeds);
 
-    public static async Task<UserMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content, Option<Embed[]> embeds = null)
+    public static async Task<UserMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content = null, Option<Embed[]> embeds = null)
     {
         Conditions.ChannelIdEmpty(channelId, "EditMessageAsync");
         Conditions.MessageIdEmpty(messageId, "EditMessageAsync");

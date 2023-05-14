@@ -2,6 +2,12 @@
 
 internal static class Conditions
 {
+    internal static void OwnerModifyCheck(ServerMember member, string request)
+    {
+        if (member.Server != null && member.Id == member.Server.OwnerId)
+            throw new RevoltArgumentException($"You can't modify the server owner for the {request} request.");
+    }
+
     internal static void ChannelIdEmpty(string channelId, string request)
     {
         if (string.IsNullOrWhiteSpace(channelId))
@@ -20,10 +26,10 @@ internal static class Conditions
             throw new RevoltArgumentException($"Attachment id can't be empty for the {request} request.");
     }
 
-    internal static void InviteIdEmpty(string inviteId, string request)
+    internal static void InviteCodeEmpty(string inviteCode, string request)
     {
-        if (string.IsNullOrWhiteSpace(inviteId))
-            throw new RevoltArgumentException($"Invite id can't be empty for the {request} request.");
+        if (string.IsNullOrWhiteSpace(inviteCode))
+            throw new RevoltArgumentException($"Invite code can't be empty for the {request} request.");
     }
 
     internal static void MessageIdEmpty(string messageId, string request)

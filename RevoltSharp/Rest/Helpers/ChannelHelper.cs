@@ -80,36 +80,41 @@ public static class ChannelHelper
     }
 
 
-    public static Task<Channel> ModifyAsync(this TextChannel channel, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw)
+    public static Task<Channel> ModifyAsync(this TextChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
         => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
 
-    public static Task<Channel> ModifyAsync(this VoiceChannel channel, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw)
+    public static Task<Channel> ModifyAsync(this VoiceChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
         => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
 
-    public static Task<Channel> ModifyAsync(this GroupChannel channel, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw, Option<string> owner)
+    public static Task<Channel> ModifyAsync(this GroupChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
         => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, owner);
 
-    public static Task<Channel> ModifyChannelAsync(this Server server, string channelId, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw)
+    public static Task<Channel> ModifyChannelAsync(this Server server, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
         => ModifyChannelAsync(server.Client.Rest, channelId, name, desc, iconId, nsfw, null);
     
-    public static async Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string> name, Option<string> desc, Option<string> iconId, Option<bool> nsfw, Option<string> owner)
+    public static async Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
     {
         Conditions.ChannelIdEmpty(channelId, "ModifyChannelAsync");
 
         ModifyChannelRequest Req = new ModifyChannelRequest();
         if (name != null)
         {
-            if (string.IsNullOrEmpty(name.Value))
-                throw new RevoltException("Channel modify name can not be empty.");
+            Conditions.ChannelNameEmpty(name.Value, "ModifyChannelAsync");
+
             Req.name = Optional.Some(name.Value);
         }
         if (desc != null)
-           Req.description = Optional.Some(desc.Value);
+        {
+            if (string.IsNullOrEmpty(desc.Value))
+                Req.RemoveValue("Description");
+            else
+                Req.description = Optional.Some(desc.Value);
+        }
 
         if (iconId != null)
         {
             if (string.IsNullOrEmpty(iconId.Value))
-                Req.remove = Optional.Some(new string[] { "Icon" });
+                Req.RemoveValue("Icon");
             else
                 Req.icon = Optional.Some(iconId.Value);
         }

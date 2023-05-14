@@ -39,6 +39,9 @@ csharp_prefer_simple_default_expression = false
 
 # CS8601: Possible null reference assignment.
 dotnet_diagnostic.CS8601.severity = none
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 
 [*.{cs,vb}]
 #### Naming styles ####

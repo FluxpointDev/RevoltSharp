@@ -7,14 +7,23 @@ namespace RevoltSharp;
 
 public static class InviteHelper
 {
-    public static Task<HttpResponseMessage> DeleteInviteAsync(this Server server, string inviteId)
-        => DeleteInviteAsync(server.Client.Rest, inviteId);
+    public static Task<HttpResponseMessage> DeleteAsync(this Invite invite)
+        => DeleteInviteAsync(invite.Client.Rest, invite.ChannelId);
 
-    public static async Task<HttpResponseMessage> DeleteInviteAsync(this RevoltRestClient rest, string inviteId)
+    public static Task<HttpResponseMessage> DeleteInviteAsync(this Server server, Invite invite)
+        => DeleteInviteAsync(server.Client.Rest, invite.Code);
+
+    public static Task<HttpResponseMessage> DeleteInviteAsync(this Server server, string inviteCode)
+        => DeleteInviteAsync(server.Client.Rest, inviteCode);
+
+    public static Task<HttpResponseMessage> DeleteInviteAsync(this RevoltRestClient rest, Invite invite)
+        => DeleteInviteAsync(rest, invite.Code);
+
+    public static async Task<HttpResponseMessage> DeleteInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
-        Conditions.InviteIdEmpty(inviteId, "DeleteInviteAsync");
+        Conditions.InviteCodeEmpty(inviteCode, "DeleteInviteAsync");
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"/invites/{inviteId}");
+        return await rest.SendRequestAsync(RequestType.Delete, $"/invites/{inviteCode}");
     }
 
     public static Task<Invite[]> GetInvitesAsync(this Server server)
@@ -27,6 +36,18 @@ public static class InviteHelper
         InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
         return Json.Select(x => new Invite(rest.Client, x)).ToArray();
     }
+
+    public static Task<Invite> GetInviteAsync(this Server server, string inviteCode)
+        => GetInviteAsync(server.Client.Rest, inviteCode);
+
+    public static async Task<Invite> GetInviteAsync(this RevoltRestClient rest, string inviteCode)
+    {
+        Conditions.InviteCodeEmpty(inviteCode, "GetInviteAsync");
+
+        InviteJson Json = await rest.SendRequestAsync<InviteJson>(RequestType.Get, $"/invites/{inviteCode}");
+        return new Invite(rest.Client, Json);
+    }
+
 
 
     /// <summary>

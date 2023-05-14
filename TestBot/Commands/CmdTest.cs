@@ -169,6 +169,12 @@ public class CmdTest : ModuleBase
     [Command("test")]
     public async Task Test()
     {
+        await ReplyAsync("Hi");
+    }
+
+    [Command("testcontext")]
+    public async Task TestContext()
+    {
         Console.WriteLine("-- Roles ---");
         Role Role = await Context.Server.CreateRoleAsync("Test");
         Console.WriteLine("- Create");
