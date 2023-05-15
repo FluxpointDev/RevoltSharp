@@ -197,7 +197,7 @@ internal class RevoltSocketClient
                         ErrorEventJson @event = JsonConvert.DeserializeObject<ErrorEventJson>(json);
                         if (Client.Config.Debug.LogWebSocketError)
                             Console.WriteLine("--- WebSocket Error ---\n" + json);
-                        if (@event.Error == SocketErrorType.InvalidSession)
+                        if (@event.Error == RevoltErrorType.InvalidSession)
                         {
                             if (_firstConnected)
                                 Console.WriteLine("[RevoltSharp] WebSocket session is invalid, check if your bot token is correct.");
@@ -277,7 +277,7 @@ internal class RevoltSocketClient
                             Console.WriteLine(ex);
                             Console.WriteLine("[RevoltSharp] Fatal error, could not parse ready event.\n" +
                                 "WebSocket connection has been stopped.");
-                            Client.InvokeWebSocketError(new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = SocketErrorType.Unknown });
+                            Client.InvokeWebSocketError(new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
                             await Client.StopAsync();
                         }
                     }
@@ -848,7 +848,7 @@ internal class RevoltSocketClient
                 default:
                     {
                         if (Client.Config.Debug.LogWebSocketUnknownEvent)
-                            Console.WriteLine("--- WebSocket Unknown Event ---\n" + json);
+                            Console.WriteLine("--- WebSocket Unknown Event ---\n" + FormatJsonPretty(json));
                     }
                     break;
             }

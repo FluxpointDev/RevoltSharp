@@ -132,7 +132,30 @@ public class RevoltRestClient
             Req.EnsureSuccessStatusCode();
 
         if (Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
-            throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
+        {
+            RestError Error = null;
+            if (Req.Content.Headers.ContentLength.HasValue)
+            {
+                try
+                {
+                    int ErrorBufferSize = (int)Req.Content.Headers.ContentLength.Value;
+                    using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", ErrorBufferSize))
+                    {
+                        await Req.Content.CopyToAsync(Stream);
+                        Stream.Position = 0;
+                        Error = DeserializeJson<RestError>(Stream);
+                    }
+
+                }
+                catch { }
+            }
+            if (Error != null)
+            {
+                throw new RevoltRestException($"Request failed due to {Error.Type}", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+            }
+            else
+                throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
+        }
 
         if (!Req.IsSuccessStatusCode)
             return null;
@@ -226,7 +249,30 @@ public class RevoltRestClient
             Req.EnsureSuccessStatusCode();
 
         if (method != HttpMethod.Get && Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
-            throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
+        {
+            RestError Error = null;
+            if (Req.Content.Headers.ContentLength.HasValue)
+            {
+                try
+                {
+                    int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+                    using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+                    {
+                        await Req.Content.CopyToAsync(Stream);
+                        Stream.Position = 0;
+                        Error = DeserializeJson<RestError>(Stream);
+                    }
+
+                }
+                catch { }
+            }
+            if (Error != null)
+            {
+                throw new RevoltRestException($"Request failed due to {Error.Type}", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+            }
+            else
+                throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
+        }
 
         if (Req.IsSuccessStatusCode && Client.Config.Debug.LogRestResponseJson)
         {
@@ -239,7 +285,7 @@ public class RevoltRestClient
         where TResponse : class
     {
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
-            throw new RevoltException("Joining servers with a userbot has been blocked.");
+            throw new RevoltException("Joining servers with a user account has been blocked.");
 
         HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
         if (request != null)
@@ -277,7 +323,28 @@ public class RevoltRestClient
             Req.EnsureSuccessStatusCode();
 
         if (method != HttpMethod.Get && Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
-            throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode);
+        {
+            RestError Error = null;
+            if (Req.Content.Headers.ContentLength.HasValue)
+            {
+                try
+                {
+                    int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+                    using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+                    {
+                        await Req.Content.CopyToAsync(Stream);
+                        Stream.Position = 0;
+                        Error = DeserializeJson<RestError>(Stream);
+                    }
+
+                }
+                catch { }
+            }
+            if (Error != null)
+                throw new RevoltRestException($"Request failed due to {Error.Type}", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+            else
+                throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
+        }
 
         TResponse Response = null;
         if (Req.IsSuccessStatusCode)

@@ -13,10 +13,14 @@ public class RevoltException : Exception
 
 public class RevoltRestException : RevoltException
 {
-    public RevoltRestException(string message, int code) : base(message, code)
+    public RevoltRestException(string message, int code, RevoltErrorType type) : base(message, code)
     {
-
+        Type = type;
     }
+
+    public RevoltErrorType Type { get; private set; } = RevoltErrorType.Unknown;
+
+    public string Permission;
 }
 
 public class RevoltArgumentException : RevoltException

@@ -14,7 +14,7 @@ public class CmdTest : ModuleBase
     [Command("dm")]
     public async Task DM()
     {
-        var DM = await Context.User.GetDMChannelAsync();
+        DMChannel DM = await Context.User.GetDMChannelAsync();
         await DM.SendMessageAsync("Hi :)");
     }
 
@@ -169,7 +169,14 @@ public class CmdTest : ModuleBase
     [Command("test")]
     public async Task Test()
     {
-        await ReplyAsync("Hi");
+        try
+        {
+            await Context.Server.CreateTextChannelAsync("Testing");
+        }
+        catch (RevoltRestException re)
+        {
+            await ReplyAsync($"{re.Message} - {re.Permission}");
+        }
     }
 
     [Command("testcontext")]

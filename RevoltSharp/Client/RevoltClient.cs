@@ -76,7 +76,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.2.0";
+    public string Version { get; } = "5.2.1";
 
     internal bool UserBot { get; set; }
 

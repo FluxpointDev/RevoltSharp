@@ -21,7 +21,13 @@ class Program
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
-            Debug = new ClientDebugConfig { LogRestRequestJson = false, LogRestResponseJson = false, LogRestRequest = false, LogWebSocketFull = true, LogWebSocketReady = false, LogWebSocketError = false, LogWebSocketUnknownEvent = false },
+            Debug = new ClientDebugConfig { LogRestRequestJson = false, 
+                LogRestResponseJson = false, 
+                LogRestRequest = false, 
+                LogWebSocketFull = false,
+                LogWebSocketReady = false, 
+                LogWebSocketError = false, 
+                LogWebSocketUnknownEvent = true },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49" }
         });
         Client.OnReady += Client_OnReady;

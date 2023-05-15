@@ -25,7 +25,7 @@ public static class MessageHelper
             throw new RevoltArgumentException("Message content can't be more than 2000 on SendMessageAsync");
 
         if (rest.Client.UserBot && embeds != null)
-            throw new RevoltRestException("Userbots cannot send embeds!", 401);
+            throw new RevoltRestException("User accounts can't send embeds on SendMessageAsync", 401, RevoltErrorType.NotAllowedForUsers);
 
         if (embeds != null && embeds.Any(x => !string.IsNullOrEmpty(x.Image)))
         {
@@ -81,6 +81,12 @@ public static class MessageHelper
     {
         Conditions.FileBytesEmpty(bytes, "SendFileAsync");
         Conditions.FileNameEmpty(fileName, "SendFileAsync");
+
+        if (text.Length > 2000)
+            throw new RevoltArgumentException("Message content can't be more than 2000 on SendFileAsync");
+
+        if (rest.Client.UserBot && embeds != null)
+            throw new RevoltRestException("User accounts can't send embeds on SendFileAsync", 401, RevoltErrorType.NotAllowedForUsers);
 
         FileAttachment File = await rest.UploadFileAsync(bytes, fileName, Rest.RevoltRestClient.UploadFileType.Attachment);
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);

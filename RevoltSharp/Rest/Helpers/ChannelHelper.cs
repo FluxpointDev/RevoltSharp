@@ -37,10 +37,10 @@ public static class ChannelHelper
     }
 
 
-    public static Task<TextChannel> CreateTextChannelAsync(this Server server, string name, string description, bool nsfw = false)
+    public static Task<TextChannel> CreateTextChannelAsync(this Server server, string name, string description = null, bool nsfw = false)
         => CreateTextChannelAsync(server.Client.Rest, server.Id, name, description, nsfw);
 
-    public static async Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description, bool nsfw = false)
+    public static async Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null, bool nsfw = false)
     {
         Conditions.ServerIdEmpty(serverId, "CreateTextChannelAsync");
         Conditions.ChannelNameEmpty(name, "CreateTextChannelAsync");
@@ -59,10 +59,10 @@ public static class ChannelHelper
         return new TextChannel(rest.Client, Json);
     }
 
-    public static Task<VoiceChannel> CreateVoiceChannelAsync(this Server server, string name, string description)
+    public static Task<VoiceChannel> CreateVoiceChannelAsync(this Server server, string name, string description = null)
         => CreateVoiceChannelAsync(server.Client.Rest, server.Id, name, description);
 
-    public static async Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = "")
+    public static async Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null)
     {
         Conditions.ServerIdEmpty(serverId, "CreateVoiceChannelAsync");
         Conditions.ChannelNameEmpty(name, "CreateVoiceChannelAsync");

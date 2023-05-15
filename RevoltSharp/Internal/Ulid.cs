@@ -36,7 +36,7 @@ public partial struct Ulid
             buffer[4] = timestamp1;
             buffer[5] = timestamp0; // [6], [7] = 0
 
-            var timestampMilliseconds = Unsafe.As<byte, long>(ref MemoryMarshal.GetReference(buffer));
+            long timestampMilliseconds = Unsafe.As<byte, long>(ref MemoryMarshal.GetReference(buffer));
             return DateTimeOffset.FromUnixTimeMilliseconds(timestampMilliseconds);
         }
     }
