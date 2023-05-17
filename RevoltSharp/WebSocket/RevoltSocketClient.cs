@@ -2,8 +2,10 @@
 using Newtonsoft.Json.Linq;
 using Optionals;
 using RevoltSharp.WebSocket.Events;
+using RevoltSharp.WebSocket.Events.Users;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
@@ -350,6 +352,22 @@ internal class RevoltSocketClient
                             return;
 
                         Client.InvokeMessageDeleted(channel, @event.Id);
+                    }
+                    break;
+                case "BulkMessageDelete":
+                    {
+                        MessageDeleteEventJson @event = payload.ToObject<MessageDeleteEventJson>(Client.Serializer);
+
+                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                        if (channel == null)
+                        {
+                            channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
+                            ChannelCache.TryAdd(@event.ChannelId, channel);
+                        }
+                        if (channel == null)
+                            return;
+
+                        Client.InvokeMessagesBulkDeleted(channel, @event.Ids);
                     }
                     break;
 
@@ -780,6 +798,11 @@ internal class RevoltSocketClient
                 case "MessageReact":
                     {
                         ReactionAddedEventJson @event = payload.ToObject<ReactionAddedEventJson>(Client.Serializer);
+
+                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                        if (channel == null)
+                            return;
+
                         EmojiCache.TryGetValue(@event.EmojiId, out Emoji emoji);
                         if (emoji == null)
                         {
@@ -789,14 +812,13 @@ internal class RevoltSocketClient
                             {
                                 Emoji Emote = await Client.Rest.GetEmojiAsync(@event.EmojiId);
                                 if (Emote == null)
-                                    return;
-                                emoji = Emote;
+                                    emoji = new Emoji(Client, @event.EmojiId);
+                                else
+                                    emoji = Emote;
                             }
                         }
 
-                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
-                        if (channel == null)
-                            return;
+                        
 
                         Downloadable<string, User> DownloadUser = new Downloadable<string, User>(@event.UserId, async () =>
                         {
@@ -812,6 +834,11 @@ internal class RevoltSocketClient
                 case "MessageUnreact":
                     {
                         ReactionRemovedEventJson @event = payload.ToObject<ReactionRemovedEventJson>(Client.Serializer);
+
+                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                        if (channel == null)
+                            return;
+
                         EmojiCache.TryGetValue(@event.EmojiId, out Emoji emoji);
                         if (emoji == null)
                         {
@@ -821,14 +848,13 @@ internal class RevoltSocketClient
                             {
                                 Emoji Emote = await Client.Rest.GetEmojiAsync(@event.EmojiId);
                                 if (Emote == null)
-                                    return;
-                                emoji = Emote;
+                                    emoji = new Emoji(Client, @event.EmojiId);
+                                else
+                                    emoji = Emote;
                             }
                         }
                             
-                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
-                        if (channel == null)
-                            return;
+                        
 
                         Downloadable<string, User> DownloadUser = new Downloadable<string, User>(@event.UserId, async () =>
                         {
@@ -841,7 +867,67 @@ internal class RevoltSocketClient
                         Client.InvokeReactionRemoved(emoji, channel, DownloadUser, message);
                     }
                     break;
+                case "MessageRemoveReaction":
+                    {
+                        ReactionRemovedEventJson @event = payload.ToObject<ReactionRemovedEventJson>(Client.Serializer);
 
+                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
+                        if (channel == null)
+                            return;
+
+                        EmojiCache.TryGetValue(@event.EmojiId, out Emoji emoji);
+                        if (emoji == null)
+                        {
+                            if (!Char.IsDigit(@event.EmojiId[0]))
+                                emoji = new Emoji(Client, @event.EmojiId);
+                            else
+                            {
+                                Emoji Emote = await Client.Rest.GetEmojiAsync(@event.EmojiId);
+                                if (Emote == null)
+                                    emoji = new Emoji(Client, @event.EmojiId);
+                                else
+                                    emoji = Emote;
+                            }
+                        }
+
+                        Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                        Client.InvokeReactionBulkRemoved(emoji, channel, message);
+                    }
+                    break;
+                case "UserPlatformWipe":
+                    {
+                        UserPlatformWipedEventJson @event = payload.ToObject<UserPlatformWipedEventJson>(Client.Serializer);
+                        UserCache.Remove(@event.UserId, out User User);
+                        _ = Task.Run(() =>
+                        {
+                            foreach (var c in ChannelCache.Values)
+                            {
+                                switch (c.Type)
+                                {
+                                    case ChannelType.DM:
+                                        DMChannel DM = (DMChannel)c;
+                                        if (DM.UserId == User.Id)
+                                        {
+                                            DM.InternalRecipents.Remove(User.Id);
+                                            ChannelCache.Remove(c.Id, out Channel C);
+                                            DM.CloseAsync();
+                                        }
+                                        break;
+                                    case ChannelType.Group:
+                                        GroupChannel GC = (GroupChannel)c;
+                                        GC.CachedUsers.Remove(User.Id, out User GU);
+                                        break;
+                                }
+                            }
+                            foreach (var s in ServerCache.Values)
+                            {
+                                s.InternalMembers.Remove(User.Id, out ServerMember SM);
+                            }
+                        });
+
+                        Client.InvokeUserPlatformRemoved(@event.UserId, User);
+                    }
+                    break;
                 case "ChannelStartTyping":
                 case "ChannelStopTyping":
                     break;

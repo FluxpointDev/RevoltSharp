@@ -48,7 +48,7 @@ public class Emoji : CreatedEntity
 
     public string CreatorId { get; internal set; }
 
-    public User? Creator { get; internal set; }
+    public User? Creator => Client.GetUser(CreatorId);
 
     public bool IsAnimated { get; internal set; }
 

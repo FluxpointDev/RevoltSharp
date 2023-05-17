@@ -38,7 +38,7 @@ public class RevoltRestClient
 
         HttpClient = new HttpClient()
         {
-            BaseAddress = new System.Uri(Client.Config.ApiUrl)
+            BaseAddress = new System.Uri(Client.Config.ApiUrl, true)
         };
         HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version + (Client.Config.UserBot ? " user" : ""));
@@ -214,7 +214,7 @@ public class RevoltRestClient
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
             throw new RevoltException("Joining servers with a userbot has been blocked.");
 
-        HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
+        HttpRequestMessage Mes = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
         if (request != null)
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
@@ -235,7 +235,7 @@ public class RevoltRestClient
             if (Retry != null)
             {
                 await Task.Delay(Retry.retry_after + 2);
-                HttpRequestMessage MesRetry = new HttpRequestMessage(method, endpoint);
+                HttpRequestMessage MesRetry = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
                 if (request != null)
                     MesRetry.Content = Mes.Content;
                 Req = await HttpClient.SendAsync(MesRetry);
@@ -287,7 +287,9 @@ public class RevoltRestClient
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
             throw new RevoltException("Joining servers with a user account has been blocked.");
 
-        HttpRequestMessage Mes = new HttpRequestMessage(method, endpoint);
+
+
+        HttpRequestMessage Mes = new HttpRequestMessage(method,  Client.Config.ApiUrl + endpoint);
         if (request != null)
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
@@ -295,6 +297,10 @@ public class RevoltRestClient
                 Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
         }
         HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
+
+        if (endpoint == "/" && Req.Content.Headers.ContentType.MediaType == "text/html")
+            throw new RevoltRestException("Major RevoltSharp error occured using wrong API url.", 500, RevoltErrorType.Unknown);
+
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
             RetryRequest Retry = null;
@@ -310,7 +316,7 @@ public class RevoltRestClient
             if (Retry != null)
             {
                 await Task.Delay(Retry.retry_after + 2);
-                HttpRequestMessage MesRetry = new HttpRequestMessage(method, endpoint);
+                HttpRequestMessage MesRetry = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
                 if (request != null)
                     MesRetry.Content = Mes.Content;
                 Req = await HttpClient.SendAsync(MesRetry);
@@ -350,11 +356,18 @@ public class RevoltRestClient
         if (Req.IsSuccessStatusCode)
         {
             int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
-            using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+            try
             {
-                await Req.Content.CopyToAsync(Stream);
-                Stream.Position = 0;
-                Response = DeserializeJson<TResponse>(Stream);
+                using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
+                {
+                    await Req.Content.CopyToAsync(Stream);
+                    Stream.Position = 0;
+                    Response = DeserializeJson<TResponse>(Stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RevoltRestException("Failed to parse json response", 500, RevoltErrorType.Unknown);
             }
             if (Client.Config.Debug.LogRestResponseJson)
                 Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));

@@ -113,10 +113,10 @@ public static class MessageHelper
         return Data.Select(x => Message.Create(rest.Client, x));
     }
 
-    public static Task<Message> GetMessageAsync(this Channel channel, string messageId)
+    public static Task<Message?> GetMessageAsync(this Channel channel, string messageId)
         => GetMessageAsync(channel.Client.Rest, channel.Id, messageId);
 
-    public static async Task<Message> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
+    public static async Task<Message?> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
         Conditions.ChannelIdEmpty(channelId, "GetMessageAsync");
         Conditions.MessageIdEmpty(messageId, "GetMessageAsync");
@@ -161,5 +161,13 @@ public static class MessageHelper
         return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");
     }
 
-    
+    public static Task<HttpResponseMessage> CloseAsync(this DMChannel dm)
+        => CloseDMChannelAsync(dm.Client.Rest, dm.Id);
+
+    public static async Task<HttpResponseMessage> CloseDMChannelAsync(this RevoltRestClient rest, string channelId)
+    {
+        Conditions.ChannelIdEmpty(channelId, "CloseDMChannelAsync");
+
+        return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}");
+    }
 }

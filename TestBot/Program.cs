@@ -22,8 +22,8 @@ class Program
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
             Debug = new ClientDebugConfig { LogRestRequestJson = false, 
-                LogRestResponseJson = false, 
-                LogRestRequest = false, 
+                LogRestResponseJson = true, 
+                LogRestRequest = true, 
                 LogWebSocketFull = false,
                 LogWebSocketReady = false, 
                 LogWebSocketError = false, 
@@ -33,7 +33,7 @@ class Program
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
-        //new EventTests(Client);
+        new EventTests(Client);
 
 
 

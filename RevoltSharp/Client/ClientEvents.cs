@@ -9,6 +9,7 @@ public class ClientEvents
     public delegate void SelfUserEvent<SelfUser>(SelfUser selfuser);
     public delegate void SocketErrorEvent<SocketError>(SocketError error);
     public delegate void MessageEvent<Message>(Message message);
+    public delegate void MessagesBulkDeletedEvent<Channel, Messages>(Channel channel,Messages messages);
     public delegate void UserEvent<User>(User user);
     public delegate void RoleEvent<Role>(Role role);
     public delegate void RoleUpdatedEvent<OldRole, NewRole, Properties>(OldRole old_role, NewRole new_role, Properties updated_props);
@@ -24,6 +25,8 @@ public class ClientEvents
     public delegate void ChannelUpdatedEvent<OldChannel, NewChannel, Properties>(OldChannel old_channel, NewChannel new_channel, Properties updated_props);
     public delegate void ServerUpdatedEvent<OldServer, NewServer, Properties>(OldServer old_server, NewServer new_server, Properties updated_props);
     public delegate void ReactionEvent<Emoji, Channel, UserCache, MessageCache>(Emoji emoji, Channel channel, UserCache user_cache, MessageCache message_cache);
+    public delegate void ReactionBulkRemovedEvent<Emoji, Channel, MessageCache>(Emoji emoji, Channel channel, MessageCache message_cache);
+    public delegate void UserPlatformRemovedEvent<UserId, User>(UserId user_id, User user);
 
     /// <summary>
     /// Receive message events from websocket in a <see cref="TextChannel"/> or <seealso cref="GroupChannel"/>
@@ -55,6 +58,13 @@ public class ClientEvents
     internal void InvokeMessageDeleted(Channel chan, string msg)
     {
         OnMessageDeleted?.Invoke(chan, msg);
+    }
+
+    public event MessagesBulkDeletedEvent<Channel, string[]> OnMessagesBulkDeleted;
+
+    internal void InvokeMessagesBulkDeleted(Channel chan, string[] messages)
+    {
+        OnMessagesBulkDeleted?.Invoke(chan, messages);
     }
 
     public event ChannelEvent<DMChannel> OnDMChannelOpened;
@@ -211,5 +221,19 @@ public class ClientEvents
     internal void InvokeReactionRemoved(Emoji emoji, Channel channel, Downloadable<string, User> member, Downloadable<string, Message> messageDownload)
     {
         OnReactionRemoved?.Invoke(emoji, channel, member, messageDownload);
+    }
+
+    public event ReactionBulkRemovedEvent<Emoji, Channel, Downloadable<string, Message>> OnReactionBulkRemoved;
+
+    internal void InvokeReactionBulkRemoved(Emoji emoji, Channel channel, Downloadable<string, Message> messageDownload)
+    {
+        OnReactionBulkRemoved?.Invoke(emoji, channel, messageDownload);
+    }
+
+    public event UserPlatformRemovedEvent<string, User?> OnUserPlatformRemoved;
+
+    internal void InvokeUserPlatformRemoved(string userid, User? user)
+    {
+        OnUserPlatformRemoved?.Invoke(userid, user);
     }
 }

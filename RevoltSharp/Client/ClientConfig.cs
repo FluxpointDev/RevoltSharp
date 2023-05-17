@@ -14,7 +14,7 @@ public class ClientConfig
     /// <summary>
     /// Do not change this unless you know what you're doing.
     /// </summary>
-    public string ApiUrl = "https://api.revolt.chat/";
+    public string ApiUrl = "https://revolt.chat/api/";
 
     /// <summary>
     /// Do not use this unless you know what you're doing.
@@ -57,7 +57,7 @@ public class ClientDebugConfig
     /// <remarks>
     /// Defaults to wss://ws.revolt.chat
     /// </remarks>
-    public string WebsocketUrl { get; internal set; } = "wss://ws.revolt.chat";
+    public string WebsocketUrl { get; internal set; } = "wss://revolt.chat/events";
 
     /// <summary>
     /// Log all websocket events that you get from Revolt.

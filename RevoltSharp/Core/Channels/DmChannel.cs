@@ -13,7 +13,7 @@ public class DMChannel : Channel
         Id = model.Id;
         Type = ChannelType.DM;
         Active = model.Active;
-        InternalRecipents = model.Recipients != null ? model.Recipients : new string[0];
+        InternalRecipents = model.Recipients != null ? model.Recipients.ToList() : new List<string>();
         LastMessageId = model.LastMessageId;
     }
 
@@ -32,7 +32,7 @@ public class DMChannel : Channel
     /// </summary>
     public User? User => Client.GetUser(UserId);
 
-    internal IReadOnlyList<string> InternalRecipents;
+    internal List<string> InternalRecipents;
 
     /// <summary>
     /// The last message id sent in this DM channel.

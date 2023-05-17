@@ -76,7 +76,9 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.2.1";
+    public string Version { get; } = "5.2.3";
+
+    public string RevoltVerion { get; internal set; }
 
     internal bool UserBot { get; set; }
 
@@ -124,6 +126,7 @@ public class RevoltClient : ClientEvents
             if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
                 throw new RevoltException("[RevoltSharp] Server Image server url is an invalid format.");
 
+            RevoltVerion = Query.revoltVersion;
             Config.Debug.WebsocketUrl = Query.websocketUrl;
             Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url;
 
@@ -155,6 +158,11 @@ public class RevoltClient : ClientEvents
             this.OnConnected -= HandleConnected;
             this.OnWebSocketError -= HandleError;
         }
+    }
+
+    private void UserPlatformRemoved(User user)
+    {
+        
     }
 
     /// <summary>
