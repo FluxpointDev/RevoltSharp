@@ -12,7 +12,8 @@ public static class BotHelper
 
     public static async Task<SelfUser> ModifySelfAsync(this RevoltRestClient rest, Option<string> avatar = null, Option<string> statusText = null, Option<UserStatusType> statusType = null, Option<string> profileBio = null, Option<string> profileBackground = null)
     {
-        return await rest.SendRequestAsync<SelfUser>(RequestType.Patch, $"users/@me", ModifySelfRequest.Create(avatar, statusText, statusType, profileBio, profileBackground));
+        UserJson Json = await rest.SendRequestAsync<UserJson>(RequestType.Patch, $"users/@me", ModifySelfRequest.Create(avatar, statusText, statusType, profileBio, profileBackground));
+        return new SelfUser(rest.Client, Json);
     }
 
     public static Task<FileAttachment> UploadFileAsync(this SelfUser user, byte[] bytes, string name, RevoltRestClient.UploadFileType type)

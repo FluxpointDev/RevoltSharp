@@ -46,12 +46,12 @@ public class SystemUnknown : SystemType
 {
     public SystemUnknown()
     {
-        Name = base.BaseName;
-        Text = base.BaseText;
-        Id = base.BaseId;
-        By = base.BaseBy;
-        From = base.BaseFrom;
-        To = base.BaseTo;
+        Name = BaseName;
+        Text = BaseText;
+        Id = BaseId;
+        By = BaseBy;
+        From = BaseFrom;
+        To = BaseTo;
     }
 
     public string Name { get; internal set; }
@@ -69,7 +69,7 @@ public class SystemText : SystemType
 {
     public SystemText()
     {
-        Text = base.BaseText;
+        Text = BaseText;
     }
     public string Text { get; internal set; }
 }
@@ -81,8 +81,8 @@ public class SystemUserAdded : SystemType
 {
     public SystemUserAdded()
     {
-        Id = base.BaseId;
-        By = base.BaseBy;
+        Id = BaseId;
+        By = BaseBy;
     }
     public string Id { get; internal set; }
     public string By { get; internal set; }
@@ -95,8 +95,8 @@ public class SystemUserRemoved : SystemType
 {
     public SystemUserRemoved()
     {
-        Id = base.BaseId;
-        By = base.BaseBy;
+        Id = BaseId;
+        By = BaseBy;
     }
     public string Id { get; internal set; }
     public string By { get; internal set; }
@@ -109,7 +109,7 @@ public class SystemUserJoined : SystemType
 {
     public SystemUserJoined()
     {
-        Id = base.BaseId;
+        Id = BaseId;
     }
     public string Id { get; internal set; }
 }
@@ -121,7 +121,7 @@ public class SystemUserLeft : SystemType
 {
     public SystemUserLeft()
     {
-        Id = base.BaseId;
+        Id = BaseId;
     }
     public string Id { get; internal set; }
 }
@@ -133,7 +133,7 @@ public class SystemUserKicked : SystemType
 {
     public SystemUserKicked()
     {
-        Id = base.BaseId;
+        Id = BaseId;
     }
     public string Id { get; internal set; }
 }
@@ -145,7 +145,7 @@ public class SystemUserBanned : SystemType
 {
     public SystemUserBanned()
     {
-        Id = base.BaseId;
+        Id = BaseId;
     }
     public string Id { get; internal set; }
 }
@@ -157,8 +157,8 @@ public class SystemChannelRenamed : SystemType
 {
     public SystemChannelRenamed()
     {
-        Name = base.BaseName;
-        By = base.BaseBy;
+        Name = BaseName;
+        By = BaseBy;
     }
     public string Name { get; internal set; }
     public string By { get; internal set; }
@@ -171,7 +171,7 @@ public class SystemChannelDescriptionChanged : SystemType
 {
     public SystemChannelDescriptionChanged()
     {
-        By = base.BaseBy;
+        By = BaseBy;
     }
     public string By { get; internal set; }
 }
@@ -183,7 +183,7 @@ public class SystemChannelIconChanged : SystemType
 {
     public SystemChannelIconChanged()
     {
-        By = base.BaseBy;
+        By = BaseBy;
     }
     public string By { get; internal set; }
 }
@@ -195,8 +195,8 @@ public class SystemChannelOwnershipChanged : SystemType
 {
     public SystemChannelOwnershipChanged()
     {
-        From = base.BaseFrom;
-        To = base.BaseTo;
+        From = BaseFrom;
+        To = BaseTo;
     }
     public string From { get; internal set; }
     public string To { get; internal set; }

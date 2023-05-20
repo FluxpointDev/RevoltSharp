@@ -16,7 +16,7 @@ public class MessageUpdatedProperties
         if (json.Data.Embeds.HasValue)
         {
             if (json.Data.Embeds.Value == null || !json.Data.Embeds.Value.Any())
-                Embeds = new Option<MessageEmbed[]>(new MessageEmbed[0]);
+                Embeds = new Option<MessageEmbed[]>(Array.Empty<MessageEmbed>());
             else
                 Embeds = new Option<MessageEmbed[]>(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)).ToArray());
         }

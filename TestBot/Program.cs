@@ -22,24 +22,24 @@ class Program
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
             Debug = new ClientDebugConfig { LogRestRequestJson = false, 
-                LogRestResponseJson = true, 
-                LogRestRequest = true, 
-                LogWebSocketFull = false,
+                LogRestResponseJson = false, 
+                LogRestRequest = false, 
+                LogWebSocketFull = true,
                 LogWebSocketReady = false, 
                 LogWebSocketError = false, 
                 LogWebSocketUnknownEvent = true },
-            Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49" }
+            Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
-        new EventTests(Client);
+        //new EventTests(Client);
 
 
 
 
         CommandHandler CommandHandler = new CommandHandler(Client);
-        CommandHandler.LoadCommands();
+        _ = CommandHandler.LoadCommands();
         await Task.Delay(-1);
     }
 

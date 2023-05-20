@@ -38,7 +38,7 @@ public class Role : CreatedEntity
         Color = new RevoltColor(model.Colour);
         IsHoisted = model.Hoist;
         Name = model.Name;
-        Permissions = model.Permissions == null ? new ServerPermissions(0) : new ServerPermissions(model.Permissions.Allowed);
+        Permissions = model.Permissions == null ? new ServerPermissions(Server, 0) : new ServerPermissions(Server, model.Permissions.Allowed);
         Rank = model.Rank;
         ServerId = serverId;
     }
@@ -49,9 +49,9 @@ public class Role : CreatedEntity
         Id = roleId;
         Name = model.Name.Value;
         if (model.Permissions.HasValue)
-            Permissions = new ServerPermissions(model.Permissions.Value.Allowed);
+            Permissions = new ServerPermissions(Server, model.Permissions.Value.Allowed);
         else
-            Permissions = new ServerPermissions(0);
+            Permissions = new ServerPermissions(Server, 0);
 
         if (model.Colour.HasValue)
             Color = new RevoltColor(model.Colour.Value);
@@ -67,7 +67,7 @@ public class Role : CreatedEntity
             Name = json.Name.Value;
 
         if (json.Permissions.HasValue)
-            Permissions = new ServerPermissions(json.Permissions.Value.Allowed);
+            Permissions = new ServerPermissions(Server, json.Permissions.Value.Allowed);
 
         if (json.Hoist.HasValue)
             IsHoisted = json.Hoist.Value;

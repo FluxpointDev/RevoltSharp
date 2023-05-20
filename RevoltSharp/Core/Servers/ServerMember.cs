@@ -202,7 +202,7 @@ public class ServerMember : Entity
         if (sModel.Timeout.HasValue)
             Timeout = sModel.Timeout.Value;
         ServerAvatar = Attachment.Create(client, sModel.Avatar);
-        RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : new string[0];
+        RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : Array.Empty<string>();
         Server Server = client.GetServer(ServerId);
         if (Server != null)
         {
@@ -212,7 +212,7 @@ public class ServerMember : Entity
         else
         {
             InternalRoles = new ConcurrentDictionary<string, Role>();
-            Permissions = new ServerPermissions(0);
+            Permissions = new ServerPermissions(Server, 0);
         }
     }
 
@@ -237,5 +237,10 @@ public class ServerMember : Entity
 
         if (json.ClearTimeout)
             Timeout = null;
+    }
+
+    internal ServerMember Clone()
+    {
+        return (ServerMember)this.MemberwiseClone();
     }
 }

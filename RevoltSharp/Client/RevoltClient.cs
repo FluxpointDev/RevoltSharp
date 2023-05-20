@@ -61,7 +61,7 @@ public class RevoltClient : ClientEvents
             throw new RevoltException("Config UserAgent is missing");
 
         if (Config.Owners == null)
-            Config.Owners = new string[0];
+            Config.Owners = Array.Empty<string>();
 
         if (Config.Debug == null)
             Config.Debug = new ClientDebugConfig();
@@ -76,7 +76,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.2.3";
+    public string Version { get; } = "5.3.0";
 
     public string RevoltVerion { get; internal set; }
 
@@ -116,7 +116,7 @@ public class RevoltClient : ClientEvents
         if (FirstConnection)
         {
             FirstConnection = false;
-            QueryRequest Query = await Rest.SendRequestAsync<QueryRequest>(RequestType.Get, "/");
+            QueryRequest? Query = await Rest.GetAsync<QueryRequest>("/");
             if (Query == null)
             {
                 Console.WriteLine("[RevoltSharp] Client failed to connect to the revolt api at " + Config.ApiUrl);
@@ -133,7 +133,7 @@ public class RevoltClient : ClientEvents
             if (!Config.Debug.UploadUrl.EndsWith('/'))
                 Config.Debug.UploadUrl += '/';
 
-            UserJson SelfUser = await Rest.SendRequestAsync<UserJson>(RequestType.Get, "/users/@me");
+            UserJson? SelfUser = await Rest.GetAsync<UserJson>("/users/@me");
             if (SelfUser == null)
                 throw new RevoltException("Failed to login to user account.");
 
@@ -158,11 +158,6 @@ public class RevoltClient : ClientEvents
             this.OnConnected -= HandleConnected;
             this.OnWebSocketError -= HandleError;
         }
-    }
-
-    private void UserPlatformRemoved(User user)
-    {
-        
     }
 
     /// <summary>

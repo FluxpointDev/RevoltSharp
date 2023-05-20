@@ -5,28 +5,41 @@
 /// </summary>
 public class ChannelPermissions
 {
-    public static ulong AllChannelPermissions = 0;
+    public static ulong AllChannelPermissions = ulong.MaxValue;
+    public Server Server { get; internal set; }
 
     public ulong RawAllowed { get; internal set; }
     public ulong RawDenied { get; internal set; }
-    internal ChannelPermissions(PermissionsJson permissions)
+    internal ChannelPermissions(Server server, PermissionsJson permissions)
     {
+        if (server != null)
+            Server = server;
+
         if (permissions == null)
             return;
+
+
+
         RawAllowed = permissions.Allowed;
         RawDenied = permissions.Denied;
     }
 
-    internal ChannelPermissions(ulong allowed, ulong denied)
+    internal ChannelPermissions(Server server, ulong allowed, ulong denied)
     {
         RawAllowed = allowed;
         RawDenied = denied;
     }
 
-    internal bool Has(ChannelPermission permission)
+    public bool Has(ChannelPermission permission)
     {
         ulong Flag = (ulong)permission;
-        return !((RawDenied & Flag) == Flag);
+        if ((RawDenied & Flag) == Flag)
+            return false;
+
+        if (Server != null && Server.DefaultPermissions.Has(permission))
+            return true;
+
+        return ((RawAllowed & Flag) == Flag);
     }
 
     public bool ManageChannel => Has(ChannelPermission.ManageChannel);

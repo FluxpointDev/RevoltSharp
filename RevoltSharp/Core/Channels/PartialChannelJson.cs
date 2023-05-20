@@ -21,6 +21,9 @@ internal class PartialChannelJson
     [JsonProperty("deafult_permissions")]
     public Optional<PermissionsJson> DefaultPermissions { get; set; }
 
+    [JsonProperty("permissions")]
+    public Optional<ulong> Permissions { get; set; }
+
     [JsonProperty("role_permissions")]
     public Optional<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
 

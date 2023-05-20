@@ -13,8 +13,8 @@ public class ServerChannel : Channel
     {
         Id = model.Id;
         ServerId = model.Server;
-        DefaultPermissions = new ChannelPermissions(model.DefaultPermissions);
-        InternalRolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(x.Value)) : new Dictionary<string, ChannelPermissions>();
+        DefaultPermissions = new ChannelPermissions(Server, model.DefaultPermissions);
+        InternalRolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(Server, x.Value)) : new Dictionary<string, ChannelPermissions>();
         Name = model.Name;
         Description = model.Description;
         Icon = Attachment.Create(client, model.Icon);
@@ -103,7 +103,7 @@ public class ServerChannel : Channel
             Icon = Attachment.Create(Client, json.Icon.Value);
 
         if (json.DefaultPermissions.HasValue)
-            DefaultPermissions = new ChannelPermissions(json.DefaultPermissions.Value);
+            DefaultPermissions = new ChannelPermissions(Server, json.DefaultPermissions.Value);
        
         if (json.Description.HasValue)
             Description = json.Description.Value;
@@ -118,7 +118,7 @@ public class ServerChannel : Channel
                     CP.RawDenied = i.Value.Denied;
                 }
                 else
-                    InternalRolePermissions.Add(i.Key, new ChannelPermissions(i.Value));
+                    InternalRolePermissions.Add(i.Key, new ChannelPermissions(Server, i.Value));
             }
         }
     }

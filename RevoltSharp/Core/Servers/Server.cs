@@ -12,7 +12,7 @@ public class Server : CreatedEntity
     {
         Id = model.Id;
         Name = model.Name;
-        DefaultPermissions = new ServerPermissions(model.DefaultPermissions);
+        DefaultPermissions = new ServerPermissions(this, model.DefaultPermissions);
         Description = model.Description;
         Banner = Attachment.Create(client, model.Banner);
         Icon = Attachment.Create(client, model.Icon);
@@ -143,7 +143,7 @@ public class Server : CreatedEntity
             Banner = Attachment.Create(Client, json.Icon.Value);
 
         if (json.DefaultPermissions.HasValue)
-            DefaultPermissions = new ServerPermissions(json.DefaultPermissions.Value);
+            DefaultPermissions = new ServerPermissions(this, json.DefaultPermissions.Value);
 
         if (json.Description.HasValue)
             Description = json.Description.Value;

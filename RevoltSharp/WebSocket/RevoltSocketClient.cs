@@ -39,7 +39,7 @@ internal class RevoltSocketClient
     internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
     internal ConcurrentDictionary<string, User> UserCache = new ConcurrentDictionary<string, User>();
     internal ConcurrentDictionary<string, Emoji> EmojiCache = new ConcurrentDictionary<string, Emoji>();
-    internal SelfUser CurrentUser => Client.CurrentUser;
+    internal SelfUser? CurrentUser => Client.CurrentUser;
 
     internal async Task SetupWebsocket()
     {
@@ -55,7 +55,7 @@ internal class RevoltSocketClient
                     _firstError = true;
                     await Receive(WebSocket, CancellationToken);
                 }
-                catch (ArgumentException ae)
+                catch (ArgumentException)
                 {
                     if (_firstConnected)
                     {
@@ -482,7 +482,7 @@ internal class RevoltSocketClient
                         {
                             Console.WriteLine("[RevoltSharp] Left Group: " + GC.Name);
                             ChannelCache.TryRemove(@event.Id, out Channel chan);
-                            _ = Task.Run(async () =>
+                            _ = Task.Run(() =>
                             {
                                 foreach (User u in GC.CachedUsers.Values)
                                 {
@@ -555,7 +555,7 @@ internal class RevoltSocketClient
                         if (!ServerCache.TryRemove(@event.Id, out Server server))
                             return;
 
-                        _ = Task.Run(async () =>
+                        _ = Task.Run(() =>
                         {
                             foreach (string c in server.ChannelIds)
                             {
@@ -602,7 +602,7 @@ internal class RevoltSocketClient
                                         @event.Data.ClearTimeout = true;
                                         break;
                                     case "Roles":
-                                        @event.Data.Roles = Optional.Some<string[]>(new string[0]);
+                                        @event.Data.Roles = Optional.Some<string[]>(Array.Empty<string>());
                                         break;
                                 }
                             }
@@ -646,7 +646,7 @@ internal class RevoltSocketClient
                                 return;
 
                             Console.WriteLine("[RevoltSharp] Left Server: " + server.Name);
-                            _ = Task.Run(async () =>
+                            _ = Task.Run(() =>
                             {
                                 foreach (ServerMember m in server.InternalMembers.Values)
                                 {
@@ -704,7 +704,7 @@ internal class RevoltSocketClient
                         if (!server.InternalRoles.TryRemove(@event.RoleId, out Role role))
                             return;
 
-                        _ = Task.Run(async () =>
+                        _ = Task.Run(() =>
                         {
                             foreach (Channel c in Client.WebSocket.ChannelCache.Values)
                             {

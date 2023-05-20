@@ -1,7 +1,6 @@
 ﻿using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -15,16 +14,21 @@ public static class EmojiHelper
     /// <param name="emojiId">Emoji id</param>
     /// <returns><see cref="Emoji" /> or <see langword="null" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>
-    public static async Task<Emoji> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
+    public static async Task<Emoji?> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
         Conditions.EmojiIdEmpty(emojiId, "GetEmojiAsync");
 
-        EmojiJson Emoji =  await rest.SendRequestAsync<EmojiJson>(RequestType.Get, $"/custom/emoji/{emojiId}");
-        return Emoji == null ? null : new Emoji(rest.Client, Emoji);
+        if (rest.Client.WebSocket != null && rest.Client.WebSocket.EmojiCache.TryGetValue(emojiId, out Emoji emoji))
+            return emoji;
+
+        EmojiJson? Emoji =  await rest.GetAsync<EmojiJson>($"/custom/emoji/{emojiId}");
+        if (Emoji == null)
+            return null;
+        return new Emoji(rest.Client, Emoji);
     }
 
     /// <inheritdoc cref="GetEmojisAsync(RevoltRestClient, string)" />
-    public static Task<Emoji[]> GetEmojisAsync(this Server server)
+    public static Task<Emoji[]?> GetEmojisAsync(this Server server)
         => GetEmojisAsync(server.Client.Rest, server.Id);
 
     /// <summary>
@@ -34,11 +38,13 @@ public static class EmojiHelper
     /// <param name="serverId">Server id</param>
     /// <returns>List of server <see cref="Emoji" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>
-    public static async Task<Emoji[]> GetEmojisAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<Emoji[]?> GetEmojisAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetEmojisAsync");
 
-        EmojiJson[] Json = await rest.SendRequestAsync<EmojiJson[]>(RequestType.Get, $"/servers/{serverId}/emojis");
+        EmojiJson[]? Json = await rest.GetAsync<EmojiJson[]>($"/servers/{serverId}/emojis");
+        if (Json == null)
+            return null;
         return Json.Select(x => new Emoji(rest.Client, x)).ToArray();
     }
 
@@ -65,7 +71,7 @@ public static class EmojiHelper
         Conditions.ServerIdEmpty(serverId, "CreateEmojiAsync");
         Conditions.EmojiNameEmpty(name, "CreateEmojiAsync");
 
-        EmojiJson Emoji = await rest.SendRequestAsync<EmojiJson>(RequestType.Put, $"/custom/emoji/{attachmentId}", new CreateEmojiRequest
+        EmojiJson Emoji = await rest.PutAsync<EmojiJson>($"/custom/emoji/{attachmentId}", new CreateEmojiRequest
         {
             name = name,
             nsfw = nsfw,
@@ -74,15 +80,15 @@ public static class EmojiHelper
                 id = serverId
             }
         });
-        return Emoji == null ? null : new Emoji(rest.Client, Emoji);
+        return new Emoji(rest.Client, Emoji);
     }
 
 
-    public static Task<HttpResponseMessage> DeleteAsync(this Emoji emoji)
+    public static Task DeleteAsync(this Emoji emoji)
        => DeleteEmojiAsync(emoji.Client.Rest, emoji.Id);
 
 
-    public static Task<HttpResponseMessage> DeleteEmojiAsync(this Server server, Emoji emoji)
+    public static Task DeleteEmojiAsync(this Server server, Emoji emoji)
        => DeleteEmojiAsync(server.Client.Rest, emoji.Id);
 
 
@@ -94,12 +100,11 @@ public static class EmojiHelper
     /// </remarks>
     /// <param name="rest"></param>
     /// <param name="emojiId">Emoji id</param>
-    /// <returns><see cref="HttpResponseMessage" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>
-    public static async Task<HttpResponseMessage> DeleteEmojiAsync(this RevoltRestClient rest, string emojiId)
+    public static async Task DeleteEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
         Conditions.EmojiIdEmpty(emojiId, "DeleteEmojiAsync");
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"/custom/emoji/{emojiId}");
+        await rest.DeleteAsync($"/custom/emoji/{emojiId}");
     }
 }

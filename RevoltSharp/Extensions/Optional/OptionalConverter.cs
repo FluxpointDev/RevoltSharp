@@ -26,14 +26,14 @@ internal class OptionConverter : JsonConverter
 
         if (reader.TokenType == JsonToken.Null)
         {
-            return noneMethod.Invoke(null, new object[] { });
+            return noneMethod.Invoke(null, Array.Empty<object>());
         }
 
         object innerValue = serializer.Deserialize(reader, innerType);
 
         if (innerValue == null)
         {
-            return noneMethod.Invoke(null, new object[] { });
+            return noneMethod.Invoke(null, Array.Empty<object>());
         }
 
         return someMethod.Invoke(noneMethod, new[] { innerValue });

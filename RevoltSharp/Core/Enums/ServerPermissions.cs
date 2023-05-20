@@ -5,22 +5,29 @@
 /// </summary>
 public class ServerPermissions
 {
-    public static ulong AllServerPermissions = 61503;
-    internal ServerPermissions(ulong permissions)
+    public static ulong AllServerPermissions = ulong.MaxValue;
+    public Server Server { get; internal set; }
+
+    internal ServerPermissions(Server server, ulong permissions)
     {
+        if (server != null)
+            Server = server;
+
         RawServer = permissions;
     }
 
     internal ServerPermissions(Server server, ServerMember member)
     {
-        if (server.OwnerId == member.Id)
+        if (server != null)
+            Server = server;
+
+        if (server != null && server.OwnerId == member.Id)
         {
-            RawServer = AllServerPermissions;
+            RawServer = ulong.MaxValue;
         }
         else
         {
             ulong resolvedServer = 0;
-            ulong resolvedChannel = 0;
             foreach (Role r in member.InternalRoles.Values)
             {
                 resolvedServer |= r.Permissions.RawServer;
@@ -45,7 +52,6 @@ public class ServerPermissions
     public bool ChangeAvatar => Has(ServerPermission.ChangeAvatar);
     public bool ManageAvatars => Has(ServerPermission.ManageAvatars);
     public bool ViewChannels => Has(ChannelPermission.ViewChannel);
-    //public bool ReadMessageHistory => Has(ChannelPermission.ReadMessageHistory);
     public bool SendMessages => Has(ChannelPermission.SendMessages);
     public bool ManageMessages => Has(ChannelPermission.ManageMessages);
     public bool ManageWebhooks => Has(ChannelPermission.ManageWebhooks);
@@ -61,13 +67,13 @@ public class ServerPermissions
     public bool VoiceDeafenMembers => Has(ChannelPermission.VoiceDeafenMembers);
     public bool VoiceMoveMembers => Has(ChannelPermission.VoiceMoveMembers);
 
-    internal bool Has(ServerPermission permission)
+    public bool Has(ServerPermission permission)
     {
         ulong Flag = (ulong)permission;
         return (RawServer & Flag) == Flag;
     }
 
-    internal bool Has(ChannelPermission permission)
+    public bool Has(ChannelPermission permission)
     {
         ulong Flag = (ulong)permission;
         return (RawServer & Flag) == Flag;

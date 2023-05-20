@@ -2,37 +2,47 @@
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
 public static class ChannelHelper
 {
-    public static Task<TextChannel> GetTextChannelAsync(this Server server, string channelId)
+    public static Task<TextChannel?> GetTextChannelAsync(this Server server, string channelId)
         => GetChannelAsync<TextChannel>(server.Client.Rest, channelId);
 
-    public static Task<TextChannel> GetTextChannelAsync(this RevoltRestClient rest, string channelId)
+    public static Task<TextChannel?> GetTextChannelAsync(this RevoltRestClient rest, string channelId)
         => GetChannelAsync<TextChannel>(rest, channelId);
 
-    public static Task<VoiceChannel> GetVoiceChannelAsync(this Server server, string channelId)
+    public static Task<VoiceChannel?> GetVoiceChannelAsync(this Server server, string channelId)
         => GetChannelAsync<VoiceChannel>(server.Client.Rest, channelId);
 
-    public static Task<VoiceChannel> GetVoiceChannelAsync(this RevoltRestClient rest, string channelId)
+    public static Task<VoiceChannel?> GetVoiceChannelAsync(this RevoltRestClient rest, string channelId)
         => GetChannelAsync<VoiceChannel>(rest, channelId);
 
-    public static Task<Channel> GetChannelAsync(this Server server, string channelId)
+    public static Task<Channel?> GetChannelAsync(this Server server, string channelId)
         => GetChannelAsync<Channel>(server.Client.Rest, channelId);
 
-    public static Task<Channel> GetChannelAsync(this RevoltRestClient rest, string channelId)
+    public static Task<Channel?> GetChannelAsync(this RevoltRestClient rest, string channelId)
         => GetChannelAsync<Channel>(rest, channelId);
 
-    internal static async Task<TValue> GetChannelAsync<TValue>(this RevoltRestClient rest, string channelId)
+    internal static async Task<TValue?> GetChannelAsync<TValue>(this RevoltRestClient rest, string channelId)
         where TValue : Channel
     {
         Conditions.ChannelIdEmpty(channelId, "GetChannelAsync");
 
-        ChannelJson Channel = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, $"/channels/{channelId}");
+        if (rest.Client.WebSocket != null)
+        {
+            if (rest.Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel chan))
+                return (TValue)chan;
+            return null;
+        }
+            
+
+        ChannelJson? Channel = await rest.GetAsync<ChannelJson>($"/channels/{channelId}");
+        if (Channel == null)
+            return null;
+
         return (TValue)RevoltSharp.Channel.Create(rest.Client, Channel);
     }
 
@@ -48,14 +58,14 @@ public static class ChannelHelper
         CreateChannelRequest Req = new CreateChannelRequest
         {
             name = name,
-            Type = "Text"
+            type = Optional.Some("Text")
         };
         if (!string.IsNullOrEmpty(description))
             Req.description = Optional.Some(description);
         if (nsfw)
             Req.nsfw = Optional.Some(true);
 
-        ChannelJson Json = await rest.SendRequestAsync<ChannelJson>(RequestType.Post, $"/servers/{serverId}/channels", Req);
+        ChannelJson Json = await rest.PostAsync<ChannelJson>($"/servers/{serverId}/channels", Req);
         return new TextChannel(rest.Client, Json);
     }
 
@@ -70,15 +80,14 @@ public static class ChannelHelper
         CreateChannelRequest Req = new CreateChannelRequest
         {
             name = name,
-            Type = "Voice"
+            type = Optional.Some("Voice")
         };
         if (!string.IsNullOrEmpty(description))
             Req.description = Optional.Some(description);
 
-        ChannelJson Json = await rest.SendRequestAsync<ChannelJson>(RequestType.Post, $"/servers/{serverId}/channels", Req);
+        ChannelJson Json = await rest.PostAsync<ChannelJson>($"/servers/{serverId}/channels", Req);
         return new VoiceChannel(rest.Client, Json);
     }
-
 
     public static Task<Channel> ModifyAsync(this TextChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
         => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
@@ -127,40 +136,40 @@ public static class ChannelHelper
             Conditions.UserIdEmpty(owner.Value, "ModifyChannelAsync");
             Req.owner = Optional.Some(owner.Value);
         }
-
-        return await rest.SendRequestAsync<Channel>(RequestType.Patch, $"/channels/{channelId}", Req);
+        ChannelJson Json = await rest.PatchAsync<ChannelJson>($"/channels/{channelId}", Req);
+        return Channel.Create(rest.Client, Json);
     }
 
-    public static Task<HttpResponseMessage> DeleteChannelAsync(this ServerChannel channel)
+    public static Task DeleteChannelAsync(this ServerChannel channel)
         => DeleteChannelAsync(channel.Client.Rest, channel.Id);
 
-    public static Task<HttpResponseMessage> DeleteChannelAsync(this Server server, string channelId)
+    public static Task DeleteChannelAsync(this Server server, string channelId)
         => DeleteChannelAsync(server.Client.Rest, channelId);
 
-    public static async Task<HttpResponseMessage> DeleteChannelAsync(this RevoltRestClient rest, string channelId)
+    public static async Task DeleteChannelAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdEmpty(channelId, "DeleteChannelAsync");
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"/channels/{channelId}");
+        await rest.DeleteAsync($"/channels/{channelId}");
     }
 
-    public static Task<HttpResponseMessage> DeleteMessagesAsync(this Channel channel, Message[] messages)
+    public static Task DeleteMessagesAsync(this Channel channel, Message[] messages)
         => DeleteMessagesAsync(channel.Client.Rest, channel.Id, messages.Select(x => x.Id).ToArray());
 
-    public static Task<HttpResponseMessage> DeleteMessagesAsync(this Channel channel, string[] messageIds)
+    public static Task DeleteMessagesAsync(this Channel channel, string[] messageIds)
         => DeleteMessagesAsync(channel.Client.Rest, channel.Id, messageIds);
 
-    public static async Task<HttpResponseMessage> DeleteMessagesAsync(this RevoltRestClient rest, string channelId, string[] messageIds)
+    public static async Task DeleteMessagesAsync(this RevoltRestClient rest, string channelId, string[] messageIds)
     {
         Conditions.ChannelIdEmpty(channelId, "DeleteMessagesAsync");
         Conditions.MessageIdEmpty(messageIds, "DeleteMessagesAsync");
 
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest
+        await rest.DeleteAsync($"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest
         {
             ids = messageIds
         });
     }
 
-
+    
 }

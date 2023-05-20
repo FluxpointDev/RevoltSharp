@@ -30,7 +30,7 @@ public class GroupChannel : Channel
         LastMessageId = model.LastMessageId;
         Name = model.Name;
         OwnerId = model.Owner;
-        Permissions = new ChannelPermissions(model.Permissions, 0);
+        Permissions = new ChannelPermissions(null, model.Permissions, 0);
         Icon = Attachment.Create(client, model.Icon);
         IsNsfw = model.Nsfw;
     }
@@ -100,7 +100,10 @@ public class GroupChannel : Channel
             Description = json.Description.Value;
 
         if (json.DefaultPermissions.HasValue)
-            Permissions = new ChannelPermissions(json.DefaultPermissions.Value);
+            Permissions.RawAllowed = json.DefaultPermissions.Value.Allowed;
+
+        if (json.Permissions.HasValue)
+            Permissions.RawAllowed = json.Permissions.Value;
        
         if (json.IsNsfw.HasValue)
             IsNsfw = json.IsNsfw.Value;

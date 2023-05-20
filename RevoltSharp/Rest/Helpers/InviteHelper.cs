@@ -1,50 +1,54 @@
 ﻿using RevoltSharp.Rest;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
 public static class InviteHelper
 {
-    public static Task<HttpResponseMessage> DeleteAsync(this Invite invite)
+    public static Task DeleteAsync(this Invite invite)
         => DeleteInviteAsync(invite.Client.Rest, invite.ChannelId);
 
-    public static Task<HttpResponseMessage> DeleteInviteAsync(this Server server, Invite invite)
+    public static Task DeleteInviteAsync(this Server server, Invite invite)
         => DeleteInviteAsync(server.Client.Rest, invite.Code);
 
-    public static Task<HttpResponseMessage> DeleteInviteAsync(this Server server, string inviteCode)
+    public static Task DeleteInviteAsync(this Server server, string inviteCode)
         => DeleteInviteAsync(server.Client.Rest, inviteCode);
 
-    public static Task<HttpResponseMessage> DeleteInviteAsync(this RevoltRestClient rest, Invite invite)
+    public static Task DeleteInviteAsync(this RevoltRestClient rest, Invite invite)
         => DeleteInviteAsync(rest, invite.Code);
 
-    public static async Task<HttpResponseMessage> DeleteInviteAsync(this RevoltRestClient rest, string inviteCode)
+    public static async Task DeleteInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
         Conditions.InviteCodeEmpty(inviteCode, "DeleteInviteAsync");
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"/invites/{inviteCode}");
+        await rest.DeleteAsync($"/invites/{inviteCode}");
     }
 
-    public static Task<Invite[]> GetInvitesAsync(this Server server)
+    public static Task<Invite[]?> GetInvitesAsync(this Server server)
         => GetInvitesAsync(server.Client.Rest, server.Id);
 
-    public static async Task<Invite[]> GetInvitesAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<Invite[]?> GetInvitesAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetInvitesAsync");
 
-        InviteJson[] Json = await rest.SendRequestAsync<InviteJson[]>(RequestType.Get, $"/servers/{serverId}/invites");
+        InviteJson[]? Json = await rest.GetAsync<InviteJson[]>($"/servers/{serverId}/invites");
+        if (Json == null)
+            return null;
+
         return Json.Select(x => new Invite(rest.Client, x)).ToArray();
     }
 
-    public static Task<Invite> GetInviteAsync(this Server server, string inviteCode)
+    public static Task<Invite?> GetInviteAsync(this Server server, string inviteCode)
         => GetInviteAsync(server.Client.Rest, inviteCode);
 
-    public static async Task<Invite> GetInviteAsync(this RevoltRestClient rest, string inviteCode)
+    public static async Task<Invite?> GetInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
         Conditions.InviteCodeEmpty(inviteCode, "GetInviteAsync");
 
-        InviteJson Json = await rest.SendRequestAsync<InviteJson>(RequestType.Get, $"/invites/{inviteCode}");
+        InviteJson? Json = await rest.GetAsync<InviteJson>($"/invites/{inviteCode}");
+        if (Json == null)
+            return null;
         return new Invite(rest.Client, Json);
     }
 
@@ -69,7 +73,7 @@ public static class InviteHelper
     {
         Conditions.ChannelIdEmpty(channelId, "CreateInviteAsync");
 
-        CreateInviteJson Json = await rest.SendRequestAsync<CreateInviteJson>(RequestType.Post, $"/channels/{channelId}/invites");
+        CreateInviteJson Json = await rest.PostAsync<CreateInviteJson>($"/channels/{channelId}/invites");
         return new CreatedInvite(rest.Client, Json);
     }
 }

@@ -5,8 +5,7 @@
 /// </summary>
 public class TextChannel : ServerChannel
 {
-    internal TextChannel(RevoltClient client, ChannelJson model)
-        : base(client, model)
+    internal TextChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Type = ChannelType.Text;
         LastMessageId = model.LastMessageId;

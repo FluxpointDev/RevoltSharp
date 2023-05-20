@@ -27,11 +27,6 @@ public class ClientConfig
     public bool UserBot;
 
     /// <summary>
-    /// Enabled by default, rest requests for POST/PUT/DELETE will throw a RevoltRestException
-    /// </summary>
-    public bool RestThrowException = true;
-
-    /// <summary>
     /// Useful for owner checks and also used for <see cref="RequireOwnerAttribute"/> when using the built-in <see cref="CommandService"/> handler.
     /// </summary>
     public string[] Owners = null;

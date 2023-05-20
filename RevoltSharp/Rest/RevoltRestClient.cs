@@ -38,7 +38,7 @@ public class RevoltRestClient
 
         HttpClient = new HttpClient()
         {
-            BaseAddress = new System.Uri(Client.Config.ApiUrl, true)
+            BaseAddress = new System.Uri(Client.Config.ApiUrl)
         };
         HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version + (Client.Config.UserBot ? " user" : ""));
@@ -68,11 +68,27 @@ public class RevoltRestClient
     public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
 
+
+    internal Task<TResponse?> GetAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+        => SendRequestAsync<TResponse>(RequestType.Get, endpoint, json);
+
+    internal Task DeleteAsync(string endpoint, RevoltRequest json = null)
+        => SendRequestAsync(RequestType.Delete, endpoint, json);
+
+    internal Task<TResponse> PatchAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+        => SendRequestAsync<TResponse>(RequestType.Patch, endpoint, json);
+
+    internal Task<TResponse> PutAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+        => SendRequestAsync<TResponse>(RequestType.Put, endpoint, json);
+
+    internal Task<TResponse> PostAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+        => SendRequestAsync<TResponse>(RequestType.Post, endpoint, json);
+
     public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, RevoltRequest json = null) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
     
 
-    internal HttpMethod GetMethod(RequestType method)
+    internal static HttpMethod GetMethod(RequestType method)
     {
         switch (method)
         {
@@ -131,7 +147,7 @@ public class RevoltRestClient
         if (Client.Config.Debug.CheckRestRequest)
             Req.EnsureSuccessStatusCode();
 
-        if (Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
+        if (!Req.IsSuccessStatusCode)
         {
             RestError Error = null;
             if (Req.Content.Headers.ContentLength.HasValue)
@@ -156,9 +172,6 @@ public class RevoltRestClient
             else
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
         }
-
-        if (!Req.IsSuccessStatusCode)
-            return null;
 
         int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
         using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
@@ -248,7 +261,7 @@ public class RevoltRestClient
         if (Client.Config.Debug.CheckRestRequest)
             Req.EnsureSuccessStatusCode();
 
-        if (method != HttpMethod.Get && Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
+        if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
             RestError Error = null;
             if (Req.Content.Headers.ContentLength.HasValue)
@@ -328,7 +341,7 @@ public class RevoltRestClient
         if (Client.Config.Debug.CheckRestRequest)
             Req.EnsureSuccessStatusCode();
 
-        if (method != HttpMethod.Get && Client.Config.RestThrowException && !Req.IsSuccessStatusCode)
+        if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
             RestError Error = null;
             if (Req.Content.Headers.ContentLength.HasValue)
@@ -367,7 +380,7 @@ public class RevoltRestClient
             }
             catch (Exception ex)
             {
-                throw new RevoltRestException("Failed to parse json response", 500, RevoltErrorType.Unknown);
+                throw new RevoltRestException("Failed to parse json response: " + ex.Message, 500, RevoltErrorType.Unknown);
             }
             if (Client.Config.Debug.LogRestResponseJson)
                 Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
@@ -384,7 +397,7 @@ public class RevoltRestClient
         return sb.ToString();
     }
 
-    internal T DeserializeJson<T>(MemoryStream jsonStream)
+    internal T? DeserializeJson<T>(MemoryStream jsonStream)
     {
         using (TextReader text = new StreamReader(jsonStream))
         using (JsonReader reader = new JsonTextReader(text))

@@ -4,7 +4,6 @@ using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -51,7 +50,7 @@ public static class MessageHelper
         if (string.IsNullOrEmpty(text))
             text = null;
 
-        MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Post, $"channels/{channelId}/messages", new SendMessageRequest
+        MessageJson Data = await rest.PostAsync<MessageJson>($"channels/{channelId}/messages", new SendMessageRequest
         {
             content = Optional.Some(text),
             nonce = Optional.Some(Guid.NewGuid().ToString()),
@@ -60,12 +59,12 @@ public static class MessageHelper
             masquerade = masquerade == null ? Optional.None<MessageMasqueradeJson>() : Optional.Some(masquerade.ToJson()),
             interactions = interactions == null ? Optional.None<MessageInteractionsJson>() : Optional.Some(new MessageInteractionsJson
             {
-                reactions = interactions.Reactions == null ? new string[0] : interactions.Reactions.Select(x => x.Id).ToArray(),
+                reactions = interactions.Reactions == null ? Array.Empty<string>() : interactions.Reactions.Select(x => x.Id).ToArray(),
                 restrict_reactions = interactions.RestrictReactions
             }),
             replies = replies == null ? Optional.None<MessageReply[]>() : Optional.Some(replies),
         });
-        return Message.Create(rest.Client, Data) as UserMessage;
+        return (UserMessage)Message.Create(rest.Client, Data);
     }
 
     public static Task<UserMessage> SendFileAsync(this Channel channel, string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
@@ -88,14 +87,14 @@ public static class MessageHelper
         if (rest.Client.UserBot && embeds != null)
             throw new RevoltRestException("User accounts can't send embeds on SendFileAsync", 401, RevoltErrorType.NotAllowedForUsers);
 
-        FileAttachment File = await rest.UploadFileAsync(bytes, fileName, Rest.RevoltRestClient.UploadFileType.Attachment);
+        FileAttachment File = await rest.UploadFileAsync(bytes, fileName, RevoltRestClient.UploadFileType.Attachment);
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
     }
 
-    public static Task<IEnumerable<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+    public static Task<IEnumerable<Message>?> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
         => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
 
-    public static async Task<IEnumerable<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+    public static async Task<IEnumerable<Message>?> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
     {
         Conditions.ChannelIdEmpty(channelId, "GetMessagesAsync");
 
@@ -108,7 +107,9 @@ public static class MessageHelper
             Req.after = new Optional<string>(afterMessageId);
         if (!string.IsNullOrEmpty(beforeMessageId))
             Req.after = new Optional<string>(beforeMessageId);
-        MessageJson[] Data = await rest.SendRequestAsync<MessageJson[]>(RequestType.Get, $"channels/{channelId}/messages", Req);
+        MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages", Req);
+        if (Data == null)
+            return null;
 
         return Data.Select(x => Message.Create(rest.Client, x));
     }
@@ -121,7 +122,10 @@ public static class MessageHelper
         Conditions.ChannelIdEmpty(channelId, "GetMessageAsync");
         Conditions.MessageIdEmpty(messageId, "GetMessageAsync");
 
-        MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Get, $"channels/{channelId}/messages/{messageId}");
+        MessageJson? Data = await rest.GetAsync<MessageJson>($"channels/{channelId}/messages/{messageId}");
+        if (Data == null)
+            return null;
+
         return Message.Create(rest.Client, Data);
     }
 
@@ -138,36 +142,36 @@ public static class MessageHelper
             Req.content = Optional.Some(content.Value);
         if (embeds != null)
             Req.embeds = Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
-        MessageJson Data = await rest.SendRequestAsync<MessageJson>(RequestType.Patch, $"channels/{channelId}/messages/{messageId}", Req);
-        return Message.Create(rest.Client, Data) as UserMessage;
+        MessageJson Data = await rest.PatchAsync<MessageJson>($"channels/{channelId}/messages/{messageId}", Req);
+        return (UserMessage)Message.Create(rest.Client, Data);
     }
 
 
-    public static Task<HttpResponseMessage> DeleteMessageAsync(this Message mes)
+    public static Task DeleteMessageAsync(this Message mes)
       => DeleteMessageAsync(mes.Channel.Client.Rest, mes.ChannelId, mes.Id);
 
-    public static Task<HttpResponseMessage> DeleteMessageAsync(this Channel channel, Message message)
+    public static Task DeleteMessageAsync(this Channel channel, Message message)
         => DeleteMessageAsync(channel.Client.Rest, channel.Id, message.Id);
 
-    public static Task<HttpResponseMessage> DeleteMessageAsync(this Channel channel, string messageId)
+    public static Task DeleteMessageAsync(this Channel channel, string messageId)
         => DeleteMessageAsync(channel.Client.Rest, channel.Id, messageId);
 
-    public static async Task<HttpResponseMessage> DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
+    public static async Task DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
         Conditions.ChannelIdEmpty(channelId, "DeleteMessageAsync");
         Conditions.MessageIdEmpty(messageId, "DeleteMessageAsync");
 
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}/messages/{messageId}");
+        await rest.DeleteAsync($"channels/{channelId}/messages/{messageId}");
     }
 
-    public static Task<HttpResponseMessage> CloseAsync(this DMChannel dm)
+    public static Task CloseAsync(this DMChannel dm)
         => CloseDMChannelAsync(dm.Client.Rest, dm.Id);
 
-    public static async Task<HttpResponseMessage> CloseDMChannelAsync(this RevoltRestClient rest, string channelId)
+    public static async Task CloseDMChannelAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdEmpty(channelId, "CloseDMChannelAsync");
 
-        return await rest.SendRequestAsync(RequestType.Delete, $"channels/{channelId}");
+        await rest.DeleteAsync($"channels/{channelId}");
     }
 }

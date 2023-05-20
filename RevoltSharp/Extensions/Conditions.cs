@@ -1,11 +1,14 @@
-﻿namespace RevoltSharp;
+﻿using RevoltSharp.Rest;
+using System.Linq;
+
+namespace RevoltSharp;
 
 internal static class Conditions
 {
     internal static void OwnerModifyCheck(ServerMember member, string request)
     {
         if (member.Server != null && member.Id == member.Server.OwnerId)
-            throw new RevoltArgumentException($"You can't modify the server owner for the {request} request.");
+            throw new RevoltRestException($"You can't modify the server owner for the {request} request.", 400, RevoltErrorType.InvalidOperation);
     }
 
     internal static void ChannelIdEmpty(string channelId, string request)
@@ -90,6 +93,24 @@ internal static class Conditions
     {
         if (string.IsNullOrEmpty(roleId))
             throw new RevoltArgumentException($"Role id can't be empty for the {request} request.");
+    }
+
+    internal static void RoleListEmpty(string[] roles, string request)
+    {
+        if (roles == null || !roles.Any())
+            throw new RevoltArgumentException($"Role id list can't be empty for the {request} request.");
+    }
+
+    internal static void NotAllowedForBots(RevoltRestClient rest, string request)
+    {
+        if (!rest.Client.UserBot)
+            throw new RevoltRestException($"The {request} is not allowed to be used for bots.", 400, RevoltErrorType.NotAllowedForBots);
+    }
+
+    internal static void NotAllowedForUsers(RevoltRestClient rest, string request)
+    {
+        if (rest.Client.UserBot)
+            throw new RevoltRestException($"The {request} is not allowed to be used for user accounts.", 400, RevoltErrorType.NotAllowedForBots);
     }
 
     internal static void RoleNameEmpty(string rolename, string request)

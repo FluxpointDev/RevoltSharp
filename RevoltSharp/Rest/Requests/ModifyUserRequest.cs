@@ -10,7 +10,7 @@ internal class ModifySelfRequest
     internal static Dictionary<string, object> Create(Option<string> avatar, Option<string> statusText, Option<UserStatusType> statusType, Option<string> profileBio, Option<string> profileBackground)
     {
         Dictionary<string, object> Values = new Dictionary<string, object>();
-        Optionals.Optional<List<string>> Remove = Optionals.Optional.None<List<string>>();
+        Optionals.Optional<List<string>> Remove = Optional.None<List<string>>();
         if (avatar != null)
         {
             if (string.IsNullOrEmpty(avatar.Value))

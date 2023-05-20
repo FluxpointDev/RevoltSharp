@@ -11,6 +11,28 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("owner")]
+    public async Task Owner()
+    {
+        await (Context.Channel as GroupChannel).ModifyAsync(owner: new Option<string>("01FE57SEGM0CBQD6Y7X10VZQ49"));
+    }
+
+    [Command("myperm")]
+    public async Task MyPerm()
+    {
+        
+        await ReplyAsync($"F: {Context.Member.Permissions.AddReactions} H: {Context.Member.Permissions.Has(ChannelPermission.AddReactions)}\n\n" +
+            $"Roles:\n{string.Join("\n", Context.Member.Roles.Select(x => x.Name))}");
+    }
+
+    [Command("perm")]
+    public async Task Perm()
+    {
+        TextChannel GC = (TextChannel)Context.Channel;
+        await ReplyAsync($"Allow: SP: {GC.DefaultPermissions.Server != null} C: {GC.DefaultPermissions.AddReactions} F: {GC.DefaultPermissions.Has(ChannelPermission.AddReactions)} S: {Context.Server.DefaultPermissions.AddReactions}");
+
+    }
+
     [Command("dm")]
     public async Task DM()
     {
@@ -46,7 +68,7 @@ public class CmdTest : ModuleBase
     {
         Role role = Context.Client.GetRole(id);
         await ReplyAsync($"Exists: {role != null}");
-        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(role, Formatting.Indented));
+        Console.WriteLine(JsonConvert.SerializeObject(role, Formatting.Indented));
     }
 
     [Command("emojimsg")]
@@ -134,30 +156,46 @@ public class CmdTest : ModuleBase
                 }
                 break;
             case "server":
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Server, new JsonSerializerSettings
+                Console.WriteLine(JsonConvert.SerializeObject(Context.Server, new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
                 break;
             case "channel":
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Channel, new JsonSerializerSettings
+                Console.WriteLine(JsonConvert.SerializeObject(Context.Channel, new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
                 break;
+            case "perms":
+                {
+                    Console.WriteLine("Default");
+                    Console.WriteLine(JsonConvert.SerializeObject((Context.Channel as TextChannel).DefaultPermissions, new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                    Console.WriteLine("Server");
+                    Console.WriteLine(JsonConvert.SerializeObject(Context.Server.DefaultPermissions, new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                }
+                break;
             case "member":
                 if (Context.Member == null)
                     Console.WriteLine("NULL MEMBER!");
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Member, new JsonSerializerSettings
+                Console.WriteLine(JsonConvert.SerializeObject(Context.Member, new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
                 break;
             case "message":
-                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Message, new JsonSerializerSettings
+                Console.WriteLine(JsonConvert.SerializeObject(Context.Message, new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,
                     MaxDepth = 1,
@@ -259,9 +297,7 @@ public class CmdTest : ModuleBase
     public async Task AddRole()
     {
         ServerMember Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
-        System.Net.Http.HttpResponseMessage Req = await Context.Client.Rest.AddRoleAsync(Member, Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
-        await ReplyAsync(Req.IsSuccessStatusCode.ToString());
-    
+        await Member.AddRoleAsync(Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
     }
 
 
