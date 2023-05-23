@@ -68,6 +68,9 @@ csharp_style_var_for_built_in_types = false:silent
 csharp_style_var_when_type_is_apparent = false:silent
 csharp_style_var_elsewhere = false:silent
 
+# CA1825: Avoid zero-length array allocations
+dotnet_diagnostic.CA1825.severity = error
+
 [*.{cs,vb}]
 #### Naming styles ####
 

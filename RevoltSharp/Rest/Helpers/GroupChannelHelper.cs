@@ -1,12 +1,17 @@
 ﻿using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for group channels.
+/// </summary>
 public static class GroupChannelHelper
 {
     public static async Task<GroupChannel> CreateGroupChannelAsync(this RevoltRestClient rest, string name, Option<string> description = null, bool isNsfw = false)
@@ -26,19 +31,19 @@ public static class GroupChannelHelper
         return (GroupChannel)Channel.Create(rest.Client, Json);
     }
 
-    public static Task<User[]?> GetMembersAsync(this GroupChannel channel)
+    public static Task<IReadOnlyCollection<User>> GetMembersAsync(this GroupChannel channel)
       => GetGroupChannelMembersAsync(channel.Client.Rest, channel.Id);
 
-    public static async Task<User[]?> GetGroupChannelMembersAsync(this RevoltRestClient rest, string channelId)
+    public static async Task<IReadOnlyCollection<User>> GetGroupChannelMembersAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.NotAllowedForBots(rest, "GetGroupChannelMembersAsync");
         Conditions.ChannelIdEmpty(channelId, "GetGroupChannelMembersAsync");
 
         UserJson[]? List = await rest.GetAsync<UserJson[]>($"channels/{channelId}");
         if (List == null)
-            return null;
+            return System.Array.Empty<User>();
 
-        return List.Select(x => new User(rest.Client, x)).ToArray();
+        return List.Select(x => new User(rest.Client, x)).ToImmutableArray();
     }
 
     public static Task<GroupChannel?> GetGroupChannelAsync(this SelfUser user, string channelId)
@@ -47,19 +52,19 @@ public static class GroupChannelHelper
     public static Task<GroupChannel?> GetGroupChannelAsync(this RevoltRestClient rest, string channelId)
         => ChannelHelper.GetChannelAsync<GroupChannel>(rest, channelId);
 
-    public static Task<GroupChannel[]?> GetGroupChannelsAsync(this SelfUser user)
+    public static Task<IReadOnlyCollection<GroupChannel>> GetGroupChannelsAsync(this SelfUser user)
         => GetGroupChannelsAsync(user.Client.Rest);
 
-    public static async Task<GroupChannel[]?> GetGroupChannelsAsync(this RevoltRestClient rest)
+    public static async Task<IReadOnlyCollection<GroupChannel>> GetGroupChannelsAsync(this RevoltRestClient rest)
     {
         if (rest.Client.WebSocket != null)
             return rest.Client.WebSocket.ChannelCache.Values.Where(x => x.Type == ChannelType.Group).Select(x => (GroupChannel)x).ToArray();
 
         ChannelJson[]? Channels = await rest.GetAsync<ChannelJson[]>("/users/dms");
         if (Channels == null)
-            return null;
+            return System.Array.Empty<GroupChannel>();
 
-        return Channels.Select(x => new GroupChannel(rest.Client, x)).ToArray();
+        return Channels.Select(x => new GroupChannel(rest.Client, x)).ToImmutableArray();
     }
 
 

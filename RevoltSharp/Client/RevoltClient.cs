@@ -76,7 +76,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.3.0";
+    public string Version { get; } = "5.4.0";
 
     public string RevoltVerion { get; internal set; }
 
@@ -103,6 +103,8 @@ public class RevoltClient : ClientEvents
     internal bool IsConnected = false;
 
     public SelfUser? CurrentUser { get; internal set; }
+
+    public SavedMessagesChannel? SavedMessagesChannel { get; internal set; }  
 
     /// <summary>
     /// Start the Rest and Websocket to be used for the lib.

@@ -104,13 +104,12 @@ public class RevoltRestClient
         return HttpMethod.Get;
     }
 
+    /// <inheritdoc cref="UploadFileAsync(byte[], string, UploadFileType)" />
     public Task<FileAttachment> UploadFileAsync(string path, UploadFileType type)
-        => InternalUploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
+        => UploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
 
-    public Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
-       => InternalUploadFileAsync(bytes, name, type);
 
-    internal async Task<FileAttachment> InternalUploadFileAsync(byte[] bytes, string name, UploadFileType type)
+    public async Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
     {
         Conditions.FileBytesEmpty(bytes, "SendFileAsync");
         Conditions.FileNameEmpty(name, "SendFileAsync");

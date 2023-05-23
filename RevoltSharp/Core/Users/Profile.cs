@@ -2,13 +2,12 @@
 
 public class Profile : Entity
 {
-    public string Bio { get; internal set; }
-    public Attachment Background { get; internal set; }
-
-    internal Profile(RevoltClient client, ProfileJson model)
-        : base(client)
+    internal Profile(RevoltClient client, ProfileJson model) : base(client)
     {
         Bio = model.Content;
         Background = Attachment.Create(client, model.Background);
     }
+
+    public string Bio { get; internal set; }
+    public Attachment Background { get; internal set; }
 }

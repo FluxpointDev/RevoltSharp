@@ -171,11 +171,12 @@ internal class RevoltSocketClient
             {
                 case "Authenticated":
                     if (_firstConnected)
+                    {
+                        Client.InvokeConnected();
                         Console.WriteLine("[RevoltSharp] WebSocket Connected!");
+                    }
                     else
                         Console.WriteLine("[RevoltSharp] WebSocket Reconnected!");
-                    
-                    Client.InvokeConnected();
 
                     _firstConnected = false;
                     await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
@@ -191,7 +192,16 @@ internal class RevoltSocketClient
                     break;
                 case "Pong":
                     {
-
+                        
+                    }
+                    break;
+                case "Bulk":
+                    {
+                        BulkEventsJson @event = JsonConvert.DeserializeObject<BulkEventsJson>(json);
+                        foreach (dynamic e in @event.Events)
+                        {
+                            await WebSocketMessage(JsonConvert.SerializeObject(e));
+                        }
                     }
                     break;
                 case "Error":
@@ -249,6 +259,17 @@ internal class RevoltSocketClient
                                     s.InternalMembers.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
                             }
 
+                            Client.SavedMessagesChannel = (SavedMessagesChannel)ChannelCache.Values.FirstOrDefault(x => x.Type == ChannelType.SavedMessages);
+
+                            foreach (var c in ChannelCache.Values.Where(x => x.Type == ChannelType.DM))
+                            {
+                                
+                                DMChannel DM = (DMChannel)c;
+
+                                if (UserCache.TryGetValue(DM.UserId, out User user))
+                                    user.InternalMutualDMs.TryAdd(c.Id, DM);
+                            }
+
                             foreach (EmojiJson m in @event.Emojis)
                             {
                                 Emoji Emote = new Emoji(Client, m);
@@ -257,7 +278,6 @@ internal class RevoltSocketClient
                                     s.InternalEmojis.TryAdd(m.Id, Emote);
                             }
                             Console.WriteLine("[RevoltSharp] WebSocket Ready!");
-
 
                             Client.InvokeReady(CurrentUser);
 
@@ -335,7 +355,7 @@ internal class RevoltSocketClient
                             channel = await Client.Rest.GetChannelAsync(@event.Channel);
                             ChannelCache.TryAdd(channel.Id, channel);
                         }
-                        Client.InvokeMessageUpdated(new MessageUpdatedProperties(this, @event));
+                        Client.InvokeMessageUpdated(new MessageUpdatedProperties(Client, @event));
                     }
                     break;
                 case "MessageDelete":
@@ -376,26 +396,39 @@ internal class RevoltSocketClient
                         ChannelEventJson @event = payload.ToObject<ChannelEventJson>(Client.Serializer);
                         Channel chan = Channel.Create(Client, @event);
                         ChannelCache.TryAdd(chan.Id, chan);
-                        if (!string.IsNullOrEmpty(@event.Server))
-                        {
-                            ServerCache.TryGetValue(@event.Server, out Server server);
-                            server.ChannelIds.Add(chan.Id);
-                            Client.InvokeChannelCreated(chan as ServerChannel);
-                        }
-                        else if (@event.ChannelType == ChannelType.Group)
-                        {
-                            GroupChannel GC = chan as GroupChannel;
-                            foreach (string u in GC.Recipents)
-                            {
-                                if (UserCache.TryGetValue(u, out User User))
-                                    GC.AddUser(User);
-                            }
 
-                            Client.InvokeGroupJoined(GC, CurrentUser);
-                        }
-                        else if (@event.ChannelType == ChannelType.DM)
+                        switch (chan.Type)
                         {
-                            Client.InvokeDMChannelOpened(chan as DMChannel);
+                            case ChannelType.Text:
+                            case ChannelType.Voice:
+                                {
+                                    ServerCache.TryGetValue(@event.Server, out Server server);
+                                    server.ChannelIds.Add(chan.Id);
+                                    Client.InvokeChannelCreated(chan as ServerChannel);
+                                }
+                                break;
+                            case ChannelType.Group:
+                                {
+                                    GroupChannel GC = chan as GroupChannel;
+                                    foreach (string u in GC.Recipents)
+                                    {
+                                        if (UserCache.TryGetValue(u, out User User))
+                                            GC.AddUser(User);
+                                    }
+
+                                    Client.InvokeGroupJoined(GC, CurrentUser);
+                                }
+                                break;
+                            case ChannelType.DM:
+                                {
+                                    Client.InvokeDMChannelOpened(chan as DMChannel);
+                                }
+                                break;
+                            case ChannelType.SavedMessages:
+                                {
+                                    Client.SavedMessagesChannel = chan as SavedMessagesChannel;
+                                }
+                                break;
                         }
                     }
                     break;
@@ -898,7 +931,7 @@ internal class RevoltSocketClient
                     {
                         UserPlatformWipedEventJson @event = payload.ToObject<UserPlatformWipedEventJson>(Client.Serializer);
                         UserCache.Remove(@event.UserId, out User User);
-                        _ = Task.Run(() =>
+                        _ = Task.Run(async () =>
                         {
                             foreach (var c in ChannelCache.Values)
                             {
@@ -908,19 +941,22 @@ internal class RevoltSocketClient
                                         DMChannel DM = (DMChannel)c;
                                         if (DM.UserId == User.Id)
                                         {
-                                            DM.InternalRecipents.Remove(User.Id);
+                                            User.InternalMutualDMs.TryRemove(c.Id, out DMChannel _);
                                             ChannelCache.Remove(c.Id, out Channel C);
-                                            DM.CloseAsync();
+                                            if (DM.Active)
+                                                    DM.CloseAsync();
                                         }
                                         break;
                                     case ChannelType.Group:
                                         GroupChannel GC = (GroupChannel)c;
-                                        GC.CachedUsers.Remove(User.Id, out User GU);
+                                        User.InternalMutualGroups.TryRemove(c.Id, out GroupChannel _);
+                                        GC.CachedUsers.TryRemove(User.Id, out User GU);
                                         break;
                                 }
                             }
                             foreach (var s in ServerCache.Values)
                             {
+                                User.InternalMutualServers.TryRemove(s.Id, out Server _);
                                 s.InternalMembers.Remove(User.Id, out ServerMember SM);
                             }
                         });

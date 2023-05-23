@@ -2,10 +2,12 @@
 using RevoltSharp.Rest.Requests;
 using System.Threading.Tasks;
 using Optionals;
-using System.Xml.Linq;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for server roles.
+/// </summary>
 public static class RoleHelper
 {
     public static Task<Role> CreateRoleAsync(this Server server, string name, Option<int> rank = null)

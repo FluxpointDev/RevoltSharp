@@ -25,7 +25,7 @@ class Program
                 LogRestResponseJson = false, 
                 LogRestRequest = false, 
                 LogWebSocketFull = true,
-                LogWebSocketReady = false, 
+                LogWebSocketReady = true, 
                 LogWebSocketError = false, 
                 LogWebSocketUnknownEvent = true },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
@@ -34,7 +34,6 @@ class Program
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
         //new EventTests(Client);
-
 
 
 

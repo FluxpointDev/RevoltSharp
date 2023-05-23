@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace RevoltSharp;
 
@@ -13,7 +12,7 @@ public class DMChannel : Channel
         Id = model.Id;
         Type = ChannelType.DM;
         Active = model.Active;
-        InternalRecipents = model.Recipients != null ? model.Recipients.ToList() : new List<string>();
+        UserId = model.Recipients.First(x => x != client.CurrentUser.Id);
         LastMessageId = model.LastMessageId;
     }
 
@@ -25,14 +24,12 @@ public class DMChannel : Channel
     /// <summary>
     /// The user id for this DM channel.
     /// </summary>
-    public string UserId => InternalRecipents.FirstOrDefault(x => x != Client.CurrentUser?.Id);
+    public string UserId { get; internal set; }
 
     /// <summary>
     /// The user for this DM channel.
     /// </summary>
     public User? User => Client.GetUser(UserId);
-
-    internal List<string> InternalRecipents;
 
     /// <summary>
     /// The last message id sent in this DM channel.

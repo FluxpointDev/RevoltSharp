@@ -238,9 +238,4 @@ public class ServerMember : Entity
         if (json.ClearTimeout)
             Timeout = null;
     }
-
-    internal ServerMember Clone()
-    {
-        return (ServerMember)this.MemberwiseClone();
-    }
 }

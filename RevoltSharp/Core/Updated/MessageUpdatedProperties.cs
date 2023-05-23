@@ -7,11 +7,10 @@ using System.Linq;
 
 namespace RevoltSharp;
 
-public class MessageUpdatedProperties
+public class MessageUpdatedProperties : CreatedEntity
 {
-    internal MessageUpdatedProperties(RevoltSocketClient client, MessageUpdateEventJson json)
+    internal MessageUpdatedProperties(RevoltClient client, MessageUpdateEventJson json) : base(client, json.Id)
     {
-        Client = client;
         Content = json.Data.Content;
         if (json.Data.Embeds.HasValue)
         {
@@ -26,7 +25,7 @@ public class MessageUpdatedProperties
             ServerId = SC.ServerId;
     }
 
-    private RevoltSocketClient Client;
+    public string Id { get; private set; }
 
     public Optional<string> Content { get; private set; }
 
@@ -36,10 +35,10 @@ public class MessageUpdatedProperties
 
     public string ChannelId { get; private set; }
 
-    public Channel? Channel => Client.ChannelCache.GetValueOrDefault(ChannelId);
+    public Channel? Channel => Client.GetChannel(ChannelId);
 
     public string ServerId { get; private set; }
 
-    public Server? Server => Client.ServerCache.GetValueOrDefault(ServerId);
+    public Server? Server => Client.GetServer(ServerId);
 
 }

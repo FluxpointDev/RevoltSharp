@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for reactions.
+/// </summary>
 public static class ReactionHelpers
 {
     public static Task AddReactionAsync(this UserMessage message, Emoji emoji)

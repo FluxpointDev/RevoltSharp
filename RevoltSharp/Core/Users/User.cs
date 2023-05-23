@@ -12,6 +12,24 @@ namespace RevoltSharp;
 /// </summary>
 public class User : CreatedEntity
 {
+    internal User(RevoltClient client, UserJson model) : base(client, model.Id)
+    {
+        Id = model.Id;
+        Username = model.Username;
+        Status = new UserStatus(model);
+        BotData = BotData.Create(model.Bot);
+        Avatar = Attachment.Create(client, model.Avatar);
+        Badges = new UserBadges(model.Badges);
+        Flags = new UserFlags(model.Flags);
+
+        if (!string.IsNullOrEmpty(model.Relationship) && Enum.TryParse(model.Relationship, ignoreCase: true, out UserRelationship UR))
+            Relationship = UR;
+        else
+            Relationship = UserRelationship.None;
+
+        Privileged = model.Privileged;
+    }
+
     /// <summary>
     /// The User ID for this user.
     /// </summary>
@@ -102,6 +120,15 @@ public class User : CreatedEntity
     /// </summary>
     public bool IsBlocked => (Relationship == UserRelationship.Blocked || Relationship == UserRelationship.BlockedOther);
 
+    internal ConcurrentDictionary<string, DMChannel> InternalMutualDMs { get; set; } = new ConcurrentDictionary<string, DMChannel>();
+
+    /// <summary>
+    /// Known mutual DM channels for the current user/bot account.
+    /// </summary>
+    [JsonIgnore]
+    public IReadOnlyCollection<DMChannel> MutualDMs
+        => (IReadOnlyCollection<DMChannel>)InternalMutualDMs.Values;
+
     internal ConcurrentDictionary<string, Server> InternalMutualServers { get; set; } = new ConcurrentDictionary<string, Server>();
 
     /// <summary>
@@ -119,9 +146,6 @@ public class User : CreatedEntity
     /// <summary>
     /// Known mutual group channels that this user has for the current user/bot account.
     /// </summary>
-    /// <remarks>
-    /// This may not be fully accurate.
-    /// </remarks>
     [JsonIgnore]
     public IReadOnlyCollection<GroupChannel> MutualGroups
        => (IReadOnlyCollection<GroupChannel>)InternalMutualGroups.Values;
@@ -133,64 +157,13 @@ public class User : CreatedEntity
     /// This may not be fully accurate.
     /// </remarks>
     internal bool HasMutuals
-       => InternalMutualGroups.Any() || InternalMutualServers.Any();
-
-    internal User(RevoltClient client, UserJson model)
-        : base(client, model.Id)
-    {
-        Id = model.Id;
-        Username = model.Username;
-        Status = new UserStatus();
-        if (model.Online)
-            Status.Type = UserStatusType.Online;
-        else
-            Status.Type = UserStatusType.Offline;
-        if (model.Status != null)
-        {
-            Status.Text = model.Status.Text;
-            if (model.Status != null && Enum.TryParse(model.Status.Presence, ignoreCase: true, out UserStatusType ST))
-                Status.Type = ST;
-            else
-                Status.Type = UserStatusType.Offline;
-        }
-        else
-            Status.Type = UserStatusType.Offline;
-
-        BotData = BotData.Create(model.Bot);
-        Avatar = Attachment.Create(client, model.Avatar);
-        Badges = new UserBadges(model.Badges);
-        Flags = new UserFlags(model.Flags);
-
-        if (!string.IsNullOrEmpty(model.Relationship) && Enum.TryParse(model.Relationship, ignoreCase: true, out UserRelationship UR))
-            Relationship = UR;
-        else
-            Relationship = UserRelationship.None;
-
-        Privileged = model.Privileged;
-    }
+       => InternalMutualGroups.Any() || InternalMutualServers.Any() || InternalMutualDMs.Any();
 
     internal void Update(PartialUserJson data)
     {
         if (data.avatar.HasValue)
             Avatar = Attachment.Create(Client, data.avatar.Value);
-        
-        if (data.online.HasValue)
-        {
-            if (data.online.Value)
-                Status.Type = UserStatusType.Online;
-            else
-                Status.Type = UserStatusType.Offline;
-        }
 
-        if (data.status.HasValue && data.status.Value != null)
-        {
-            Status.Text = data.status.Value.Text;
-            if (data.status.Value != null && Enum.TryParse(data.status.Value.Presence, ignoreCase: true, out UserStatusType ST))
-                Status.Type = ST;
-            else
-                Status.Type = UserStatusType.Offline;
-        }
-        
         if (this is SelfUser Self)
         {
             if (data.ProfileBackground.HasValue)
@@ -225,73 +198,11 @@ public class User : CreatedEntity
     }
 }
 
-/// <summary>
-/// User status mode and presence text.
-/// </summary>
-public class UserStatus
-{
-    /// <summary>
-    /// Custom text status for the user.
-    /// </summary>
-    public string Text { get; internal set; }
 
-    /// <summary>
-    /// Status mode for the user.
-    /// </summary>
-    public UserStatusType Type { get; internal set; }
-}
 
-/// <summary>
-/// Cool badges the user has.
-/// </summary>
-public class UserBadges
-{
-    internal UserBadges(ulong value)
-    {
-        Raw = value;
-        Types = (UserBadgeType)Raw;
-    }
 
-    /// <summary>
-    /// Not recommended to use, use <see cref="Has(UserBadgeType)"/> instead.
-    /// </summary>
-    public ulong Raw { get; internal set; }
 
-    /// <summary>
-    /// Check if a user has a badge.
-    /// </summary>
-    /// <param name="type">The type of badge to check</param>
-    /// <returns><see langword="true" /> if user has this badge otherwise <see langword="false" /></returns>
-    public bool Has(UserBadgeType type) => Types.HasFlag(type);
 
-    internal UserBadgeType Types;
-}
-
-/// <summary>
-/// System flags set for the user.
-/// </summary>
-public class UserFlags
-{
-    internal UserFlags(ulong value)
-    {
-        Raw = value;
-        Types = (UserFlagType)Raw;
-    }
-
-    /// <summary>
-    /// Not recommended to use, use <see cref="Has(UserFlagType)"/> instead.
-    /// </summary>
-    public ulong Raw { get; internal set; }
-
-    /// <summary>
-    /// Check if the user has a flag.
-    /// </summary>
-    /// <param name="type">The type of system flag to check</param>
-    /// <returns><see langword="true" /> if user has the flag otherwise <see langword="false" /></returns>
-    public bool Has(UserFlagType type) => Types.HasFlag(type);
-
-    internal UserFlagType Types;
-}
 
 /// <summary>
 /// Data for the bot account that this user is.
@@ -318,125 +229,7 @@ public class BotData
 
 }
 
-/// <summary>
-/// Cool badges for users :)
-/// </summary>
-[Flags]
-public enum UserBadgeType
-{
-    /// <summary>
-    /// User is a Revolt developer that works on Revolt magic
-    /// </summary>
-    Developer = 1,
 
-    /// <summary>
-    /// User has helped translate Revolt or other Revolt related stuff.
-    /// </summary>
-    Translator = 2,
-
-    /// <summary>
-    /// User has supported the project by donating.
-    /// </summary>
-    Supporter = 4,
-
-    /// <summary>
-    /// User has disclosed a major bug or security issue.
-    /// </summary>
-    ResponsibleDisclosure = 8,
-
-    /// <summary>
-    /// Hi insert :)
-    /// </summary>
-    Founder = 16,
-
-    /// <summary>
-    /// User has the power to moderate the Revolt instance.
-    /// </summary>
-    PlatformModeration = 32,
-
-    /// <summary>
-    /// Active support for the Revolt project.
-    /// </summary>
-    ActiveSupporter = 64,
-
-    /// <summary>
-    /// OwO
-    /// </summary>
-    Paw = 128,
-
-    /// <summary>
-    /// User was an early member/tester of the Revolt project.
-    /// </summary>
-    EarlyAdopter = 256,
-
-    /// <summary>
-    /// Haha funny
-    /// </summary>
-    ReservedRelevantJokeBadge1 = 512,
-
-    /// <summary>
-    /// Haha memes
-    /// </summary>
-    ReservedRelevantJokeBadge2 = 1024
-}
-
-/// <summary>
-/// System flags for the Revolt instance.
-/// </summary>
-[Flags]
-public enum UserFlagType
-{
-    /// <summary>
-    /// User has been suspended from using Revolt.
-    /// </summary>
-    Suspended = 1,
-
-    /// <summary>
-    /// User has been deleted from the Revolt instance.
-    /// </summary>
-    Deleted = 2,
-
-    /// <summary>
-    /// User has been banned from the Revolt instance.
-    /// </summary>
-    Banned = 4
-}
-
-/// <summary>
-/// Status mode for the user.
-/// </summary>
-public enum UserStatusType
-{
-    /// <summary>
-    /// User is not online on Revolt.
-    /// </summary>
-    Offline, 
-    
-    /// <summary>
-    /// User is online and using Revolt.
-    /// </summary>
-    Online,
-    
-    /// <summary>
-    /// User is away from their computer.
-    /// </summary>
-    Idle,
-    
-    /// <summary>
-    /// User is focused on a task but is available.
-    /// </summary>
-    Focus,
-    
-    /// <summary>
-    /// Do not FK WITH THIS USER.
-    /// </summary>
-    Busy,
-    
-    /// <summary>
-    /// Who you gonna call? Ghost busters!
-    /// </summary>
-    Invisible
-}
 
 /// <summary>
 /// Relationship type compared to the current user/bot account.

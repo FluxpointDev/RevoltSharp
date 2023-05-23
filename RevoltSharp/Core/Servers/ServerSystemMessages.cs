@@ -9,20 +9,20 @@ public class ServerSystemMessages : Entity
         if (json == null)
             return;
 
-        UserJoinedId = json.UserJoined;
-        UserLeftId = json.UserLeft;
-        UserKickedId = json.UserKicked;
-        UserBannedId = json.UserBanned;
+        UserJoinedChannelId = json.UserJoined;
+        UserLeftChannelId = json.UserLeft;
+        UserKickedChannelId = json.UserKicked;
+        UserBannedChannelId = json.UserBanned;
 
     }
 
-    public Optional<string> UserJoinedId { get; set; }
+    public Optional<string> UserJoinedChannelId { get; set; }
 
-    public TextChannel? UserJoinedChannel => Client.GetTextChannel(UserJoinedId);
-    public Optional<string> UserLeftId { get; set; }
-    public TextChannel? UserLeftChannel => Client.GetTextChannel(UserLeftId);
-    public Optional<string> UserKickedId { get; set; }
-    public TextChannel? UserKickedChannel => Client.GetTextChannel(UserKickedId);
-    public Optional<string> UserBannedId { get; set; }
-    public TextChannel? UserBannedChannel => Client.GetTextChannel(UserBannedId);
+    public TextChannel? UserJoinedChannel => Client.GetTextChannel(UserJoinedChannelId);
+    public Optional<string> UserLeftChannelId { get; set; }
+    public TextChannel? UserLeftChannel => Client.GetTextChannel(UserLeftChannelId);
+    public Optional<string> UserKickedChannelId { get; set; }
+    public TextChannel? UserKickedChannel => Client.GetTextChannel(UserKickedChannelId);
+    public Optional<string> UserBannedChannelId { get; set; }
+    public TextChannel? UserBannedChannel => Client.GetTextChannel(UserBannedChannelId);
 }

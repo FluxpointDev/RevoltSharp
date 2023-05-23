@@ -3,12 +3,16 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for server members.
+/// </summary>
 public static class MemberHelper
 {
 
@@ -135,23 +139,23 @@ public static class MemberHelper
         return SM;
     }
 
-    public static Task<ServerMember[]?> GetMembersAsync(this Server server, bool onlineOnly = false)
+    public static Task<IReadOnlyCollection<ServerMember>> GetMembersAsync(this Server server, bool onlineOnly = false)
        => GetMembersAsync(server.Client.Rest, server.Id);
 
-    public static async Task<ServerMember[]?> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
+    public static async Task<IReadOnlyCollection<ServerMember>> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
     {
         Conditions.ServerIdEmpty(serverId, "GetMembersAsync");
 
         MembersListJson? List = await rest.GetAsync<MembersListJson>($"servers/{serverId}/members?exclude_offline=" + onlineOnly.ToString());
         if (List == null)
-            return null;
+            return System.Array.Empty<ServerMember>();
 
         HashSet<ServerMember> Members = new HashSet<ServerMember>();
         for (int i = 0; i < List.Members.Length; i++)
         {
             Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i], rest.Client.GetUser(List.Users[i].Id)));
         }
-        return Members.ToArray();
+        return Members.ToImmutableArray();
     }
 
 

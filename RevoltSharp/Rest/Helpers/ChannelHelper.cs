@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for all channel types.
+/// </summary>
 public static class ChannelHelper
 {
     public static Task<TextChannel?> GetTextChannelAsync(this Server server, string channelId)
@@ -48,9 +51,9 @@ public static class ChannelHelper
 
 
     public static Task<TextChannel> CreateTextChannelAsync(this Server server, string name, string description = null, bool nsfw = false)
-        => CreateTextChannelAsync(server.Client.Rest, server.Id, name, description, nsfw);
+        => InternalCreateTextChannelAsync(server.Client.Rest, server.Id, name, description, nsfw);
 
-    public static async Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null, bool nsfw = false)
+    internal static async Task<TextChannel> InternalCreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null, bool nsfw = false)
     {
         Conditions.ServerIdEmpty(serverId, "CreateTextChannelAsync");
         Conditions.ChannelNameEmpty(name, "CreateTextChannelAsync");
@@ -70,9 +73,9 @@ public static class ChannelHelper
     }
 
     public static Task<VoiceChannel> CreateVoiceChannelAsync(this Server server, string name, string description = null)
-        => CreateVoiceChannelAsync(server.Client.Rest, server.Id, name, description);
+        => InternalCreateVoiceChannelAsync(server.Client.Rest, server.Id, name, description);
 
-    public static async Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null)
+    internal static async Task<VoiceChannel> InternalCreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null)
     {
         Conditions.ServerIdEmpty(serverId, "CreateVoiceChannelAsync");
         Conditions.ChannelNameEmpty(name, "CreateVoiceChannelAsync");
@@ -89,19 +92,22 @@ public static class ChannelHelper
         return new VoiceChannel(rest.Client, Json);
     }
 
-    public static Task<Channel> ModifyAsync(this TextChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
-        => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
+    public static Task<TextChannel> ModifyAsync(this TextChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
+        => InternalModifyChannelAsync<TextChannel>(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
 
-    public static Task<Channel> ModifyAsync(this VoiceChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
-        => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
+    public static Task<VoiceChannel> ModifyAsync(this VoiceChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
+        => InternalModifyChannelAsync<VoiceChannel>(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
 
-    public static Task<Channel> ModifyAsync(this GroupChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
-        => ModifyChannelAsync(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, owner);
+    public static Task<GroupChannel> ModifyAsync(this GroupChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
+        => InternalModifyChannelAsync<GroupChannel>(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, owner);
 
     public static Task<Channel> ModifyChannelAsync(this Server server, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
-        => ModifyChannelAsync(server.Client.Rest, channelId, name, desc, iconId, nsfw, null);
-    
-    public static async Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
+        => InternalModifyChannelAsync<Channel>(server.Client.Rest, channelId, name, desc, iconId, nsfw, null);
+
+    public static Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
+        => InternalModifyChannelAsync<Channel>(rest, channelId, name, desc, iconId, nsfw, owner);
+
+    internal static async Task<TChannel> InternalModifyChannelAsync<TChannel>(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null) where TChannel : Channel
     {
         Conditions.ChannelIdEmpty(channelId, "ModifyChannelAsync");
 
@@ -137,16 +143,16 @@ public static class ChannelHelper
             Req.owner = Optional.Some(owner.Value);
         }
         ChannelJson Json = await rest.PatchAsync<ChannelJson>($"/channels/{channelId}", Req);
-        return Channel.Create(rest.Client, Json);
+        return (TChannel)Channel.Create(rest.Client, Json);
     }
 
-    public static Task DeleteChannelAsync(this ServerChannel channel)
-        => DeleteChannelAsync(channel.Client.Rest, channel.Id);
+    public static Task DeleteAsync(this ServerChannel channel)
+        => InternalDeleteChannelAsync(channel.Client.Rest, channel.Id);
 
     public static Task DeleteChannelAsync(this Server server, string channelId)
-        => DeleteChannelAsync(server.Client.Rest, channelId);
+        => InternalDeleteChannelAsync(server.Client.Rest, channelId);
 
-    public static async Task DeleteChannelAsync(this RevoltRestClient rest, string channelId)
+    internal static async Task InternalDeleteChannelAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdEmpty(channelId, "DeleteChannelAsync");
 

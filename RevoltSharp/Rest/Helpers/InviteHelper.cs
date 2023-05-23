@@ -1,9 +1,14 @@
 ﻿using RevoltSharp.Rest;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for server invites.
+/// </summary>
 public static class InviteHelper
 {
     public static Task DeleteAsync(this Invite invite)
@@ -25,18 +30,18 @@ public static class InviteHelper
         await rest.DeleteAsync($"/invites/{inviteCode}");
     }
 
-    public static Task<Invite[]?> GetInvitesAsync(this Server server)
+    public static Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this Server server)
         => GetInvitesAsync(server.Client.Rest, server.Id);
 
-    public static async Task<Invite[]?> GetInvitesAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetInvitesAsync");
 
         InviteJson[]? Json = await rest.GetAsync<InviteJson[]>($"/servers/{serverId}/invites");
         if (Json == null)
-            return null;
+            return System.Array.Empty<Invite>();
 
-        return Json.Select(x => new Invite(rest.Client, x)).ToArray();
+        return Json.Select(x => new Invite(rest.Client, x)).ToImmutableArray();
     }
 
     public static Task<Invite?> GetInviteAsync(this Server server, string inviteCode)

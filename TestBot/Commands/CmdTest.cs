@@ -3,6 +3,7 @@ using RevoltSharp;
 using RevoltSharp.Commands;
 using RevoltSharp.Internal;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -94,8 +95,8 @@ public class CmdTest : ModuleBase
     public async Task RoleAll()
     {
         await ReplyAsync("Running");
-        ServerMember[] Members = await Context.Server.GetMembersAsync();
-        Console.WriteLine("Members: " + Members.Length);
+        IReadOnlyCollection<ServerMember> Members = await Context.Server.GetMembersAsync();
+        Console.WriteLine("Members: " + Members.Count);
         foreach (ServerMember m in Members)
         {
             if (m.IsBot)
@@ -223,7 +224,7 @@ public class CmdTest : ModuleBase
         Console.WriteLine("-- Channels ---");
         TextChannel Channel = await Context.Server.CreateTextChannelAsync("T", "AHH");
         Console.WriteLine("- Create");
-        await Channel.DeleteChannelAsync();
+        await Channel.DeleteAsync();
         Console.WriteLine("- Delete");
         Console.WriteLine("-- Msg ---");
         UserMessage Msg = await Context.Channel.SendMessageAsync("Ahh", new Embed[] { new EmbedBuilder

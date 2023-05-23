@@ -1,19 +1,26 @@
-﻿using RevoltSharp.Rest;
+﻿using Newtonsoft.Json.Linq;
+using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for emojis.
+/// </summary>
 public static class EmojiHelper
 {
+
+
     /// <summary>
-    /// Get an emoji
+    /// Get an emoji.
     /// </summary>
-    /// <param name="rest"></param>
-    /// <param name="emojiId">Emoji id</param>
-    /// <returns><see cref="Emoji" /> or <see langword="null" /></returns>
-    /// <exception cref="RevoltArgumentException"></exception>
+    /// <returns>
+    /// <see cref="Emoji" /> or <see langword="null" /> if no emoji found.
+    /// </returns>
     public static async Task<Emoji?> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
         Conditions.EmojiIdEmpty(emojiId, "GetEmojiAsync");
@@ -28,24 +35,21 @@ public static class EmojiHelper
     }
 
     /// <inheritdoc cref="GetEmojisAsync(RevoltRestClient, string)" />
-    public static Task<Emoji[]?> GetEmojisAsync(this Server server)
+    public static Task<IReadOnlyCollection<Emoji>> GetEmojisAsync(this Server server)
         => GetEmojisAsync(server.Client.Rest, server.Id);
 
     /// <summary>
     /// Get all emojis from a server
     /// </summary>
-    /// <param name="rest"></param>
-    /// <param name="serverId">Server id</param>
     /// <returns>List of server <see cref="Emoji" /></returns>
-    /// <exception cref="RevoltArgumentException"></exception>
-    public static async Task<Emoji[]?> GetEmojisAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<IReadOnlyCollection<Emoji>> GetEmojisAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetEmojisAsync");
 
         EmojiJson[]? Json = await rest.GetAsync<EmojiJson[]>($"/servers/{serverId}/emojis");
         if (Json == null)
-            return null;
-        return Json.Select(x => new Emoji(rest.Client, x)).ToArray();
+            return System.Array.Empty<Emoji>();
+        return Json.Select(x => new Emoji(rest.Client, x)).ToImmutableArray();
     }
 
     public static Task<Emoji> CreateEmojiAsync(this Server server, string attachmentId, string name, bool nsfw = false)

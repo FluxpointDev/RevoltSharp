@@ -4,6 +4,9 @@ using RevoltSharp.Commands;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Config options for the RevoltSharp lib.
+/// </summary>
 public class ClientConfig
 {
     /// <summary>
@@ -31,6 +34,10 @@ public class ClientConfig
     /// </summary>
     public string[] Owners = null;
 }
+
+/// <summary>
+/// Debug settings for the RevoltSharp lib.
+/// </summary>
 public class ClientDebugConfig
 {
     /// <summary>

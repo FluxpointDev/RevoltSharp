@@ -3,11 +3,15 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Revolt http/rest methods for messages.
+/// </summary>
 public static class MessageHelper
 {
     public static Task<UserMessage> SendMessageAsync(this Channel channel, string text, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
@@ -91,10 +95,10 @@ public static class MessageHelper
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
     }
 
-    public static Task<IEnumerable<Message>?> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+    public static Task<IReadOnlyCollection<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
         => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
 
-    public static async Task<IEnumerable<Message>?> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+    public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
     {
         Conditions.ChannelIdEmpty(channelId, "GetMessagesAsync");
 
@@ -109,9 +113,9 @@ public static class MessageHelper
             Req.after = new Optional<string>(beforeMessageId);
         MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages", Req);
         if (Data == null)
-            return null;
+            return Array.Empty<Message>();
 
-        return Data.Select(x => Message.Create(rest.Client, x));
+        return Data.Select(x => Message.Create(rest.Client, x)).ToImmutableArray();
     }
 
     public static Task<Message?> GetMessageAsync(this Channel channel, string messageId)
