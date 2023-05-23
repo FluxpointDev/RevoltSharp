@@ -718,7 +718,7 @@ internal class RevoltSocketClient
                         {
                             Role cloned = role.Clone();
                             role.Update(@event.Data);
-                            Client.InvokeRoleUpdated(cloned, role, new RoleUpdatedProperties(role, @event.Data));
+                            Client.InvokeRoleUpdated(cloned, role, new RoleUpdatedProperties(Client, role, @event.Data));
                         }
                         else
                         {

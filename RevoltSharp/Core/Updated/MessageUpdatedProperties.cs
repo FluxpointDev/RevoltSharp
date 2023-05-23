@@ -14,12 +14,12 @@ public class MessageUpdatedProperties : CreatedEntity
         Content = json.Data.Content;
         if (json.Data.Embeds.HasValue)
         {
-            if (json.Data.Embeds.Value == null || !json.Data.Embeds.Value.Any())
-                Embeds = new Option<MessageEmbed[]>(Array.Empty<MessageEmbed>());
+            if (!json.Data.Embeds.HasValue)
+                Embeds = Optional.None<MessageEmbed[]>();
             else
-                Embeds = new Option<MessageEmbed[]>(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)).ToArray());
+                Embeds = Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)).ToArray());
         }
-        Edited = json.Data.Edited;
+        EditedAt = json.Data.EditedAt;
         ChannelId = json.Channel;
         if (Channel is ServerChannel SC)
             ServerId = SC.ServerId;
@@ -29,9 +29,9 @@ public class MessageUpdatedProperties : CreatedEntity
 
     public Optional<string> Content { get; private set; }
 
-    public Option<MessageEmbed[]> Embeds { get; private set; }
+    public Optional<MessageEmbed[]> Embeds { get; private set; }
 
-    public DateTime Edited { get; private set; }
+    public DateTime EditedAt { get; private set; }
 
     public string ChannelId { get; private set; }
 

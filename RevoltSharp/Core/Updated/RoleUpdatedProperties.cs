@@ -3,17 +3,18 @@ using System.Numerics;
 
 namespace RevoltSharp;
 
-public class RoleUpdatedProperties
+public class RoleUpdatedProperties : CreatedEntity
 {
-    internal RoleUpdatedProperties(Role role, PartialRoleJson json)
+    internal RoleUpdatedProperties(RevoltClient client, Role role, PartialRoleJson json) : base(client, role.Id)
     {
         Name = json.Name;
         if (json.Permissions.HasValue)
-            Permissions = new Optional<ServerPermissions>(role.Permissions);
+            Permissions = Optional.Some(new ServerPermissions(role.Server, json.Permissions.Value.Allowed));
 
         Hoist = json.Hoist;
         Rank = json.Rank;
-        Color = json.Colour;
+        if (json.Colour.HasValue)
+            Color = Optional.Some(new RevoltColor(json.Colour.Value));
     }
 
     public Optional<string> Name { get; private set; }
@@ -24,5 +25,5 @@ public class RoleUpdatedProperties
 
     public Optional<BigInteger> Rank { get; private set; }
 
-    public Optional<string> Color { get; private set; }
+    public Optional<RevoltColor> Color { get; private set; }
 }

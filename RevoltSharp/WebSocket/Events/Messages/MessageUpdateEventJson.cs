@@ -24,5 +24,5 @@ internal class MessageUpdatedJson
     public Optional<EmbedJson[]> Embeds;
 
     [JsonProperty("edited")]
-    public DateTime Edited;
+    public DateTime EditedAt;
 }
