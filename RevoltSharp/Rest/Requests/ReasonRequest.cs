@@ -2,7 +2,7 @@
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class ReasonRequest : RevoltRequest
+internal class ReasonRequest : IRevoltRequest
 {
     public Optional<string> reason;
 

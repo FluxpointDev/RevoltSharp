@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using RevoltSharp.Commands.Builders;
+using RevoltSharp.Rest;
 
 namespace RevoltSharp.Commands;
 
@@ -37,7 +38,7 @@ public abstract class ModuleBase : IModuleBase
     {
         if (string.IsNullOrEmpty(filePath))
             throw new RevoltArgumentException("File path cannot be empty when uploading files.");
-        FileAttachment File = await Context.Client.Rest.UploadFileAsync(filePath, Rest.RevoltRestClient.UploadFileType.Attachment);
+        FileAttachment File = await Context.Client.Rest.UploadFileAsync(filePath, UploadFileType.Attachment);
         return await Context.Channel.SendMessageAsync(text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
     }
   

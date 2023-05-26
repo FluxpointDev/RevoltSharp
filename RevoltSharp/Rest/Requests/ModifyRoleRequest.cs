@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class ModifyRoleRequest : RevoltRequest
+internal class ModifyRoleRequest : IRevoltRequest
 {
     public Optional<string> name;
     public Optional<string> colour;

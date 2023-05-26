@@ -76,9 +76,15 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.4.1";
+    public string Version { get; } = "5.5.0";
 
-    public string RevoltVerion { get; internal set; }
+    /// <summary>
+    /// The current version of the revolt instance connected to.
+    /// </summary>
+    /// <remarks>
+    /// This will be empty of you do not use <see cref="StartAsync" />.
+    /// </remarks>
+    public string? RevoltVersion { get; internal set; }
 
     internal bool UserBot { get; set; }
 
@@ -93,7 +99,7 @@ public class RevoltClient : ClientEvents
     /// Internal rest/http client used to connect to the Revolt API.
     /// </summary>
     /// <remarks>
-    /// You can also make custom requests with <see cref="RevoltRestClient.SendRequestAsync(RequestType, string, RevoltRequest)"/> and json class based on <see cref="RevoltRequest"/>
+    /// You can also make custom requests with <see cref="RevoltRestClient.SendRequestAsync(RequestType, string, IRevoltRequest)"/> and json class based on <see cref="IRevoltRequest"/>
     /// </remarks>
     public RevoltRestClient Rest { get; internal set; }
 
@@ -102,8 +108,20 @@ public class RevoltClient : ClientEvents
     internal bool FirstConnection = true;
     internal bool IsConnected = false;
 
+    /// <summary>
+    /// The current logged in user/bot account.
+    /// </summary>
+    /// <remarks>
+    /// This will be <see langword="null" /> of you do not use <see cref="StartAsync" />.
+    /// </remarks>
     public SelfUser? CurrentUser { get; internal set; }
 
+    /// <summary>
+    /// The current user/bot account's private notes message channel.
+    /// </summary>
+    /// <remarks>
+    /// This will be <see langword="null" /> if you have not created the channel from <see cref="BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltRestClient)" /> once.
+    /// </remarks>
     public SavedMessagesChannel? SavedMessagesChannel { get; internal set; }  
 
     /// <summary>
@@ -113,6 +131,7 @@ public class RevoltClient : ClientEvents
     /// Will throw a <see cref="RevoltException"/> if the token is incorrect or failed to login for the current user/bot.
     /// </remarks>
     /// <exception cref="RevoltException"></exception>
+    /// <exception cref="RevoltArgumentException"></exception>
     public async Task StartAsync()
     {
         if (FirstConnection)
@@ -128,7 +147,7 @@ public class RevoltClient : ClientEvents
             if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
                 throw new RevoltException("[RevoltSharp] Server Image server url is an invalid format.");
 
-            RevoltVerion = Query.revoltVersion;
+            RevoltVersion = Query.revoltVersion;
             Config.Debug.WebsocketUrl = Query.websocketUrl;
             Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url;
 
@@ -166,7 +185,7 @@ public class RevoltClient : ClientEvents
     /// Stop the WebSocket connection to Revolt.
     /// </summary>
     /// <remarks>
-    /// Will throw a <see cref="RevoltException"/> if <see cref="ClientMode.Http"/>
+    /// Will throw a <see cref="RevoltException"/> if <see cref="ClientMode.Http"/>.
     /// </remarks>
     /// <exception cref="RevoltException"></exception>
     public async Task StopAsync()
@@ -183,15 +202,45 @@ public class RevoltClient : ClientEvents
     }
 
     /// <summary>
-    /// Get a list of Servers from the websocket client 
+    /// Get a list of <see cref="Server" />s from the websocket client.
     /// </summary>
+    /// <remarks>
+    /// Will be empty if <see cref="ClientMode.Http"/>.
+    /// </remarks>
     public IReadOnlyCollection<Server> Servers
         => WebSocket != null ? (IReadOnlyCollection<Server>)WebSocket.ServerCache.Values : new ReadOnlyCollection<Server>(new List<Server>());
 
+    /// <summary>
+    /// Get a list of <see cref="User" />s from the websocket client.
+    /// </summary>
+    /// <remarks>
+    /// Will be empty if <see cref="ClientMode.Http"/>.
+    /// </remarks>
     public IReadOnlyCollection<User> Users
        => WebSocket != null ? (IReadOnlyCollection<User>)WebSocket.UserCache.Values : new ReadOnlyCollection<User>(new List<User>());
 
+    /// <summary>
+    /// Get a list of <see cref="Channel" />s from the websocket client.
+    /// </summary>
+    /// <remarks>
+    /// Will be empty if <see cref="ClientMode.Http"/>.
+    /// </remarks>
+    public IReadOnlyCollection<Channel> Channels
+        => WebSocket != null ? (IReadOnlyCollection<Channel>)WebSocket.ChannelCache.Values : new ReadOnlyCollection<Channel>(new List<Channel>());
 
+    /// <summary>
+    /// Get a list of <see cref="Emoji" />s from the websocket client.
+    /// </summary>
+    /// <remarks>
+    /// Will be empty if <see cref="ClientMode.Http"/>.
+    /// </remarks>
+    public IReadOnlyCollection<Emoji> Emojis
+        => WebSocket != null ? (IReadOnlyCollection<Emoji>)WebSocket.EmojiCache.Values : new ReadOnlyCollection<Emoji>(new List<Emoji>());
+
+    /// <summary>
+    /// Get a <see cref="User" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="User" /> or <see langword="null" /></returns>
     public User? GetUser(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.UserCache.TryGetValue(id, out User User))
@@ -199,6 +248,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a <see cref="Channel" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="Channel" /> or <see langword="null" /></returns>
     public Channel? GetChannel(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan))
@@ -206,6 +259,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a <see cref="GroupChannel" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="GroupChannel" /> or <see langword="null" /></returns>
     public GroupChannel? GetGroupChannel(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is GroupChannel GC)
@@ -213,6 +270,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a <see cref="DMChannel" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="DMChannel" /> or <see langword="null" /></returns>
     public DMChannel? GetDMChannel(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DMChannel DM)
@@ -220,13 +281,18 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
-    public TextChannel? GetTextChannel(Optional<string> channelId)
+    
+    internal TextChannel? GetTextChannel(Optional<string> channelId)
     {
         if (WebSocket != null && channelId.HasValue && !string.IsNullOrEmpty(channelId.Value) && WebSocket.ChannelCache.TryGetValue(channelId.Value, out Channel Chan) && Chan is TextChannel TC)
             return TC;
         return null;
     }
 
+    /// <summary>
+    /// Get a server <see cref="TextChannel" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="TextChannel" /> or <see langword="null" /></returns>
     public TextChannel? GetTextChannel(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is TextChannel TC)
@@ -234,6 +300,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a server <see cref="VoiceChannel" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="VoiceChannel" /> or <see langword="null" /></returns>
     public VoiceChannel? GetVoiceChannel(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is VoiceChannel VC)
@@ -241,6 +311,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a <see cref="Server" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="Server" /> or <see langword="null" /></returns>
     public Server? GetServer(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ServerCache.TryGetValue(id, out Server Server))
@@ -248,6 +322,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a server <see cref="Role" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="Role" /> or <see langword="null" /></returns>
     public Role? GetRole(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id))
@@ -262,6 +340,10 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
+    /// <summary>
+    /// Get a server <see cref="Emoji" /> from the websocket cache.
+    /// </summary>
+    /// <returns><see cref="Emoji" /> or <see langword="null" /></returns>
     public Emoji? GetEmoji(string id)
     {
         if (WebSocket != null && !string.IsNullOrEmpty(id))

@@ -2,30 +2,49 @@
 
 namespace RevoltSharp;
 
+/// <summary>
+/// Custom exception for the Revolt client.
+/// </summary>
 public class RevoltException : Exception
 {
-    public RevoltException(string message, int code = 0) : base(message)
+    internal RevoltException(string message, int code = 0) : base(message)
     {
         Code = code;
     }
-    public int Code { get; set; }
+
+    /// <summary>
+    /// The status code error for this exception if thrown by the rest client.
+    /// </summary>
+    public int Code { get; internal set; }
 }
 
+/// <summary>
+/// Custom exception for the Revolt rest client with code.
+/// </summary>
 public class RevoltRestException : RevoltException
 {
-    public RevoltRestException(string message, int code, RevoltErrorType type) : base(message, code)
+    internal RevoltRestException(string message, int code, RevoltErrorType type) : base(message, code)
     {
         Type = type;
     }
 
-    public RevoltErrorType Type { get; private set; } = RevoltErrorType.Unknown;
+    /// <summary>
+    /// The type of rest error triggered.
+    /// </summary>
+    public RevoltErrorType Type { get; internal set; } = RevoltErrorType.Unknown;
 
-    public string Permission;
+    /// <summary>
+    /// The permission require for the error <see cref="RevoltErrorType.MissingPermission"/> or <see cref="RevoltErrorType.MissingUserPermission"/>
+    /// </summary>
+    public string Permission { get; internal set; }
 }
 
+/// <summary>
+/// Custom exception for the Revolt client when user enters a missing or wrong argument.
+/// </summary>
 public class RevoltArgumentException : RevoltException
 {
-    public RevoltArgumentException(string message) : base(message, 400)
+    internal RevoltArgumentException(string message) : base(message, 400)
     {
 
     }

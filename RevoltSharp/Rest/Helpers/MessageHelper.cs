@@ -37,14 +37,14 @@ public static class MessageHelper
                 if (x.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || x.Image.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 {
                     byte[] Bytes = await rest.FileHttpClient.GetByteArrayAsync(x.Image);
-                    FileAttachment Upload = await rest.UploadFileAsync(Bytes, "image.png", RevoltRestClient.UploadFileType.Attachment);
+                    FileAttachment Upload = await rest.UploadFileAsync(Bytes, "image.png", UploadFileType.Attachment);
                     x.Image = Upload.Id;
                 }
                 else if (x.Image.Contains('/') || x.Image.Contains('\\'))
                 {
                     if (!System.IO.File.Exists(x.Image))
                         throw new RevoltArgumentException("Embed image url path does not exist.");
-                    FileAttachment Upload = await rest.UploadFileAsync(x.Image, RevoltRestClient.UploadFileType.Attachment);
+                    FileAttachment Upload = await rest.UploadFileAsync(x.Image, UploadFileType.Attachment);
                     x.Image = Upload.Id;
                 }
 
@@ -91,7 +91,7 @@ public static class MessageHelper
         if (rest.Client.UserBot && embeds != null)
             throw new RevoltRestException("User accounts can't send embeds on SendFileAsync", 401, RevoltErrorType.NotAllowedForUsers);
 
-        FileAttachment File = await rest.UploadFileAsync(bytes, fileName, RevoltRestClient.UploadFileType.Attachment);
+        FileAttachment File = await rest.UploadFileAsync(bytes, fileName, UploadFileType.Attachment);
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class ModifyChannelRequest : RevoltRequest
+internal class ModifyChannelRequest : IRevoltRequest
 {
     public Optional<string> name;
     public Optional<string> description;

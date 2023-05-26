@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
-using RevoltSharp.Internal;
+using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -268,7 +268,7 @@ public class CmdTest : ModuleBase
     [Command("upload")]
     public async Task Upload()
     {
-        FileAttachment Attach = await Context.Client.Rest.UploadFileAsync("/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png", RevoltSharp.Rest.RevoltRestClient.UploadFileType.Attachment);
+        FileAttachment Attach = await Context.Client.Rest.UploadFileAsync("/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png", UploadFileType.Attachment);
         
     }
 

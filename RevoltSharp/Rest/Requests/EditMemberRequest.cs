@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class EditMemberRequest : RevoltRequest
+internal class EditMemberRequest : IRevoltRequest
 {
     public Optional<string[]> roles;
     public Optional<string> nickname;

@@ -9,6 +9,9 @@ public class UserStatus
 {
     internal UserStatus(UserJson json)
     {
+        if (json == null)
+            return;
+
         if (json.Online)
             Type = UserStatusType.Online;
         else

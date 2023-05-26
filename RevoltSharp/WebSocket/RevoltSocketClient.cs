@@ -17,7 +17,7 @@ namespace RevoltSharp.WebSocket;
 
 internal class RevoltSocketClient
 {
-    public RevoltSocketClient(RevoltClient client)
+    internal RevoltSocketClient(RevoltClient client)
     {
         Client = client;
         if (string.IsNullOrEmpty(client.Config.Debug.WebsocketUrl))
@@ -766,7 +766,7 @@ internal class RevoltSocketClient
                                 @event.Data.ProfileContent = Optional.Some<string>("");
 
                             if (@event.Clear.Value.Contains("StatusText"))
-                                @event.Data.status = Optional.Some<UserStatusJson>(null);
+                                @event.Data.status = Optional.Some<UserStatusJson>(new UserStatusJson { Text = null });
 
                             if (@event.Clear.Value.Contains("ProfileBackground"))
                                 @event.Data.ProfileBackground = Optional.Some<AttachmentJson>(null);
@@ -931,7 +931,7 @@ internal class RevoltSocketClient
                     {
                         UserPlatformWipedEventJson @event = payload.ToObject<UserPlatformWipedEventJson>(Client.Serializer);
                         UserCache.Remove(@event.UserId, out User User);
-                        _ = Task.Run(async () =>
+                        _ = Task.Run(() =>
                         {
                             foreach (var c in ChannelCache.Values)
                             {

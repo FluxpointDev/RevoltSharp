@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RevoltSharp.Internal;
 using System;
 
 namespace RevoltSharp;

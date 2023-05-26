@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace RevoltSharp.Internal;
+namespace RevoltSharp;
 
 /// <summary>
 /// Represents a Universally Unique Lexicographically Sortable Identifier (ULID).

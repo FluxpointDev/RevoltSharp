@@ -2,7 +2,7 @@
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class CreateChannelRequest : RevoltRequest
+internal class CreateChannelRequest : IRevoltRequest
 {
     public string name;
     public Optional<string> type;

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using RevoltSharp.Rest;
+﻿using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Collections.Generic;
 using System.Collections.Immutable;

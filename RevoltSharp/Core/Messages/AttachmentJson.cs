@@ -27,7 +27,6 @@ internal class AttachmentJson
 
     [JsonProperty("reported")]
     public bool Reported;
-
 }
 internal class AttachmentMetaJson
 {

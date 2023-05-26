@@ -1,5 +1,4 @@
 ﻿using RevoltSharp.Rest;
-using System.Net.Http;
 using RevoltSharp.Commands;
 
 namespace RevoltSharp;
@@ -85,17 +84,9 @@ public class ClientDebugConfig
     public bool LogWebSocketUnknownEvent { get; set; }
 
     /// <summary>
-    /// Log the internal request used on <see cref="RevoltRestClient.SendRequestAsync(Rest.RequestType, string)"/> and <see cref="RevoltRestClient.UploadFileAsync(byte[], string, RevoltRestClient.UploadFileType)"/>
+    /// Log the internal request used on <see cref="RevoltRestClient.SendRequestAsync(RequestType, string, IRevoltRequest)"/> and <see cref="RevoltRestClient.UploadFileAsync(byte[], string, UploadFileType)"/>
     /// </summary>
     public bool LogRestRequest { get; set; }
-
-    /// <summary>
-    /// Check all requests sent, if they are not successful enable this to throw an exception.
-    /// </summary>
-    /// <remarks>
-    /// By default the lib will return <see langword="null"/> for get requests, <see cref="RevoltRestException"/> for post/put/delete or <see cref="HttpResponseMessage"/> if you disable <see cref="ClientConfig.RestThrowException"/>.
-    /// </remarks>
-    public bool CheckRestRequest { get; set; }
 
     /// <summary>
     /// Log the json content used when sending a http request.

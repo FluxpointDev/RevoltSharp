@@ -2,7 +2,7 @@
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class CreateRoleRequest : RevoltRequest
+internal class CreateRoleRequest : IRevoltRequest
 {
     public string name;
     public Optional<int> rank;

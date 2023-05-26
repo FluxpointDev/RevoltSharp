@@ -27,4 +27,7 @@ internal class PartialUserJson
 
     [JsonProperty("flags")]
     public Optional<ulong> Flags;
+
+
+
 }

@@ -1404,27 +1404,27 @@
             Fix the console from freezing the bot due to checking for readinput in the console
             </summary>
         </member>
-        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Attachment">
+        <member name="F:RevoltSharp.UploadFileType.Attachment">
             <summary>
             Upload a normal file e.g txt, mp4, ect.
             </summary>
         </member>
-        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Avatar">
+        <member name="F:RevoltSharp.UploadFileType.Avatar">
             <summary>
             Set the bot's avatar with this image.
             </summary>
         </member>
-        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Icon">
+        <member name="F:RevoltSharp.UploadFileType.Icon">
             <summary>
             Set a server or channel icon with this image.
             </summary>
         </member>
-        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Banner">
+        <member name="F:RevoltSharp.UploadFileType.Banner">
             <summary>
             Set a server banner with this image.
             </summary>
         </member>
-        <member name="F:RevoltSharp.Rest.RevoltRestClient.UploadFileType.Background">
+        <member name="F:RevoltSharp.UploadFileType.Background">
             <summary>
             Set the bot's profile background with this image.
             </summary>

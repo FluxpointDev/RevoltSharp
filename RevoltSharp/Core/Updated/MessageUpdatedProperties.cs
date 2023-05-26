@@ -1,8 +1,6 @@
 ﻿using Optionals;
-using RevoltSharp.WebSocket;
 using RevoltSharp.WebSocket.Events;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RevoltSharp;

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RevoltSharp.Internal;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

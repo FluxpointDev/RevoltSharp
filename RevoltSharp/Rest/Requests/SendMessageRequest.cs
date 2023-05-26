@@ -2,7 +2,7 @@
 
 namespace RevoltSharp.Rest.Requests;
 
-internal class SendMessageRequest : RevoltRequest
+internal class SendMessageRequest : IRevoltRequest
 {
     public Optional<string> content;
     public Optional<string> nonce;

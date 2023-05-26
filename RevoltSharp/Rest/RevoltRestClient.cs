@@ -12,9 +12,12 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp.Rest;
 
+/// <summary>
+/// The internal http client used for sending requests to the Revolt instance API and built-in extension methods.
+/// </summary>
 public class RevoltRestClient
 {
-    public RevoltRestClient(RevoltClient client)
+    internal RevoltRestClient(RevoltClient client)
     {
         Client = client;
 
@@ -50,41 +53,62 @@ public class RevoltRestClient
         FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + (Client.Config.UserBot ? " user" : ""));
     }
 
-    public RevoltClient Client { get; private set; }
+    internal RevoltClient Client { get; private set; }
     internal HttpClient HttpClient;
     internal HttpClient FileHttpClient;
 
     private static readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
 
-    public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint)
-        => InternalRequest(GetMethod(method), endpoint, null);
-
-    public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, Dictionary<string, object> json = null)
-       => json == null ? InternalRequest(GetMethod(method), endpoint, null) : InternalRequest(GetMethod(method), endpoint, json);
-    
-    public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, RevoltRequest json = null)
+    /// <summary>
+    /// Send a custom request to the Revolt instance API.
+    /// </summary>
+    /// <remarks>
+    /// Optionally you can also send a C# class as the json body for the request, this is useful for POST/PUT requests.
+    /// <para />
+    /// You need to interface your custom class using <see cref="IRevoltRequest"/><br/>
+    /// CustomClass : RevoltRequest<br/>
+    /// {<br/>
+    ///     public string option = "Hi"<br/>
+    /// }
+    /// </remarks>
+    /// <returns><see cref="HttpResponseMessage"/></returns>
+    public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, IRevoltRequest json = null)
     => json == null ? InternalRequest(GetMethod(method), endpoint, null) : InternalRequest(GetMethod(method), endpoint, json);
 
-    public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
+    internal Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
 
-
-    internal Task<TResponse?> GetAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+    internal Task<TResponse?> GetAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
         => SendRequestAsync<TResponse>(RequestType.Get, endpoint, json);
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
-    internal Task DeleteAsync(string endpoint, RevoltRequest json = null)
+    internal Task DeleteAsync(string endpoint, IRevoltRequest json = null)
         => SendRequestAsync(RequestType.Delete, endpoint, json);
 
-    internal Task<TResponse> PatchAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+    internal Task<TResponse> PatchAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Patch, endpoint, json);
 
-    internal Task<TResponse> PutAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+    internal Task<TResponse> PutAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Put, endpoint, json);
 
-    internal Task<TResponse> PostAsync<TResponse>(string endpoint, RevoltRequest json = null) where TResponse : class
+    internal Task<TResponse> PostAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Post, endpoint, json);
 
-    public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, RevoltRequest json = null) where TResponse : class
+    /// <summary>
+    /// Send a custom request to the Revolt instance API.
+    /// </summary>
+    /// <remarks>
+    /// Optionally you can also send a C# class as the json body for the request, this is useful for POST/PUT requests.
+    /// <para />
+    /// You need to interface your custom class using <see cref="IRevoltRequest"/><br/>
+    /// CustomClass : RevoltRequest<br/>
+    /// {<br/>
+    ///     public string option = "Hi"<br/>
+    /// }
+    /// </remarks>
+    /// <returns>Input your own <see langword="class" /> object to parse the response data from json.</returns>
+    public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, IRevoltRequest json = null) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
     
 
@@ -109,6 +133,11 @@ public class RevoltRestClient
         => UploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
 
 
+    /// <summary>
+    /// Upload a file to the Revolt instance CDN that can be used for attachments, avatars, banners, ect.
+    /// </summary>
+    /// <returns>Created <see cref="FileAttachment"/></returns>
+    /// <exception cref="RevoltRestException"></exception>
     public async Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
     {
         Conditions.FileBytesEmpty(bytes, "SendFileAsync");
@@ -124,7 +153,7 @@ public class RevoltRestClient
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
             RetryRequest Retry = null;
-            int BufferSizeRet = (int)Req.Content.Headers.ContentLength.Value;
+            int BufferSizeRet = (int)Req.Content.Headers.ContentLength.GetValueOrDefault();
             using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSizeRet))
             {
                 await Req.Content.CopyToAsync(Stream);
@@ -135,16 +164,16 @@ public class RevoltRestClient
             if (Retry != null)
             {
                 await Task.Delay(Retry.retry_after + 2);
-                HttpRequestMessage MesRetry = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
-                MesRetry.Content = MP;
+                HttpRequestMessage MesRetry = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type))
+                {
+                    Content = MP
+                };
                 Req = await HttpClient.SendAsync(MesRetry);
             }
         }
 
         if (Client.Config.Debug.LogRestRequest)
             Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
-        if (Client.Config.Debug.CheckRestRequest)
-            Req.EnsureSuccessStatusCode();
 
         if (!Req.IsSuccessStatusCode)
         {
@@ -172,7 +201,7 @@ public class RevoltRestClient
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
         }
 
-        int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+        int BufferSize = (int)Req.Content.Headers.ContentLength.GetValueOrDefault();
         using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
         {
             await Req.Content.CopyToAsync(Stream);
@@ -181,7 +210,7 @@ public class RevoltRestClient
         }
     }
 
-    internal string GetUploadType(UploadFileType type)
+    internal static string GetUploadType(UploadFileType type)
     {
         switch (type)
         {
@@ -195,30 +224,6 @@ public class RevoltRestClient
                 return "icons";
         }
         return "attachments";
-    }
-
-    public enum UploadFileType
-    {
-        /// <summary>
-        /// Upload a normal file e.g txt, mp4, ect.
-        /// </summary>
-        Attachment, 
-        /// <summary>
-        /// Set the bot's avatar with this image.
-        /// </summary>
-        Avatar,
-        /// <summary>
-        /// Set a server or channel icon with this image.
-        /// </summary>
-        Icon,
-        /// <summary>
-        /// Set a server banner with this image.
-        /// </summary>
-        Banner,
-        /// <summary>
-        /// Set the bot's profile background with this image.
-        /// </summary>
-        Background
     }
 
     internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object request)
@@ -237,7 +242,7 @@ public class RevoltRestClient
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
             RetryRequest Retry = null;
-            int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+            int BufferSize = (int)Req.Content.Headers.ContentLength.GetValueOrDefault();
             using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
             {
                 await Req.Content.CopyToAsync(Stream);
@@ -257,8 +262,7 @@ public class RevoltRestClient
         if (Client.Config.Debug.LogRestRequest)
             Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
 
-        if (Client.Config.Debug.CheckRestRequest)
-            Req.EnsureSuccessStatusCode();
+        
 
         if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
@@ -317,7 +321,7 @@ public class RevoltRestClient
         {
             RetryRequest Retry = null;
 
-            int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+            int BufferSize = (int)Req.Content.Headers.ContentLength.GetValueOrDefault();
             using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
             {
                 await Req.Content.CopyToAsync(Stream);
@@ -337,8 +341,7 @@ public class RevoltRestClient
 
         if (Client.Config.Debug.LogRestRequest)
             Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
-        if (Client.Config.Debug.CheckRestRequest)
-            Req.EnsureSuccessStatusCode();
+        
 
         if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
@@ -367,7 +370,7 @@ public class RevoltRestClient
         TResponse Response = null;
         if (Req.IsSuccessStatusCode)
         {
-            int BufferSize = (int)Req.Content.Headers.ContentLength.Value;
+            int BufferSize = (int)Req.Content.Headers.ContentLength.GetValueOrDefault();
             try
             {
                 using (MemoryStream Stream = recyclableMemoryStreamManager.GetStream("RevoltSharp-SendRequest", BufferSize))
@@ -384,7 +387,9 @@ public class RevoltRestClient
             if (Client.Config.Debug.LogRestResponseJson)
                 Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
         }
+        #pragma warning disable CS8603 // Possible null reference return.
         return Response;
+        #pragma warning restore CS8603 // Possible null reference return.
     }
 
     internal string SerializeJson(object value)
@@ -403,6 +408,37 @@ public class RevoltRestClient
             return Client.Serializer.Deserialize<T>(reader);
     }
 }
+
+/// <summary>
+/// File type to upload to the Revolt instance CDN.
+/// </summary>
+public enum UploadFileType
+{
+    /// <summary>
+    /// Upload a normal file e.g txt, mp4, ect.
+    /// </summary>
+    Attachment,
+    /// <summary>
+    /// Set the bot's avatar with this image.
+    /// </summary>
+    Avatar,
+    /// <summary>
+    /// Set a server or channel icon with this image.
+    /// </summary>
+    Icon,
+    /// <summary>
+    /// Set a server banner with this image.
+    /// </summary>
+    Banner,
+    /// <summary>
+    /// Set the bot's profile background with this image.
+    /// </summary>
+    Background
+}
+
+/// <summary>
+/// The request method type to use for sending requests to the Revolt instance API.
+/// </summary>
 public enum RequestType
 {
     /// <summary>

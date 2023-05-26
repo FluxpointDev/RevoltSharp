@@ -98,6 +98,9 @@ public class ClientEvents
     /// <summary>
     /// Event used when the <see cref="RevoltClient"/> has loaded with the <see cref="RevoltClient.CurrentUser"/>.
     /// </summary>
+    /// <remarks>
+    /// You can use this with <see cref="ClientMode.Http" /> and <see cref="ClientMode.WebSocket" />
+    /// </remarks>
     public event SelfUserEvent<SelfUser>? OnStarted;
     internal void InvokeStarted(SelfUser user)
     {
@@ -136,7 +139,7 @@ public class ClientEvents
     }
 
     /// <summary>
-    /// Receive message deleted event with the channel and message id.
+    /// Receive message deleted event with the <see cref="Channel" /> and message id.
     /// </summary>
     public event ChannelMessageIdEvent<Channel, string>? OnMessageDeleted;
     internal void InvokeMessageDeleted(Channel chan, string msg)
@@ -145,7 +148,7 @@ public class ClientEvents
     }
 
     /// <summary>
-    /// 
+    /// Receieve a list of deleted message ids with the <see cref="Channel" />.
     /// </summary>
     public event MessagesBulkDeletedEvent<Channel, string[]>? OnMessagesBulkDeleted;
 
@@ -157,6 +160,9 @@ public class ClientEvents
     #endregion
 
     #region Channel Events
+    /// <summary>
+    /// A <see cref="DMChannel" /> has been opened or become active again for the <see cref="User" />.
+    /// </summary>
 
     public event ChannelEvent<DMChannel>? OnDMChannelOpened;
     internal void InvokeDMChannelOpened(DMChannel chan)
@@ -164,44 +170,63 @@ public class ClientEvents
         OnDMChannelOpened?.Invoke(chan);
     }
 
+    /// <summary>
+    /// A <see cref="ServerChannel" /> has been created in a <see cref="Server" />.
+    /// </summary>
     public event ChannelEvent<ServerChannel>? OnChannelCreated;
     internal void InvokeChannelCreated(ServerChannel chan)
     {
         OnChannelCreated?.Invoke(chan);
     }
 
-    
+    /// <summary>
+    /// A channel has been updated with <see cref="ChannelUpdatedProperties" />.
+    /// </summary>
     public event ChannelUpdatedEvent<Channel, Channel, ChannelUpdatedProperties>? OnChannelUpdated;
     internal void InvokeChannelUpdated(Channel old, Channel newc, ChannelUpdatedProperties props)
     {
         OnChannelUpdated?.Invoke(old, newc, props);
     }
 
+    /// <summary>
+    /// A <see cref="Channel" /> has been been deleted, this does not include <see cref="DMChannel" /> or <see cref="SavedMessagesChannel" />
+    /// </summary>
     public event ChannelEvent<Channel>? OnChannelDeleted;
     internal void InvokeChannelDeleted(Channel chan)
     {
         OnChannelDeleted?.Invoke(chan);
     }
 
-
+    /// <summary>
+    /// The current user/bot account has joined a <see cref="GroupChannel" />.
+    /// </summary>
     public event ChannelUserEvent<GroupChannel, SelfUser>? OnGroupJoined;
     internal void InvokeGroupJoined(GroupChannel chan, SelfUser user)
     {
         OnGroupJoined?.Invoke(chan, user);
     }
 
+    /// <summary>
+    /// The current user/bot account has left a <see cref="GroupChannel" />.
+    /// </summary>
     public event ChannelUserEvent<GroupChannel, SelfUser>? OnGroupLeft;
     internal void InvokeGroupLeft(GroupChannel chan, SelfUser user)
     {
         OnGroupLeft?.Invoke(chan, user);
     }
 
+    /// <summary>
+    /// A <see cref="User" /> has joined the <see cref="GroupChannel" />.
+    /// </summary>
     public event ChannelUserEvent<GroupChannel, User>? OnGroupUserJoined;
     internal void InvokeGroupUserJoined(GroupChannel chan, User user)
     {
         OnGroupUserJoined?.Invoke(chan, user);
     }
 
+    /// <summary>
+    /// A <see cref="User" /> has left or been removed from the <see cref="GroupChannel" />
+    /// </summary>
     public event ChannelUserEvent<GroupChannel, User>? OnGroupUserLeft;
     internal void InvokeGroupUserLeft(GroupChannel chan, User user)
     {
@@ -211,6 +236,9 @@ public class ClientEvents
     #endregion
 
     #region Server Events
+    /// <summary>
+    /// A <see cref="Server" /> has been updated with <see cref="ServerUpdatedProperties" />.
+    /// </summary>
 
     public event ServerUpdatedEvent<Server, Server, ServerUpdatedProperties>? OnServerUpdated;
     internal void InvokeServerUpdated(Server old, Server news, ServerUpdatedProperties props)
@@ -218,23 +246,36 @@ public class ClientEvents
         OnServerUpdated?.Invoke(old, news, props);
     }
 
+    /// <summary>
+    /// The current user/bot account has joined a <see cref="Server" />.
+    /// </summary>
     public event ServerUserEvent<Server, SelfUser>? OnServerJoined;
     internal void InvokeServerJoined(Server server, SelfUser user)
     {
         OnServerJoined?.Invoke(server, user);
     }
 
+    /// <summary>
+    /// The current user/bot account has left a <see cref="Server" />.
+    /// </summary>
     public event ServerEvent<Server>? OnServerLeft;
     internal void InvokeServerLeft(Server server)
     {
         OnServerLeft?.Invoke(server);
     }
 
+    /// <summary>
+    /// A new <see cref="ServerMember" /> has joined the <see cref="Server" />.
+    /// </summary>
     public event ServerMemberEvent<Server, ServerMember>? OnMemberJoined;
     internal void InvokeMemberJoined(Server server, ServerMember user)
     {
         OnMemberJoined?.Invoke(server, user);
     }
+
+    /// <summary>
+    /// A <see cref="ServerMember" /> has left the <see cref="Server" />
+    /// </summary>
 
     public event ServerMemberEvent<Server, ServerMember>? OnMemberLeft;
     internal void InvokeMemberLeft(Server server, ServerMember user)
@@ -242,24 +283,37 @@ public class ClientEvents
         OnMemberLeft?.Invoke(server, user);
     }
 
+
+    /// <summary>
+    /// A new server <see cref="Role" /> has been created.
+    /// </summary>
     public event RoleEvent<Role>? OnRoleCreated;
     internal void InvokeRoleCreated(Role role)
     {
         OnRoleCreated?.Invoke(role);
     }
 
+    /// <summary>
+    /// A server <see cref="Role" /> has been deleted.
+    /// </summary>
     public event RoleEvent<Role>? OnRoleDeleted;
     internal void InvokeRoleDeleted(Role role)
     {
         OnRoleDeleted?.Invoke(role);
     }
 
+    /// <summary>
+    /// A server <see cref="Role" /> has been updated with <see cref="RoleUpdatedProperties" />.
+    /// </summary>
     public event RoleUpdatedEvent<Role, Role, RoleUpdatedProperties>? OnRoleUpdated;
     internal void InvokeRoleUpdated(Role old, Role newr, RoleUpdatedProperties props)
     {
         OnRoleUpdated?.Invoke(old, newr, props);
     }
 
+    /// <summary>
+    /// A server <see cref="Emoji" /> has been created.
+    /// </summary>
     public event ServerEmojiEvent<Server, Emoji>? OnEmojiCreated;
 
     internal void InvokeEmojiCreated(Server server, Emoji emoji)
@@ -267,6 +321,9 @@ public class ClientEvents
         OnEmojiCreated?.Invoke(server, emoji);
     }
 
+    /// <summary>
+    /// A server <see cref="Emoji" /> has been deleted.
+    /// </summary>
     public event ServerEmojiEvent<Server, Emoji>? OnEmojiDeleted;
 
     internal void InvokeEmojiDeleted(Server server, Emoji emoji)
@@ -278,18 +335,31 @@ public class ClientEvents
 
     #region User Events
 
+    /// <summary>
+    /// A <see cref="User" /> has been updated.
+    /// </summary>
+
     public event UserUpdatedEvent<User, User>? OnUserUpdated;
     internal void InvokeUserUpdated(User old, User newu)
     {
         OnUserUpdated?.Invoke(old, newu);
     }
 
+    /// <summary>
+    /// The current user/bot account has been updated.
+    /// </summary>
     public event UserUpdatedEvent<SelfUser, SelfUser>? OnCurrentUserUpdated;
     internal void InvokeCurrentUserUpdated(SelfUser old, SelfUser newu)
     {
         OnCurrentUserUpdated?.Invoke(old, newu);
     }
 
+    /// <summary>
+    /// A <see cref="User" /> has been banned from the Revolt instance.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="User" /> may be null if not cached.
+    /// </remarks>
     public event UserPlatformRemovedEvent<string, User?>? OnUserPlatformRemoved;
 
     internal void InvokeUserPlatformRemoved(string userid, User? user)
@@ -301,6 +371,12 @@ public class ClientEvents
 
     #region Reaction Events
 
+    /// <summary>
+    /// A <see cref="Emoji" /> reaction has been added to a <see cref="Message" />.
+    /// </summary>
+    /// <remarks>
+    /// Contains message id or <see cref="Message" /> that can be downloaded.
+    /// </remarks>
     public event ReactionEvent<Emoji, Channel, Downloadable<string, User>, Downloadable<string, Message>>? OnReactionAdded;
 
     internal void InvokeReactionAdded(Emoji emoji, Channel channel, Downloadable<string, User> member, Downloadable<string, Message> messageDownload)
@@ -308,6 +384,12 @@ public class ClientEvents
         OnReactionAdded?.Invoke(emoji, channel, member, messageDownload);
     }
 
+    /// <summary>
+    /// A <see cref="Emoji" /> reaction has been removed from a <see cref="Message" />.
+    /// </summary>
+    /// <remarks>
+    /// Contains message id or <see cref="Message" /> that can be downloaded.
+    /// </remarks>
     public event ReactionEvent<Emoji, Channel, Downloadable<string, User>, Downloadable<string, Message>>? OnReactionRemoved;
 
     internal void InvokeReactionRemoved(Emoji emoji, Channel channel, Downloadable<string, User> member, Downloadable<string, Message> messageDownload)
@@ -315,6 +397,12 @@ public class ClientEvents
         OnReactionRemoved?.Invoke(emoji, channel, member, messageDownload);
     }
 
+    /// <summary>
+    /// All <see cref="Emoji" /> reactions have been removed from a <see cref="Message" />.
+    /// </summary>
+    /// <remarks>
+    /// Contains message id or <see cref="Message" /> that can be downloaded.
+    /// </remarks>
     public event ReactionBulkRemovedEvent<Emoji, Channel, Downloadable<string, Message>>? OnReactionBulkRemoved;
 
     internal void InvokeReactionBulkRemoved(Emoji emoji, Channel channel, Downloadable<string, Message> messageDownload)

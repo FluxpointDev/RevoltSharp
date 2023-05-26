@@ -1,6 +1,6 @@
 ﻿namespace RevoltSharp.Rest.Requests;
 
-internal class CreateEmojiRequest : RevoltRequest
+internal class CreateEmojiRequest : IRevoltRequest
 {
     public string name;
     public CreateEmojiParent parent;
