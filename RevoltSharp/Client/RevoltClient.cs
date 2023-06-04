@@ -43,7 +43,16 @@ public class RevoltClient : ClientEvents
         }
         UserBot = Config.UserBot;
         Serializer = new JsonSerializer();
-        Serializer.Converters.Add(new OptionConverter());
+        SerializerSettings = new JsonSerializerSettings { ContractResolver = new RevoltContractResolver() };
+        Serializer.ContractResolver = SerializerSettings.ContractResolver;
+
+        Deserializer = new JsonSerializer();
+        DeserializerSettings = new JsonSerializerSettings();
+
+        OptionalDeserializerConverter Converter = new OptionalDeserializerConverter();
+        DeserializerSettings.Converters.Add(Converter);
+        Deserializer.Converters.Add(Converter);
+
         Rest = new RevoltRestClient(this);
         if (mode == ClientMode.WebSocket)
             WebSocket = new RevoltSocketClient(this);
@@ -76,7 +85,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.5.0";
+    public string Version { get; } = "5.6.0";
 
     /// <summary>
     /// The current version of the revolt instance connected to.
@@ -88,7 +97,10 @@ public class RevoltClient : ClientEvents
 
     internal bool UserBot { get; set; }
 
-    internal JsonSerializer Serializer { get; set; }
+    public JsonSerializer Serializer { get; internal set; }
+    public JsonSerializerSettings SerializerSettings { get; internal set; }
+    public JsonSerializer Deserializer { get; internal set; }
+    public JsonSerializerSettings DeserializerSettings { get; internal set; }
 
     /// <summary>
     /// Client config options for user-agent and debug options including self-host support.

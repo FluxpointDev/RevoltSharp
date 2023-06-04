@@ -5,7 +5,7 @@ namespace RevoltSharp.Rest.Requests;
 internal class QueryRequest
 {
     [JsonProperty("revolt")]
-    public string revoltVersion = "";
+    public string revoltVersion;
 
     [JsonProperty("features")]
     public QueryFeatures serverFeatures;

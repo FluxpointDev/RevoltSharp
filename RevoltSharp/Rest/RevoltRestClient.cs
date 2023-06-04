@@ -173,7 +173,7 @@ public class RevoltRestClient
         }
 
         if (Client.Config.Debug.LogRestRequest)
-            Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
+            Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, Client.SerializerSettings));
 
         if (!Req.IsSuccessStatusCode)
         {
@@ -236,7 +236,7 @@ public class RevoltRestClient
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
             if (Client.Config.Debug.LogRestRequestJson)
-                Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
+                Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, Client.SerializerSettings));
         }
         HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
@@ -260,7 +260,7 @@ public class RevoltRestClient
         }
 
         if (Client.Config.Debug.LogRestRequest)
-            Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
+            Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, Client.SerializerSettings));
 
         
 
@@ -310,7 +310,7 @@ public class RevoltRestClient
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
             if (Client.Config.Debug.LogRestRequestJson)
-                Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
+                Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, Client.SerializerSettings));
         }
         HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
 
@@ -340,7 +340,7 @@ public class RevoltRestClient
         }
 
         if (Client.Config.Debug.LogRestRequest)
-            Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
+            Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
         
 
         if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
@@ -385,7 +385,7 @@ public class RevoltRestClient
                 throw new RevoltRestException("Failed to parse json response: " + ex.Message, 500, RevoltErrorType.Unknown);
             }
             if (Client.Config.Debug.LogRestResponseJson)
-                Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, new JsonSerializerSettings { Converters = new List<JsonConverter> { new OptionConverter() } }));
+                Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.SerializerSettings));
         }
         #pragma warning disable CS8603 // Possible null reference return.
         return Response;
@@ -405,7 +405,7 @@ public class RevoltRestClient
     {
         using (TextReader text = new StreamReader(jsonStream))
         using (JsonReader reader = new JsonTextReader(text))
-            return Client.Serializer.Deserialize<T>(reader);
+            return Client.Deserializer.Deserialize<T>(reader);
     }
 }
 

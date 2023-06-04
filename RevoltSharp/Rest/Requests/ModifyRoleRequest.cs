@@ -5,11 +5,11 @@ namespace RevoltSharp.Rest.Requests;
 
 internal class ModifyRoleRequest : IRevoltRequest
 {
-    public Optional<string> name;
-    public Optional<string> colour;
-    public Optional<bool> hoist;
-    public Optional<int> rank;
-    public Optional<List<string>> remove;
+    public Optional<string> name { get; internal set; }
+    public Optional<string> colour { get; internal set; }
+    public Optional<bool> hoist { get; internal set; }
+    public Optional<int> rank { get; internal set; }
+    public Optional<List<string>> remove { get; internal set; }
 
     public void RemoveValue(string value)
     {

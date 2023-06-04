@@ -2,12 +2,12 @@
 
 internal class CreateEmojiRequest : IRevoltRequest
 {
-    public string name;
-    public CreateEmojiParent parent;
-    public bool nsfw;
+    public string name { get; internal set; }
+    public CreateEmojiParent parent { get; internal set; }
+    public bool nsfw { get; internal set; }
 }
 internal class CreateEmojiParent
 {
-    public string type = "Server";
-    public string id;
+    public string type { get; internal set; } = "Server";
+    public string id { get; internal set; }
 }

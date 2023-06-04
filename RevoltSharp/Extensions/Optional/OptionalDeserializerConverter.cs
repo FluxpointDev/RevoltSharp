@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace RevoltSharp;
 
-internal class OptionConverter : JsonConverter
+public class OptionalDeserializerConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType)
     {
@@ -20,16 +20,16 @@ internal class OptionConverter : JsonConverter
         if (objectType == null) throw new ArgumentNullException(nameof(objectType));
         if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-        Type innerType = objectType.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
-        MethodInfo noneMethod = MakeStaticGenericMethodInfo(nameof(None), innerType);
-        MethodInfo someMethod = MakeStaticGenericMethodInfo(nameof(Some), innerType);
+        var innerType = objectType.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
+        var noneMethod = MakeStaticGenericMethodInfo(nameof(None), innerType);
+        var someMethod = MakeStaticGenericMethodInfo(nameof(Some), innerType);
 
         if (reader.TokenType == JsonToken.Null)
         {
             return noneMethod.Invoke(null, Array.Empty<object>());
         }
 
-        object innerValue = serializer.Deserialize(reader, innerType);
+        var innerValue = serializer.Deserialize(reader, innerType);
 
         if (innerValue == null)
         {
@@ -44,17 +44,20 @@ internal class OptionConverter : JsonConverter
         if (writer == null) throw new ArgumentNullException(nameof(writer));
         if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
+        Console.WriteLine("GOT VALUE");
+
         if (value == null)
         {
+            Console.WriteLine("NULL VALUE");
             writer.WriteNull();
             return;
         }
 
-        Type innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
-        MethodInfo hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
-        MethodInfo getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
+        var innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
+        var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
+        var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
 
-        bool hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
+        var hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
 
         if (!hasValue)
         {
@@ -62,7 +65,7 @@ internal class OptionConverter : JsonConverter
             return;
         }
 
-        object innerValue = getValueMethod.Invoke(null, new[] { value });
+        var innerValue = getValueMethod.Invoke(null, new[] { value });
         serializer.Serialize(writer, innerValue);
     }
 
@@ -75,7 +78,7 @@ internal class OptionConverter : JsonConverter
     }
 
     private static bool HasValue<T>(Optional<T> option) => option.HasValue;
-    private static T GetValue<T>(Optional<T> option) => option.ValueOrDefault(default(T));
+    private static T GetValue<T>(Optional<T> option) => option.ValueOr(default(T));
     private static Optional<T> None<T>() => Optional.None<T>();
     private static Optional<T> Some<T>(T value) => Optional.Some(value);
 }

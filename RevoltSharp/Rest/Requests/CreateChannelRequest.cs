@@ -4,10 +4,10 @@ namespace RevoltSharp.Rest.Requests;
 
 internal class CreateChannelRequest : IRevoltRequest
 {
-    public string name;
-    public Optional<string> type;
-    public Optional<string> description;
-    public Optional<string[]> users;
-    public Optional<bool> nsfw;
+    public string name { get; internal set; }
+    public Optional<string> type { get; internal set; }
+    public Optional<string> description { get; internal set; }
+    public Optional<string[]> users { get; internal set; }
+    public Optional<bool> nsfw { get; internal set; }
 
 }

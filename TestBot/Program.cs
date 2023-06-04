@@ -15,18 +15,19 @@ class Program
     }
 
     public static RevoltClient Client;
+
     public static async Task Start()
     {
         // Yes ik i can use json file blah blah :p
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
-            Debug = new ClientDebugConfig { LogRestRequestJson = false, 
+            Debug = new ClientDebugConfig { LogRestRequestJson = true, 
                 LogRestResponseJson = false, 
-                LogRestRequest = false, 
+                LogRestRequest = true, 
                 LogWebSocketFull = true,
                 LogWebSocketReady = true, 
-                LogWebSocketError = false, 
+                LogWebSocketError = true, 
                 LogWebSocketUnknownEvent = true },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });

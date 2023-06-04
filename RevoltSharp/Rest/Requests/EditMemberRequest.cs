@@ -6,11 +6,11 @@ namespace RevoltSharp.Rest.Requests;
 
 internal class EditMemberRequest : IRevoltRequest
 {
-    public Optional<string[]> roles;
-    public Optional<string> nickname;
-    public Optional<AttachmentJson> avatar;
-    public Optional<DateTime> timeout;
-    public Optional<List<string>> remove;
+    public Optional<string[]> roles { get; internal set; }
+    public Optional<string> nickname { get; internal set; }
+    public Optional<AttachmentJson> avatar { get; internal set; }
+    public Optional<DateTime> timeout { get; internal set; }
+    public Optional<List<string>> remove { get; internal set; }
 
     public void RemoveValue(string value)
     {
