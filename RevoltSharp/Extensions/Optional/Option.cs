@@ -10,7 +10,7 @@ public static class Optional
     /// </summary>
     /// <param name="value">The value to be wrapped.</param>
     /// <returns>An optional containing the specified value.</returns>
-    public static Optional<T> Some<T>(T value) => new Optional<T>(value);
+    public static Optional<T> Some<T>(T value) => new Optional<T>(value, true);
 
 
     /// <summary>
