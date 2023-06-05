@@ -88,7 +88,7 @@ public class ClientEvents
     public delegate void UserPlatformRemovedEvent(string user_id, User user);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void LogEvent(string message, LogSeverity severity);
+    public delegate void LogEvent(string message, RevoltLogSeverity severity);
 
     #region WebSocket Events
 
@@ -108,7 +108,7 @@ public class ClientEvents
     public event SocketErrorEvent? OnWebSocketError;
     internal void InvokeWebSocketError(SocketError error)
     {
-        InvokeLog(error.Message, LogSeverity.Error);
+        InvokeLog(error.Message, RevoltLogSeverity.Error);
         OnWebSocketError?.Invoke(error);
     }
 
@@ -440,16 +440,16 @@ public class ClientEvents
     /// </remarks>
     public event LogEvent? OnLog;
 
-    internal void InvokeLog(string message, LogSeverity severity)
+    internal void InvokeLog(string message, RevoltLogSeverity severity)
     {
         if (OnLog == null)
         {
             ConsoleColor prevColor = Console.ForegroundColor;
             switch (severity)
             {
-                case LogSeverity.Verbose: Console.ForegroundColor = ConsoleColor.DarkGray; break;
-                case LogSeverity.Standard: Console.ForegroundColor = ConsoleColor.Gray; break;
-                case LogSeverity.Error: Console.ForegroundColor = ConsoleColor.Red; break;
+                case RevoltLogSeverity.Verbose: Console.ForegroundColor = ConsoleColor.DarkGray; break;
+                case RevoltLogSeverity.Standard: Console.ForegroundColor = ConsoleColor.Gray; break;
+                case RevoltLogSeverity.Error: Console.ForegroundColor = ConsoleColor.Red; break;
             }
             Console.WriteLine($"[RevoltSharp] {message}"); // Default implementation
             Console.ForegroundColor = prevColor;
@@ -460,7 +460,7 @@ public class ClientEvents
 
     internal void InvokeLogAndThrowException(string message)
     {
-        InvokeLog(message, LogSeverity.Error);
+        InvokeLog(message, RevoltLogSeverity.Error);
         throw new RevoltException(message);
     }
 

@@ -3,9 +3,20 @@
 /// <summary>
 /// The severity of a log message raised by <see cref="ClientEvents.OnLog"/>.
 /// </summary>
-public enum LogSeverity
+public enum RevoltLogSeverity
 {
+    /// <summary>
+    /// Debug info message.
+    /// </summary>
     Verbose,
-    Standard,
+
+    /// <summary>
+    /// Error message info.
+    /// </summary>
     Error,
+
+    /// <summary>
+    /// Standard error message.
+    /// </summary>
+    Standard
 }

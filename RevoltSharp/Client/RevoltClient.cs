@@ -148,7 +148,7 @@ public class RevoltClient : ClientEvents
     {
         if (FirstConnection)
         {
-            InvokeLog("Starting...", LogSeverity.Verbose);
+            InvokeLog("Starting...", RevoltLogSeverity.Verbose);
 
             FirstConnection = false;
             QueryRequest? Query = await Rest.GetAsync<QueryRequest>("/");
@@ -170,7 +170,7 @@ public class RevoltClient : ClientEvents
                 throw new RevoltException("Failed to login to user account.");
 
             CurrentUser = new SelfUser(this, SelfUser);
-            InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", LogSeverity.Standard);
+            InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Standard);
             InvokeStarted(CurrentUser);
         }
 

@@ -160,10 +160,10 @@ internal class RevoltSocketClient
                     if (_firstConnected)
                     {
                         Client.InvokeConnected();
-                        Client.InvokeLog("WebSocket Connected!", LogSeverity.Verbose);
+                        Client.InvokeLog("WebSocket Connected!", RevoltLogSeverity.Verbose);
                     }
                     else
-                        Client.InvokeLog("WebSocket Reconnected!", LogSeverity.Verbose);
+                        Client.InvokeLog("WebSocket Reconnected!", RevoltLogSeverity.Verbose);
 
                     _firstConnected = false;
                     await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
@@ -199,9 +199,9 @@ internal class RevoltSocketClient
                         if (@event.Error == RevoltErrorType.InvalidSession)
                         {
                             if (_firstConnected)
-                                Client.InvokeLog("WebSocket session is invalid, check if your bot token is correct.", LogSeverity.Error);
+                                Client.InvokeLog("WebSocket session is invalid, check if your bot token is correct.", RevoltLogSeverity.Error);
                             else
-                                Client.InvokeLog("WebSocket session was invalidated!", LogSeverity.Error);
+                                Client.InvokeLog("WebSocket session was invalidated!", RevoltLogSeverity.Error);
                             
                             await Client.StopAsync();
                         }
@@ -227,7 +227,7 @@ internal class RevoltSocketClient
 
                             if (SocketSelfUser == null)
                             {
-                                Client.InvokeLog("Fatal error, could not load bot user.\nWebSocket connection has been stopped.", LogSeverity.Error);
+                                Client.InvokeLog("Fatal error, could not load bot user.\nWebSocket connection has been stopped.", RevoltLogSeverity.Error);
                                 await Client.StopAsync();
                             }
 
@@ -263,7 +263,7 @@ internal class RevoltSocketClient
                                 if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
                                     s.InternalEmojis.TryAdd(m.Id, Emote);
                             }
-                            Client.InvokeLog("WebSocket Ready!", LogSeverity.Verbose);
+                            Client.InvokeLog("WebSocket Ready!", RevoltLogSeverity.Verbose);
 
                             Client.InvokeReady(CurrentUser);
 
@@ -498,7 +498,7 @@ internal class RevoltSocketClient
 
                         if (@event.UserId == CurrentUser.Id)
                         {
-                            Client.InvokeLog("Left Group: " + GC.Name, LogSeverity.Verbose);
+                            Client.InvokeLog("Left Group: " + GC.Name, RevoltLogSeverity.Verbose);
                             ChannelCache.TryRemove(@event.Id, out Channel chan);
                             _ = Task.Run(() =>
                             {
@@ -635,7 +635,7 @@ internal class RevoltSocketClient
                         if (@event.UserId == CurrentUser.Id)
                         {
                             Server server = await Client.Rest.GetServerAsync(@event.Id);
-                            Client.InvokeLog("Joined Server: " + server.Name, LogSeverity.Verbose);
+                            Client.InvokeLog("Joined Server: " + server.Name, RevoltLogSeverity.Verbose);
                             ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser);
                             server.AddMember(Member);
                             Client.InvokeServerJoined(server, CurrentUser);
@@ -663,7 +663,7 @@ internal class RevoltSocketClient
                             if (!ServerCache.TryRemove(@event.Id, out Server server))
                                 return;
 
-                            Client.InvokeLog("Left Server: " + server.Name, LogSeverity.Verbose);
+                            Client.InvokeLog("Left Server: " + server.Name, RevoltLogSeverity.Verbose);
                             _ = Task.Run(() =>
                             {
                                 foreach (ServerMember m in server.InternalMembers.Values)
