@@ -44,11 +44,8 @@ public class OptionalDeserializerConverter : JsonConverter
         if (writer == null) throw new ArgumentNullException(nameof(writer));
         if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-        Console.WriteLine("GOT VALUE");
-
         if (value == null)
         {
-            Console.WriteLine("NULL VALUE");
             writer.WriteNull();
             return;
         }
