@@ -58,10 +58,7 @@ internal class RevoltSocketClient
                 catch (ArgumentException)
                 {
                     if (_firstConnected)
-                    {
-                        Console.WriteLine("[RevoltSharp] Client config WEBSOCKET_URL is an invalid format.");
-                        throw new RevoltException("Client config WEBSOCKET_URL is an invalid format.");
-                    }
+                        Client.InvokeLogAndThrowException("Client config WEBSOCKET_URL is an invalid format.");
                 }
                 catch (WebSocketException we)
                 {
@@ -69,15 +66,9 @@ internal class RevoltSocketClient
                     if (_firstConnected)
                     {
                         if (we.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
-                        {
-                            Console.WriteLine("[RevoltSharp] Client token may be invalid.");
-                            throw new RevoltException("Client token may be invalid.");
-                        }
+                            Client.InvokeLogAndThrowException("Client token may be invalid.");
                         else
-                        {
-                            Console.WriteLine("[RevoltSharp] Failed to connect to Revolt.");
-                            throw new RevoltException("Failed to connect to Revolt.");
-                        }   
+                            Client.InvokeLogAndThrowException("Failed to connect to Revolt.");
                     }
                     
                 }
@@ -85,11 +76,7 @@ internal class RevoltSocketClient
                 {
                     Console.WriteLine("--- WebSocket Exception ---\n" + $"{ex}");
                     if (_firstConnected)
-                    {
-                        Console.WriteLine("[RevoltSharp] Failed to connect to Revolt.");
-                        throw new RevoltException("Failed to connect to Revolt.");
-                    }
-                        
+                        Client.InvokeLogAndThrowException("Failed to connect to Revolt.");
                 }
                 await Task.Delay(_firstError ? 3000 : 10000, CancellationToken);
                 _firstError = false;
@@ -173,10 +160,10 @@ internal class RevoltSocketClient
                     if (_firstConnected)
                     {
                         Client.InvokeConnected();
-                        Console.WriteLine("[RevoltSharp] WebSocket Connected!");
+                        Client.InvokeLog("WebSocket Connected!", LogSeverity.Verbose);
                     }
                     else
-                        Console.WriteLine("[RevoltSharp] WebSocket Reconnected!");
+                        Client.InvokeLog("WebSocket Reconnected!", LogSeverity.Verbose);
 
                     _firstConnected = false;
                     await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
@@ -212,9 +199,9 @@ internal class RevoltSocketClient
                         if (@event.Error == RevoltErrorType.InvalidSession)
                         {
                             if (_firstConnected)
-                                Console.WriteLine("[RevoltSharp] WebSocket session is invalid, check if your bot token is correct.");
+                                Client.InvokeLog("WebSocket session is invalid, check if your bot token is correct.", LogSeverity.Error);
                             else
-                                Console.WriteLine("[RevoltSharp] WebSocket session was invalidated!");
+                                Client.InvokeLog("WebSocket session was invalidated!", LogSeverity.Error);
                             
                             await Client.StopAsync();
                         }
@@ -240,8 +227,7 @@ internal class RevoltSocketClient
 
                             if (SocketSelfUser == null)
                             {
-                                Console.WriteLine("[RevoltSharp] Fatal error, could not load bot user.\n" +
-                                    "WebSocket connection has been stopped.");
+                                Client.InvokeLog("Fatal error, could not load bot user.\nWebSocket connection has been stopped.", LogSeverity.Error);
                                 await Client.StopAsync();
                             }
 
@@ -277,7 +263,7 @@ internal class RevoltSocketClient
                                 if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
                                     s.InternalEmojis.TryAdd(m.Id, Emote);
                             }
-                            Console.WriteLine("[RevoltSharp] WebSocket Ready!");
+                            Client.InvokeLog("WebSocket Ready!", LogSeverity.Verbose);
 
                             Client.InvokeReady(CurrentUser);
 
@@ -297,8 +283,7 @@ internal class RevoltSocketClient
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
-                            Console.WriteLine("[RevoltSharp] Fatal error, could not parse ready event.\n" +
-                                "WebSocket connection has been stopped.");
+                            Client.InvokeLog("Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", LogSeverity.Error);
                             Client.InvokeWebSocketError(new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
                             await Client.StopAsync();
                         }
@@ -513,7 +498,7 @@ internal class RevoltSocketClient
 
                         if (@event.UserId == CurrentUser.Id)
                         {
-                            Console.WriteLine("[RevoltSharp] Left Group: " + GC.Name);
+                            Client.InvokeLog("Left Group: " + GC.Name, LogSeverity.Verbose);
                             ChannelCache.TryRemove(@event.Id, out Channel chan);
                             _ = Task.Run(() =>
                             {
@@ -650,7 +635,7 @@ internal class RevoltSocketClient
                         if (@event.UserId == CurrentUser.Id)
                         {
                             Server server = await Client.Rest.GetServerAsync(@event.Id);
-                            Console.WriteLine("[RevoltSharp] Joined Server: " + server.Name);
+                            Client.InvokeLog("Joined Server: " + server.Name, LogSeverity.Verbose);
                             ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser);
                             server.AddMember(Member);
                             Client.InvokeServerJoined(server, CurrentUser);
@@ -678,7 +663,7 @@ internal class RevoltSocketClient
                             if (!ServerCache.TryRemove(@event.Id, out Server server))
                                 return;
 
-                            Console.WriteLine("[RevoltSharp] Left Server: " + server.Name);
+                            Client.InvokeLog("Left Server: " + server.Name, LogSeverity.Verbose);
                             _ = Task.Run(() =>
                             {
                                 foreach (ServerMember m in server.InternalMembers.Values)

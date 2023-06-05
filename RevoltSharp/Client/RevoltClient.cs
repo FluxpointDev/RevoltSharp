@@ -148,16 +148,15 @@ public class RevoltClient : ClientEvents
     {
         if (FirstConnection)
         {
+            InvokeLog("Starting...", LogSeverity.Verbose);
+
             FirstConnection = false;
             QueryRequest? Query = await Rest.GetAsync<QueryRequest>("/");
             if (Query == null)
-            {
-                Console.WriteLine("[RevoltSharp] Client failed to connect to the revolt api at " + Config.ApiUrl);
-                throw new RevoltException("Client failed to connect to the revolt api at " + Config.ApiUrl);
-            }
+                InvokeLogAndThrowException($"Client failed to connect to the revolt api at {Config.ApiUrl}");
 
             if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
-                throw new RevoltException("[RevoltSharp] Server Image server url is an invalid format.");
+                throw new RevoltException("Server Image server url is an invalid format.");
 
             RevoltVersion = Query.revoltVersion;
             Config.Debug.WebsocketUrl = Query.websocketUrl;
@@ -171,7 +170,7 @@ public class RevoltClient : ClientEvents
                 throw new RevoltException("Failed to login to user account.");
 
             CurrentUser = new SelfUser(this, SelfUser);
-            Console.WriteLine($"[RevoltSharp] Started: {SelfUser.Username} ({SelfUser.Id})");
+            InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", LogSeverity.Standard);
             InvokeStarted(CurrentUser);
         }
 
