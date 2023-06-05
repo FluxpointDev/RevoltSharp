@@ -37,6 +37,9 @@ public class ClientEvents
     public delegate void UserUpdatedEvent(User old_user, User new_user);
 
     /// <inheritdoc cref="RevoltEvent" />
+    public delegate void SelfUserUpdatedEvent(SelfUser old_user, SelfUser new_user);
+
+    /// <inheritdoc cref="RevoltEvent" />
     public delegate void ServerEvent(Server server);
 
     /// <inheritdoc cref="RevoltEvent" />
@@ -44,6 +47,9 @@ public class ClientEvents
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void ServerUserEvent(Server server, User user);
+
+    /// <inheritdoc cref="RevoltEvent" />
+    public delegate void ServerSelfEvent(Server server, SelfUser user);
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void ServerMemberEvent(Server server, ServerMember member);
@@ -59,6 +65,12 @@ public class ClientEvents
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void ChannelUserEvent(Channel channel, User user);
+
+    /// <inheritdoc cref="RevoltEvent" />
+    public delegate void GroupChannelSelfEvent(GroupChannel channel, SelfUser user);
+
+    /// <inheritdoc cref="RevoltEvent" />
+    public delegate void GroupChannelUserEvent(GroupChannel channel, User user);
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void ChannelUpdatedEvent(Channel old_channel, Channel new_channel, ChannelUpdatedProperties updated_props);
@@ -206,7 +218,7 @@ public class ClientEvents
     /// <summary>
     /// The current user/bot account has joined a <see cref="GroupChannel" />.
     /// </summary>
-    public event ChannelUserEvent? OnGroupJoined;
+    public event GroupChannelSelfEvent? OnGroupJoined;
     internal void InvokeGroupJoined(GroupChannel chan, SelfUser user)
     {
         OnGroupJoined?.Invoke(chan, user);
@@ -215,7 +227,7 @@ public class ClientEvents
     /// <summary>
     /// The current user/bot account has left a <see cref="GroupChannel" />.
     /// </summary>
-    public event ChannelUserEvent? OnGroupLeft;
+    public event GroupChannelSelfEvent? OnGroupLeft;
     internal void InvokeGroupLeft(GroupChannel chan, SelfUser user)
     {
         OnGroupLeft?.Invoke(chan, user);
@@ -224,7 +236,7 @@ public class ClientEvents
     /// <summary>
     /// A <see cref="User" /> has joined the <see cref="GroupChannel" />.
     /// </summary>
-    public event ChannelUserEvent? OnGroupUserJoined;
+    public event GroupChannelUserEvent? OnGroupUserJoined;
     internal void InvokeGroupUserJoined(GroupChannel chan, User user)
     {
         OnGroupUserJoined?.Invoke(chan, user);
@@ -233,7 +245,7 @@ public class ClientEvents
     /// <summary>
     /// A <see cref="User" /> has left or been removed from the <see cref="GroupChannel" />
     /// </summary>
-    public event ChannelUserEvent? OnGroupUserLeft;
+    public event GroupChannelUserEvent? OnGroupUserLeft;
     internal void InvokeGroupUserLeft(GroupChannel chan, User user)
     {
         OnGroupUserLeft?.Invoke(chan, user);
@@ -255,7 +267,7 @@ public class ClientEvents
     /// <summary>
     /// The current user/bot account has joined a <see cref="Server" />.
     /// </summary>
-    public event ServerUserEvent? OnServerJoined;
+    public event ServerSelfEvent? OnServerJoined;
     internal void InvokeServerJoined(Server server, SelfUser user)
     {
         OnServerJoined?.Invoke(server, user);
@@ -354,7 +366,7 @@ public class ClientEvents
     /// <summary>
     /// The current user/bot account has been updated.
     /// </summary>
-    public event UserUpdatedEvent? OnCurrentUserUpdated;
+    public event SelfUserUpdatedEvent? OnCurrentUserUpdated;
     internal void InvokeCurrentUserUpdated(SelfUser old, SelfUser newu)
     {
         OnCurrentUserUpdated?.Invoke(old, newu);

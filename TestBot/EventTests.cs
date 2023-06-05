@@ -144,7 +144,7 @@ public class EventTests
         Console.WriteLine(value.Username);
     }
 
-    private void Client_OnMessageUpdated(MessageUpdatedProperties message)
+    private void Client_OnMessageUpdated(Downloadable<string, Message> message_cache, MessageUpdatedProperties message)
     {
         Console.WriteLine("--- EVENT: Message Updated ---");
         Console.WriteLine(message.Content.Value);
