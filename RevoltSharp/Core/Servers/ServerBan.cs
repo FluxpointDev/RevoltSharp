@@ -5,11 +5,8 @@ namespace RevoltSharp;
 
 public class ServerBan : CreatedEntity
 {
-    internal ServerBan(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json?.Id)
+    internal ServerBan(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json.Id)
     {
-        if (json == null)
-            return;
-
         Username = json.Username;
         Reason = jsonInfo.Reason;
         Avatar = Attachment.Create(client, json.Avatar);

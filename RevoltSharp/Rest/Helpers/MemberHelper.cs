@@ -194,7 +194,7 @@ public static class MemberHelper
             Req.reason = Optional.Some(reason);
 
         await rest.PutAsync<ServerBan>($"servers/{serverId}/bans/{userId}", Req);
-        return new ServerBan(rest.Client, null, null) { Id = userId, Reason = reason };
+        return new ServerBan(rest.Client, new Core.Servers.ServerBanUserJson { Id = userId }, null) { Reason = reason };
     }
     public static Task UnBanMemberAsync(this Server server, string userId)
         => UnBanMemberAsync(server.Client.Rest, server.Id, userId);
@@ -209,7 +209,6 @@ public static class MemberHelper
 
         await rest.DeleteAsync($"servers/{serverId}/bans/{userId}");
     }
-
 
     public static Task ModifyAsync(this ServerMember member, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
     {

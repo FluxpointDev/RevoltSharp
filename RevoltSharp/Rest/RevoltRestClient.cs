@@ -206,7 +206,7 @@ public class RevoltRestClient
         {
             await Req.Content.CopyToAsync(Stream);
             Stream.Position = 0;
-            return new FileAttachment(DeserializeJson<FileAttachmentJson>(Stream).id);
+            return new FileAttachment(Client, DeserializeJson<FileAttachmentJson>(Stream).id);
         }
     }
 
