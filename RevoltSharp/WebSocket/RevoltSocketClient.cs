@@ -283,7 +283,6 @@ internal class RevoltSocketClient
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
-                            Client.InvokeLog("Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", LogSeverity.Error);
                             Client.InvokeWebSocketError(new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
                             await Client.StopAsync();
                         }
