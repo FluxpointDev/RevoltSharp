@@ -24,9 +24,9 @@ class Program
         {
             Debug = new ClientDebugConfig { LogRestRequestJson = true, 
                 LogRestResponseJson = false, 
-                LogRestRequest = true, 
+                LogRestRequest = false, 
                 LogWebSocketFull = true,
-                LogWebSocketReady = true, 
+                LogWebSocketReady = false, 
                 LogWebSocketError = true, 
                 LogWebSocketUnknownEvent = true },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
@@ -35,7 +35,7 @@ class Program
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
         //new EventTests(Client);
-
+        await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));
 
 
         CommandHandler CommandHandler = new CommandHandler(Client);

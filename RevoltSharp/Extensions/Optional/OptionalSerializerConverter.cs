@@ -31,7 +31,7 @@ internal class OptionalSerializerConverter<T> : JsonConverter
         else
             obj = serializer.Deserialize<T>(reader);
 
-        return new Optional<T>(obj);
+        return Optional.Some(obj);
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

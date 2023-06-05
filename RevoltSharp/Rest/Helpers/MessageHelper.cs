@@ -108,9 +108,9 @@ public static class MessageHelper
             include_users = includeUserDetails
         };
         if (!string.IsNullOrEmpty(afterMessageId))
-            Req.after = new Optional<string>(afterMessageId);
+            Req.after = Optional.Some(afterMessageId);
         if (!string.IsNullOrEmpty(beforeMessageId))
-            Req.after = new Optional<string>(beforeMessageId);
+            Req.after = Optional.Some(beforeMessageId);
         MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages", Req);
         if (Data == null)
             return Array.Empty<Message>();

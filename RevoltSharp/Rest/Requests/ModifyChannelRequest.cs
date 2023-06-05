@@ -17,7 +17,7 @@ internal class ModifyChannelRequest : IRevoltRequest
     public void RemoveValue(string value)
     {
         if (!remove.HasValue)
-            remove = new Optional<List<string>>(new List<string>());
+            remove = Optional.Some(new List<string>());
 
         remove.Value.Add(value);
     }

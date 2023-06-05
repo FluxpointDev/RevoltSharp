@@ -15,7 +15,7 @@ public struct Optional<T>
 
     public T Value => value;
 
-    internal Optional(T value, bool hasValue = false)
+    internal Optional(T value, bool hasValue)
     {
         this.value = value;
         this.hasValue = hasValue;

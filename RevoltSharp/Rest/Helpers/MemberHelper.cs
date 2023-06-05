@@ -236,7 +236,7 @@ public static class MemberHelper
             if (string.IsNullOrEmpty(nickname.Value))
                 Req.RemoveValue("Nickname");
             else
-                Req.nickname = new Optional<string>(nickname.Value);
+                Req.nickname = Optional.Some(nickname.Value);
         }
 
         if (avatar != null)
@@ -244,7 +244,7 @@ public static class MemberHelper
             if (avatar.Value == null)
                 Req.RemoveValue("Avatar");
             else
-                Req.avatar = new Optional<AttachmentJson>(avatar.Value.ToJson());
+                Req.avatar = Optional.Some(avatar.Value.ToJson());
         }
 
         if (timeout != null)
@@ -252,7 +252,7 @@ public static class MemberHelper
             if (!timeout.Value.HasValue)
                 Req.RemoveValue("Timeout");
             else
-                Req.timeout = new Optional<DateTime>(timeout.Value.Value);
+                Req.timeout = Optional.Some(timeout.Value.Value);
         }
 
         await rest.PatchAsync<HttpResponseMessage>($"servers/{serverId}/members/{memberId}", Req);

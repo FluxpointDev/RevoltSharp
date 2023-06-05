@@ -54,11 +54,7 @@ public class OptionalDeserializerConverter : JsonConverter
         var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
         var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
 
-        var hasValue = false;
-        if (hasValueMethod != null)
-        #pragma warning disable CS8605 // Unboxing a possibly null value.
-            hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
-        #pragma warning restore CS8605 // Unboxing a possibly null value.
+        var hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
 
         if (!hasValue)
         {

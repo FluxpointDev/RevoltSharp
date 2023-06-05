@@ -8,16 +8,16 @@ public class ServerUpdatedProperties
     {
         Name = json.Name;
         if (json.Icon.HasValue)
-            Icon = new Optional<Attachment?>(server.Icon);
+            Icon = Optional.Some(server.Icon);
         if (json.Banner.HasValue)
-            Banner = new Optional<Attachment?>(server.Banner);
+            Banner = Optional.Some(server.Banner);
         Description = json.Description;
         DefaultPermissions = json.DefaultPermissions;
         Analytics = json.Analytics;
         Discoverable = json.Discoverable;
         Nsfw = json.Nsfw;
         Owner = json.Owner;
-        SystemMessages = new Optional<ServerSystemMessages>(server.SystemMessages);
+        SystemMessages = Optional.Some(server.SystemMessages);
     }
 
     public Optional<string> Name { get; set; }

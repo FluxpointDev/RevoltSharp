@@ -16,7 +16,7 @@ internal class ModifySelfRequest
             if (string.IsNullOrEmpty(avatar.Value))
             {
                 if (!Remove.HasValue)
-                    Remove = new Optional<List<string>>(new List<string>());
+                    Remove = Optional.Some(new List<string>());
 
                 Remove.Value.Add("Avatar");
             }
@@ -30,7 +30,7 @@ internal class ModifySelfRequest
             if (string.IsNullOrEmpty(statusText.Value))
             {
                 if (!Remove.HasValue)
-                    Remove = new Optional<List<string>>(new List<string>());
+                    Remove = Optional.Some(new List<string>());
 
                 Remove.Value.Add("Status.Text");
             }
@@ -48,7 +48,7 @@ internal class ModifySelfRequest
             if (string.IsNullOrEmpty(profileBio.Value))
             {
                 if (!Remove.HasValue)
-                    Remove = new Optional<List<string>>(new List<string>());
+                    Remove = Optional.Some(new List<string>());
 
                 Remove.Value.Add("Profile.Content");
             }
@@ -61,7 +61,7 @@ internal class ModifySelfRequest
             if (string.IsNullOrEmpty(profileBackground.Value))
             {
                 if (!Remove.HasValue)
-                    Remove = new Optional<List<string>>(new List<string>());
+                    Remove = Optional.Some(new List<string>());
 
                 Remove.Value.Add("Profile.Background");
             }

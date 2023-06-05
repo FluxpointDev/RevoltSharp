@@ -10,17 +10,17 @@ public class ChannelUpdatedProperties
         Name = json.Name;
         Active = json.Active;
         if (json.Icon.HasValue)
-            Icon = new Optional<Attachment?>(Attachment.Create(channel.Client, json.Icon.Value));
+            Icon = Optional.Some(Attachment.Create(channel.Client, json.Icon.Value));
 
         Description = json.Description;
 
         if (channel is ServerChannel SC)
         {
             if (json.DefaultPermissions.HasValue)
-                DefaultPermissions = new Optional<ChannelPermissions>(SC.DefaultPermissions);
+                DefaultPermissions = Optional.Some(SC.DefaultPermissions);
 
             if (json.RolePermissions.HasValue)
-                RolePermissions = new Optional<Dictionary<string, ChannelPermissions>>(SC.InternalRolePermissions);
+                RolePermissions = Optional.Some(SC.InternalRolePermissions);
         }
 
         Nsfw = json.IsNsfw;
