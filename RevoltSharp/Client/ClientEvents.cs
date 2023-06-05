@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System;
+
+namespace RevoltSharp;
 
 /// <summary>
 /// Do not use this class! only used for <see cref="RevoltClient"/>
@@ -73,6 +75,9 @@ public class ClientEvents
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void UserPlatformRemovedEvent<UserId, User>(UserId user_id, User user);
 
+    /// <inheritdoc cref="RevoltEvent" />
+    public delegate void LogEvent(string message, LogSeverity severity);
+
     #region WebSocket Events
 
     /// <summary>
@@ -91,6 +96,7 @@ public class ClientEvents
     public event SocketErrorEvent<SocketError>? OnWebSocketError;
     internal void InvokeWebSocketError(SocketError error)
     {
+        InvokeLog(error.Message, LogSeverity.Error);
         OnWebSocketError?.Invoke(error);
     }
 
@@ -408,6 +414,40 @@ public class ClientEvents
     internal void InvokeReactionBulkRemoved(Emoji emoji, Channel channel, Downloadable<string, Message> messageDownload)
     {
         OnReactionBulkRemoved?.Invoke(emoji, channel, messageDownload);
+    }
+
+    #endregion
+
+    #region Log Event
+
+    /// <summary>
+    /// Called to display information, events, and errors originating from the <see cref="RevoltClient"/>.
+    /// </summary>
+    /// <remarks>By default, RevoltSharp will log its events to the <see cref="Console"/>. Adding a subscriber to this event overrides this behavior.</remarks>
+    public event LogEvent? OnLog;
+
+    internal void InvokeLog(string message, LogSeverity severity)
+    {
+        if (OnLog == null)
+        {
+            ConsoleColor prevColor = Console.ForegroundColor;
+            switch (severity)
+            {
+                case LogSeverity.Verbose: Console.ForegroundColor = ConsoleColor.DarkGray; break;
+                case LogSeverity.Standard: Console.ForegroundColor = ConsoleColor.Gray; break;
+                case LogSeverity.Error: Console.ForegroundColor = ConsoleColor.Red; break;
+            }
+            Console.WriteLine($"[RevoltSharp] {message}"); // Default implementation
+            Console.ForegroundColor = prevColor;
+        }
+        else
+            OnLog.Invoke(message, severity);
+    }
+
+    internal void InvokeLogAndThrowException(string message)
+    {
+        InvokeLog(message, LogSeverity.Error);
+        throw new RevoltException(message);
     }
 
     #endregion
