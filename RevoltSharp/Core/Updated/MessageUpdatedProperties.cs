@@ -7,7 +7,7 @@ namespace RevoltSharp;
 
 public class MessageUpdatedProperties : CreatedEntity
 {
-    internal MessageUpdatedProperties(RevoltClient client, MessageUpdateEventJson json) : base(client, json.Id)
+    internal MessageUpdatedProperties(RevoltClient client, MessageUpdateEventJson json) : base(client, json.MessageId)
     {
         Content = json.Data.Content;
         if (json.Data.Embeds.HasValue)
@@ -18,7 +18,7 @@ public class MessageUpdatedProperties : CreatedEntity
                 Embeds = Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)).ToArray());
         }
         EditedAt = json.Data.EditedAt;
-        ChannelId = json.Channel;
+        ChannelId = json.ChannelId;
         if (Channel is ServerChannel SC)
             ServerId = SC.ServerId;
     }

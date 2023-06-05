@@ -85,7 +85,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.6.1";
+    public string Version { get; } = "5.6.2";
 
     /// <summary>
     /// The current version of the revolt instance connected to.

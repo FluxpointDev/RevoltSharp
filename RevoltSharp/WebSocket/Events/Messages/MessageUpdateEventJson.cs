@@ -7,10 +7,10 @@ namespace RevoltSharp.WebSocket.Events;
 internal class MessageUpdateEventJson
 {
     [JsonProperty("id")]
-    public string Id;
+    public string MessageId;
 
     [JsonProperty("channel")]
-    public string Channel;
+    public string ChannelId;
 
     [JsonProperty("data")]
     public MessageUpdatedJson Data;

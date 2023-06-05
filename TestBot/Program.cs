@@ -43,6 +43,7 @@ class Program
         await Task.Delay(-1);
     }
 
+
     private static void Client_OnReady(SelfUser value)
     {
         Console.WriteLine("Ready: " + value.Username);

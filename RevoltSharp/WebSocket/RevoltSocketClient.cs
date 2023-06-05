@@ -333,13 +333,14 @@ internal class RevoltSocketClient
                 case "MessageUpdate":
                     {
                         MessageUpdateEventJson @event = payload.ToObject<MessageUpdateEventJson>(Client.Deserializer);
-                        ChannelCache.TryGetValue(@event.Channel, out Channel channel);
+                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
                         if (channel == null)
                         {
-                            channel = await Client.Rest.GetChannelAsync(@event.Channel);
+                            channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
                             ChannelCache.TryAdd(channel.Id, channel);
                         }
-                        Client.InvokeMessageUpdated(new MessageUpdatedProperties(Client, @event));
+                        Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                        Client.InvokeMessageUpdated(message, new MessageUpdatedProperties(Client, @event));
                     }
                     break;
                 case "MessageDelete":

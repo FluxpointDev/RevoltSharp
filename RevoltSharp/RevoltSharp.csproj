@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>5.6.1</Version>
+    <Version>5.6.2</Version>
     <Authors>Builderb (Fluxpoint Development)</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway with a user or bot account.</Description>
@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://docs.fluxpoint.dev/revoltsharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/FluxpointDev/RevoltSharp</RepositoryUrl>
     <PackageTags>revolt, revolt bot, bot, revoltsharp, revolt c#</PackageTags>
-    <PackageReleaseNotes>Tons of tweaks and fixes and internal changes
+    <PackageReleaseNotes>See changelog https://docs.fluxpoint.dev/revoltsharp/changelog
 </PackageReleaseNotes>
     <Nullable>enable</Nullable>
   </PropertyGroup>
