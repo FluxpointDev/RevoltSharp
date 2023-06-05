@@ -54,7 +54,11 @@ public class OptionalDeserializerConverter : JsonConverter
         var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
         var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
 
-        var hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
+        var hasValue = false;
+        if (hasValueMethod != null)
+        #pragma warning disable CS8605 // Unboxing a possibly null value.
+            hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
+        #pragma warning restore CS8605 // Unboxing a possibly null value.
 
         if (!hasValue)
         {
@@ -75,7 +79,7 @@ public class OptionalDeserializerConverter : JsonConverter
     }
 
     private static bool HasValue<T>(Optional<T> option) => option.HasValue;
-    private static T GetValue<T>(Optional<T> option) => option.ValueOr(default(T));
+    private static T? GetValue<T>(Optional<T> option) => option.HasValue ? option.Value : default(T);
     private static Optional<T> None<T>() => Optional.None<T>();
     private static Optional<T> Some<T>(T value) => Optional.Some(value);
 }
