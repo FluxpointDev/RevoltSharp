@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System;
+
+namespace RevoltSharp;
 
 /// <summary>
 /// Revolt file attachment for messages which could by any type including an image.
@@ -7,7 +9,6 @@ public class Attachment : CreatedEntity
 {
     private Attachment(RevoltClient client, AttachmentJson model) : base(client, model.Id)
     {
-        Id = model.Id;
         Tag = model.Tag;
         Filename = model.Filename;
         Size = model.Size;
@@ -22,9 +23,14 @@ public class Attachment : CreatedEntity
     }
 
     /// <summary>
-    /// Id of the attachment file.
+    /// Id of the attachment.
     /// </summary>
-    public string Id { get; }
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the attachment was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     /// <summary>
     /// The type of attachment used avatar, banner, icon, ect.

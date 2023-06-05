@@ -11,7 +11,6 @@ public class ServerChannel : Channel
 {
     internal ServerChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
-        Id = model.Id;
         ServerId = model.Server;
         DefaultPermissions = new ChannelPermissions(Server, model.DefaultPermissions);
         InternalRolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(Server, x.Value)) : new Dictionary<string, ChannelPermissions>();

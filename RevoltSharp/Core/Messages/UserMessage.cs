@@ -30,7 +30,6 @@ public class UserMessage : Message
     internal UserMessage(RevoltClient client, MessageJson model)
         : base(client, model)
     {
-        Id = model.Id;
         AuthorId = model.Author;
         Author = client.GetUser(model.Author);
         ChannelId = model.Channel;

@@ -14,7 +14,6 @@ public class User : CreatedEntity
 {
     internal User(RevoltClient client, UserJson model) : base(client, model.Id)
     {
-        Id = model.Id;
         Username = model.Username;
         Status = new UserStatus(model);
         BotData = BotData.Create(model.Bot);
@@ -31,9 +30,14 @@ public class User : CreatedEntity
     }
 
     /// <summary>
-    /// The User ID for this user.
+    /// Id of the user.
     /// </summary>
-    public string Id { get; }
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the user was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     /// <summary>
     /// Username of the user.

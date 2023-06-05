@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System;
+
+namespace RevoltSharp;
 
 /// <summary>
 /// Base chat messages that can be casted to <see cref="UserMessage"/> or <see cref="SystemMessage{Type}"/>
@@ -48,9 +50,14 @@ public abstract class Message : CreatedEntity
     }
 
     /// <summary>
-    /// Id of the message
+    /// Id of the message.
     /// </summary>
-    public string Id { get; internal set; }
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the message was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     /// <summary>
     /// Parent channel id of the message

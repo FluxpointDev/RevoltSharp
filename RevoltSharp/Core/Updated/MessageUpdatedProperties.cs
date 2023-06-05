@@ -23,7 +23,15 @@ public class MessageUpdatedProperties : CreatedEntity
             ServerId = SC.ServerId;
     }
 
-    public string Id { get; private set; }
+    /// <summary>
+    /// Id of the message.
+    /// </summary>
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the message was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     public Optional<string> Content { get; private set; }
 

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace RevoltSharp;
 
@@ -7,7 +8,15 @@ namespace RevoltSharp;
 /// </summary>
 public class Role : CreatedEntity
 {
-    public string Id { get; internal set; }
+    /// <summary>
+    /// Id of the role.
+    /// </summary>
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the role was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     public string ServerId { get; internal set; }
 
@@ -29,12 +38,8 @@ public class Role : CreatedEntity
 
     public RevoltColor Color { get; internal set; }
 
-    internal Role(RevoltClient client, RoleJson model, string serverId, string roleId)
-        : base(client, roleId)
+    internal Role(RevoltClient client, RoleJson model, string serverId, string roleId) : base(client, roleId)
     {
-
-        Id = roleId;
-        
         Color = new RevoltColor(model.Colour);
         IsHoisted = model.Hoist;
         Name = model.Name;
@@ -43,10 +48,8 @@ public class Role : CreatedEntity
         ServerId = serverId;
     }
 
-    internal Role(RevoltClient client, PartialRoleJson model, string serverId, string roleId)
-        : base(client, roleId)
+    internal Role(RevoltClient client, PartialRoleJson model, string serverId, string roleId) : base(client, roleId)
     {
-        Id = roleId;
         Name = model.Name.Value;
         if (model.Permissions.HasValue)
             Permissions = new ServerPermissions(Server, model.Permissions.Value.Allowed);

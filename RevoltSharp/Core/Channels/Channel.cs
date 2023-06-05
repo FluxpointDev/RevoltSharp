@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System;
+
+namespace RevoltSharp;
 
 /// <summary>
 /// Revolt channel that can be casted to types <see cref="GroupChannel"/>, <see cref="TextChannel"/>, <see cref="VoiceChannel"/> <see cref="ServerChannel" /> <see cref="UnknownServerChannel" /> or <see cref="UnknownChannel"/>
@@ -8,7 +10,12 @@ public abstract class Channel : CreatedEntity
     /// <summary>
     /// Id of the channel.
     /// </summary>
-    public string Id { get; internal set; }
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the channel was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     /// <summary>
     /// The channel type to cast to.

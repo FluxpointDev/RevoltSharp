@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System;
+
+namespace RevoltSharp;
 
 /// <summary>
 /// Server or default emoji
@@ -7,7 +9,6 @@ public class Emoji : CreatedEntity
 {
     internal Emoji(RevoltClient client, EmojiJson model) : base(client, model.Id)
     {
-        Id = model.Id;
         Name = model.Name;
         CreatorId = model.CreatorId;
         ServerId = model.Parent.ServerId;
@@ -17,7 +18,6 @@ public class Emoji : CreatedEntity
 
     internal Emoji(RevoltClient client, string emoji) : base(client, emoji)
     {
-        Id = emoji;
         Name = emoji;
     }
 
@@ -25,11 +25,18 @@ public class Emoji : CreatedEntity
     {
         if (emoji.StartsWith(':'))
             emoji = emoji.Substring(1, emoji.Length - 2);
-        Id = emoji;
         Name = emoji;
     }
 
-    public string Id { get; internal set; }
+    /// <summary>
+    /// Id of the emoji.
+    /// </summary>
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the emoji was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     public string Name { get; internal set; }
 

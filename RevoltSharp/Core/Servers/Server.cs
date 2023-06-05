@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,6 @@ public class Server : CreatedEntity
 {
     internal Server(RevoltClient client, ServerJson model) : base(client, model.Id)
     {
-        Id = model.Id;
         Name = model.Name;
         DefaultPermissions = new ServerPermissions(this, model.DefaultPermissions);
         Description = model.Description;
@@ -27,7 +27,15 @@ public class Server : CreatedEntity
         SystemMessages = new ServerSystemMessages(client, model.SystemMessages);
     }
 
-    public string Id { get; internal set; }
+    /// <summary>
+    /// Id of the server.
+    /// </summary>
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the server was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     public string OwnerId { get; internal set; }
 

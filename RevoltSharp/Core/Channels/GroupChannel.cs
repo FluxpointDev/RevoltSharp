@@ -12,7 +12,6 @@ public class GroupChannel : Channel
 {
     internal GroupChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
-        Id = model.Id;
         Type = ChannelType.Group;
         Recipents = model.Recipients != null ? model.Recipients.ToHashSet() : new HashSet<string>();
         if (client.WebSocket != null)

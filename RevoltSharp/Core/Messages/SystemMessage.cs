@@ -10,7 +10,6 @@ public class SystemMessage<Type> : Message where Type : SystemType
     internal SystemMessage(RevoltClient client, MessageJson model, Type type)
         : base(client, model)
     {
-        Id = model.Id;
         ChannelId = model.Channel;
         Channel = client.GetChannel(ChannelId);
         if (Channel != null && Channel is ServerChannel SC)

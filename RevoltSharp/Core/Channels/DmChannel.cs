@@ -9,7 +9,6 @@ public class DMChannel : Channel
 {
     internal DMChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
-        Id = model.Id;
         Type = ChannelType.DM;
         Active = model.Active;
         UserId = model.Recipients.First(x => x != client.CurrentUser.Id);

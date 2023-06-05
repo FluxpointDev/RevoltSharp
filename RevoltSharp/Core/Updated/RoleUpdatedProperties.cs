@@ -1,4 +1,5 @@
 ﻿using Optionals;
+using System;
 using System.Numerics;
 
 namespace RevoltSharp;
@@ -16,6 +17,16 @@ public class RoleUpdatedProperties : CreatedEntity
         if (json.Colour.HasValue)
             Color = Optional.Some(new RevoltColor(json.Colour.Value));
     }
+
+    /// <summary>
+    /// Id of the role.
+    /// </summary>
+    public new string Id => base.Id;
+
+    /// <summary>
+    /// Date of when the role was created.
+    /// </summary>
+    public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     public Optional<string> Name { get; private set; }
 
