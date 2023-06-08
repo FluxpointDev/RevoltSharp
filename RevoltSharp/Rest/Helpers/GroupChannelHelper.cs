@@ -46,14 +46,8 @@ public static class GroupChannelHelper
         return List.Select(x => new User(rest.Client, x)).ToImmutableArray();
     }
 
-    public static Task<GroupChannel?> GetGroupChannelAsync(this SelfUser user, string channelId)
-        => ChannelHelper.GetChannelAsync<GroupChannel>(user.Client.Rest, channelId);
-
     public static Task<GroupChannel?> GetGroupChannelAsync(this RevoltRestClient rest, string channelId)
         => ChannelHelper.GetChannelAsync<GroupChannel>(rest, channelId);
-
-    public static Task<IReadOnlyCollection<GroupChannel>> GetGroupChannelsAsync(this SelfUser user)
-        => GetGroupChannelsAsync(user.Client.Rest);
 
     public static async Task<IReadOnlyCollection<GroupChannel>> GetGroupChannelsAsync(this RevoltRestClient rest)
     {
@@ -70,12 +64,6 @@ public static class GroupChannelHelper
 
     public static Task LeaveAsync(this GroupChannel channel)
       => LeaveGroupChannelAsync(channel.Client.Rest, channel.Id);
-
-    public static Task LeaveGroupChannelAsync(this SelfUser user, GroupChannel channel)
-      => LeaveGroupChannelAsync(user.Client.Rest, channel.Id);
-
-    public static Task LeaveGroupChannelAsync(this SelfUser user, string channelId)
-      => LeaveGroupChannelAsync(user.Client.Rest, channelId);
 
     public static async Task LeaveGroupChannelAsync(this RevoltRestClient rest, string channelId)
     {

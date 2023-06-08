@@ -94,12 +94,8 @@ public class CommandHandler
             Console.WriteLine("Success command: " + commandinfo.Value.Name);
         else
         {
-            if (!commandinfo.HasValue)
-                Console.WriteLine("Invalid command: " + context.Message.Content);
-            else
-            {
+            if (commandinfo.HasValue)
                 context.Channel.SendMessageAsync("Error: " + result.ErrorReason);
-            }
         }
     }
 }

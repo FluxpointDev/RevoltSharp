@@ -135,7 +135,13 @@ public static class MemberHelper
             return null;
         ServerMember SM = new ServerMember(rest.Client, Member, null, User);
         if (rest.Client.WebSocket != null)
-            rest.Client.WebSocket.ServerCache[serverId].AddMember(SM);
+        {
+            try
+            {
+                rest.Client.WebSocket.ServerCache[serverId].AddMember(SM);
+            }
+            catch { }
+        }
         return SM;
     }
 

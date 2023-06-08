@@ -5,12 +5,12 @@ namespace RevoltSharp.Rest.Requests;
 
 internal class ModifyChannelRequest : IRevoltRequest
 {
-    public Optional<string> name { get; internal set; }
-    public Optional<string> description { get; internal set; }
-    public Optional<string> icon { get; internal set; }
-    public Optional<bool> nsfw { get; internal set; }
-    public Optional<List<string>> remove { get; internal set; }
-    public Optional<string> owner { get; internal set; }
+    public Optional<string> name { get; set; }
+    public Optional<string> description { get; set; }
+    public Optional<string> icon { get; set; }
+    public Optional<bool> nsfw { get; set; }
+    public Optional<List<string>> remove { get; set; }
+    public Optional<string> owner { get; set; }
 
 
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -30,9 +31,9 @@ public static class MessageHelper
         if (rest.Client.UserBot && embeds != null)
             throw new RevoltRestException("User accounts can't send embeds on SendMessageAsync", 401, RevoltErrorType.NotAllowedForUsers);
 
-        if (embeds != null && embeds.Any(x => !string.IsNullOrEmpty(x.Image)))
+        if (embeds != null)
         {
-            IEnumerable<Task> uploadTasks = embeds.Select(async x =>
+            IEnumerable<Task> uploadTasks = embeds.Where(x => !string.IsNullOrEmpty(x.Image)).Select(async x =>
             {
                 if (x.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || x.Image.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 {
@@ -49,25 +50,36 @@ public static class MessageHelper
                 }
 
             });
-            await Task.WhenAll(uploadTasks);
+            if (uploadTasks.Any())
+                await Task.WhenAll(uploadTasks);
         }
+
         if (string.IsNullOrEmpty(text))
             text = null;
-
-        MessageJson Data = await rest.PostAsync<MessageJson>($"channels/{channelId}/messages", new SendMessageRequest
+        SendMessageRequest Req = new SendMessageRequest
         {
-            content = Optional.Some(text),
-            nonce = Optional.Some(Guid.NewGuid().ToString()),
-            attachments = attachments == null ? Optional.None<string[]>() : Optional.Some(attachments),
-            embeds = embeds == null ? Optional.None<EmbedJson[]>() : Optional.Some(embeds.Select(x => x.ToJson()).ToArray()),
-            masquerade = masquerade == null ? Optional.None<MessageMasqueradeJson>() : Optional.Some(masquerade.ToJson()),
-            interactions = interactions == null ? Optional.None<MessageInteractionsJson>() : Optional.Some(new MessageInteractionsJson
-            {
-                reactions = interactions.Reactions == null ? Array.Empty<string>() : interactions.Reactions.Select(x => x.Id).ToArray(),
-                restrict_reactions = interactions.RestrictReactions
-            }),
-            replies = replies == null ? Optional.None<MessageReply[]>() : Optional.Some(replies),
-        });
+            nonce = Guid.NewGuid().ToString()
+        };
+        if (!string.IsNullOrEmpty(text))
+            Req.content = Optional.Some(text);
+
+        if (attachments != null)
+            Req.attachments = Optional.Some(attachments);
+
+        if (embeds != null)
+            Req.embeds = Optional.Some(embeds.Select(x => x.ToJson()).ToArray());
+
+        if (masquerade != null)
+            Req.masquerade = Optional.Some(masquerade.ToJson());
+
+        if (replies != null)
+            Req.replies = Optional.Some(replies.Select(x => x.ToJson()).ToArray());
+
+        if (interactions != null)
+            Req.interactions = Optional.Some(interactions.ToJson());
+
+
+        MessageJson Data = await rest.PostAsync<MessageJson>($"channels/{channelId}/messages", Req);
         return (UserMessage)Message.Create(rest.Client, Data);
     }
 
@@ -144,14 +156,16 @@ public static class MessageHelper
         SendMessageRequest Req = new SendMessageRequest();
         if (content != null)
             Req.content = Optional.Some(content.Value);
+
         if (embeds != null)
-            Req.embeds = Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray());
+            Req.embeds = embeds.Value != null ? Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray()) : Optional.Some(Array.Empty<EmbedJson>()) ;
+
         MessageJson Data = await rest.PatchAsync<MessageJson>($"channels/{channelId}/messages/{messageId}", Req);
         return (UserMessage)Message.Create(rest.Client, Data);
     }
 
 
-    public static Task DeleteMessageAsync(this Message mes)
+    public static Task DeleteAsync(this Message mes)
       => DeleteMessageAsync(mes.Channel.Client.Rest, mes.ChannelId, mes.Id);
 
     public static Task DeleteMessageAsync(this Channel channel, Message message)

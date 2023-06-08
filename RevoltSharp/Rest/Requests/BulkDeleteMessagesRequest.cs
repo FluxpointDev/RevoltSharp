@@ -2,5 +2,5 @@
 
 internal class BulkDeleteMessagesRequest : IRevoltRequest
 {
-    public string[] ids { get; internal set; }
+    public string[] ids { get; set; }
 }

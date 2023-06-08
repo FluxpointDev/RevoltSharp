@@ -62,7 +62,7 @@ public static class UserHelper
     }
 
     /// <inheritdoc cref="BlockUserAsync(RevoltRestClient, string)" />
-    public static Task<User> BlockUserAsync(this User user)
+    public static Task<User> BlockAsync(this User user)
         => BlockUserAsync(user.Client.Rest, user.Id);
 
     public static async Task<User> BlockUserAsync(this RevoltRestClient rest, string userId)
@@ -74,7 +74,7 @@ public static class UserHelper
     }
 
     /// <inheritdoc cref="UnBlockUserAsync(RevoltRestClient, string)" />
-    public static Task UnBlockUserAsync(this User user)
+    public static Task UnBlockAsync(this User user)
         => UnBlockUserAsync(user.Client.Rest, user.Id);
 
     public static async Task UnBlockUserAsync(this RevoltRestClient rest, string userId)

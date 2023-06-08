@@ -7,28 +7,28 @@ namespace RevoltSharp;
 internal class EmbedJson
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public EmbedType type;
-    public int width;
-    public int height;
-    public string icon_url;
-    public string url;
-    public string title;
-    public string site_name;
-    public string description;
-    public EmbedMediaJson image;
-    public object media;
-    public EmbedMediaJson video;
-    public Optional<string> colour;
-    public EmbedSpecialJson special;
+    public EmbedType type { get; set; }
+    public int width { get; set; }
+    public int height { get; set; }
+    public string icon_url { get; set; }
+    public string url { get; set; }
+    public string title { get; set; }
+    public string site_name { get; set; }
+    public string description { get; set; }
+    public EmbedMediaJson image { get; set; }
+    public object media { get; set; }
+    public EmbedMediaJson video { get; set; }
+    public Optional<string> colour { get; set; }
+    public EmbedSpecialJson special { get; set; }
 }
 internal class EmbedSpecialJson
 {
     [JsonConverter(typeof(StringEnumConverter)), JsonProperty("type")]
-    public EmbedProviderType Type;
+    public EmbedProviderType Type { get; set; }
 }
 internal class EmbedMediaJson
 {
-    public string url;
-    public int width;
-    public int height;
+    public string url { get; set; }
+    public int width { get; set; }
+    public int height { get; set; }
 }

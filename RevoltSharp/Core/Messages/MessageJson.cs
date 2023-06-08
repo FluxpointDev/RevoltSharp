@@ -52,13 +52,13 @@ internal class MessageJson
 internal class MessageMasqueradeJson
 {
     [JsonProperty("name")]
-    public string Name;
+    public string Name { get; set; }
 
     [JsonProperty("avatar")]
-    public string Avatar;
+    public string Avatar { get; set; }
 
     [JsonProperty("colour")]
-    public Optional<string> Color;
+    public Optional<string> Color { get; set; }
 }
 internal class MessageSystemJson
 {

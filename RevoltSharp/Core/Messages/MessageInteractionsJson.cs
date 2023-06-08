@@ -4,6 +4,6 @@ namespace RevoltSharp;
 
 internal class MessageInteractionsJson
 {
-    public string[] reactions;
-    public bool restrict_reactions;
+    public string[] reactions { get; set; }
+    public bool restrict_reactions { get; set; }
 }

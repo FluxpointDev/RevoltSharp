@@ -4,11 +4,11 @@ namespace RevoltSharp.Rest.Requests;
 
 internal class SendMessageRequest : IRevoltRequest
 {
-    public Optional<string> content { get; internal set; }
-    public Optional<string> nonce { get; internal set; }
-    public Optional<string[]> attachments { get; internal set; }
-    public Optional<EmbedJson[]> embeds { get; internal set; }
-    public Optional<MessageMasqueradeJson> masquerade { get; internal set; }
-    public Optional<MessageInteractionsJson> interactions { get; internal set; }
-    public Optional<MessageReply[]> replies { get; internal set; }
+    public Optional<string> content { get; set; }
+    public string nonce { get; set; }
+    public Optional<string[]> attachments { get; set; }
+    public Optional<EmbedJson[]> embeds { get; set; }
+    public Optional<MessageMasqueradeJson> masquerade { get; set; }
+    public Optional<MessageInteractionsJson> interactions { get; set; }
+    public Optional<MessageReplyJson[]> replies { get; set; }
 }

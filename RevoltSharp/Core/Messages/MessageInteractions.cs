@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System.Linq;
+
+namespace RevoltSharp;
 
 public class MessageInteractions
 {
@@ -9,4 +11,13 @@ public class MessageInteractions
     }
     public Emoji[] Reactions { get; }
     public bool RestrictReactions { get; }
+
+    internal MessageInteractionsJson ToJson()
+    {
+        return new MessageInteractionsJson
+        {
+            reactions = Reactions.Select(x => x.Name).ToArray(),
+            restrict_reactions = RestrictReactions
+        };
+    }
 }

@@ -239,7 +239,7 @@ public class CmdTest : ModuleBase
         Console.WriteLine("- Add reaction");
         await Msg.EditMessageAsync(new Option<string>("T"));
         Console.WriteLine("- Edit");
-        await Msg.DeleteMessageAsync();
+        await Msg.DeleteAsync();
         Console.WriteLine("- Delete");
     }
 
@@ -362,14 +362,77 @@ public class CmdTest : ModuleBase
     {
         throw new Exception("This is a test error :)");
     }
-    
-    [Command("countdown")]
-    public async Task Countdown() 
+
+    [Command("FullTestClient")]
+    public async Task FullTestClient()
     {
-        UserMessage message = await Context.Channel.SendMessageAsync("3");
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        await message.EditMessageAsync(new Option<string>("2"));
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        await message.EditMessageAsync(new Option<string>("1"));
+        Console.WriteLine("Running self user tests");
+        var SP = await Context.Client.CurrentUser.GetProfileAsync();
+        if (SP == null)
+            Console.WriteLine("- Profile null");
+
+        await Context.Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("Status here"), statusType: new Option<UserStatusType>(UserStatusType.Busy));
+
+        Console.WriteLine("Running user tests");
+        User User = Context.Client.GetUser("01FE57SEGM0CBQD6Y7X10VZQ49");
+        if (User == null)
+            throw new Exception("Failed to get user");
+        await User.BlockAsync();
+        await User.UnBlockAsync();
+        var DM = await User.GetDMChannelAsync();
+        if (DM == null)
+            throw new Exception("Failed to get DM");
+
+        var UP = await User.GetProfileAsync();
+        if (UP == null)
+            throw new Exception("Failed to get DM");
+
+        Console.WriteLine("Running dm tests");
+        var DMM = await DM.SendMessageAsync("Hi");
+
+        await DMM.DeleteAsync();
+        await DM.CloseAsync();
+
+
+        Console.WriteLine("Running group tests");
+
+        var GC = Context.Client.GetGroupChannel("01G2GCGG376T4E3AV41S6ADGPQ");
+        if (GC == null)
+            throw new Exception("Failed to get Group");
+
+        var GCM = await GC.SendMessageAsync("Hi");
+        await GCM.DeleteAsync();
+
+        //var GCMembers = await GC.GetMembersAsync();
+        //if (!GCMembers.Any())
+        //    throw new Exception("Failed to get Group members");
+
+        await GC.ModifyAsync(new Option<string>("Tags Test"), new Option<string>("Desc here"));
+
+        Console.WriteLine("Running saved message tests");
+        var Saved = await Context.Client.Rest.GetOrCreateSavedMessageChannelAsync();
+        if (Saved == null)
+            throw new Exception("Failed to get saved message channel");
+
+        var SM = await Saved.SendMessageAsync("Hi");
+        await SM.DeleteAsync();
+    }
+
+    [Command("fulltestserver")]
+    public async Task FullTestServer()
+    {
+        
+        Server Server = Context.Client.GetServer("01G2RNRDXXEZP3WEHQZEY4GE79");
+        var MSG = await Context.Channel.SendMessageAsync("Hi", new RevoltSharp.Embed[]
+        {
+            new EmbedBuilder
+            {
+                Title = "Test",
+                Description = "Desc"
+            }.Build()
+        });
+        await MSG.AddReactionAsync(new Emoji(":01GZYQS64JEW1KTX7K8PPGMVA5:"));
+        await MSG.RemoveReactionAsync(new Emoji("01GZYQS64JEW1KTX7K8PPGMVA5"), Context.Client.CurrentUser);
+        await MSG.EditMessageAsync(new Option<string>("Content here"), new Option<Embed[]>(null));
     }
 }

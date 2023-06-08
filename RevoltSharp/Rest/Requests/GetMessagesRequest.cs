@@ -4,9 +4,9 @@ namespace RevoltSharp.Rest.Requests;
 
 internal class GetMessagesRequest : IRevoltRequest
 {
-    public int limit { get; internal set; } = 100;
-    public Optional<string> before { get; internal set; }
-    public Optional<string> after { get; internal set; }
-    public string sort { get; internal set; } = "Latest";
-    public bool include_users { get; internal set; } = false;
+    public int limit { get; set; } = 100;
+    public Optional<string> before { get; set; }
+    public Optional<string> after { get; set; }
+    public string sort { get; set; } = "Latest";
+    public bool include_users { get; set; } = false;
 }

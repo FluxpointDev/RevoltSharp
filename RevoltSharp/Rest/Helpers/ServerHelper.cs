@@ -12,9 +12,6 @@ namespace RevoltSharp;
 /// </summary>
 public static class ServerHelper
 {
-    public static Task<Server?> GetServerAsync(this SelfUser user, string serverId)
-        => GetServerAsync(user.Client.Rest, serverId);
-
     public static async Task<Server?> GetServerAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetServerAsync");
@@ -47,10 +44,6 @@ public static class ServerHelper
     public static Task LeaveAsync(this Server server)
         => LeaveServerAsync(server.Client.Rest, server.Id);
 
-    public static Task LeaveServerAsync(this SelfUser user, Server server)
-       => LeaveServerAsync(user.Client.Rest, server.Id);
-    public static Task LeaveServerAsync(this SelfUser user, string serverId)
-       => LeaveServerAsync(user.Client.Rest, serverId);
     public static async Task LeaveServerAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "LeaveServerAsync");

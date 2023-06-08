@@ -85,7 +85,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "5.7.0";
+    public string Version { get; } = "5.8.1";
 
     /// <summary>
     /// The current version of the revolt instance connected to.
@@ -248,49 +248,7 @@ public class RevoltClient : ClientEvents
     public IReadOnlyCollection<Emoji> Emojis
         => WebSocket != null ? (IReadOnlyCollection<Emoji>)WebSocket.EmojiCache.Values : new ReadOnlyCollection<Emoji>(new List<Emoji>());
 
-    /// <summary>
-    /// Get a <see cref="User" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="User" /> or <see langword="null" /></returns>
-    public User? GetUser(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.UserCache.TryGetValue(id, out User User))
-            return User;
-        return null;
-    }
-
-    /// <summary>
-    /// Get a <see cref="Channel" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="Channel" /> or <see langword="null" /></returns>
-    public Channel? GetChannel(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan))
-            return Chan;
-        return null;
-    }
-
-    /// <summary>
-    /// Get a <see cref="GroupChannel" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="GroupChannel" /> or <see langword="null" /></returns>
-    public GroupChannel? GetGroupChannel(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is GroupChannel GC)
-            return GC;
-        return null;
-    }
-
-    /// <summary>
-    /// Get a <see cref="DMChannel" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="DMChannel" /> or <see langword="null" /></returns>
-    public DMChannel? GetDMChannel(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is DMChannel DM)
-            return DM;
-        return null;
-    }
+    
 
     
     internal TextChannel? GetTextChannel(Optional<string> channelId)
@@ -300,70 +258,11 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
-    /// <summary>
-    /// Get a server <see cref="TextChannel" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="TextChannel" /> or <see langword="null" /></returns>
-    public TextChannel? GetTextChannel(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is TextChannel TC)
-            return TC;
-        return null;
-    }
+    
 
-    /// <summary>
-    /// Get a server <see cref="VoiceChannel" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="VoiceChannel" /> or <see langword="null" /></returns>
-    public VoiceChannel? GetVoiceChannel(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ChannelCache.TryGetValue(id, out Channel Chan) && Chan is VoiceChannel VC)
-            return VC;
-        return null;
-    }
+    
 
-    /// <summary>
-    /// Get a <see cref="Server" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="Server" /> or <see langword="null" /></returns>
-    public Server? GetServer(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id) && WebSocket.ServerCache.TryGetValue(id, out Server Server))
-            return Server;
-        return null;
-    }
-
-    /// <summary>
-    /// Get a server <see cref="Role" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="Role" /> or <see langword="null" /></returns>
-    public Role? GetRole(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id))
-        {
-            foreach(Server s in WebSocket.ServerCache.Values)
-            {
-                Role role = s.GetRole(id);
-                if (role != null)
-                    return role;
-            }
-        }
-        return null;
-    }
-
-    /// <summary>
-    /// Get a server <see cref="Emoji" /> from the websocket cache.
-    /// </summary>
-    /// <returns><see cref="Emoji" /> or <see langword="null" /></returns>
-    public Emoji? GetEmoji(string id)
-    {
-        if (WebSocket != null && !string.IsNullOrEmpty(id))
-        {
-            if (WebSocket.EmojiCache.TryGetValue(id, out Emoji emoji))
-                return emoji;
-        }
-        return null;
-    }
+    
 }
 
 /// <summary>

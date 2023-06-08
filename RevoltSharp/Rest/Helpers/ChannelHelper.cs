@@ -65,6 +65,7 @@ public static class ChannelHelper
         };
         if (!string.IsNullOrEmpty(description))
             Req.description = Optional.Some(description);
+
         if (nsfw)
             Req.nsfw = Optional.Some(true);
 

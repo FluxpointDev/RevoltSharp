@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using System.Threading.Tasks;
+
+namespace RevoltSharp;
 
 public class SelfUser : User
 {
@@ -33,4 +35,12 @@ public class SelfUser : User
         return (SelfUser)this.MemberwiseClone();
     }
 
+    public async Task GetDMChannelAsync()
+        => throw new RevoltException("You can't get the DM channel for the current user/bot account.");
+
+    public async Task BlockAsync()
+        => throw new RevoltException("You can't block the current user/bot account.");
+
+    public async Task UnBlockAsync()
+        => throw new RevoltException("You can't unblock the current user/bot account.");
 }
