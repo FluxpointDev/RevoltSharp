@@ -12,6 +12,14 @@ namespace RevoltSharp;
 /// </summary>
 public static class ServerHelper
 {
+    /// <summary>
+    /// Get a server.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Server"/> or <see langword="null" />
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<Server?> GetServerAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetServerAsync");
@@ -26,9 +34,18 @@ public static class ServerHelper
         return new Server(rest.Client, Server);
     }
 
+    /// <inheritdoc cref="GetBansAsync(RevoltRestClient, string)" />
     public static Task<IReadOnlyCollection<ServerBan>> GetBansAsync(this Server server)
         => GetBansAsync(server.Client.Rest, server.Id);
 
+    /// <summary>
+    /// Get a list of banned users for a server.
+    /// </summary>
+    /// <returns>
+    /// List of <see cref="ServerBan"/>
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<ServerBan>> GetBansAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetBansAsync");
@@ -41,9 +58,15 @@ public static class ServerHelper
         
     }
 
+    /// <inheritdoc cref="LeaveServerAsync(RevoltRestClient, string)" />
     public static Task LeaveAsync(this Server server)
         => LeaveServerAsync(server.Client.Rest, server.Id);
 
+    /// <summary>
+    /// Leave server or delete it if owned.
+    /// </summary>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task LeaveServerAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "LeaveServerAsync");

@@ -11,18 +11,27 @@ namespace RevoltSharp;
 /// </summary>
 public static class InviteHelper
 {
+    /// <inheritdoc cref="DeleteInviteAsync(RevoltRestClient, string)" />
     public static Task DeleteAsync(this Invite invite)
         => DeleteInviteAsync(invite.Client.Rest, invite.ChannelId);
 
+    /// <inheritdoc cref="DeleteInviteAsync(RevoltRestClient, string)" />
     public static Task DeleteInviteAsync(this Server server, Invite invite)
         => DeleteInviteAsync(server.Client.Rest, invite.Code);
 
+    /// <inheritdoc cref="DeleteInviteAsync(RevoltRestClient, string)" />
     public static Task DeleteInviteAsync(this Server server, string inviteCode)
         => DeleteInviteAsync(server.Client.Rest, inviteCode);
 
+    /// <inheritdoc cref="DeleteInviteAsync(RevoltRestClient, string)" />
     public static Task DeleteInviteAsync(this RevoltRestClient rest, Invite invite)
         => DeleteInviteAsync(rest, invite.Code);
 
+    /// <summary>
+    /// Delete an invite.
+    /// </summary>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
         Conditions.InviteCodeEmpty(inviteCode, "DeleteInviteAsync");
@@ -30,9 +39,18 @@ public static class InviteHelper
         await rest.DeleteAsync($"/invites/{inviteCode}");
     }
 
+    /// <inheritdoc cref="GetInviteAsync(RevoltRestClient, string)" />
     public static Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this Server server)
         => GetInvitesAsync(server.Client.Rest, server.Id);
 
+    /// <summary>
+    /// Get a list of invites for the server.
+    /// </summary>
+    /// <returns>
+    /// List of <see cref="Invite"/>
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetInvitesAsync");
@@ -44,9 +62,18 @@ public static class InviteHelper
         return Json.Select(x => new Invite(rest.Client, x)).ToImmutableArray();
     }
 
+    /// <inheritdoc cref="GetInviteAsync(RevoltRestClient, string)" />
     public static Task<Invite?> GetInviteAsync(this Server server, string inviteCode)
         => GetInviteAsync(server.Client.Rest, inviteCode);
 
+    /// <summary>
+    /// Get info for an invite.
+    /// </summary>
+    /// <returns>
+    /// <see cref="CreatedInvite"/>
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<Invite?> GetInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
         Conditions.InviteCodeEmpty(inviteCode, "GetInviteAsync");
@@ -59,21 +86,18 @@ public static class InviteHelper
 
 
 
-    /// <summary>
-    /// Only user accounts can create invites
-    /// </summary>
-    /// <param name="channel"></param>
-    /// <returns></returns>
+    /// <inheritdoc cref="CreateInviteAsync(RevoltRestClient, string)" />
     public static Task<CreatedInvite> CreateInviteAsync(this TextChannel channel)
         => CreateInviteAsync(channel.Client.Rest, channel.Id);
 
     /// <summary>
     /// Only user accounts can create invites
     /// </summary>
-    /// <param name="rest"></param>
-    /// <param name="channelId"></param>
-    /// <returns></returns>
+    /// <returns>
+    /// <see cref="CreatedInvite"/>
+    /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<CreatedInvite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdEmpty(channelId, "CreateInviteAsync");

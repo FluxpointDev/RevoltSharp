@@ -5,9 +5,18 @@ namespace RevoltSharp;
 
 internal static class Conditions
 {
-    internal static void OwnerModifyCheck(ServerMember member, string request)
+    internal static void EmbedsNotAllowedForUsers(RevoltRestClient rest, Embed[] embeds, string request)
     {
-        if (member.Server != null && member.Id == member.Server.OwnerId)
+        if (rest.Client.UserBot && embeds != null && embeds.Any())
+            throw new RevoltArgumentException($"User accounts can't send messages with embeds for the {request} request.");
+    }
+
+    internal static void OwnerModifyCheck(ServerMember member, string request)
+        => OwnerModifyCheck(member.Server, member.Id, request);
+
+    internal static void OwnerModifyCheck(Server server, string memberId, string request)
+    {
+        if (server.OwnerId == memberId)
             throw new RevoltRestException($"You can't modify the server owner for the {request} request.", 400, RevoltErrorType.InvalidOperation);
     }
 
@@ -47,6 +56,12 @@ internal static class Conditions
             throw new RevoltArgumentException($"Message id can't be empty for the {request} request.");
     }
 
+    internal static void MessagePropertiesEmpty(string content, string[] attachments, Embed[] embeds, string request)
+    {
+        if (string.IsNullOrEmpty(content) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))
+            throw new RevoltArgumentException($"Message content, attachments and embed can't be empty for the {request} request.");
+    }
+
     internal static void EmojiIdEmpty(string emojiId, string request)
     {
         if (string.IsNullOrEmpty(emojiId))
@@ -70,6 +85,14 @@ internal static class Conditions
         if (string.IsNullOrEmpty(emojiname))
             throw new RevoltArgumentException($"Emoji name can't be empty for the {request} request.");
     }
+
+    internal static void MessageContentLength(string content, string request)
+    {
+        if (content.Length > 2000)
+            throw new RevoltArgumentException($"Message content is more than 2000 characters for the {request} request.");
+    }
+
+
 
     internal static void ServerIdEmpty(string serverId, string request)
     {

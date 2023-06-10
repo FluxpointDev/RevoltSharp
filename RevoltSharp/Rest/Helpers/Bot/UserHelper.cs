@@ -13,9 +13,13 @@ public static class UserHelper
         => GetUserAsync(server.Client.Rest, userId);
 
     /// <summary>
-    /// Test
+    /// Get a user.
     /// </summary>
-    /// <returns><see cref="User" /> or <see langword="null" /> if no mutual servers, groups or dms.</returns>
+    /// <returns>
+    /// <see cref="User" /> or <see langword="null" /> if no mutual servers, groups or dms.
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<User?> GetUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "GetUserAsync");
@@ -32,10 +36,19 @@ public static class UserHelper
             rest.Client.WebSocket.UserCache.TryAdd(userId, user);
         return user;
     }
+
     /// <inheritdoc cref="GetProfileAsync(RevoltRestClient, string)" />
     public static Task<Profile?> GetProfileAsync(this User user)
         => GetProfileAsync(user.Client.Rest, user.Id);
 
+    /// <summary>
+    /// Get the profile info for a user.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Profile" /> or <see langword="null" /> if no mutual servers, groups or dms.
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<Profile?> GetProfileAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "GetProfileAsync");
@@ -51,6 +64,14 @@ public static class UserHelper
     public static Task<DMChannel?> GetDMChannelAsync(this User user)
         => GetUserDMChannelAsync(user.Client.Rest, user.Id);
 
+    /// <summary>
+    /// Get or open a DM channel for the user.
+    /// </summary>
+    /// <returns>
+    /// <see cref="DMChannel" /> or <see langword="null" /> if no mutual servers, groups or dms.
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<DMChannel?> GetUserDMChannelAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "GetUserDMChannel");
@@ -65,6 +86,17 @@ public static class UserHelper
     public static Task<User> BlockAsync(this User user)
         => BlockUserAsync(user.Client.Rest, user.Id);
 
+    /// <summary>
+    /// Block a user for the current user/bot account.
+    /// </summary>
+    /// <remarks>
+    /// The user will not be able to DM the current user/bot account.
+    /// </remarks>
+    /// <returns>
+    /// <see cref="User" />
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<User> BlockUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "BlockUserAsync");
@@ -77,10 +109,19 @@ public static class UserHelper
     public static Task UnBlockAsync(this User user)
         => UnBlockUserAsync(user.Client.Rest, user.Id);
 
-    public static async Task UnBlockUserAsync(this RevoltRestClient rest, string userId)
+    /// <summary>
+    /// Unblock a user for the current user/bot account.
+    /// </summary>
+    /// <returns>
+    /// <see cref="User" />
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
+    public static async Task<User> UnBlockUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "UnBlockUserAsync");
 
-        await rest.DeleteAsync($"users/{userId}/block");
+        UserJson Data = await rest.DeleteAsync<UserJson>($"users/{userId}/block");
+        return new User(rest.Client, Data);
     }
 }

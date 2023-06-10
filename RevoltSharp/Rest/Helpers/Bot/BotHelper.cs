@@ -10,20 +10,6 @@ namespace RevoltSharp;
 /// </summary>
 public static class BotHelper
 {
-    /// <inheritdoc cref="ModifySelfAsync(RevoltRestClient, Option{string}, Option{string}, Option{UserStatusType}, Option{string}, Option{string})" />
-    public static Task<SelfUser> ModifySelfAsync(this SelfUser user, Option<string> avatar = null, Option<string> statusText = null, Option<UserStatusType> statusType = null, Option<string> profileBio = null, Option<string> profileBackground = null)
-       => ModifySelfAsync(user.Client.Rest, avatar, statusText, statusType, profileBio, profileBackground);
-
-    /// <summary>
-    /// Modify the current user/bot account avatar, status and profile.
-    /// </summary>
-    /// <returns>Modified <see cref="SelfUser"/></returns>
-    public static async Task<SelfUser> ModifySelfAsync(this RevoltRestClient rest, Option<string> avatar = null, Option<string> statusText = null, Option<UserStatusType> statusType = null, Option<string> profileBio = null, Option<string> profileBackground = null)
-    {
-        UserJson Json = await rest.SendRequestAsync<UserJson>(RequestType.Patch, $"users/@me", ModifySelfRequest.Create(avatar, statusText, statusType, profileBio, profileBackground));
-        return new SelfUser(rest.Client, Json);
-    }
-
     /// <inheritdoc cref="RevoltRestClient.UploadFileAsync(byte[], string, UploadFileType)" />
     public static Task<FileAttachment> UploadFileAsync(this Channel channel, byte[] bytes, string name, UploadFileType type)
        => channel.Client.Rest.UploadFileAsync(bytes, name, type);
@@ -42,6 +28,7 @@ public static class BotHelper
     /// <returns>
     /// <see cref="SavedMessagesChannel" /> or <see langword="null" />
     /// </returns>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<SavedMessagesChannel?> GetOrCreateSavedMessageChannelAsync(this RevoltRestClient rest)
     {
         ChannelJson SC = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, "/users/" + rest.Client.CurrentUser.Id + "/dm");

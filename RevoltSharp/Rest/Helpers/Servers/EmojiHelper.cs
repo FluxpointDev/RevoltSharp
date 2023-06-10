@@ -12,14 +12,14 @@ namespace RevoltSharp;
 /// </summary>
 public static class EmojiHelper
 {
-
-
     /// <summary>
     /// Get an emoji.
     /// </summary>
     /// <returns>
     /// <see cref="Emoji" /> or <see langword="null" /> if no emoji found.
     /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<Emoji?> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
         Conditions.EmojiIdEmpty(emojiId, "GetEmojiAsync");
@@ -40,7 +40,11 @@ public static class EmojiHelper
     /// <summary>
     /// Get all emojis from a server
     /// </summary>
-    /// <returns>List of server <see cref="Emoji" /></returns>
+    /// <returns>
+    /// List of server <see cref="Emoji" />
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<Emoji>> GetEmojisAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, "GetEmojisAsync");
@@ -51,6 +55,7 @@ public static class EmojiHelper
         return Json.Select(x => new Emoji(rest.Client, x)).ToImmutableArray();
     }
 
+    /// <inheritdoc cref="CreateEmojiAsync(RevoltRestClient, string, string, string, bool)" />
     public static Task<Emoji> CreateEmojiAsync(this Server server, string attachmentId, string name, bool nsfw = false)
         => CreateEmojiAsync(server.Client.Rest, server.Id, attachmentId, name, nsfw);
 
@@ -68,6 +73,7 @@ public static class EmojiHelper
     /// <param name="nsfw">Is the emoji nsfw</param>
     /// <returns><see cref="Emoji" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentId, string name, bool nsfw = false)
     {
         Conditions.AttachmentIdEmpty(attachmentId, "CreateEmojiAsync");
@@ -86,11 +92,11 @@ public static class EmojiHelper
         return new Emoji(rest.Client, Emoji);
     }
 
-
+    /// <inheritdoc cref="DeleteEmojiAsync(RevoltRestClient, string)" />
     public static Task DeleteAsync(this Emoji emoji)
        => DeleteEmojiAsync(emoji.Client.Rest, emoji.Id);
 
-
+    /// <inheritdoc cref="DeleteEmojiAsync(RevoltRestClient, string)" />
     public static Task DeleteEmojiAsync(this Server server, Emoji emoji)
        => DeleteEmojiAsync(server.Client.Rest, emoji.Id);
 
@@ -104,9 +110,11 @@ public static class EmojiHelper
     /// <param name="rest"></param>
     /// <param name="emojiId">Emoji id</param>
     /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
         Conditions.EmojiIdEmpty(emojiId, "DeleteEmojiAsync");
+        Conditions.NotAllowedForBots(rest, "DeleteEmojiAsync");
 
         await rest.DeleteAsync($"/custom/emoji/{emojiId}");
     }

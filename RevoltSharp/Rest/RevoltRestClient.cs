@@ -86,6 +86,9 @@ public class RevoltRestClient
     internal Task DeleteAsync(string endpoint, IRevoltRequest json = null)
         => SendRequestAsync(RequestType.Delete, endpoint, json);
 
+    internal Task<TResponse> DeleteAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
+        => SendRequestAsync<TResponse>(RequestType.Delete, endpoint, json);
+
     internal Task<TResponse> PatchAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Patch, endpoint, json);
 
@@ -229,7 +232,7 @@ public class RevoltRestClient
     internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object request)
     {
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
-            throw new RevoltException("Joining servers with a userbot has been blocked.");
+            throw new RevoltRestException("Joining servers with a userbot has been blocked.", 400, RevoltErrorType.NotAllowedForUsers);
 
         HttpRequestMessage Mes = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
         if (request != null)
@@ -301,7 +304,7 @@ public class RevoltRestClient
         where TResponse : class
     {
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
-            throw new RevoltException("Joining servers with a user account has been blocked.");
+            throw new RevoltRestException("Joining servers with a user account has been blocked.", 400, RevoltErrorType.NotAllowedForUsers);
 
 
 
@@ -357,7 +360,6 @@ public class RevoltRestClient
                         Stream.Position = 0;
                         Error = DeserializeJson<RestError>(Stream);
                     }
-
                 }
                 catch { }
             }

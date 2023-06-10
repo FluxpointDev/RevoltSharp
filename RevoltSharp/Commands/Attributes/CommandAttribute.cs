@@ -12,9 +12,15 @@ public class CommandAttribute : Attribute
     ///     Gets the text that has been set to be recognized as a command.
     /// </summary>
     public string Text { get; }
+
+    /// <summary>
+    /// Ignore extra arguments passed instead of erroring.
+    /// </summary>
     public bool? IgnoreExtraArgs { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Initializes a new <see cref="CommandAttribute" /> attribute with the specified name.
+    /// </summary>
     public CommandAttribute()
     {
         Text = null;
@@ -28,6 +34,12 @@ public class CommandAttribute : Attribute
     {
         Text = text;
     }
+
+    /// <summary>
+    ///     Initializes a new <see cref="CommandAttribute" /> attribute with the specified name.
+    /// </summary>
+    /// <param name="text">The name of the command.</param>
+    /// <param name="ignoreExtraArgs">Ignore extra arguments passed.</param>
     public CommandAttribute(string text, bool ignoreExtraArgs)
     {
         Text = text;
