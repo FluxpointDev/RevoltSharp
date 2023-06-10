@@ -30,12 +30,12 @@ public class SystemMessage<Type> : Message where Type : SystemType
 }
 public abstract class SystemType
 {
-    internal string BaseText { get; set; }
-    internal string BaseId { get; set; }
-    internal string BaseBy { get; set; }
-    internal string BaseName { get; set; }
-    internal string BaseFrom { get; set; }
-    internal string BaseTo { get; set; }
+    internal string? BaseText { get; set; }
+    internal string? BaseId { get; set; }
+    internal string? BaseBy { get; set; }
+    internal string? BaseName { get; set; }
+    internal string? BaseFrom { get; set; }
+    internal string? BaseTo { get; set; }
 }
 
 /// <summary>

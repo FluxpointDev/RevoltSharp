@@ -8,5 +8,5 @@ internal class ErrorEventJson
     public RevoltErrorType Error { get; set; }
 
     [JsonProperty("msg")]
-    public string Message { get; set; }
+    public string? Message { get; set; }
 }

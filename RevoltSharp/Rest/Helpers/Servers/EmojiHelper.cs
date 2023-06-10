@@ -27,7 +27,7 @@ public static class EmojiHelper
         if (rest.Client.WebSocket != null && rest.Client.WebSocket.EmojiCache.TryGetValue(emojiId, out Emoji emoji))
             return emoji;
 
-        EmojiJson? Emoji =  await rest.GetAsync<EmojiJson>($"/custom/emoji/{emojiId}");
+        EmojiJson? Emoji = await rest.GetAsync<EmojiJson>($"/custom/emoji/{emojiId}");
         if (Emoji == null)
             return null;
         return new Emoji(rest.Client, Emoji);

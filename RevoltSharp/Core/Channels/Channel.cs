@@ -30,7 +30,7 @@ public abstract class Channel : CreatedEntity
 
     internal Channel Clone()
     {
-        return (Channel) this.MemberwiseClone();
+        return (Channel)this.MemberwiseClone();
     }
 
     internal static Channel Create(RevoltClient client, ChannelJson model)
@@ -48,14 +48,14 @@ public abstract class Channel : CreatedEntity
             case ChannelType.Voice:
                 return new VoiceChannel(client, model);
             default:
-            {
+                {
                     if (!string.IsNullOrEmpty(model.Server))
                     {
                         return new UnknownServerChannel(client, model);
                     }
 
                     return new UnknownChannel(client, model);
-            }
+                }
         }
     }
 }

@@ -6,49 +6,49 @@ namespace RevoltSharp;
 internal class ChannelJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("channel_type")]
     public ChannelType ChannelType;
 
     [JsonProperty("nonce")]
-    public string Nonce;
+    public string? Nonce;
 
     [JsonProperty("user")]
-    public string User;
+    public string? User;
 
     [JsonProperty("active")]
     public bool Active;
 
     [JsonProperty("recipients")]
-    public string[] Recipients;
+    public string[]? Recipients;
 
     [JsonProperty("last_message_id")]
-    public string LastMessageId;
+    public string? LastMessageId;
 
     [JsonProperty("icon")]
-    public AttachmentJson Icon;
+    public AttachmentJson? Icon;
 
     [JsonProperty("description")]
-    public string Description;
+    public string? Description;
 
     [JsonProperty("name")]
-    public string Name;
+    public string? Name;
 
     [JsonProperty("owner")]
-    public string Owner;
+    public string? Owner;
 
     [JsonProperty("permissions")]
     public ulong Permissions;
 
     [JsonProperty("default_permissions")]
-    public PermissionsJson DefaultPermissions;
+    public PermissionsJson? DefaultPermissions;
 
     [JsonProperty("role_permissions")]
-    public Dictionary<string, PermissionsJson> RolePermissions;
+    public Dictionary<string, PermissionsJson>? RolePermissions;
 
     [JsonProperty("server")]
-    public string Server;
+    public string? Server;
 
     [JsonProperty("nsfw")]
     public bool Nsfw;

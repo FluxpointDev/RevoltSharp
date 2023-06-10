@@ -10,16 +10,16 @@ internal class EmbedJson
     public EmbedType type { get; set; }
     public int width { get; set; }
     public int height { get; set; }
-    public string icon_url { get; set; }
-    public string url { get; set; }
-    public string title { get; set; }
-    public string site_name { get; set; }
-    public string description { get; set; }
-    public EmbedMediaJson image { get; set; }
-    public object media { get; set; }
-    public EmbedMediaJson video { get; set; }
+    public string? icon_url { get; set; }
+    public string? url { get; set; }
+    public string? title { get; set; }
+    public string? site_name { get; set; }
+    public string? description { get; set; }
+    public EmbedMediaJson? image { get; set; }
+    public object? media { get; set; }
+    public EmbedMediaJson? video { get; set; }
     public Optional<string> colour { get; set; }
-    public EmbedSpecialJson special { get; set; }
+    public EmbedSpecialJson? special { get; set; }
 }
 internal class EmbedSpecialJson
 {
@@ -28,7 +28,7 @@ internal class EmbedSpecialJson
 }
 internal class EmbedMediaJson
 {
-    public string url { get; set; }
+    public string? url { get; set; }
     public int width { get; set; }
     public int height { get; set; }
 }

@@ -21,7 +21,7 @@ public class CommandContext
     public string Prefix { get; set; }
 
     /// <summary> Indicates whether the channel that the command is executed in is a private channel. </summary>
-    //public bool IsPrivate => Channel is IPrivateChannel;
+    public bool IsPrivate => Channel is DMChannel;
 
     /// <summary>
     ///     Initializes a new <see cref="CommandContext" /> class with the provided client and message.

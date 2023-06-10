@@ -22,13 +22,16 @@ class Program
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
-            Debug = new ClientDebugConfig { LogRestRequestJson = true, 
-                LogRestResponseJson = false, 
-                LogRestRequest = false, 
+            Debug = new ClientDebugConfig
+            {
+                LogRestRequestJson = true,
+                LogRestResponseJson = false,
+                LogRestRequest = false,
                 LogWebSocketFull = true,
-                LogWebSocketReady = false, 
-                LogWebSocketError = true, 
-                LogWebSocketUnknownEvent = true },
+                LogWebSocketReady = false,
+                LogWebSocketError = true,
+                LogWebSocketUnknownEvent = true
+            },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });
         Client.OnReady += Client_OnReady;
@@ -73,7 +76,7 @@ public class CommandHandler
     {
         await Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
     }
-    
+
 
     private void Client_OnMessageRecieved(Message msg)
     {
@@ -84,7 +87,7 @@ public class CommandHandler
         if (!(Message.HasStringPrefix(Prefix, ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
             return;
         CommandContext context = new CommandContext(Client, Message);
-        
+
         _ = Service.ExecuteAsync(context, argPos, null);
     }
 

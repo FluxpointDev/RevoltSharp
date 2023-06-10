@@ -32,7 +32,7 @@ namespace RevoltSharp.Commands;
 public class RequireOwnerAttribute : PreconditionAttribute
 {
     /// <inheritdoc />
-    public override string ErrorMessage { get; set; }
+    public override string? ErrorMessage { get; set; }
 
     /// <inheritdoc />
     public override async Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)

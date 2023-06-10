@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace RevoltSharp.Commands.Builders;
 
@@ -43,7 +43,7 @@ public class CommandBuilder
     {
         //.Preconditions.NotNull(primaryAlias, nameof(primaryAlias));
         //.Preconditions.NotNull(callback, nameof(callback));
-        
+
         Callback = callback;
         PrimaryAlias = primaryAlias;
         _aliases.Add(primaryAlias);

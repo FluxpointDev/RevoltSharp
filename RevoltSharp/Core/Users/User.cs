@@ -243,33 +243,33 @@ public enum UserRelationship
     /// <summary>
     /// Default type
     /// </summary>
-    None, 
-    
+    None,
+
     /// <summary>
     /// Idk shrug
     /// </summary>
     User,
-    
+
     /// <summary>
     /// User is a friend
     /// </summary>
-    Friend, 
-    
+    Friend,
+
     /// <summary>
     /// User needs to accept a friend request
     /// </summary>
     Outgoing,
-    
+
     /// <summary>
     /// You need to accept a friend request from the user
     /// </summary>
     Incoming,
-    
+
     /// <summary>
     /// The current user/bot has blocked this user
     /// </summary>
     Blocked,
-    
+
     /// <summary>
     /// The user has blocked the current user/bot
     /// </summary>

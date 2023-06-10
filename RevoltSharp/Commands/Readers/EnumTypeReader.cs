@@ -23,7 +23,7 @@ internal class EnumTypeReader<T> : TypeReader
     private readonly IReadOnlyDictionary<T, object> _enumsByValue;
     private readonly Type _enumType;
     private readonly TryParseDelegate<T> _tryParse;
-    
+
     public EnumTypeReader(Type type, TryParseDelegate<T> parser)
     {
         _enumType = type;

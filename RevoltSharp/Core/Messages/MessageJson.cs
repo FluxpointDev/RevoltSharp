@@ -8,37 +8,37 @@ namespace RevoltSharp;
 internal class MessageJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("type")]
-    public string Type;
+    public string? Type;
 
     [JsonProperty("nonce")]
-    public string Nonce;
+    public string? Nonce;
 
     [JsonProperty("channel")]
-    public string Channel;
+    public string? Channel;
 
     [JsonProperty("author")]
-    public string Author;
+    public string? Author;
 
     [JsonProperty("content")]
-    public string Content;
+    public string? Content;
 
     [JsonProperty("attachments")]
-    public AttachmentJson[] Attachments;
+    public AttachmentJson[]? Attachments;
 
     [JsonProperty("mentions")]
-    public string[] Mentions;
+    public string[]? Mentions;
 
     [JsonProperty("replies")]
-    public string[] Replies;
+    public string[]? Replies;
 
     [JsonProperty("embeds")]
-    public EmbedJson[] Embeds;
+    public EmbedJson[]? Embeds;
 
     [JsonProperty("system")]
-    public MessageSystemJson System;
+    public MessageSystemJson? System;
 
     [JsonProperty("edited")]
     public Optional<DateTime> Edited;
@@ -47,15 +47,15 @@ internal class MessageJson
     public Optional<Dictionary<string, string[]>> Reactions;
 
     [JsonProperty("masquerade")]
-    public MessageMasqueradeJson Masquerade;
+    public MessageMasqueradeJson? Masquerade;
 }
 internal class MessageMasqueradeJson
 {
     [JsonProperty("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonProperty("avatar")]
-    public string Avatar { get; set; }
+    public string? Avatar { get; set; }
 
     [JsonProperty("colour")]
     public Optional<string> Color { get; set; }
@@ -63,23 +63,23 @@ internal class MessageMasqueradeJson
 internal class MessageSystemJson
 {
     [JsonProperty("type")]
-    public string Type;
+    public string? Type;
 
     [JsonProperty("id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("by")]
-    public string By;
+    public string? By;
 
     [JsonProperty("name")]
-    public string Name;
+    public string? Name;
 
     [JsonProperty("from")]
-    public string From;
+    public string? From;
 
     [JsonProperty("to")]
-    public string To;
+    public string? To;
 
     [JsonProperty("content")]
-    public string Content;
+    public string? Content;
 }

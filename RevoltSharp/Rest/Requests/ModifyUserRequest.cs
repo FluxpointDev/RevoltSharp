@@ -39,9 +39,9 @@ internal class ModifySelfRequest
         }
 
         if (statusType != null)
-                Status.Add("presence", statusType.Value.ToString());
-        
-            
+            Status.Add("presence", statusType.Value.ToString());
+
+
         JObject Profile = new JObject();
         if (profileBio != null)
         {
@@ -55,7 +55,7 @@ internal class ModifySelfRequest
             else
                 Profile.Add("content", profileBio.Value);
         }
-            
+
         if (profileBackground != null)
         {
             if (string.IsNullOrEmpty(profileBackground.Value))
@@ -68,7 +68,7 @@ internal class ModifySelfRequest
             else
                 Profile.Add("background", profileBackground.Value);
         }
-            
+
         Values.Add("status", Status);
         Values.Add("profile", Profile);
         if (Remove.HasValue)

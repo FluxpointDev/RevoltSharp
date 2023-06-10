@@ -176,7 +176,7 @@ public class Server : CreatedEntity
 
     internal Server Clone()
     {
-        return (Server) this.MemberwiseClone();
+        return (Server)this.MemberwiseClone();
     }
 
     internal void AddMember(ServerMember member)

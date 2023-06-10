@@ -92,5 +92,5 @@ public abstract class Message : CreatedEntity
     /// </summary>
     public User Author { get; internal set; }
 
-    
+
 }

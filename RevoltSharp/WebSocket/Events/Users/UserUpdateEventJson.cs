@@ -6,10 +6,10 @@ namespace RevoltSharp.WebSocket.Events;
 internal class UserUpdateEventJson
 {
     [JsonProperty("id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("data")]
-    public PartialUserJson Data;
+    public PartialUserJson? Data;
 
     [JsonProperty("clear")]
     public Optional<string[]> Clear;

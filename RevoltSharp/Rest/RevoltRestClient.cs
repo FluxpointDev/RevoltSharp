@@ -113,7 +113,7 @@ public class RevoltRestClient
     /// <returns>Input your own <see langword="class" /> object to parse the response data from json.</returns>
     public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, IRevoltRequest json = null) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
-    
+
 
     internal static HttpMethod GetMethod(RequestType method)
     {
@@ -265,7 +265,7 @@ public class RevoltRestClient
         if (Client.Config.Debug.LogRestRequest)
             Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, Client.SerializerSettings));
 
-        
+
 
         if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
@@ -308,7 +308,7 @@ public class RevoltRestClient
 
 
 
-        HttpRequestMessage Mes = new HttpRequestMessage(method,  Client.Config.ApiUrl + endpoint);
+        HttpRequestMessage Mes = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
         if (request != null)
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
@@ -344,7 +344,7 @@ public class RevoltRestClient
 
         if (Client.Config.Debug.LogRestRequest)
             Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
-        
+
 
         if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
@@ -389,9 +389,9 @@ public class RevoltRestClient
             if (Client.Config.Debug.LogRestResponseJson)
                 Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.SerializerSettings));
         }
-        #pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8603 // Possible null reference return.
         return Response;
-        #pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore CS8603 // Possible null reference return.
     }
 
     internal string SerializeJson(object value)
@@ -446,7 +446,7 @@ public enum RequestType
     /// <summary>
     /// Get data from the API.
     /// </summary>
-    Get, 
+    Get,
     /// <summary>
     /// Post new messages or create channels.
     /// </summary>

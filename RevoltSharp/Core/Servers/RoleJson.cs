@@ -6,13 +6,13 @@ namespace RevoltSharp;
 internal class RoleJson
 {
     [JsonProperty("id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("name")]
-    public string Name;
+    public string? Name;
 
     [JsonProperty("permissions")]
-    public PermissionsJson Permissions;
+    public PermissionsJson? Permissions;
 
     [JsonProperty("hoist")]
     public bool Hoist;
@@ -21,7 +21,7 @@ internal class RoleJson
     public BigInteger Rank;
 
     [JsonProperty("colour")]
-    public string Colour;
+    public string? Colour;
 }
 internal class PermissionsJson
 {

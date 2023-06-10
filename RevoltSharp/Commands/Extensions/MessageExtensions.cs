@@ -51,7 +51,7 @@ public static class MessageExtensions
 
         int endPos = text.IndexOf('>');
         if (endPos == -1) return false;
-        if (text.Length < endPos + 2 || text[endPos + 1] != ' ') 
+        if (text.Length < endPos + 2 || text[endPos + 1] != ' ')
             return false; //Must end in "> "
 
         string userId = text.Substring(0, endPos + 1);

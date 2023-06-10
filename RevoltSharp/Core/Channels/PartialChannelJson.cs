@@ -7,7 +7,7 @@ namespace RevoltSharp;
 internal class PartialChannelJson
 {
     [JsonProperty("active")]
-    public Optional<bool> Active { get; set; }  
+    public Optional<bool> Active { get; set; }
 
     [JsonProperty("name")]
     public Optional<string> Name { get; set; }

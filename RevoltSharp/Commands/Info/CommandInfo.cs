@@ -1,13 +1,13 @@
+using Optionals;
 using RevoltSharp.Commands.Builders;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Optionals;
 
 namespace RevoltSharp.Commands;
 
@@ -170,7 +170,7 @@ public class CommandInfo
 
         return await CommandParser.ParseArgsAsync(this, context, _commandService._ignoreExtraArgs, services, input, 0, _commandService._quotationMarkAliasMap).ConfigureAwait(false);
     }
-    
+
     public Task<IResult> ExecuteAsync(CommandContext context, ParseResult parseResult, IServiceProvider services)
     {
         if (!parseResult.IsSuccess)

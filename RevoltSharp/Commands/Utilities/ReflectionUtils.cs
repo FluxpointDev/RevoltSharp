@@ -24,7 +24,7 @@ internal static class ReflectionUtils
                 args[i] = GetMember(commands, services, parameters[i].ParameterType, typeInfo);
             T obj = InvokeConstructor<T>(constructor, args, typeInfo);
 
-            foreach(PropertyInfo property in properties)
+            foreach (PropertyInfo property in properties)
                 property.SetValue(obj, GetMember(commands, services, property.PropertyType, typeInfo));
             return obj;
         };

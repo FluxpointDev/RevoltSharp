@@ -9,5 +9,5 @@ internal class ServerEmojiCreatedEventJson : EmojiJson
 internal class ServerEmojiDeleteEventJson
 {
     [JsonProperty("id")]
-    public string Id;
+    public string? Id;
 }

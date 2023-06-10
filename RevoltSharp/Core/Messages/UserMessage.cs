@@ -50,12 +50,12 @@ public class UserMessage : Message
         else
         {
             Dictionary<Emoji, User[]> React = new Dictionary<Emoji, User[]>();
-            foreach(KeyValuePair<string, string[]> r in model.Reactions.Value)
+            foreach (KeyValuePair<string, string[]> r in model.Reactions.Value)
             {
                 React.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray());
             }
             Reactions = React;
         }
-        
+
     }
 }

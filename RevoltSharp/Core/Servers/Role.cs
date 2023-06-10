@@ -84,6 +84,6 @@ public class Role : CreatedEntity
 
     internal Role Clone()
     {
-        return (Role) this.MemberwiseClone();
+        return (Role)this.MemberwiseClone();
     }
 }

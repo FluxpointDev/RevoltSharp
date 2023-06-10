@@ -49,7 +49,7 @@ public static class Format
     /// Format the text as a heading title.
     /// </summary>
     public static string Heading(string s, HeadingFormat headingFormat = HeadingFormat.H1)
-        => $"{new string('#', (int) headingFormat)} {s}";
+        => $"{new string('#', (int)headingFormat)} {s}";
 
     /// <summary>
     /// Format the text in a code line.

@@ -4,5 +4,5 @@ namespace RevoltSharp.WebSocket.Events;
 internal class BulkEventsJson
 {
     [JsonProperty("v")]
-    public dynamic[] Events;
+    public dynamic[]? Events;
 }

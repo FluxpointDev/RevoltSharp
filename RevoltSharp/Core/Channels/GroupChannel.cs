@@ -103,7 +103,7 @@ public class GroupChannel : Channel
 
         if (json.Permissions.HasValue)
             Permissions.RawAllowed = json.Permissions.Value;
-       
+
         if (json.IsNsfw.HasValue)
             IsNsfw = json.IsNsfw.Value;
 

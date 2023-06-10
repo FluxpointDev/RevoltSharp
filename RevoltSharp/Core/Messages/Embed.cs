@@ -10,32 +10,32 @@ public class EmbedBuilder
     /// <summary>
     /// Embed title
     /// </summary>
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// Embed url
     /// </summary>
-    public string Url { get; set; }
+    public string? Url { get; set; }
 
     /// <summary>
     /// Embed icon url
     /// </summary>
-    public string IconUrl { get; set; }
+    public string? IconUrl { get; set; }
 
     /// <summary>
     /// Embed description
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// Embed image attachment
     /// </summary>
-    public string Image { get; set; }
+    public string? Image { get; set; }
 
     /// <summary>
     /// Embed color
     /// </summary>
-    public RevoltColor Color { get; set; }
+    public RevoltColor? Color { get; set; }
 
     /// <summary>
     /// Build the embed to use it in messages
@@ -149,7 +149,7 @@ public class MessageEmbed
 /// </summary>
 public class Embed
 {
-    
+
     public Embed()
     {
 

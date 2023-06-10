@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using RevoltSharp.Commands.Builders;
 using RevoltSharp.Rest;
+using System.Threading.Tasks;
 
 namespace RevoltSharp.Commands;
 
@@ -13,7 +13,7 @@ public abstract class ModuleBase : IModuleBase
     /// <summary>
     ///     The underlying context of the command.
     /// </summary>
-    public CommandContext Context { get; private set; }
+    public CommandContext? Context { get; private set; }
 
     /// <summary>
     ///     Sends a message to the source channel.
@@ -22,6 +22,10 @@ public abstract class ModuleBase : IModuleBase
     /// Contents of the message; optional only if <paramref name="embeds" /> is specified.
     /// </param>
     /// <param name="embeds">An embed to be displayed alongside the <paramref name="message"/>.</param>
+    /// <param name="attachments"></param>
+    /// <param name="masquerade"></param>
+    /// <param name="interactions"></param>
+    /// <param name="replies"></param>
     protected virtual async Task<UserMessage> ReplyAsync(string message, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
     {
         return await Context.Channel.SendMessageAsync(message, embeds, attachments, masquerade, interactions, replies).ConfigureAwait(false);
@@ -34,6 +38,9 @@ public abstract class ModuleBase : IModuleBase
     /// <param name="filePath">The file path of the file.</param>
     /// <param name="text">The message to be sent.</param>
     /// <param name="embeds">The <see cref="Embed" /> to be sent.</param>
+    /// <param name="masquerade"></param>
+    /// <param name="interactions"></param>
+    /// <param name="replies"></param>
     protected virtual async Task<UserMessage> ReplyFileAsync(string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
     {
         if (string.IsNullOrEmpty(filePath))
@@ -41,7 +48,7 @@ public abstract class ModuleBase : IModuleBase
         FileAttachment File = await Context.Client.Rest.UploadFileAsync(filePath, UploadFileType.Attachment);
         return await Context.Channel.SendMessageAsync(text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
     }
-  
+
 
     /// <summary>
     ///     The method to execute before executing the command.

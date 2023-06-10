@@ -7,5 +7,5 @@ internal class RestError
     public RevoltErrorType Type = RevoltErrorType.Unknown;
 
     [JsonProperty("permission")]
-    public string Permission;
+    public string? Permission;
 }

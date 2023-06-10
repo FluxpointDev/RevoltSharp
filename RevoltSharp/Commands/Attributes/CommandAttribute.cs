@@ -23,7 +23,7 @@ public class CommandAttribute : Attribute
     /// </summary>
     public CommandAttribute()
     {
-        Text = null;
+        Text = string.Empty;
     }
 
     /// <summary>

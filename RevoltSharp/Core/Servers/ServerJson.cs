@@ -7,37 +7,37 @@ namespace RevoltSharp;
 internal class ServerJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("owner")]
-    public string Owner;
+    public string? Owner;
 
     [JsonProperty("name")]
-    public string Name;
+    public string? Name;
 
     [JsonProperty("description")]
-    public string Description;
+    public string? Description;
 
     [JsonProperty("channels")]
-    public string[] Channels;
+    public string[]? Channels;
 
     [JsonProperty("categories")]
-    public CategoryJson[] Categories;
+    public CategoryJson[]? Categories;
 
     [JsonProperty("system_messages")]
-    public ServerSystemMessagesJson SystemMessages;
+    public ServerSystemMessagesJson? SystemMessages;
 
     [JsonProperty("roles")]
-    public Dictionary<string, RoleJson> Roles;
+    public Dictionary<string, RoleJson>? Roles;
 
     [JsonProperty("default_permissions")]
     public ulong DefaultPermissions;
 
     [JsonProperty("icon")]
-    public AttachmentJson Icon;
+    public AttachmentJson? Icon;
 
     [JsonProperty("banner")]
-    public AttachmentJson Banner;
+    public AttachmentJson? Banner;
 
     [JsonProperty("analytics")]
     public bool Analytics;

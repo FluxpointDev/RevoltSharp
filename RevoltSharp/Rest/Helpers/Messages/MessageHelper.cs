@@ -193,7 +193,7 @@ public static class MessageHelper
             Req.content = Optional.Some(content.Value);
 
         if (embeds != null)
-            Req.embeds = embeds.Value != null ? Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray()) : Optional.Some(Array.Empty<EmbedJson>()) ;
+            Req.embeds = embeds.Value != null ? Optional.Some(embeds.Value.Select(x => x.ToJson()).ToArray()) : Optional.Some(Array.Empty<EmbedJson>());
 
         MessageJson Data = await rest.PatchAsync<MessageJson>($"channels/{channelId}/messages/{messageId}", Req);
         return (UserMessage)Message.Create(rest.Client, Data);

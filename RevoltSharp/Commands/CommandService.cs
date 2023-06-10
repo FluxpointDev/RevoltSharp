@@ -1,3 +1,5 @@
+using Optionals;
+using RevoltSharp.Commands.Builders;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -6,8 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Optionals;
-using RevoltSharp.Commands.Builders;
 
 namespace RevoltSharp.Commands;
 
@@ -22,7 +22,7 @@ namespace RevoltSharp.Commands;
 ///     </para>
 ///     <para>
 ///         This service also provides several events for monitoring command usages; such as
-///         <see cref="CommandExecuted" /> for information about commands that have
+///         <see cref="OnCommandExecuted" /> for information about commands that have
 ///         been successfully executed.
 ///     </para>
 /// </remarks>
@@ -85,7 +85,7 @@ public class CommandService : IDisposable
         _ignoreExtraArgs = config.IgnoreExtraArgs;
         _separatorChar = config.SeparatorChar;
         _quotationMarkAliasMap = (config.QuotationMarkAliasMap ?? new Dictionary<char, char>()).ToImmutableDictionary();
-       
+
         _moduleLock = new SemaphoreSlim(1, 1);
         _typedModuleDefs = new ConcurrentDictionary<Type, ModuleInfo>();
         _moduleDefs = new HashSet<ModuleInfo>();
@@ -476,6 +476,7 @@ public class CommandService : IDisposable
     /// </summary>
     /// <param name="context">The context of the command.</param>
     /// <param name="input">The command string.</param>
+    /// <param name="argPos"></param>
     /// <param name="services">The service to be used in the command's dependency injection.</param>
     /// <param name="multiMatchHandling">The handling mode when multiple command matches are found.</param>
     /// <returns>
@@ -493,7 +494,7 @@ public class CommandService : IDisposable
             InvokeCommandExecuted(Optional.None<CommandInfo>(), context, searchResult);
             return searchResult;
         }
-        
+
 
         IReadOnlyList<CommandMatch> commands = searchResult.Commands;
         Dictionary<CommandMatch, PreconditionResult> preconditionResults = new Dictionary<CommandMatch, PreconditionResult>();

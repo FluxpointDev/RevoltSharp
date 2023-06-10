@@ -1,7 +1,7 @@
-﻿using RevoltSharp.Rest;
+﻿using Optionals;
+using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Threading.Tasks;
-using Optionals;
 
 namespace RevoltSharp;
 
@@ -61,7 +61,7 @@ public static class RoleHelper
     {
         Conditions.ServerIdEmpty(serverId, "ModifyRoleAsync");
         Conditions.RoleIdEmpty(roleId, "ModifyRoleAsync");
-        
+
         ModifyRoleRequest Req = new ModifyRoleRequest();
         if (name != null)
         {

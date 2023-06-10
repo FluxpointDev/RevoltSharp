@@ -42,7 +42,7 @@ public class ServerChannel : Channel
     /// <summary>
     /// Role permission for the channel that wil override default permissions
     /// </summary>
-    
+
     internal Dictionary<string, ChannelPermissions> InternalRolePermissions { get; set; }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class ServerChannel : Channel
 
         if (json.DefaultPermissions.HasValue)
             DefaultPermissions = new ChannelPermissions(Server, json.DefaultPermissions.Value);
-       
+
         if (json.Description.HasValue)
             Description = json.Description.Value;
 

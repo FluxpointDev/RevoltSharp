@@ -75,7 +75,7 @@ public class RevoltClient : ClientEvents
         if (Config.Debug == null)
             Config.Debug = new ClientDebugConfig();
     }
-    
+
 
     /// <summary>
     /// Revolt bot token used for http requests and websocket.
@@ -134,7 +134,7 @@ public class RevoltClient : ClientEvents
     /// <remarks>
     /// This will be <see langword="null" /> if you have not created the channel from <see cref="BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltRestClient)" /> once.
     /// </remarks>
-    public SavedMessagesChannel? SavedMessagesChannel { get; internal set; }  
+    public SavedMessagesChannel? SavedMessagesChannel { get; internal set; }
 
     /// <summary>
     /// Start the Rest and Websocket to be used for the lib.
@@ -208,7 +208,7 @@ public class RevoltClient : ClientEvents
         {
             WebSocket.StopWebSocket = true;
             await WebSocket.WebSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", WebSocket.CancellationToken);
-            
+
         }
     }
 
@@ -248,9 +248,9 @@ public class RevoltClient : ClientEvents
     public IReadOnlyCollection<Emoji> Emojis
         => WebSocket != null ? (IReadOnlyCollection<Emoji>)WebSocket.EmojiCache.Values : new ReadOnlyCollection<Emoji>(new List<Emoji>());
 
-    
 
-    
+
+
     internal TextChannel? GetTextChannel(Optional<string> channelId)
     {
         if (WebSocket != null && channelId.HasValue && !string.IsNullOrEmpty(channelId.Value) && WebSocket.ChannelCache.TryGetValue(channelId.Value, out Channel Chan) && Chan is TextChannel TC)
@@ -258,11 +258,11 @@ public class RevoltClient : ClientEvents
         return null;
     }
 
-    
 
-    
 
-    
+
+
+
 }
 
 /// <summary>
@@ -276,7 +276,7 @@ public enum ClientMode
     /// <summary>
     /// Client will only use the http/rest client of Revolt and removes any usage/memory of websocket stuff. 
     /// </summary>
-    Http, 
+    Http,
     /// <summary>
     /// Will use both WebSocket and http/rest client so you can get cached data for <see cref="User"/>, <see cref="Server"/> and <see cref="Channel"/>
     /// </summary>

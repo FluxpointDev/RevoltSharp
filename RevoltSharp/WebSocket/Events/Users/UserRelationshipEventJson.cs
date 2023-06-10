@@ -5,11 +5,11 @@ namespace RevoltSharp.WebSocket.Events;
 internal class UserRelationshipEventJson
 {
     [JsonProperty("id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("user")]
-    public UserJson User;
+    public UserJson? User;
 
     [JsonProperty("status")]
-    public string Status;
+    public string? Status;
 }

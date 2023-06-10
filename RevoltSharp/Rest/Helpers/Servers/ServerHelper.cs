@@ -55,7 +55,7 @@ public static class ServerHelper
             return System.Array.Empty<ServerBan>();
 
         return Bans.Users.Select(x => new ServerBan(rest.Client, x, Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault())).ToImmutableArray();
-        
+
     }
 
     /// <inheritdoc cref="LeaveServerAsync(RevoltRestClient, string)" />

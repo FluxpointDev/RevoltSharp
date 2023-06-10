@@ -5,28 +5,28 @@ namespace RevoltSharp;
 internal class UserJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("username")]
-    public string Username;
+    public string? Username;
 
     [JsonProperty("avatar")]
-    public AttachmentJson Avatar;
+    public AttachmentJson? Avatar;
 
     [JsonProperty("badges")]
     public ulong Badges;
 
     [JsonProperty("status")]
-    public UserStatusJson Status;
+    public UserStatusJson? Status;
 
     [JsonProperty("profile")]
-    public UserProfileJson Profile;
+    public UserProfileJson? Profile;
 
     [JsonProperty("bot")]
-    public UserBotJson Bot;
+    public UserBotJson? Bot;
 
     [JsonProperty("relationship")]
-    public string Relationship;
+    public string? Relationship;
 
     [JsonProperty("online")]
     public bool Online;
@@ -40,21 +40,21 @@ internal class UserJson
 internal class UserStatusJson
 {
     [JsonProperty("text")]
-    public string Text;
+    public string? Text;
 
     [JsonProperty("presence")]
-    public string Presence;
+    public string? Presence;
 }
 internal class UserBotJson
 {
     [JsonProperty("owner")]
-    public string Owner;
+    public string? Owner;
 }
 internal class UserProfileJson
 {
     [JsonProperty("content")]
-    public string Content;
+    public string? Content;
 
     [JsonProperty("background")]
-    public AttachmentJson Background;
+    public AttachmentJson? Background;
 }

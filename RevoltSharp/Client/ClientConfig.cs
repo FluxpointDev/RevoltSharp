@@ -1,5 +1,5 @@
-﻿using RevoltSharp.Rest;
-using RevoltSharp.Commands;
+﻿using RevoltSharp.Commands;
+using RevoltSharp.Rest;
 
 namespace RevoltSharp;
 

@@ -36,7 +36,7 @@ public static class ChannelHelper
                 return (TValue)chan;
             return null;
         }
-            
+
 
         ChannelJson? Channel = await rest.GetAsync<ChannelJson>($"/channels/{channelId}");
         if (Channel == null)

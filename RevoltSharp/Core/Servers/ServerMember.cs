@@ -109,7 +109,7 @@ public class ServerMember : Entity
     /// </remarks>
     public bool IsTimedOut => Timeout.HasValue;
 
-    internal ConcurrentDictionary<string, Role> InternalRoles { get; set;  }  = new ConcurrentDictionary<string, Role>();
+    internal ConcurrentDictionary<string, Role> InternalRoles { get; set; } = new ConcurrentDictionary<string, Role>();
 
     /// <summary>
     /// Get a role the member has.

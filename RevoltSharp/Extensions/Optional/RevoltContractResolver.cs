@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using RevoltSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RevoltSharp;
 
 namespace Optionals;
 public class RevoltContractResolver : DefaultContractResolver

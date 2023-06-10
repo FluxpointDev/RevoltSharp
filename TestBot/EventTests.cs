@@ -1,5 +1,5 @@
-﻿using System;
-using RevoltSharp;
+﻿using RevoltSharp;
+using System;
 
 namespace TestBot;
 
@@ -48,7 +48,7 @@ public class EventTests
 
         client.OnWebSocketError += Client_OnWebSocketError;
 
-        
+
     }
 
     private void Client_OnStarted(SelfUser selfuser)
@@ -154,7 +154,7 @@ public class EventTests
     {
         Console.WriteLine("--- EVENT: Message Recieved ---");
         if (value is UserMessage um)
-        Console.WriteLine(um.Content);
+            Console.WriteLine(um.Content);
         else
             Console.WriteLine(value.Id);
     }

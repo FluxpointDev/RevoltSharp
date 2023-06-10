@@ -5,8 +5,8 @@ namespace RevoltSharp;
 internal class ProfileJson
 {
     [JsonProperty("content")]
-    public string Content;
+    public string? Content;
 
     [JsonProperty("background")]
-    public AttachmentJson Background;
+    public AttachmentJson? Background;
 }

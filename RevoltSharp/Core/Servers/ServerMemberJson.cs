@@ -7,16 +7,16 @@ namespace RevoltSharp;
 internal class ServerMemberJson
 {
     [JsonProperty("_id")]
-    public ServerMemberIdsJson Id;
+    public ServerMemberIdsJson? Id;
 
     [JsonProperty("nickname")]
-    public string Nickname;
+    public string? Nickname;
 
     [JsonProperty("avatar")]
-    public AttachmentJson Avatar;
+    public AttachmentJson? Avatar;
 
     [JsonProperty("roles")]
-    public string[] Roles;
+    public string[]? Roles;
 
     [JsonProperty("joined_at")]
     public DateTime JoinedAt;
@@ -27,8 +27,8 @@ internal class ServerMemberJson
 internal class ServerMemberIdsJson
 {
     [JsonProperty("server")]
-    public string Server;
+    public string? Server;
 
     [JsonProperty("user")]
-    public string User;
+    public string? User;
 }

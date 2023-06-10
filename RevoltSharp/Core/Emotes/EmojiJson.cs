@@ -5,16 +5,16 @@ namespace RevoltSharp;
 internal class EmojiJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("name")]
-    public string Name;
+    public string? Name;
 
     [JsonProperty("parent")]
-    public EmojiParentJson Parent;
+    public EmojiParentJson? Parent;
 
     [JsonProperty("creator_id")]
-    public string CreatorId;
+    public string? CreatorId;
 
     [JsonProperty("animated")]
     public bool Animated;
@@ -25,5 +25,5 @@ internal class EmojiJson
 internal class EmojiParentJson
 {
     [JsonProperty("id")]
-    public string ServerId;
+    public string? ServerId;
 }

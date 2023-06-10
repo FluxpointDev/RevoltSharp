@@ -61,7 +61,7 @@ public class Attachment : CreatedEntity
     /// The height of the image if the file is an image type.
     /// </summary>
     public int Height { get; }
-    
+
     /// <summary>
     /// File has been deleted.
     /// </summary>

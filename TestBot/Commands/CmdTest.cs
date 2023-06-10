@@ -21,7 +21,7 @@ public class CmdTest : ModuleBase
     [Command("myperm")]
     public async Task MyPerm()
     {
-        
+
         await ReplyAsync($"F: {Context.Member.Permissions.AddReactions} H: {Context.Member.Permissions.Has(ChannelPermission.AddReactions)}\n\n" +
             $"Roles:\n{string.Join("\n", Context.Member.Roles.Select(x => x.Name))}");
     }
@@ -75,7 +75,7 @@ public class CmdTest : ModuleBase
     [Command("emojimsg")]
     public async Task EmojiMsg()
     {
-        UserMessage Msg = await Context.Channel.SendMessageAsync("Emoji test", 
+        UserMessage Msg = await Context.Channel.SendMessageAsync("Emoji test",
             interactions: new MessageInteractions(new Emoji[] { new Emoji(":01GBP83S4WT512ET704ACPVPQW:") }, true));
         Console.WriteLine(Context.Server.GetCachedMember(Context.Client.CurrentUser.Id).Permissions.ManageMessages.ToString());
         MessageId = Msg.Id;
@@ -269,7 +269,7 @@ public class CmdTest : ModuleBase
     public async Task Upload()
     {
         FileAttachment Attach = await Context.Client.Rest.UploadFileAsync("/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png", UploadFileType.Attachment);
-        
+
     }
 
     [Command("chan")]
@@ -287,8 +287,8 @@ public class CmdTest : ModuleBase
             {
                 Description = String.Join("\n", Context.Server.Roles.Select(x => $"{x.Name} - {x.Color} ({x.Id})"))
             }.Build()
-        }); 
-        foreach(Role Role in Context.Server.Roles)
+        });
+        foreach (Role Role in Context.Server.Roles)
         {
             Console.WriteLine($"[ {Role.Name} ] {Role.Permissions.AssignRoles}:{Role.Permissions.BanMembers}:{Role.Permissions.ManageMessages}:{Role.Permissions.SendMessages}");
         }
@@ -346,7 +346,7 @@ public class CmdTest : ModuleBase
             }.Build(),
         });
     }
-    
+
     // replies: space separated list of strings like so:
     // +01GX79H9S8FZERHVA5S5E68AAY -01GX79H9S8FZERHVA5S5E68AAY
     // + means mention, - means do not
@@ -421,7 +421,7 @@ public class CmdTest : ModuleBase
     [Command("fulltestserver")]
     public async Task FullTestServer()
     {
-        
+
         Server Server = Context.Client.GetServer("01G2RNRDXXEZP3WEHQZEY4GE79");
         var MSG = await Context.Channel.SendMessageAsync("Hi", new RevoltSharp.Embed[]
         {

@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using Optionals;
 using RevoltSharp.WebSocket.Events;
-using RevoltSharp.WebSocket.Events.Users;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ internal class RevoltSocketClient
     private bool _firstError = true;
     internal bool StopWebSocket = false;
 
-    internal ClientWebSocket WebSocket;
+    internal ClientWebSocket? WebSocket;
     internal CancellationToken CancellationToken = new CancellationToken();
     internal ConcurrentDictionary<string, Server> ServerCache = new ConcurrentDictionary<string, Server>();
     internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
@@ -50,8 +49,8 @@ internal class RevoltSocketClient
             {
                 try
                 {
-                    await WebSocket.ConnectAsync(new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json"), CancellationToken);
-                    await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest { Token = Client.Token }), CancellationToken);
+                    await WebSocket.ConnectAsync(new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json&version=1"), CancellationToken);
+                    await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest(Client.Token)), CancellationToken);
                     _firstError = true;
                     await Receive(WebSocket, CancellationToken);
                 }
@@ -70,7 +69,7 @@ internal class RevoltSocketClient
                         else
                             Client.InvokeLogAndThrowException("Failed to connect to Revolt.");
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -107,7 +106,7 @@ internal class RevoltSocketClient
                 ms.Seek(0, SeekOrigin.Begin);
                 using (StreamReader reader = new StreamReader(ms, Encoding.UTF8))
                 {
-                    _  = WebSocketMessage(await reader.ReadToEndAsync());
+                    _ = WebSocketMessage(await reader.ReadToEndAsync());
                 }
             }
         }
@@ -115,6 +114,11 @@ internal class RevoltSocketClient
 
     internal class AuthenticateRequest
     {
+        internal AuthenticateRequest(string token)
+        {
+            Token = token;
+        }
+
         [JsonProperty("type")]
         public string Type = "Authenticate";
 
@@ -134,7 +138,7 @@ internal class RevoltSocketClient
     private async Task WebSocketMessage(string json)
     {
         JToken payload = JsonConvert.DeserializeObject<JToken>(json);
-        
+
         try
         {
             if (Client.Config.Debug.LogWebSocketFull)
@@ -150,7 +154,7 @@ internal class RevoltSocketClient
                         Console.WriteLine("--- WebSocket Response Json ---\n" + FormatJsonPretty(json));
                         break;
                 }
-                
+
             }
 
 
@@ -179,7 +183,7 @@ internal class RevoltSocketClient
                     break;
                 case "Pong":
                     {
-                        
+
                     }
                     break;
                 case "Bulk":
@@ -202,10 +206,10 @@ internal class RevoltSocketClient
                                 Client.InvokeLog("WebSocket session is invalid, check if your bot token is correct.", RevoltLogSeverity.Error);
                             else
                                 Client.InvokeLog("WebSocket session was invalidated!", RevoltLogSeverity.Error);
-                            
+
                             await Client.StopAsync();
                         }
-                        
+
                         Client.InvokeWebSocketError(new SocketError { Message = @event.Message, Type = @event.Error });
                     }
                     break;
@@ -249,7 +253,7 @@ internal class RevoltSocketClient
 
                             foreach (var c in ChannelCache.Values.Where(x => x.Type == ChannelType.DM))
                             {
-                                
+
                                 DMChannel DM = (DMChannel)c;
 
                                 if (UserCache.TryGetValue(DM.UserId, out User user))
@@ -295,7 +299,7 @@ internal class RevoltSocketClient
                         if (@event.Author != "00000000000000000000000000" && !UserCache.ContainsKey(@event.Author))
                         {
                             User user = await Client.Rest.GetUserAsync(@event.Author);
-                            
+
                             UserCache.TryAdd(@event.Author, user);
                         }
 
@@ -324,7 +328,7 @@ internal class RevoltSocketClient
                             {
                                 ServerMember Member = await TC.Server.GetMemberAsync(@event.Author);
                                 TC.Server.InternalMembers.TryAdd(@event.Author, Member);
-                            }  
+                            }
                         }
                         Message MSG = @event.ToEntity(Client);
                         Client.InvokeMessageRecieved(MSG);
@@ -507,14 +511,14 @@ internal class RevoltSocketClient
                                     GC.RemoveUser(u, true);
                                 }
                             });
-                            
+
                             Client.InvokeGroupLeft(GC, CurrentUser);
                         }
                         else
                         {
                             UserCache.TryGetValue(@event.UserId, out User User);
                             if (User == null)
-                                User =  await Client.Rest.GetUserAsync(@event.UserId);
+                                User = await Client.Rest.GetUserAsync(@event.UserId);
 
                             if (User == null)
                                 return;
@@ -584,7 +588,7 @@ internal class RevoltSocketClient
                                 server.RemoveMember(m.User, true);
                             }
                         });
-                        
+
                         Client.InvokeServerLeft(server);
                     }
                     break;
@@ -675,7 +679,7 @@ internal class RevoltSocketClient
                                     ChannelCache.TryRemove(c, out _);
                                 }
                             });
-                            
+
                             Client.InvokeServerLeft(server);
                         }
                         else
@@ -836,7 +840,7 @@ internal class RevoltSocketClient
                             }
                         }
 
-                        
+
 
                         Downloadable<string, User> DownloadUser = new Downloadable<string, User>(@event.UserId, async () =>
                         {
@@ -871,8 +875,8 @@ internal class RevoltSocketClient
                                     emoji = Emote;
                             }
                         }
-                            
-                        
+
+
 
                         Downloadable<string, User> DownloadUser = new Downloadable<string, User>(@event.UserId, async () =>
                         {
@@ -929,7 +933,7 @@ internal class RevoltSocketClient
                                             User.InternalMutualDMs.TryRemove(c.Id, out DMChannel _);
                                             ChannelCache.Remove(c.Id, out Channel C);
                                             if (DM.Active)
-                                                    DM.CloseAsync();
+                                                DM.CloseAsync();
                                         }
                                         break;
                                     case ChannelType.Group:
@@ -960,7 +964,7 @@ internal class RevoltSocketClient
                     break;
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
