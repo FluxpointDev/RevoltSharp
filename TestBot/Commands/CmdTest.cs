@@ -12,6 +12,11 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("tag")]
+    public async Task Tag()
+    {
+        await ReplyAsync($"Hi {Context.User.Tag}");
+    }
     [Command("owner")]
     public async Task Owner()
     {

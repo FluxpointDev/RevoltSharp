@@ -22,6 +22,12 @@ internal class PartialUserJson
     [JsonProperty("username")]
     public Optional<string> Username;
 
+    [JsonProperty("display_name")]
+    public Optional<string> DisplayName;
+
+    [JsonProperty("discriminator")]
+    public Optional<string> Discriminator;
+
     [JsonProperty("badges")]
     public Optional<ulong> Badges;
 

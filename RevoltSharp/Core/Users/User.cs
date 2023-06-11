@@ -15,6 +15,8 @@ public class User : CreatedEntity
     internal User(RevoltClient client, UserJson model) : base(client, model.Id)
     {
         Username = model.Username;
+        DisplayName = model.DisplayName;
+        Discriminator = model.Discriminator;
         Status = new UserStatus(model);
         BotData = BotData.Create(model.Bot);
         Avatar = Attachment.Create(client, model.Avatar);
@@ -40,9 +42,31 @@ public class User : CreatedEntity
     public new DateTimeOffset CreatedAt => base.CreatedAt;
 
     /// <summary>
-    /// Username of the user.
+    /// Unique username of the user.
     /// </summary>
     public string Username { get; internal set; }
+
+    /// <summary>
+    /// Unique identity number of the user.
+    /// </summary>
+    public string Discriminator { get; internal set; }
+
+    /// <summary>
+    /// Get the display name of the user.
+    /// </summary>
+    public string? DisplayName { get; internal set; }
+
+    /// <summary>
+    /// Get the name of the user which will use username or display name if set.
+    /// </summary>
+    public string Name
+        => DisplayName ?? Username;
+
+    /// <summary>
+    /// Get the username and discriminator of the user.
+    /// </summary>
+    public string Tag
+        => $"{Username}#{Discriminator}";
 
     /// <summary>
     /// Status mode and text for the user.
@@ -182,6 +206,12 @@ public class User : CreatedEntity
 
         if (data.Username.HasValue)
             Username = data.Username.Value;
+
+        if (data.Discriminator.HasValue)
+            Discriminator = data.Discriminator.Value;
+
+        if (data.DisplayName.HasValue)
+            DisplayName = data.DisplayName.Value;
 
         if (data.Badges.HasValue)
         {

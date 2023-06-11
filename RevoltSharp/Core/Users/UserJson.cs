@@ -10,6 +10,12 @@ internal class UserJson
     [JsonProperty("username")]
     public string? Username;
 
+    [JsonProperty("display_name")]
+    public string? DisplayName;
+
+    [JsonProperty("discriminator")]
+    public string? Discriminator;
+
     [JsonProperty("avatar")]
     public AttachmentJson? Avatar;
 
