@@ -191,13 +191,16 @@ public class ServerMember : Entity
 
     internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
     {
+        User = user;
+        if (user == null && uModel != null)
+            User = user != null ? user : new User(Client, uModel);
+
         MemberId = sModel.Id.User;
         if (Ulid.TryParse(MemberId, out Ulid UID))
             JoinedAt = UID.Time;
-        User = user != null ? user : new User(Client, uModel);
+        
         ServerId = sModel.Id.Server;
         Nickname = sModel.Nickname;
-        //JoinedAt = sModel.JoinedAt;
         if (sModel.Timeout.HasValue)
             Timeout = sModel.Timeout.Value;
         ServerAvatar = Attachment.Create(client, sModel.Avatar);

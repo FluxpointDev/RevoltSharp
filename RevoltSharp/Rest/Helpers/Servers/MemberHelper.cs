@@ -168,10 +168,20 @@ public static class MemberHelper
         if (Member == null)
             return null;
 
-        User User = await rest.GetUserAsync(userId);
-        if (User == null)
-            return null;
-        ServerMember SM = new ServerMember(rest.Client, Member, null, User);
+        if (!rest.Client.TryGetUser(userId, out User user))
+        {
+            User User = await rest.GetUserAsync(userId);
+            if (User == null)
+                return null;
+
+            if (rest.Client.WebSocket != null)
+                rest.Client.WebSocket.UserCache.TryAdd(userId, User);
+
+        }
+
+        ServerMember SM = new ServerMember(rest.Client, Member, null, user);
+
+
         if (rest.Client.WebSocket != null)
         {
             try
@@ -209,7 +219,16 @@ public static class MemberHelper
         HashSet<ServerMember> Members = new HashSet<ServerMember>();
         for (int i = 0; i < List.Members.Length; i++)
         {
-            Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i], rest.Client.GetUser(List.Users[i].Id)));
+            if (!rest.Client.TryGetUser(List.Users[i].Id, out User user))
+            {
+                user = new User(rest.Client, List.Users[i]);
+
+                if (rest.Client.WebSocket != null)
+                    rest.Client.WebSocket.UserCache.TryAdd(List.Users[i].Id, user);
+            }
+                
+
+            Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i], user));
         }
         return Members.ToImmutableArray();
     }

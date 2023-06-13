@@ -185,10 +185,9 @@ public class Server : CreatedEntity
         member.User.InternalMutualServers.TryAdd(Id, this);
     }
 
-    internal void RemoveMember(User user, bool delete)
+    internal void RemoveMember(User user)
     {
-        if (!delete)
-            InternalMembers.TryRemove(user.Id, out _);
+        InternalMembers.TryRemove(user.Id, out _);
 
         user.InternalMutualServers.TryRemove(Id, out _);
         if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals)

@@ -585,7 +585,7 @@ internal class RevoltSocketClient
                             }
                             foreach (ServerMember m in server.InternalMembers.Values)
                             {
-                                server.RemoveMember(m.User, true);
+                                server.RemoveMember(m.User);
                             }
                         });
 
@@ -649,9 +649,13 @@ internal class RevoltSocketClient
                             if (!ServerCache.TryGetValue(@event.Id, out Server Server))
                                 return;
 
-                            UserCache.TryGetValue(@event.UserId, out User user);
-                            if (user == null)
+                            if (!UserCache.TryGetValue(@event.UserId, out User user))
+                            {
                                 user = await Client.Rest.GetUserAsync(@event.UserId);
+                                if (user == null)
+                                    return;
+                                UserCache.TryAdd(@event.UserId, user);
+                            }
 
                             ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
                             Server.AddMember(Member);
@@ -672,7 +676,7 @@ internal class RevoltSocketClient
                             {
                                 foreach (ServerMember m in server.InternalMembers.Values)
                                 {
-                                    server.RemoveMember(m.User, true);
+                                    server.RemoveMember(m.User);
                                 }
                                 foreach (string c in server.ChannelIds)
                                 {
@@ -689,10 +693,14 @@ internal class RevoltSocketClient
                             Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
                             if (Member == null)
                             {
-                                User User = await Client.Rest.GetUserAsync(@event.UserId);
-                                Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, User);
+                                if (!UserCache.TryGetValue(@event.UserId, out User user))
+                                {
+                                    user = await Client.Rest.GetUserAsync(@event.UserId);
+                                    UserCache.TryAdd(@event.UserId, user);
+                                }
+                                Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
                             }
-                            Server.RemoveMember(Member.User, false);
+                            Server.RemoveMember(Member.User);
                             Client.InvokeMemberLeft(Server, Member);
                         }
                     }
