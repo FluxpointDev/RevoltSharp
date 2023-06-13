@@ -193,7 +193,7 @@ public class ServerMember : Entity
     {
         User = user;
         if (user == null && uModel != null)
-            User = user != null ? user : new User(Client, uModel);
+            User = new User(Client, uModel);
 
         MemberId = sModel.Id.User;
         if (Ulid.TryParse(MemberId, out Ulid UID))
