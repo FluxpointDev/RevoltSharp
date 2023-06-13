@@ -11,7 +11,7 @@ This lib supports both bots and user accounts.
 - Cache | The lib will cache reuseable data for an easy to use and fast experience, especially with events.
 - Requests | You can send custom requests using Client.Rest.SendRequest that uses disposable streams and buffers for memory efficiency.
 - Documented | Most of the code is documented with xml code comments or you can see the docs here https://docs.fluxpoint.dev/revoltsharp
-- Built-in Command Handling | 
+- Built-in Command Handling | RevoltSharp has a built-in command handler that can parse commands with a prefix and you can create command modules to run code.
 
 # Support
 Join the RevoltSharp server for support and meet other C# developers!
