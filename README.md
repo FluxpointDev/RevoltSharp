@@ -1,6 +1,7 @@
 # Info
 RevoltSharp is a bot lib used to connect to [Revolt](https://revolt.chat/) chat app.
-This lib only supports both bots and user accounts.
+
+This lib supports both bots and user accounts.
 
 ### Core Features
 - Stable | The lib is designed to handle errors and exceptions with logging and nice error messages to help you build a public bot.
