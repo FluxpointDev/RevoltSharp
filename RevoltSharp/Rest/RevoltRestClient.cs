@@ -344,7 +344,7 @@ public class RevoltRestClient
 
 
         if (endpoint == "/" && !Req.IsSuccessStatusCode)
-            throw new RevoltRestException("Major RevoltSharp error occured, Revolt API is down.", 500, RevoltErrorType.Unknown);
+            throw new RevoltRestException("The Revolt API is down. Please try again later.", 500, RevoltErrorType.Unknown);
 
 
 
