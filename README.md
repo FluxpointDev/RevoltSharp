@@ -4,14 +4,14 @@ RevoltSharp is a bot lib used to connect to [Revolt](https://revolt.chat/) chat 
 This lib supports both bots and user accounts.
 
 ### Core Features
-- Stable | The lib is designed to handle errors and exceptions with logging and nice error messages to help you build a public bot.
-- Easy to Use | RevoltSharp has similar design principals to discord.net with easy to use objects and properties.
-- Connection | The WebSocket is error proof and will keep the connection alive even during an outage or unstable network!
-- Efficient | You can run a private 1 server bot using 30mb of ram (with command handling, commands and cache) or a public bot in 450+ servers with 210mb of ram that can run on any $3 hosting service with 1GB ram!
-- Cache | The lib will cache reuseable data for an easy to use and fast experience, especially with events.
-- Requests | You can send custom requests using Client.Rest.SendRequest that uses disposable streams and buffers for memory efficiency.
-- Documented | Most of the code is documented with xml code comments or you can see the docs here https://docs.fluxpoint.dev/revoltsharp
-- Built-in Command Handling | RevoltSharp has a built-in command handler that can parse commands with a prefix and you can create command modules to run code.
+- `Stablity:` The lib is designed to handle errors and exceptions with logging and nice error messages to help you build a public bot.
+- `Easy to Use:` RevoltSharp has similar design principals to discord.net with easy to use objects and properties.
+- `Connection:` The WebSocket is error proof and will keep the connection alive even during an outage or unstable network!
+- `Efficient:` You can run a private 1 server bot using 30mb of ram (with command handling, commands and cache) or a public bot in 450+ servers with 210mb of ram that can run on any $3 hosting service with 1GB ram!
+- `Cache:` The lib will cache reuseable data for an easy to use and fast experience, especially with events.
+- `Requests:` You can send custom requests using Client.Rest.SendRequest that uses disposable streams and buffers for memory efficiency.
+- `Documented:` Most of the code is documented with xml code comments or you can see the docs here https://docs.fluxpoint.dev/revoltsharp
+- `Command Handler:` RevoltSharp has a built-in command handler that can parse commands with a prefix and you can create command modules to run code.
 
 # Support
 Join the RevoltSharp server for support and meet other C# developers!
