@@ -168,18 +168,11 @@ public static class MemberHelper
         if (Member == null)
             return null;
 
-        if (!rest.Client.TryGetUser(userId, out User user))
-        {
-            User User = await rest.GetUserAsync(userId);
-            if (User == null)
-                return null;
+        User User = await rest.GetUserAsync(userId);
+        if (User == null)
+            return null;
 
-            if (rest.Client.WebSocket != null)
-                rest.Client.WebSocket.UserCache.TryAdd(userId, User);
-
-        }
-
-        ServerMember SM = new ServerMember(rest.Client, Member, null, user);
+        ServerMember SM = new ServerMember(rest.Client, Member, null, User);
 
 
         if (rest.Client.WebSocket != null)

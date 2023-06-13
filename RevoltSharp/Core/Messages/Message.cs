@@ -90,7 +90,10 @@ public abstract class Message : CreatedEntity
     /// <summary>
     /// User who posted the message
     /// </summary>
-    public User Author { get; internal set; }
+    /// <remarks>
+    /// Will be <see langword="null" /> for system/webhook messages.
+    /// </remarks>
+    public User? Author { get; internal set; }
 
 
 }

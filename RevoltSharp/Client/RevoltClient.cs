@@ -85,7 +85,7 @@ public class RevoltClient : ClientEvents
     /// <summary>
     /// Version of the current RevoltSharp lib installed.
     /// </summary>
-    public string Version { get; } = "6.0.3";
+    public string Version { get; } = "6.0.5";
 
     /// <summary>
     /// The current version of the revolt instance connected to.
@@ -151,12 +151,22 @@ public class RevoltClient : ClientEvents
             InvokeLog("Starting...", RevoltLogSeverity.Verbose);
 
             FirstConnection = false;
-            QueryRequest? Query = await Rest.GetAsync<QueryRequest>("/");
-            if (Query == null)
-                InvokeLogAndThrowException($"Client failed to connect to the revolt api at {Config.ApiUrl}");
+            QueryRequest? Query = null;
+            try
+            {
+                Query = await Rest.GetAsync<QueryRequest>("/", null, true);
+            }
+            catch (RevoltRestException re)
+            {
+                InvokeLogAndThrowException($"Client failed to connect to the revolt api at {Config.ApiUrl} due to {re.Message}");
+            } 
+            catch (Exception ex)
+            {
+                InvokeLogAndThrowException($"Client failed to connect to the revolt api at {Config.ApiUrl} due to " + ex.Message);
+            }
 
             if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
-                throw new RevoltException("Server Image server url is an invalid format.");
+                InvokeLogAndThrowException("Server Image server url is an invalid format.");
 
             RevoltVersion = Query.revoltVersion;
             Config.Debug.WebsocketUrl = Query.websocketUrl;
@@ -165,9 +175,25 @@ public class RevoltClient : ClientEvents
             if (!Config.Debug.UploadUrl.EndsWith('/'))
                 Config.Debug.UploadUrl += '/';
 
-            UserJson? SelfUser = await Rest.GetAsync<UserJson>("/users/@me");
+            UserJson? SelfUser = null;
+            try
+            {
+                SelfUser = await Rest.GetAsync<UserJson>("/users/@me", null, true);
+            }
+            catch (RevoltRestException re)
+            {
+                if (re.Code == 401)
+                    InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account, token is invalid.");
+                else
+                    InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account, " + re.Message);
+            }
+            catch (Exception ex)
+            {
+                InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account, " + ex.Message);
+            }
+
             if (SelfUser == null)
-                throw new RevoltException("Failed to login to user account.");
+                InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account.");
 
             CurrentUser = new SelfUser(this, SelfUser);
             InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Standard);

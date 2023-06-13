@@ -195,4 +195,14 @@ public class Server : CreatedEntity
             user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);
         }
     }
+
+    internal void RemoveMember(RevoltClient client, string userId)
+    {
+        InternalMembers.TryRemove(userId, out _);
+
+        if (userId != client.CurrentUser.Id)
+        {
+            client.WebSocket.UserCache.TryRemove(userId, out _);
+        }
+    }
 }

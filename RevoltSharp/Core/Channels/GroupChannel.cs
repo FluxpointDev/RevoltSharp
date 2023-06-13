@@ -140,4 +140,19 @@ public class GroupChannel : Channel
             user.Client.WebSocket.UserCache.TryRemove(user.Id, out _);
         }
     }
+
+    internal void RemoveUser(RevoltClient client, string userId)
+    {
+        CachedUsers.TryRemove(userId, out _);
+        try
+        {
+            Recipents.Remove(userId);
+        }
+        catch { }
+
+        if (userId != client.CurrentUser.Id)
+        {
+            client.WebSocket.UserCache.TryRemove(userId, out _);
+        }
+    }
 }

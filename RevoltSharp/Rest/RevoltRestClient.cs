@@ -78,9 +78,9 @@ public class RevoltRestClient
     internal Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
 
-    internal Task<TResponse?> GetAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
+    internal Task<TResponse?> GetAsync<TResponse>(string endpoint, IRevoltRequest json = null, bool throwGetRequest = false) where TResponse : class
 #pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
-        => SendRequestAsync<TResponse>(RequestType.Get, endpoint, json);
+        => SendRequestAsync<TResponse>(RequestType.Get, endpoint, json, throwGetRequest);
 #pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
     internal Task DeleteAsync(string endpoint, IRevoltRequest json = null)
@@ -111,8 +111,8 @@ public class RevoltRestClient
     /// }
     /// </remarks>
     /// <returns>Input your own <see langword="class" /> object to parse the response data from json.</returns>
-    public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, IRevoltRequest json = null) where TResponse : class
-        => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
+    public Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, IRevoltRequest json = null, bool throwGetRequest = false) where TResponse : class
+        => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json, throwGetRequest);
 
 
     internal static HttpMethod GetMethod(RequestType method)
@@ -300,7 +300,7 @@ public class RevoltRestClient
         }
         return Req;
     }
-    internal async Task<TResponse> InternalJsonRequest<TResponse>(HttpMethod method, string endpoint, object request)
+    internal async Task<TResponse> InternalJsonRequest<TResponse>(HttpMethod method, string endpoint, object request, bool throwGetRequest = false)
         where TResponse : class
     {
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
@@ -316,9 +316,6 @@ public class RevoltRestClient
                 Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, Client.SerializerSettings));
         }
         HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
-
-        if (endpoint == "/" && Req.Content.Headers.ContentType.MediaType == "text/html")
-            throw new RevoltRestException("Major RevoltSharp error occured using wrong API url.", 500, RevoltErrorType.Unknown);
 
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
@@ -346,7 +343,12 @@ public class RevoltRestClient
             Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
 
 
-        if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
+        if (endpoint == "/" && !Req.IsSuccessStatusCode)
+            throw new RevoltRestException("Major RevoltSharp error occured, Revolt API is down.", 500, RevoltErrorType.Unknown);
+
+
+
+        if (!Req.IsSuccessStatusCode && (throwGetRequest || method != HttpMethod.Get))
         {
             RestError Error = null;
             if (Req.Content.Headers.ContentLength.HasValue)
@@ -364,7 +366,7 @@ public class RevoltRestClient
                 catch { }
             }
             if (Error != null)
-                throw new RevoltRestException($"Request failed due to {Error.Type}", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+                throw new RevoltRestException($"Request failed due to {Error.Type} ({Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
             else
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
         }
@@ -386,7 +388,7 @@ public class RevoltRestClient
             {
                 throw new RevoltRestException("Failed to parse json response: " + ex.Message, 500, RevoltErrorType.Unknown);
             }
-            if (Client.Config.Debug.LogRestResponseJson)
+            if (Response != null && Client.Config.Debug.LogRestResponseJson)
                 Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.SerializerSettings));
         }
 #pragma warning disable CS8603 // Possible null reference return.

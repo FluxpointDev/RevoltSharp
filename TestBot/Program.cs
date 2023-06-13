@@ -20,13 +20,15 @@ class Program
     {
         // Yes ik i can use json file blah blah :p
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
+        
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
+            ApiUrl = "https://revolt.chat/api/",
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = true,
                 LogRestResponseJson = false,
-                LogRestRequest = false,
+                LogRestRequest = true,
                 LogWebSocketFull = true,
                 LogWebSocketReady = false,
                 LogWebSocketError = true,

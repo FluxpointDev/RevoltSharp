@@ -35,17 +35,22 @@ public class UserFlags
 public enum UserFlagType
 {
     /// <summary>
-    /// User has been suspended from using Revolt.
+    /// User has been suspended from using the Revolt instance.
     /// </summary>
     Suspended = 1,
 
     /// <summary>
-    /// User has been deleted from the Revolt instance.
+    /// User has deleted their account on the Revolt instance.
     /// </summary>
     Deleted = 2,
 
     /// <summary>
     /// User has been banned from the Revolt instance.
     /// </summary>
-    Banned = 4
+    Banned = 4,
+
+    /// <summary>
+    /// User has been banned for spam from the Revolt instance.
+    /// </summary>
+    Spam = 8
 }

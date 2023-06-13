@@ -61,13 +61,16 @@ internal class RevoltSocketClient
                 }
                 catch (WebSocketException we)
                 {
-                    Console.WriteLine("--- WebSocket Error ---\n" + $"{we}");
                     if (_firstConnected)
                     {
                         if (we.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
-                            Client.InvokeLogAndThrowException("Client token may be invalid.");
+                            Client.InvokeLogAndThrowException("Failed to connect to Revolt, the instance may be down or having issues.");
                         else
                             Client.InvokeLogAndThrowException("Failed to connect to Revolt.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"--- WebSocket Internal Error {we.ErrorCode} {we.WebSocketErrorCode} ---\n" + $"{we}");
                     }
 
                 }
@@ -478,12 +481,7 @@ internal class RevoltSocketClient
                         }
                         else
                         {
-                            UserCache.TryGetValue(@event.UserId, out User user);
-                            if (user == null)
-                            {
-                                user = await Client.Rest.GetUserAsync(@event.UserId);
-                                UserCache.TryAdd(user.Id, user);
-                            }
+                            User user = await Client.Rest.GetUserAsync(@event.UserId);
                             if (user == null)
                                 return;
 
@@ -516,12 +514,12 @@ internal class RevoltSocketClient
                         }
                         else
                         {
-                            UserCache.TryGetValue(@event.UserId, out User User);
+                            User User = await Client.Rest.GetUserAsync(@event.UserId);
                             if (User == null)
-                                User = await Client.Rest.GetUserAsync(@event.UserId);
-
-                            if (User == null)
+                            {
+                                GC.RemoveUser(Client, @event.UserId);
                                 return;
+                            }
 
                             GC.RemoveUser(User, false);
                             Client.InvokeGroupUserLeft(GC, User);
@@ -649,13 +647,9 @@ internal class RevoltSocketClient
                             if (!ServerCache.TryGetValue(@event.Id, out Server Server))
                                 return;
 
-                            if (!UserCache.TryGetValue(@event.UserId, out User user))
-                            {
-                                user = await Client.Rest.GetUserAsync(@event.UserId);
-                                if (user == null)
-                                    return;
-                                UserCache.TryAdd(@event.UserId, user);
-                            }
+                            User user = await Client.Rest.GetUserAsync(@event.UserId);
+                            if (user == null)
+                                return;
 
                             ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
                             Server.AddMember(Member);
@@ -693,10 +687,11 @@ internal class RevoltSocketClient
                             Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
                             if (Member == null)
                             {
-                                if (!UserCache.TryGetValue(@event.UserId, out User user))
+                                User user = await Client.Rest.GetUserAsync(@event.UserId);
+                                if (user == null)
                                 {
-                                    user = await Client.Rest.GetUserAsync(@event.UserId);
-                                    UserCache.TryAdd(@event.UserId, user);
+                                    Server.RemoveMember(Client, @event.UserId);
+                                    return;
                                 }
                                 Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
                             }
