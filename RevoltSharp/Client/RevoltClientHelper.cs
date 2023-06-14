@@ -26,7 +26,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetRole(RevoltClient, string)" />
-    public static bool TryGetRole(this RevoltClient client, string roleId, out Role role)
+    public static bool TryGetRole(this RevoltClient client, string roleId, out Role? role)
     {
         role = GetRole(client, roleId);
         return role != null;
@@ -47,7 +47,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetEmoji(RevoltClient, string)" />
-    public static bool TryGetEmoji(this RevoltClient client, string emojiId, out Emoji emoji)
+    public static bool TryGetEmoji(this RevoltClient client, string emojiId, out Emoji? emoji)
     {
         emoji = GetEmoji(client, emojiId);
         return emoji != null;
@@ -65,7 +65,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetTextChannel(RevoltClient, string)" />
-    public static bool TryGetTextChannel(this RevoltClient client, string channelId, out TextChannel channel)
+    public static bool TryGetTextChannel(this RevoltClient client, string channelId, out TextChannel? channel)
     {
         channel = GetTextChannel(client, channelId);
         return channel != null;
@@ -83,7 +83,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetVoiceChannel(RevoltClient, string)" />
-    public static bool TryGetVoiceChannel(this RevoltClient client, string channelId, out VoiceChannel channel)
+    public static bool TryGetVoiceChannel(this RevoltClient client, string channelId, out VoiceChannel? channel)
     {
         channel = GetVoiceChannel(client, channelId);
         return channel != null;
@@ -101,7 +101,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetServer(RevoltClient, string)" />
-    public static bool TryGetServer(this RevoltClient client, string serverId, out Server server)
+    public static bool TryGetServer(this RevoltClient client, string serverId, out Server? server)
     {
         server = GetServer(client, serverId);
         return server != null;
@@ -119,7 +119,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetUser(RevoltClient, string)" />
-    public static bool TryGetUser(this RevoltClient client, string userId, out User user)
+    public static bool TryGetUser(this RevoltClient client, string userId, out User? user)
     {
         user = GetUser(client, userId);
         return user != null;
@@ -137,7 +137,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetChannel(RevoltClient, string)" />
-    public static bool TryGetChannel(this RevoltClient client, string channelId, out Channel channel)
+    public static bool TryGetChannel(this RevoltClient client, string channelId, out Channel? channel)
     {
         channel = GetChannel(client, channelId);
         return channel != null;
@@ -154,7 +154,7 @@ public static class RevoltClientHelper
         return null;
     }
     /// <inheritdoc cref="GetGroupChannel(RevoltClient, string)" />
-    public static bool TryGetGroupChannel(this RevoltClient client, string channelId, out GroupChannel channel)
+    public static bool TryGetGroupChannel(this RevoltClient client, string channelId, out GroupChannel? channel)
     {
         channel = GetGroupChannel(client, channelId);
         return channel != null;
@@ -172,7 +172,7 @@ public static class RevoltClientHelper
     }
 
     /// <inheritdoc cref="GetDMChannel(RevoltClient, string)" />
-    public static bool TryGetDMChannel(this RevoltClient client, string channelId, out DMChannel channel)
+    public static bool TryGetDMChannel(this RevoltClient client, string channelId, out DMChannel? channel)
     {
         channel = GetDMChannel(client, channelId);
         return channel != null;
