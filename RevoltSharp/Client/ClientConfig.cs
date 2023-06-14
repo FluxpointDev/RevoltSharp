@@ -9,9 +9,12 @@ namespace RevoltSharp;
 public class ClientConfig
 {
     /// <summary>
-    /// User-Agent header shown when making rest requests.
+    /// The user agent used for REST requests and websockets.
     /// </summary>
-    public string UserAgent = "Revolt Bot (RevoltSharp)";
+    /// <remarks>
+    /// If null, a default user agent is used instead.
+    /// </remarks>
+    public string UserAgent = null;
 
     /// <summary>
     /// Do not change this unless you know what you're doing.

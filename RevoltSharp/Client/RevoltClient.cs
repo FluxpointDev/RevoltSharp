@@ -73,14 +73,9 @@ public class RevoltClient : ClientEvents
         if (!Config.ApiUrl.EndsWith('/'))
             Config.ApiUrl += "/";
 
-        if (string.IsNullOrEmpty(Config.UserAgent))
-            throw new RevoltException("Config UserAgent is missing");
-
-        if (Config.Owners == null)
-            Config.Owners = Array.Empty<string>();
-
-        if (Config.Debug == null)
-            Config.Debug = new ClientDebugConfig();
+        Config.UserAgent ??= $"Revolt Bot ({Assembly.GetExecutingAssembly().GetName().Name}) v{Version}{(UserBot ? " user" : null)}";
+        Config.Owners ??= Array.Empty<string>();
+        Config.Debug ??= new ClientDebugConfig();
     }
 
 
