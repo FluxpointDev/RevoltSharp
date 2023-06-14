@@ -161,7 +161,7 @@ public static class MemberHelper
         Conditions.ServerIdEmpty(serverId, "GetMemberAsync");
         Conditions.UserIdEmpty(userId, "GetMemberAsync");
 
-        if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server Server) && Server.InternalMembers.TryGetValue(userId, out ServerMember sm))
+        if (rest.Client.TryGetServer(serverId, out Server Server) && Server.InternalMembers.TryGetValue(userId, out ServerMember sm))
             return sm;
 
         ServerMemberJson? Member = await rest.GetAsync<ServerMemberJson>($"servers/{serverId}/members/{userId}");
@@ -179,7 +179,7 @@ public static class MemberHelper
         {
             try
             {
-                rest.Client.WebSocket.ServerCache[serverId].AddMember(SM);
+                Server.AddMember(SM);
             }
             catch { }
         }

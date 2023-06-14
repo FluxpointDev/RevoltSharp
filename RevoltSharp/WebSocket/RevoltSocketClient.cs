@@ -311,8 +311,6 @@ internal class RevoltSocketClient
                         if (@event.Author != "00000000000000000000000000" && !UserCache.ContainsKey(@event.Author))
                         {
                             User user = await Client.Rest.GetUserAsync(@event.Author);
-
-                            UserCache.TryAdd(@event.Author, user);
                         }
 
                         if (!ChannelCache.TryGetValue(@event.Channel, out Channel channel))
@@ -336,11 +334,7 @@ internal class RevoltSocketClient
 
                         if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
                         {
-                            if (!TC.Server.InternalMembers.ContainsKey(@event.Author))
-                            {
-                                ServerMember Member = await TC.Server.GetMemberAsync(@event.Author);
-                                TC.Server.InternalMembers.TryAdd(@event.Author, Member);
-                            }
+                            ServerMember Member = await TC.Server.GetMemberAsync(@event.Author);
                         }
                         Message MSG = @event.ToEntity(Client);
                         Client.InvokeMessageRecieved(MSG);
