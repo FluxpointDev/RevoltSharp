@@ -173,7 +173,7 @@ public class RevoltClient : ClientEvents
             UserJson? SelfUser = null;
             try
             {
-                SelfUser = await Rest.GetAsync<UserJson>("/users/@me", null, true) ?? throw new RevoltException(null);
+                SelfUser = await Rest.GetAsync<UserJson>("/users/@me", null, true);
             }
             catch (RevoltRestException re)
             {
