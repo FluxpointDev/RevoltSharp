@@ -14,7 +14,7 @@ public class ClientConfig
     /// <remarks>
     /// If null, a default user agent is used instead.
     /// </remarks>
-    public string UserAgent = null;
+    public string? UserAgent = null;
 
     /// <summary>
     /// Do not change this unless you know what you're doing.
@@ -43,7 +43,7 @@ public class ClientConfig
     /// This is only neccesary if Revolt is currently in Under Attack Mode (eg during a DDoS attack).
     /// Please ensure that the user agent and IP used to generate the clearance cookie will be identical to the ones used by your RevoltSharp client, or else CloudFlare will not accept the clearance.
     /// </remarks>
-    public string CfClearance = null;
+    public string? CfClearance = null;
 }
 
 /// <summary>
