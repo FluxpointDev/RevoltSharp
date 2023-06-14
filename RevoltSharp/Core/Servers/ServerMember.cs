@@ -204,7 +204,7 @@ public class ServerMember : Entity
         if (sModel.Timeout.HasValue)
             Timeout = sModel.Timeout.Value;
         ServerAvatar = Attachment.Create(client, sModel.Avatar);
-        RolesIds = sModel.Roles != null ? sModel.Roles.ToArray() : Array.Empty<string>();
+        RolesIds = sModel.Roles != null ? sModel.Roles.Distinct().ToArray() : Array.Empty<string>();
         Server Server = client.GetServer(ServerId);
         if (Server != null)
         {
@@ -228,7 +228,7 @@ public class ServerMember : Entity
 
         if (json.Roles.HasValue)
         {
-            RolesIds = json.Roles.Value;
+            RolesIds = json.Roles.Value.Distinct().ToArray();
             Server server = Client.GetServer(ServerId);
             InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
             Permissions = new ServerPermissions(server, this);
