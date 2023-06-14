@@ -36,7 +36,7 @@ public class RevoltRestException : RevoltException
     /// <summary>
     /// The permission require for the error <see cref="RevoltErrorType.MissingPermission"/> or <see cref="RevoltErrorType.MissingUserPermission"/>
     /// </summary>
-    public string Permission { get; internal set; }
+    public string? Permission { get; internal set; }
 }
 
 /// <summary>
