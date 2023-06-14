@@ -179,8 +179,8 @@ public class RevoltClient : ClientEvents
             {
                 if (re.Code == 401)
                     throw new RevoltRestException("The token is invalid.", re.Code, re.Type);
-                else
-                    throw re;
+
+                throw re;
             }
             catch (Exception ex)
             {
