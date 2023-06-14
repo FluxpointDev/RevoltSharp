@@ -6,6 +6,7 @@ using RevoltSharp.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -18,6 +19,12 @@ namespace RevoltSharp;
 /// </remarks>
 public class RevoltClient : ClientEvents
 {
+    /// <summary>
+    /// Version of the current RevoltSharp lib installed.
+    /// </summary>
+    public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+
+
     /// <summary>
     /// Create a Revolt client that can be used for user or bot accounts.
     /// </summary>
@@ -81,11 +88,6 @@ public class RevoltClient : ClientEvents
     /// Revolt bot token used for http requests and websocket.
     /// </summary>
     public string Token { get; internal set; }
-
-    /// <summary>
-    /// Version of the current RevoltSharp lib installed.
-    /// </summary>
-    public string Version { get; } = "6.0.5";
 
     /// <summary>
     /// The current version of the revolt instance connected to.
@@ -158,17 +160,13 @@ public class RevoltClient : ClientEvents
             {
                 Query = await Rest.GetAsync<QueryRequest>("/", null, true);
             }
-            catch (RevoltRestException re)
-            {
-                InvokeLogAndThrowException($"Client failed to connect to the revolt api at {Config.ApiUrl} due to {re.Message}");
-            } 
             catch (Exception ex)
             {
-                InvokeLogAndThrowException($"Client failed to connect to the revolt api at {Config.ApiUrl} due to " + ex.Message);
+                InvokeLogAndThrowException($"Client failed to connect to the Revolt API at {Config.ApiUrl}. {ex.Message}");
             }
 
             if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
-                InvokeLogAndThrowException("Server Image server url is an invalid format.");
+                InvokeLogAndThrowException("Server Image server URL is an invalid format.");
 
             RevoltVersion = Query.revoltVersion;
             Config.Debug.WebsocketUrl = Query.websocketUrl;
@@ -180,22 +178,19 @@ public class RevoltClient : ClientEvents
             UserJson? SelfUser = null;
             try
             {
-                SelfUser = await Rest.GetAsync<UserJson>("/users/@me", null, true);
+                SelfUser = await Rest.GetAsync<UserJson>("/users/@me", null, true) ?? throw new RevoltException(null);
             }
             catch (RevoltRestException re)
             {
                 if (re.Code == 401)
-                    InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account, token is invalid.");
+                    throw new RevoltRestException("The token is invalid.", re.Code, re.Type);
                 else
-                    InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account, " + re.Message);
+                    throw re;
             }
             catch (Exception ex)
             {
-                InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account, " + ex.Message);
+                InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account. {ex.Message}");
             }
-
-            if (SelfUser == null)
-                InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account.");
 
             CurrentUser = new SelfUser(this, SelfUser);
             InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Standard);
@@ -230,7 +225,7 @@ public class RevoltClient : ClientEvents
     public async Task StopAsync()
     {
         if (WebSocket == null)
-            throw new RevoltException("Client is in http-only mode.");
+            throw new RevoltException("Client is in HTTP-only mode.");
 
         if (WebSocket.WebSocket != null)
         {
