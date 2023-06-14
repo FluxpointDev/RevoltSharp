@@ -56,7 +56,7 @@ internal class RevoltSocketClient
                         WebSocket.Options.Cookies = new System.Net.CookieContainer();
                         WebSocket.Options.Cookies.SetCookies(uri, $"cf_clearance={Client.Config.CfClearance}");
                     }
-                    WebSocket.Options.SetRequestHeader("User-Agent", Client.FullUserAgent);
+                    WebSocket.Options.SetRequestHeader("User-Agent", Client.Config.UserAgent);
 
                     await WebSocket.ConnectAsync(uri, CancellationToken);
                     await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest(Client.Token)), CancellationToken);

@@ -133,8 +133,6 @@ public class RevoltClient : ClientEvents
     /// </remarks>
     public SavedMessagesChannel? SavedMessagesChannel { get; internal set; }
 
-    internal string FullUserAgent => $"{Config.UserAgent} v{Version}{(Config.UserBot ? " user" : "")}";
-
     /// <summary>
     /// Start the Rest and Websocket to be used for the lib.
     /// </summary>
