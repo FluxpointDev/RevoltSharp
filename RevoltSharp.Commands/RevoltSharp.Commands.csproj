@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>C:\Users\Brandan\Documents\Visual Studio 2019\Projects\RevoltSharp.Commands\RevoltSharp\RevoltSharp.Commands.xml</DocumentationFile>
+    <Version>1.0.0</Version>
+    <Authors>Builderb (Fluxpoint Development)</Authors>
+    <Company>Fluxpoint Development</Company>
+    <Product>RevoltSharp.Commands</Product>
+    <Description>A command handler for RevoltSharp with easy to use structure and parsing.</Description>
+    <PackageProjectUrl>https://docs.fluxpoint.dev/revoltsharp</PackageProjectUrl>
+    <PackageIcon>PackageIcon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/FluxpointDev/RevoltSharp</RepositoryUrl>
+    <PackageTags>revolt, revolt bot, bot, revoltsharp, revolt c#</PackageTags>
+    <PackageReleaseNotes>See changelog https://docs.fluxpoint.dev/revoltsharp/changelog
+</PackageReleaseNotes>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RevoltSharp\RevoltSharp.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="PackageIcon.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+</Project>

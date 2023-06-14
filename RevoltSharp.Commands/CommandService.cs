@@ -28,6 +28,11 @@ namespace RevoltSharp.Commands;
 /// </remarks>
 public class CommandService : IDisposable
 {
+    /// <summary>
+    /// Version of the current RevoltSharp.Commands lib installed.
+    /// </summary>
+    public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+
     public delegate void CommandExecutedEvent<CommandInfo, Context, Result>(CommandInfo commandinfo, Context context, Result result);
 
     /// <summary>

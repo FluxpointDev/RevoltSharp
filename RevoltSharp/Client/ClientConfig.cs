@@ -1,5 +1,4 @@
-﻿using RevoltSharp.Commands;
-using RevoltSharp.Rest;
+﻿using RevoltSharp.Rest;
 
 namespace RevoltSharp;
 
@@ -32,7 +31,7 @@ public class ClientConfig
     public bool UserBot;
 
     /// <summary>
-    /// Useful for owner checks and also used for <see cref="RequireOwnerAttribute"/> when using the built-in <see cref="CommandService"/> handler.
+    /// Useful for owner checks and also used for RequireOwnerAttribute when using the built-in command handler.
     /// </summary>
     public string[] Owners = null;
 

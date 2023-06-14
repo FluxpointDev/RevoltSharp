@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RevoltSharp.Commands\RevoltSharp.Commands.csproj" />
     <ProjectReference Include="..\RevoltSharp\RevoltSharp.csproj" />
   </ItemGroup>
 
