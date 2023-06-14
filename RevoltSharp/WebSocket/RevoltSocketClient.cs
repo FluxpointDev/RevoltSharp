@@ -57,7 +57,7 @@ internal class RevoltSocketClient
                 catch (ArgumentException)
                 {
                     if (_firstConnected)
-                        Client.InvokeLogAndThrowException("Client config WEBSOCKET_URL is an invalid format.");
+                        Client.InvokeLogAndThrowException("Client config WebsocketUrl is an invalid format.");
                 }
                 catch (WebSocketException we)
                 {
