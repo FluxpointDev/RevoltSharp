@@ -44,7 +44,7 @@ public class RevoltRestClient
             BaseAddress = new System.Uri(Client.Config.ApiUrl)
         };
         HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
-        HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version + (Client.Config.UserBot ? " user" : ""));
+        HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + RevoltClient.Version + (Client.Config.UserBot ? " user" : ""));
         HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         FileHttpClient = new HttpClient()
         {

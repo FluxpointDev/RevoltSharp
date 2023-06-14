@@ -6,6 +6,7 @@ using RevoltSharp.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -18,6 +19,12 @@ namespace RevoltSharp;
 /// </remarks>
 public class RevoltClient : ClientEvents
 {
+    /// <summary>
+    /// Version of the current RevoltSharp lib installed.
+    /// </summary>
+    public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+
+
     /// <summary>
     /// Create a Revolt client that can be used for user or bot accounts.
     /// </summary>
@@ -81,11 +88,6 @@ public class RevoltClient : ClientEvents
     /// Revolt bot token used for http requests and websocket.
     /// </summary>
     public string Token { get; internal set; }
-
-    /// <summary>
-    /// Version of the current RevoltSharp lib installed.
-    /// </summary>
-    public string Version { get; } = "6.0.5";
 
     /// <summary>
     /// The current version of the revolt instance connected to.
