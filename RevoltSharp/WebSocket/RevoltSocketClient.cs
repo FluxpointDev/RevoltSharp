@@ -49,6 +49,7 @@ internal class RevoltSocketClient
             {
                 try
                 {
+                    WebSocket.Options.SetRequestHeader("User-Agent", Client.Config.UserAgent);
                     await WebSocket.ConnectAsync(new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json&version=1"), CancellationToken);
                     await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest(Client.Token)), CancellationToken);
                     _firstError = true;
