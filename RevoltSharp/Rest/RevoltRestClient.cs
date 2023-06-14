@@ -22,19 +22,19 @@ public class RevoltRestClient
         Client = client;
 
         if (string.IsNullOrEmpty(Client.Config.ApiUrl))
-            throw new RevoltException("Client config API_URL can not be empty.");
+            throw new RevoltException("Client config ApiUrl can not be empty.");
 
         if (!Uri.IsWellFormedUriString(client.Config.ApiUrl, UriKind.Absolute))
-            throw new RevoltException("Client config API_URL is an invalid format.");
+            throw new RevoltException("Client config ApiUrl is an invalid format.");
 
         if (!Client.Config.ApiUrl.EndsWith('/'))
             Client.Config.ApiUrl = Client.Config.ApiUrl + "/";
 
         if (string.IsNullOrEmpty(Client.Config.Debug.UploadUrl))
-            throw new RevoltException("Client config UPLOAD_URL can not be empty.");
+            throw new RevoltException("Client config UploadUrl can not be empty.");
 
         if (!Uri.IsWellFormedUriString(client.Config.Debug.UploadUrl, UriKind.Absolute))
-            throw new RevoltException("Client config UPLOAD_URL is an invalid format.");
+            throw new RevoltException("Client config UploadUrl is an invalid format.");
 
         if (!Client.Config.Debug.UploadUrl.EndsWith('/'))
             Client.Config.Debug.UploadUrl = Client.Config.Debug.UploadUrl + "/";

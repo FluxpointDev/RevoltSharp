@@ -20,10 +20,10 @@ internal class RevoltSocketClient
     {
         Client = client;
         if (string.IsNullOrEmpty(client.Config.Debug.WebsocketUrl))
-            throw new RevoltException("Client config WEBSOCKET_URL can not be empty.");
+            throw new RevoltException("Client config WebsocketUrl can not be empty.");
 
         if (!Uri.IsWellFormedUriString(client.Config.Debug.WebsocketUrl, UriKind.Absolute))
-            throw new RevoltException("Client config WEBSOCKET_URL is an invalid format.");
+            throw new RevoltException("Client config WebsocketUrl is an invalid format.");
     }
 
     internal RevoltClient Client { get; }
