@@ -46,13 +46,18 @@ public class RevoltRestClient
         HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.FullUserAgent);
         HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        if (Client.Config.CfClearance != null)
-            HttpClient.DefaultRequestHeaders.Add("Cookie", $"cf_clearance={Client.Config.CfClearance}");
         FileHttpClient = new HttpClient()
         {
             BaseAddress = new System.Uri(Client.Config.Debug.UploadUrl)
         };
         FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + (Client.Config.UserBot ? " user" : ""));
+
+        if (!string.IsNullOrEmpty(Client.Config.CfClearance))
+        {
+            string cookie = $"cf_clearance={Client.Config.CfClearance}";
+            HttpClient.DefaultRequestHeaders.Add("Cookie", cookie);
+            FileHttpClient.DefaultRequestHeaders.Add("Cookie", cookie);
+        }
     }
 
     internal RevoltClient Client { get; private set; }
