@@ -44,8 +44,10 @@ public class RevoltRestClient
             BaseAddress = new System.Uri(Client.Config.ApiUrl)
         };
         HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
-        HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + " v" + Client.Version + (Client.Config.UserBot ? " user" : ""));
+        HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.FullUserAgent);
         HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        if (Client.Config.CfClearance != null)
+            HttpClient.DefaultRequestHeaders.Add("Cookie", $"cf_clearance={Client.Config.CfClearance}");
         FileHttpClient = new HttpClient()
         {
             BaseAddress = new System.Uri(Client.Config.Debug.UploadUrl)

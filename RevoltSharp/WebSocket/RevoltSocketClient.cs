@@ -49,7 +49,16 @@ internal class RevoltSocketClient
             {
                 try
                 {
-                    await WebSocket.ConnectAsync(new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json&version=1"), CancellationToken);
+                    Uri uri = new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json&version=1");
+
+                    if (Client.Config.CfClearance != null)
+                    {
+                        WebSocket.Options.Cookies = new System.Net.CookieContainer();
+                        WebSocket.Options.Cookies.SetCookies(uri, $"cf_clearance={Client.Config.CfClearance}");
+                    }
+                    WebSocket.Options.SetRequestHeader("User-Agent", Client.FullUserAgent);
+
+                    await WebSocket.ConnectAsync(uri, CancellationToken);
                     await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest(Client.Token)), CancellationToken);
                     _firstError = true;
                     await Receive(WebSocket, CancellationToken);
