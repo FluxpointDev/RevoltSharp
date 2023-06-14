@@ -35,6 +35,15 @@ public class ClientConfig
     /// Useful for owner checks and also used for <see cref="RequireOwnerAttribute"/> when using the built-in <see cref="CommandService"/> handler.
     /// </summary>
     public string[] Owners = null;
+
+    /// <summary>
+    /// The cf_clearance cookie for Cloudflare.
+    /// </summary>
+    /// <remarks>
+    /// This is only neccesary if Revolt is currently in Under Attack Mode (eg during a DDoS attack).
+    /// Please ensure that the user agent and IP used to generate the clearance cookie will be identical to the ones used by your RevoltSharp client, or else CloudFlare will not accept the clearance.
+    /// </remarks>
+    public string CfClearance = null;
 }
 
 /// <summary>
