@@ -266,21 +266,12 @@ public class RevoltClient : ClientEvents
     public IReadOnlyCollection<Emoji> Emojis
         => WebSocket != null ? (IReadOnlyCollection<Emoji>)WebSocket.EmojiCache.Values : new ReadOnlyCollection<Emoji>(new List<Emoji>());
 
-
-
-
     internal TextChannel? GetTextChannel(Optional<string> channelId)
     {
-        if (WebSocket != null && channelId.HasValue && !string.IsNullOrEmpty(channelId.Value) && WebSocket.ChannelCache.TryGetValue(channelId.Value, out Channel Chan) && Chan is TextChannel TC)
-            return TC;
+        if (channelId.HasValue && !string.IsNullOrEmpty(channelId.Value) && this.TryGetTextChannel(channelId.Value, out TextChannel Chan))
+            return Chan;
         return null;
     }
-
-
-
-
-
-
 }
 
 /// <summary>
