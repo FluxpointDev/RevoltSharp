@@ -50,7 +50,7 @@ public class RevoltRestClient
         {
             BaseAddress = new System.Uri(Client.Config.Debug.UploadUrl)
         };
-        FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent + (Client.Config.UserBot ? " user" : ""));
+        FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.FullUserAgent);
 
         if (!string.IsNullOrEmpty(Client.Config.CfClearance))
         {
