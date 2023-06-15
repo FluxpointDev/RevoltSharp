@@ -88,7 +88,7 @@ internal static class Conditions
 
     internal static void MessageContentLength(string content, string request)
     {
-        if (content.Length > 2000)
+        if (content != null && content.Length > 2000)
             throw new RevoltArgumentException($"Message content is more than 2000 characters for the {request} request.");
     }
 
