@@ -10,16 +10,14 @@
     <PackageProjectUrl>https://docs.fluxpoint.dev/revoltsharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/FluxpointDev/RevoltSharp</RepositoryUrl>
     <PackageTags>revolt, revolt bot, bot, revoltsharp, revolt c#</PackageTags>
-    <PackageReleaseNotes>See changelog https://docs.fluxpoint.dev/revoltsharp/changelog
-</PackageReleaseNotes>
+    <PackageReleaseNotes>See changelog https://docs.fluxpoint.dev/revoltsharp/changelog</PackageReleaseNotes>
     <Nullable>enable</Nullable>
     <PackageIcon>PackageIcon.png</PackageIcon>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\Brandan\Documents\Visual Studio 2019\Projects\RevoltSharp\RevoltSharp\RevoltSharp.xml</DocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>RevoltSharp.xml</DocumentationFile>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
