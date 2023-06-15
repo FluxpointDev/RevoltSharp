@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\Brandan\Documents\Visual Studio 2019\Projects\RevoltSharp\RevoltSharp\RevoltSharp.xml</DocumentationFile>
+    <DocumentationFile>RevoltSharp.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
