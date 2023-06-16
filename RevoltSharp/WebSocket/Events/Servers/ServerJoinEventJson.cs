@@ -5,11 +5,11 @@ namespace RevoltSharp.WebSocket.Events;
 internal class ServerJoinEventJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? ServerId;
 
     [JsonProperty("server")]
-    public ServerJson? Server;
+    public ServerJson? ServerJson;
 
     [JsonProperty("channels")]
-    public ChannelJson[]? Channels;
+    public ChannelJson[]? ChannelsJson;
 }

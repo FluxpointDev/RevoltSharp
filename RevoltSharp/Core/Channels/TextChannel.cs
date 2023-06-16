@@ -9,7 +9,7 @@ public class TextChannel : ServerChannel
     {
         Type = ChannelType.Text;
         LastMessageId = model.LastMessageId;
-        IsNsfw = model.Nsfw;
+        IsNsfw = model.IsNsfw;
     }
 
     /// <summary>

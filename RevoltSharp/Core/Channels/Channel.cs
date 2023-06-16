@@ -49,7 +49,7 @@ public abstract class Channel : CreatedEntity
                 return new VoiceChannel(client, model);
             default:
                 {
-                    if (!string.IsNullOrEmpty(model.Server))
+                    if (!string.IsNullOrEmpty(model.ServerId))
                     {
                         return new UnknownServerChannel(client, model);
                     }

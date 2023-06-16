@@ -15,7 +15,7 @@ internal class ChannelJson
     public string? Nonce;
 
     [JsonProperty("user")]
-    public string? User;
+    public string? UserId;
 
     [JsonProperty("active")]
     public bool Active;
@@ -36,7 +36,7 @@ internal class ChannelJson
     public string? Name;
 
     [JsonProperty("owner")]
-    public string? Owner;
+    public string? OwnerId;
 
     [JsonProperty("permissions")]
     public ulong Permissions;
@@ -48,8 +48,8 @@ internal class ChannelJson
     public Dictionary<string, PermissionsJson>? RolePermissions;
 
     [JsonProperty("server")]
-    public string? Server;
+    public string? ServerId;
 
     [JsonProperty("nsfw")]
-    public bool Nsfw;
+    public bool IsNsfw;
 }

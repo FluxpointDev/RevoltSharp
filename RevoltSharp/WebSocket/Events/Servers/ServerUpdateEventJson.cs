@@ -6,7 +6,7 @@ namespace RevoltSharp.WebSocket.Events;
 internal class ServerUpdateEventJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? ServerId;
 
     [JsonProperty("data")]
     public PartialServerJson? Data;

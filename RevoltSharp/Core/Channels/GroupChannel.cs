@@ -28,10 +28,10 @@ public class GroupChannel : Channel
         Description = model.Description;
         LastMessageId = model.LastMessageId;
         Name = model.Name;
-        OwnerId = model.Owner;
+        OwnerId = model.OwnerId;
         Permissions = new ChannelPermissions(null, model.Permissions, 0);
         Icon = Attachment.Create(client, model.Icon);
-        IsNsfw = model.Nsfw;
+        IsNsfw = model.IsNsfw;
     }
 
     /// <summary>

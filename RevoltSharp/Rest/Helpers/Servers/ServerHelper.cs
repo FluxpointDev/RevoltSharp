@@ -27,11 +27,16 @@ public static class ServerHelper
         if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server server))
             return server;
 
-        ServerJson? Server = await rest.GetAsync<ServerJson>($"/servers/{serverId}");
-        if (Server == null)
+        ServerJson? ServerJson = await rest.GetAsync<ServerJson>($"/servers/{serverId}");
+        if (ServerJson == null)
             return null;
 
-        return new Server(rest.Client, Server);
+        Server Server = new Server(rest.Client, ServerJson);
+
+        if (rest.Client.WebSocket != null)
+            rest.Client.WebSocket.ServerCache.TryAdd(serverId, Server);
+
+        return Server;
     }
 
     /// <inheritdoc cref="GetBansAsync(RevoltRestClient, string)" />

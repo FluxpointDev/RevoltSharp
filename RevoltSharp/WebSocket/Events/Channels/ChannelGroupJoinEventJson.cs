@@ -5,7 +5,7 @@ namespace RevoltSharp.WebSocket.Events;
 internal class ChannelGroupJoinEventJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? ChannelId;
 
     [JsonProperty("user")]
     public string? UserId;

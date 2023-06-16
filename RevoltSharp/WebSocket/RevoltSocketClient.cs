@@ -74,8 +74,8 @@ internal class RevoltSocketClient
                     {
                         if (we.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
                             Client.InvokeLogAndThrowException("Failed to connect to Revolt, the instance may be down or having issues.");
-                        else
-                            Client.InvokeLogAndThrowException("Failed to connect to Revolt.");
+
+                        Client.InvokeLogAndThrowException("Failed to connect to Revolt.");
                     }
                     else
                     {
@@ -212,6 +212,7 @@ internal class RevoltSocketClient
                         ErrorEventJson @event = JsonConvert.DeserializeObject<ErrorEventJson>(json);
                         if (Client.Config.Debug.LogWebSocketError)
                             Console.WriteLine("--- WebSocket Error ---\n" + json);
+
                         if (@event.Error == RevoltErrorType.InvalidSession)
                         {
                             if (_firstConnected)
@@ -258,16 +259,17 @@ internal class RevoltSocketClient
                             foreach (ServerMemberJson m in @event.Members)
                             {
                                 if (ServerCache.TryGetValue(m.Id.Server, out Server s))
+                                {
                                     s.InternalMembers.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
+                                    UserCache[m.Id.User].InternalMutualServers.TryAdd(s.Id, s);
+                                }
                             }
 
                             Client.SavedMessagesChannel = (SavedMessagesChannel)ChannelCache.Values.FirstOrDefault(x => x.Type == ChannelType.SavedMessages);
 
                             foreach (var c in ChannelCache.Values.Where(x => x.Type == ChannelType.DM))
                             {
-
                                 DMChannel DM = (DMChannel)c;
-
                                 if (UserCache.TryGetValue(DM.UserId, out User user))
                                     user.InternalMutualDMs.TryAdd(c.Id, DM);
                             }
@@ -311,13 +313,15 @@ internal class RevoltSocketClient
                         if (@event.Author != "00000000000000000000000000" && !UserCache.ContainsKey(@event.Author))
                         {
                             User user = await Client.Rest.GetUserAsync(@event.Author);
+                            if (user == null)
+                                return;
                         }
 
                         if (!ChannelCache.TryGetValue(@event.Channel, out Channel channel))
-                        {
                             channel = await Client.Rest.GetChannelAsync(@event.Channel);
-                            ChannelCache.TryAdd(@event.Channel, channel);
-                        }
+
+                        if (channel == null)
+                            return;
 
                         switch (channel.Type)
                         {
@@ -325,17 +329,19 @@ internal class RevoltSocketClient
                                 (channel as GroupChannel).LastMessageId = @event.Id;
                                 break;
                             case ChannelType.Text:
-                                (channel as TextChannel).LastMessageId = @event.Id;
+                                {
+                                    (channel as TextChannel).LastMessageId = @event.Id;
+                                    if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
+                                    {
+                                        await TC.Server.GetMemberAsync(@event.Author);
+                                    }
+                                }
                                 break;
                             case ChannelType.DM:
                                 (channel as DMChannel).LastMessageId = @event.Id;
                                 break;
                         }
 
-                        if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
-                        {
-                            ServerMember Member = await TC.Server.GetMemberAsync(@event.Author);
-                        }
                         Message MSG = @event.ToEntity(Client);
                         Client.InvokeMessageRecieved(MSG);
                     }
@@ -343,12 +349,14 @@ internal class RevoltSocketClient
                 case "MessageUpdate":
                     {
                         MessageUpdateEventJson @event = payload.ToObject<MessageUpdateEventJson>(Client.Deserializer);
-                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
-                        if (channel == null)
+
+                        if (!ChannelCache.ContainsKey(@event.ChannelId))
                         {
-                            channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
-                            ChannelCache.TryAdd(channel.Id, channel);
+                            Channel channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
+                            if (channel == null)
+                                return;
                         }
+
                         Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
                         Client.InvokeMessageUpdated(message, new MessageUpdatedProperties(Client, @event));
                     }
@@ -357,14 +365,13 @@ internal class RevoltSocketClient
                     {
                         MessageDeleteEventJson @event = payload.ToObject<MessageDeleteEventJson>(Client.Deserializer);
 
-                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
-                        if (channel == null)
+                       
+                        if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel channel))
                         {
                             channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
-                            ChannelCache.TryAdd(@event.ChannelId, channel);
+                            if (channel == null)
+                                return;
                         }
-                        if (channel == null)
-                            return;
 
                         Client.InvokeMessageDeleted(channel, @event.Id);
                     }
@@ -373,14 +380,12 @@ internal class RevoltSocketClient
                     {
                         MessageDeleteEventJson @event = payload.ToObject<MessageDeleteEventJson>(Client.Deserializer);
 
-                        ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);
-                        if (channel == null)
+                        if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel channel))
                         {
                             channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
-                            ChannelCache.TryAdd(@event.ChannelId, channel);
+                            if (channel == null)
+                                return;
                         }
-                        if (channel == null)
-                            return;
 
                         Client.InvokeMessagesBulkDeleted(channel, @event.Ids);
                     }
@@ -397,14 +402,21 @@ internal class RevoltSocketClient
                             case ChannelType.Text:
                             case ChannelType.Voice:
                                 {
-                                    ServerCache.TryGetValue(@event.Server, out Server server);
+                                    ServerCache.TryGetValue(@event.ServerId, out Server server);
+                                    if (server == null)
+                                    {
+                                        server = await Client.Rest.GetServerAsync(@event.ServerId);
+                                        if (server == null)
+                                            return;
+                                    }
+
                                     server.ChannelIds.Add(chan.Id);
-                                    Client.InvokeChannelCreated(chan as ServerChannel);
+                                    Client.InvokeChannelCreated((ServerChannel)chan);
                                 }
                                 break;
                             case ChannelType.Group:
                                 {
-                                    GroupChannel GC = chan as GroupChannel;
+                                    GroupChannel GC = (GroupChannel)chan;
                                     foreach (string u in GC.Recipents)
                                     {
                                         if (UserCache.TryGetValue(u, out User User))
@@ -416,12 +428,12 @@ internal class RevoltSocketClient
                                 break;
                             case ChannelType.DM:
                                 {
-                                    Client.InvokeDMChannelOpened(chan as DMChannel);
+                                    Client.InvokeDMChannelOpened((DMChannel)chan);
                                 }
                                 break;
                             case ChannelType.SavedMessages:
                                 {
-                                    Client.SavedMessagesChannel = chan as SavedMessagesChannel;
+                                    Client.SavedMessagesChannel = (SavedMessagesChannel)chan;
                                 }
                                 break;
                         }
@@ -430,8 +442,11 @@ internal class RevoltSocketClient
                 case "ChannelUpdate":
                     {
                         ChannelUpdateEventJson @event = payload.ToObject<ChannelUpdateEventJson>(Client.Deserializer);
-                        if (!ChannelCache.TryGetValue(@event.Id, out Channel chan))
+                        if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel chan))
+                        {
+                            await Client.Rest.GetChannelAsync(@event.ChannelId);
                             return;
+                        }
 
                         if (@event.Clear.HasValue)
                         {
@@ -455,13 +470,13 @@ internal class RevoltSocketClient
                 case "ChannelDelete":
                     {
                         ChannelDeleteEventJson @event = payload.ToObject<ChannelDeleteEventJson>(Client.Deserializer);
-                        if (!ChannelCache.TryRemove(@event.Id, out Channel chan))
+                        if (!ChannelCache.TryRemove(@event.ChannelId, out Channel chan))
                             return;
 
                         if (chan is ServerChannel sc)
                         {
                             if (ServerCache.TryGetValue(sc.ServerId, out Server server))
-                                server.ChannelIds.Remove(@event.Id);
+                                server.ChannelIds.Remove(@event.ChannelId);
                         }
                         Client.InvokeChannelDeleted(chan);
                     }
@@ -472,9 +487,9 @@ internal class RevoltSocketClient
                         if (@event.UserId == CurrentUser.Id)
                         {
                             // Might be obsolete
-                            Channel chan = await Client.Rest.GetChannelAsync(@event.Id);
+                            Channel chan = await Client.Rest.GetChannelAsync(@event.ChannelId);
                             GroupChannel GC = (GroupChannel)chan;
-                            ChannelCache.TryAdd(@event.Id, GC);
+                            ChannelCache.TryAdd(@event.ChannelId, GC);
                             foreach (string u in GC.Recipents)
                             {
                                 if (UserCache.TryGetValue(u, out User User))
@@ -488,7 +503,7 @@ internal class RevoltSocketClient
                             if (user == null)
                                 return;
 
-                            GroupChannel GC = (GroupChannel)ChannelCache[@event.Id];
+                            GroupChannel GC = (GroupChannel)ChannelCache[@event.ChannelId];
                             GC.AddUser(user);
                             Client.InvokeGroupUserJoined(GC, user);
                         }
@@ -497,14 +512,14 @@ internal class RevoltSocketClient
                 case "ChannelGroupLeave":
                     {
                         ChannelGroupLeaveEventJson @event = payload.ToObject<ChannelGroupLeaveEventJson>(Client.Deserializer);
-                        if (!ChannelCache.TryGetValue(@event.Id, out Channel Channel))
+                        if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel Channel))
                             return;
                         GroupChannel GC = Channel as GroupChannel;
 
                         if (@event.UserId == CurrentUser.Id)
                         {
                             Client.InvokeLog("Left Group: " + GC.Name, RevoltLogSeverity.Verbose);
-                            ChannelCache.TryRemove(@event.Id, out Channel chan);
+                            ChannelCache.TryRemove(@event.ChannelId, out Channel chan);
                             _ = Task.Run(() =>
                             {
                                 foreach (User u in GC.CachedUsers.Values)
@@ -533,9 +548,12 @@ internal class RevoltSocketClient
                 case "ServerCreate":
                     {
                         ServerJoinEventJson @event = payload.ToObject<ServerJoinEventJson>(Client.Deserializer);
-                        Server server = new Server(Client, @event.Server);
-                        ServerCache.TryAdd(@event.Server.Id, server);
-                        foreach (ChannelJson c in @event.Channels)
+                        Server server = new Server(Client, @event.ServerJson);
+                        ServerCache.TryAdd(@event.ServerJson.Id, server);
+                        if (UserCache.TryGetValue(server.OwnerId, out User Owner))
+                            Owner.InternalMutualServers.TryAdd(server.Id, server);
+
+                        foreach (ChannelJson c in @event.ChannelsJson)
                         {
                             TextChannel Chan = Channel.Create(Client, c) as TextChannel;
                             if (Chan == null)
@@ -549,7 +567,7 @@ internal class RevoltSocketClient
                 case "ServerUpdate":
                     {
                         ServerUpdateEventJson @event = payload.ToObject<ServerUpdateEventJson>(Client.Deserializer);
-                        if (!ServerCache.TryGetValue(@event.Id, out Server server))
+                        if (!ServerCache.TryGetValue(@event.ServerId, out Server server))
                             return;
 
                         if (@event.Clear.HasValue)
@@ -575,7 +593,7 @@ internal class RevoltSocketClient
                 case "ServerDelete":
                     {
                         ServerDeleteEventJson @event = payload.ToObject<ServerDeleteEventJson>(Client.Deserializer);
-                        if (!ServerCache.TryRemove(@event.Id, out Server server))
+                        if (!ServerCache.TryRemove(@event.ServerId, out Server server))
                             return;
 
                         _ = Task.Run(() =>
@@ -599,12 +617,15 @@ internal class RevoltSocketClient
                         if (!ServerCache.TryGetValue(@event.Id.Server, out Server Server))
                             return;
 
-                        Server.InternalMembers.TryGetValue(@event.Id.User, out ServerMember Member);
-                        if (Member == null)
+                        if (Server.InternalMembers.TryGetValue(@event.Id.User, out ServerMember Member))
+                        {
                             Member = await Server.GetMemberAsync(@event.Id.User);
+                            if (Member == null)
+                                return;
+                        }
+                            
 
-                        if (Member == null)
-                            return;
+                        
 
                         if (@event.Clear.HasValue)
                         {
@@ -639,22 +660,30 @@ internal class RevoltSocketClient
                         ServerMemberJoinEventJson @event = payload.ToObject<ServerMemberJoinEventJson>(Client.Deserializer);
                         if (@event.UserId == CurrentUser.Id)
                         {
-                            Server server = await Client.Rest.GetServerAsync(@event.Id);
+                            Server server = await Client.Rest.GetServerAsync(@event.ServerId);
+                            if (server == null)
+                                return;
+
                             Client.InvokeLog("Joined Server: " + server.Name, RevoltLogSeverity.Verbose);
-                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, CurrentUser);
+
+                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, CurrentUser);
                             server.AddMember(Member);
                             Client.InvokeServerJoined(server, CurrentUser);
                         }
                         else
                         {
-                            if (!ServerCache.TryGetValue(@event.Id, out Server Server))
-                                return;
+                            if (!ServerCache.TryGetValue(@event.ServerId, out Server Server))
+                            {
+                                Server = await Client.Rest.GetServerAsync(@event.ServerId);
+                                if (Server == null)
+                                    return;
+                            }
 
                             User user = await Client.Rest.GetUserAsync(@event.UserId);
                             if (user == null)
                                 return;
 
-                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
+                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, user);
                             Server.AddMember(Member);
                             Client.InvokeMemberJoined(Server, Member);
                         }
@@ -665,8 +694,11 @@ internal class RevoltSocketClient
                         ServerMemberLeaveEventJson @event = payload.ToObject<ServerMemberLeaveEventJson>(Client.Deserializer);
                         if (@event.UserId == CurrentUser.Id)
                         {
-                            if (!ServerCache.TryRemove(@event.Id, out Server server))
+                            if (!ServerCache.TryRemove(@event.ServerId, out Server server))
+                            {
+                                CurrentUser.InternalMutualServers.TryRemove(@event.ServerId, out server);
                                 return;
+                            }
 
                             Client.InvokeLog("Left Server: " + server.Name, RevoltLogSeverity.Verbose);
                             _ = Task.Run(() =>
@@ -685,19 +717,26 @@ internal class RevoltSocketClient
                         }
                         else
                         {
-                            if (!ServerCache.TryGetValue(@event.Id, out Server Server))
+                            UserCache.TryGetValue(@event.UserId, out User user);
+                            if (!ServerCache.TryGetValue(@event.ServerId, out Server Server))
+                            {
+                                user.InternalMutualServers.TryRemove(@event.ServerId, out Server);
                                 return;
+                            }
+
+                            user = await Client.Rest.GetUserAsync(@event.UserId);
+                            
+
                             Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
                             if (Member == null)
+                                Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, user);
+
+                            if (user == null)
                             {
-                                User user = await Client.Rest.GetUserAsync(@event.UserId);
-                                if (user == null)
-                                {
-                                    Server.RemoveMember(Client, @event.UserId);
-                                    return;
-                                }
-                                Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.Id, User = @event.UserId } }, null, user);
+                                Server.RemoveMember(Client, @event.UserId);
+                                return;
                             }
+
                             Server.RemoveMember(Member.User);
                             Client.InvokeMemberLeft(Server, Member);
                         }
@@ -729,6 +768,7 @@ internal class RevoltSocketClient
                         ServerRoleDeleteEventJson @event = payload.ToObject<ServerRoleDeleteEventJson>(Client.Deserializer);
                         if (!ServerCache.TryGetValue(@event.Id, out Server server))
                             return;
+
                         if (!server.InternalRoles.TryRemove(@event.RoleId, out Role role))
                             return;
 
@@ -812,7 +852,7 @@ internal class RevoltSocketClient
                 case "EmojiDelete":
                     {
                         ServerEmojiDeleteEventJson @event = payload.ToObject<ServerEmojiDeleteEventJson>(Client.Deserializer);
-                        if (!EmojiCache.TryRemove(@event.Id, out Emoji Emoji))
+                        if (!EmojiCache.TryRemove(@event.EmojiId, out Emoji Emoji))
                             return;
 
                         if (!ServerCache.TryGetValue(Emoji.ServerId, out Server Server))
@@ -925,7 +965,8 @@ internal class RevoltSocketClient
                 case "UserPlatformWipe":
                     {
                         UserPlatformWipedEventJson @event = payload.ToObject<UserPlatformWipedEventJson>(Client.Deserializer);
-                        UserCache.Remove(@event.UserId, out User User);
+                        if (!UserCache.Remove(@event.UserId, out User User))
+                            return;
                         _ = Task.Run(() =>
                         {
                             foreach (var c in ChannelCache.Values)

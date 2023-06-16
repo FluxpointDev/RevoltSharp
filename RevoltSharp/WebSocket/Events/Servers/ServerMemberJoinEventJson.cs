@@ -5,7 +5,7 @@ namespace RevoltSharp.WebSocket.Events;
 internal class ServerMemberJoinEventJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? ServerId;
 
     [JsonProperty("user")]
     public string? UserId;

@@ -30,19 +30,19 @@ public static class ChannelHelper
     {
         Conditions.ChannelIdEmpty(channelId, "GetChannelAsync");
 
+        if (rest.Client.TryGetChannel(channelId, out Channel chan))
+            return (TValue)chan;
+
+
+        ChannelJson? ChannelJson = await rest.GetAsync<ChannelJson>($"/channels/{channelId}");
+        if (ChannelJson == null)
+            return null;
+
+        TValue Channel = (TValue)RevoltSharp.Channel.Create(rest.Client, ChannelJson);
         if (rest.Client.WebSocket != null)
-        {
-            if (rest.Client.WebSocket.ChannelCache.TryGetValue(channelId, out Channel chan))
-                return (TValue)chan;
-            return null;
-        }
+            rest.Client.WebSocket.ChannelCache.TryAdd(channelId, Channel);
 
-
-        ChannelJson? Channel = await rest.GetAsync<ChannelJson>($"/channels/{channelId}");
-        if (Channel == null)
-            return null;
-
-        return (TValue)RevoltSharp.Channel.Create(rest.Client, Channel);
+        return Channel;
     }
 
 

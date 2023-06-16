@@ -5,5 +5,5 @@ namespace RevoltSharp.WebSocket.Events;
 internal class ChannelDeleteEventJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? ChannelId;
 }

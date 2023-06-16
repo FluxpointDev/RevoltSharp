@@ -6,7 +6,7 @@ namespace RevoltSharp.WebSocket.Events;
 internal class ChannelUpdateEventJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? ChannelId;
 
     [JsonProperty("data")]
     public PartialChannelJson? Data;
