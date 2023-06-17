@@ -24,8 +24,8 @@ public static class GroupChannelHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<GroupChannel> CreateGroupChannelAsync(this RevoltRestClient rest, string name, Option<string> description = null, bool isNsfw = false)
     {
-        Conditions.NotAllowedForBots(rest, "CreateGroupChannelAsync");
-        Conditions.ChannelNameEmpty(name, "CreateGroupChannelAsync");
+        Conditions.NotAllowedForBots(rest, nameof(CreateGroupChannelAsync));
+        Conditions.ChannelNameEmpty(name, nameof(CreateGroupChannelAsync));
         CreateChannelRequest Req = new CreateChannelRequest
         {
             name = name,
@@ -55,8 +55,8 @@ public static class GroupChannelHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<User>> GetGroupChannelUsersAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.NotAllowedForBots(rest, "GetGroupChannelMembersAsync");
-        Conditions.ChannelIdEmpty(channelId, "GetGroupChannelMembersAsync");
+        Conditions.NotAllowedForBots(rest, nameof(GetGroupChannelUsersAsync));
+        Conditions.ChannelIdEmpty(channelId, nameof(GetGroupChannelUsersAsync));
 
         UserJson[]? List = await rest.GetAsync<UserJson[]>($"channels/{channelId}");
         if (List == null)
@@ -106,7 +106,7 @@ public static class GroupChannelHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task LeaveGroupChannelAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, "LeaveGroupChannelAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(LeaveGroupChannelAsync));
 
         await rest.DeleteAsync($"/channels/{channelId}");
     }
@@ -126,9 +126,9 @@ public static class GroupChannelHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task AddUserToGroupChannelAsync(this RevoltRestClient rest, string channelId, string userId)
     {
-        Conditions.NotAllowedForBots(rest, "AddUserToGroupChannelAsync");
-        Conditions.ChannelIdEmpty(channelId, "AddUserToGroupChannel");
-        Conditions.UserIdEmpty(userId, "AddUserToGroupChannel");
+        Conditions.NotAllowedForBots(rest, nameof(AddUserToGroupChannelAsync));
+        Conditions.ChannelIdEmpty(channelId, nameof(AddUserToGroupChannelAsync));
+        Conditions.UserIdEmpty(userId, nameof(AddUserToGroupChannelAsync));
 
         await rest.PutAsync<HttpResponseMessage>($"channels/{channelId}/recipients/{userId}");
     }
@@ -148,9 +148,9 @@ public static class GroupChannelHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task RemoveUserFromGroupChannelAsync(this RevoltRestClient rest, string channelId, string userId)
     {
-        Conditions.NotAllowedForBots(rest, "RemoveUserFromGroupChannelAsync");
-        Conditions.ChannelIdEmpty(channelId, "RemoveUserFromGroupChannelAsync");
-        Conditions.UserIdEmpty(userId, "RemoveUserFromGroupChannelAsync");
+        Conditions.NotAllowedForBots(rest, nameof(RemoveUserFromGroupChannelAsync));
+        Conditions.ChannelIdEmpty(channelId, nameof(RemoveUserFromGroupChannelAsync));
+        Conditions.UserIdEmpty(userId, nameof(RemoveUserFromGroupChannelAsync));
 
         await rest.DeleteAsync($"channels/{channelId}/recipients/{userId}");
     }

@@ -7,19 +7,19 @@ namespace RevoltSharp;
 internal class ServerJson
 {
     [JsonProperty("_id")]
-    public string? Id;
+    public string Id = null!;
 
     [JsonProperty("owner")]
-    public string? Owner;
+    public string Owner = null!;
 
     [JsonProperty("name")]
-    public string? Name;
+    public string Name = null!;
 
     [JsonProperty("description")]
     public string? Description;
 
     [JsonProperty("channels")]
-    public string[]? Channels;
+    public string[] Channels = null!;
 
     [JsonProperty("categories")]
     public CategoryJson[]? Categories;

@@ -9,10 +9,10 @@ internal class RoleJson
     public string? Id;
 
     [JsonProperty("name")]
-    public string? Name;
+    public string Name = null!;
 
     [JsonProperty("permissions")]
-    public PermissionsJson? Permissions;
+    public PermissionsJson Permissions = null!;
 
     [JsonProperty("hoist")]
     public bool Hoist;

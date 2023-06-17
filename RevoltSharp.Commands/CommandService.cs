@@ -38,7 +38,7 @@ public class CommandService : IDisposable
     /// <summary>
     /// A command has been executed and will return back success or failed
     /// </summary>
-    public event CommandExecutedEvent<Optional<CommandInfo>, CommandContext, IResult> OnCommandExecuted;
+    public event CommandExecutedEvent<Optional<CommandInfo>, CommandContext, IResult>? OnCommandExecuted;
     internal void InvokeCommandExecuted(Optional<CommandInfo> command, CommandContext context, IResult result)
     {
         OnCommandExecuted?.Invoke(command, context, result);
@@ -184,7 +184,7 @@ public class CommandService : IDisposable
             if (_typedModuleDefs.ContainsKey(type))
                 throw new ArgumentException("This module has already been added.");
 
-            KeyValuePair<Type, ModuleInfo> module = (await ModuleClassBuilder.BuildAsync(this, services, typeInfo).ConfigureAwait(false)).FirstOrDefault();
+            KeyValuePair<Type, ModuleInfo> module = ModuleClassBuilder.Build(this, services, typeInfo).FirstOrDefault();
 
             if (module.Value == default(ModuleInfo))
                 throw new InvalidOperationException($"Could not build the module {type.FullName}, did you pass an invalid type?");
@@ -214,8 +214,8 @@ public class CommandService : IDisposable
         await _moduleLock.WaitAsync().ConfigureAwait(false);
         try
         {
-            IReadOnlyList<TypeInfo> types = await ModuleClassBuilder.SearchAsync(assembly, this).ConfigureAwait(false);
-            Dictionary<Type, ModuleInfo> moduleDefs = await ModuleClassBuilder.BuildAsync(types, this, services).ConfigureAwait(false);
+            IReadOnlyList<TypeInfo> types = ModuleClassBuilder.Search(assembly);
+            Dictionary<Type, ModuleInfo> moduleDefs = ModuleClassBuilder.Build(types, this, services);
 
             foreach (KeyValuePair<Type, ModuleInfo> info in moduleDefs)
             {
@@ -400,13 +400,13 @@ public class CommandService : IDisposable
         TypeReader nullableReader = NullableTypeReader.Create(valueType, valueTypeReader);
         readers[nullableReader.GetType()] = nullableReader;
     }
-    internal IDictionary<Type, TypeReader> GetTypeReaders(Type type)
+    internal IDictionary<Type, TypeReader>? GetTypeReaders(Type type)
     {
         if (_typeReaders.TryGetValue(type, out ConcurrentDictionary<Type, TypeReader> definedTypeReaders))
             return definedTypeReaders;
         return null;
     }
-    internal TypeReader GetDefaultTypeReader(Type type)
+    internal TypeReader? GetDefaultTypeReader(Type type)
     {
         if (_defaultTypeReaders.TryGetValue(type, out TypeReader reader))
             return reader;

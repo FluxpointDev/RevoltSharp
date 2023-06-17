@@ -11,10 +11,10 @@ public class ServerChannel : Channel
 {
     internal ServerChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
-        ServerId = model.ServerId;
+        ServerId = model.ServerId!;
         DefaultPermissions = new ChannelPermissions(Server, model.DefaultPermissions);
         InternalRolePermissions = model.RolePermissions != null ? model.RolePermissions.ToDictionary(x => x.Key, x => new ChannelPermissions(Server, x.Value)) : new Dictionary<string, ChannelPermissions>();
-        Name = model.Name;
+        Name = model.Name!;
         Description = model.Description;
         Icon = Attachment.Create(client, model.Icon);
     }
@@ -60,7 +60,7 @@ public class ServerChannel : Channel
     /// <summary>
     /// Description of the channel
     /// </summary>
-    public string Description { get; internal set; }
+    public string? Description { get; internal set; }
 
     /// <summary>
     /// Icon attachment of the channel

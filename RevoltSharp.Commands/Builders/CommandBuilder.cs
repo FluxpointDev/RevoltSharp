@@ -13,12 +13,12 @@ public class CommandBuilder
     private readonly List<string> _aliases;
 
     public ModuleBuilder Module { get; }
-    internal Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> Callback { get; set; }
+    internal Func<CommandContext, object[], IServiceProvider, CommandInfo, Task> Callback { get; set; } = null!;
 
-    public string Name { get; set; }
-    public string Summary { get; set; }
-    public string Remarks { get; set; }
-    public string PrimaryAlias { get; set; }
+    public string? Name { get; set; }
+    public string? Summary { get; set; }
+    public string? Remarks { get; set; }
+    public string? PrimaryAlias { get; set; }
     public int Priority { get; set; }
     public bool IgnoreExtraArgs { get; set; }
 

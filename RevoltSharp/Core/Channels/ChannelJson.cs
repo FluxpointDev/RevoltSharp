@@ -6,7 +6,7 @@ namespace RevoltSharp;
 internal class ChannelJson
 {
     [JsonProperty("_id")]
-    public string? Id;
+    public string Id = null!;
 
     [JsonProperty("channel_type")]
     public ChannelType ChannelType;

@@ -6,11 +6,15 @@ public class UserUpdatedProperties
 {
     internal UserUpdatedProperties(RevoltClient client, PartialUserJson json)
     {
-        if (json.status.HasValue)
-            StatusText = Optional.Some(json.status.Value.Text);
+        if (json.Status.HasValue && json.Status.Value.Text != null)
+            StatusText = Optional.Some(json.Status.Value.Text!);
 
-
-        Avatar = json.avatar.ToModel(client);
+        Avatar = json.Avatar.ToModel(client);
+        Online = json.Online;
+        Privileged = json.Privileged;
+        Username = json.Username;
+        Badges = json.Badges;
+        Flags = json.Flags;
     }
 
     public Optional<string> StatusText { get; internal set; }

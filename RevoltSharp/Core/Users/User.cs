@@ -81,26 +81,41 @@ public class User : CreatedEntity
     /// </remarks>
     public Attachment? Avatar { get; internal set; }
 
+    #region Obsolete
     /// <summary>
     /// Get the default revolt avatar url for this user.
     /// </summary>
     /// <returns>URL of the image (No extension)</returns>
-    public string GetDefaultAvatarUrl()
-        => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
-
-    /// <summary>
-    /// Get the user's custom avatar url, may be empty.
-    /// </summary>
-    /// <returns>URL of the image</returns>
-    public string GetAvatarUrl()
-        => Avatar != null ? Avatar.GetUrl() : string.Empty;
+    [Obsolete("Use GetAvatarURL instead.")]
+    public string GetDefaultAvatarUrl(int? size = null) => GetAvatarURL(AvatarSources.Default, size)!;
 
     /// <summary>
     /// Get the user's custom avatar url or the default revolt avatar url. 
     /// </summary>
     /// <returns>URL of the image</returns>
-    public string GetAvatarOrDefaultUrl()
-        => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
+    [Obsolete("Use GetAvatarURL instead.")]
+    public string GetAvatarOrDefaultUrl(int? size = null) => GetAvatarURL(AvatarSources.UserOrDefault, size)!;
+    #endregion
+
+    /// <summary>
+    /// Gets the user's avatar.
+    /// </summary>
+    /// <param name="which">Which avatar to return.</param>
+    /// <param name="size"></param>
+    /// <returns>URL of the image</returns>
+    public string? GetAvatarURL(AvatarSources which = AvatarSources.Any, int? size = null)
+    {
+        if (Avatar != null && (which | AvatarSources.User) != 0)
+            return Avatar.GetUrl(size);
+
+        if ((which | AvatarSources.Default) != 0)
+        {
+            Conditions.ImageSizeLength(size, nameof(GetAvatarURL));
+            return $"{Client.Config.ApiUrl}users/{Id}/default_avatar{(size != null ? $"?size={size}" : null)}";
+        }
+
+        return null;
+    }
 
     /// <summary>
     /// Cool badges that the user has.
@@ -189,20 +204,20 @@ public class User : CreatedEntity
 
     internal void Update(PartialUserJson data)
     {
-        if (data.avatar.HasValue)
-            Avatar = Attachment.Create(Client, data.avatar.Value);
+        if (data.Avatar.HasValue)
+            Avatar = Attachment.Create(Client, data.Avatar.Value);
 
-        if (this is SelfUser Self)
+        if (this is SelfUser self && data.Profile.HasValue)
         {
-            if (data.ProfileBackground.HasValue)
-                Self.Background = Attachment.Create(Client, data.ProfileBackground.Value);
+            if (data.Profile.Value.Background != null)
+                self.Background = Attachment.Create(Client, data.Profile.Value.Background);
 
-            if (data.ProfileContent.HasValue)
-                Self.ProfileBio = data.ProfileContent.Value;
+            if (data.Profile.Value.Content != null)
+                self.ProfileBio = data.Profile.Value.Content;
         }
 
-        if (data.privileged.HasValue)
-            Privileged = data.privileged.Value;
+        if (data.Privileged.HasValue)
+            Privileged = data.Privileged.Value;
 
         if (data.Username.HasValue)
             Username = data.Username.Value;

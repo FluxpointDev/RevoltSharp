@@ -12,14 +12,11 @@ public class Attachment : CreatedEntity
         Tag = model.Tag;
         Filename = model.Filename;
         Size = model.Size;
-        if (model.Metadata != null)
-        {
-            Type = model.Metadata.Type;
-            Width = model.Metadata.Width;
-            Height = model.Metadata.Height;
-        }
-        Deleted = model.Deleted;
-        Reported = model.Reported;
+        Type = model.Metadata.Type;
+        Width = model.Metadata.Width;
+        Height = model.Metadata.Height;
+        Deleted = model.Deleted ?? false;
+        Reported = model.Reported ?? false;
     }
 
     /// <summary>
@@ -55,12 +52,12 @@ public class Attachment : CreatedEntity
     /// <summary>
     /// The width of the image if the file is an image type.
     /// </summary>
-    public int Width { get; }
+    public int? Width { get; }
 
     /// <summary>
     /// The height of the image if the file is an image type.
     /// </summary>
-    public int Height { get; }
+    public int? Height { get; }
 
     /// <summary>
     /// File has been deleted.
@@ -72,8 +69,14 @@ public class Attachment : CreatedEntity
     /// </summary>
     public bool Reported { get; }
 
-    public string GetUrl()
-        => Client.Config.Debug.UploadUrl + Tag + "/" + Id + "/" + Filename;
+    /// <summary>
+    /// The URL of the attachment.
+    /// </summary>
+    public string GetUrl(int? size = null)
+    {
+        Conditions.ImageSizeLength(size, nameof(GetUrl));
+        return $"{Client.Config.Debug.UploadUrl}{Tag}/{Id}/{Filename}{(size != null ? $"?size={size}" : null)}";
+    }
 
     internal static Attachment? Create(RevoltClient client, AttachmentJson model)
     {

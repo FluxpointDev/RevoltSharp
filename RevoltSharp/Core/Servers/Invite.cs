@@ -24,7 +24,7 @@ public class Invite : Entity
     public Channel? Channel => Client.GetChannel(ChannelId);
 
     public string ChannelName { get; internal set; }
-    public string ChannelDescription { get; internal set; }
+    public string? ChannelDescription { get; internal set; }
     public string CreatorName { get; internal set; }
     public Attachment? CreatorAvatar { get; internal set; }
     public bool IsServer { get; internal set; }

@@ -8,7 +8,7 @@ namespace RevoltSharp;
 internal class MessageJson
 {
     [JsonProperty("_id")]
-    public string? Id;
+    public string Id = null!;
 
     [JsonProperty("type")]
     public string? Type;
@@ -17,10 +17,10 @@ internal class MessageJson
     public string? Nonce;
 
     [JsonProperty("channel")]
-    public string? Channel;
+    public string Channel = null!;
 
     [JsonProperty("author")]
-    public string? Author;
+    public string Author = null!;
 
     [JsonProperty("content")]
     public string? Content;

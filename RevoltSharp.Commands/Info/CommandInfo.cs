@@ -34,7 +34,7 @@ public class CommandInfo
     /// <summary>
     ///     Gets the name of the command. If none is set, the first alias is used.
     /// </summary>
-    public string Name { get; }
+    public string? Name { get; }
     /// <summary>
     ///     Gets the summary of the command.
     /// </summary>
@@ -42,7 +42,7 @@ public class CommandInfo
     ///     This field returns the summary of the command. <see cref="Summary"/> and <see cref="Remarks"/> can be
     ///     useful in help commands and various implementation that fetches details of the command for the user.
     /// </remarks>
-    public string Summary { get; }
+    public string? Summary { get; }
     /// <summary>
     ///     Gets the remarks of the command.
     /// </summary>
@@ -50,7 +50,7 @@ public class CommandInfo
     ///     This field returns the summary of the command. <see cref="Summary"/> and <see cref="Remarks"/> can be
     ///     useful in help commands and various implementation that fetches details of the command for the user.
     /// </remarks>
-    public string Remarks { get; }
+    public string? Remarks { get; }
     /// <summary>
     ///     Gets the priority of the command. This is used when there are multiple overloads of the command.
     /// </summary>

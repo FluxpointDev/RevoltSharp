@@ -28,7 +28,7 @@ public static class ChannelHelper
     internal static async Task<TValue?> InternalGetChannelAsync<TValue>(this RevoltRestClient rest, string channelId)
         where TValue : Channel
     {
-        Conditions.ChannelIdEmpty(channelId, "GetChannelAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(GetChannelAsync));
 
         if (rest.Client.TryGetChannel(channelId, out Channel chan))
             return (TValue)chan;
@@ -67,12 +67,12 @@ public static class ChannelHelper
 
     internal static async Task<TChannel> InternalModifyChannelAsync<TChannel>(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null) where TChannel : Channel
     {
-        Conditions.ChannelIdEmpty(channelId, "ModifyChannelAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(ModifyChannelAsync));
 
         ModifyChannelRequest Req = new ModifyChannelRequest();
         if (name != null)
         {
-            Conditions.ChannelNameEmpty(name.Value, "ModifyChannelAsync");
+            Conditions.ChannelNameEmpty(name.Value, nameof(ModifyChannelAsync));
 
             Req.name = Optional.Some(name.Value);
         }
@@ -97,7 +97,7 @@ public static class ChannelHelper
 
         if (owner != null)
         {
-            Conditions.UserIdEmpty(owner.Value, "ModifyChannelAsync");
+            Conditions.UserIdEmpty(owner.Value, nameof(ModifyChannelAsync));
             Req.owner = Optional.Some(owner.Value);
         }
         ChannelJson Json = await rest.PatchAsync<ChannelJson>($"/channels/{channelId}", Req);
@@ -130,7 +130,7 @@ public static class ChannelHelper
 
     internal static async Task InternalDeleteChannelAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, "DeleteChannelAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(DeleteChannelAsync));
 
         await rest.DeleteAsync($"/channels/{channelId}");
     }

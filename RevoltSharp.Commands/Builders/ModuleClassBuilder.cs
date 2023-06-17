@@ -11,7 +11,7 @@ internal static class ModuleClassBuilder
 {
     private static readonly TypeInfo ModuleTypeInfo = typeof(IModuleBase).GetTypeInfo();
 
-    public static async Task<IReadOnlyList<TypeInfo>> SearchAsync(Assembly assembly, CommandService service)
+    public static IReadOnlyList<TypeInfo> Search(Assembly assembly)
     {
         bool IsLoadableModule(TypeInfo info)
         {
@@ -41,8 +41,8 @@ internal static class ModuleClassBuilder
     }
 
 
-    public static Task<Dictionary<Type, ModuleInfo>> BuildAsync(CommandService service, IServiceProvider services, params TypeInfo[] validTypes) => BuildAsync(validTypes, service, services);
-    public static async Task<Dictionary<Type, ModuleInfo>> BuildAsync(IEnumerable<TypeInfo> validTypes, CommandService service, IServiceProvider services)
+    public static Dictionary<Type, ModuleInfo> Build(CommandService service, IServiceProvider services, params TypeInfo[] validTypes) => Build(validTypes, service, services);
+    public static Dictionary<Type, ModuleInfo> Build(IEnumerable<TypeInfo> validTypes, CommandService service, IServiceProvider services)
     {
         /*if (!validTypes.Any())
             throw new InvalidOperationException("Could not find any valid modules from the given selection");*/

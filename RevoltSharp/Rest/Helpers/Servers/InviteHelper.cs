@@ -34,7 +34,7 @@ public static class InviteHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
-        Conditions.InviteCodeEmpty(inviteCode, "DeleteInviteAsync");
+        Conditions.InviteCodeEmpty(inviteCode, nameof(DeleteInviteAsync));
 
         await rest.DeleteAsync($"/invites/{inviteCode}");
     }
@@ -53,7 +53,7 @@ public static class InviteHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this RevoltRestClient rest, string serverId)
     {
-        Conditions.ServerIdEmpty(serverId, "GetInvitesAsync");
+        Conditions.ServerIdEmpty(serverId, nameof(GetInvitesAsync));
 
         InviteJson[]? Json = await rest.GetAsync<InviteJson[]>($"/servers/{serverId}/invites");
         if (Json == null)
@@ -76,7 +76,7 @@ public static class InviteHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Invite?> GetInviteAsync(this RevoltRestClient rest, string inviteCode)
     {
-        Conditions.InviteCodeEmpty(inviteCode, "GetInviteAsync");
+        Conditions.InviteCodeEmpty(inviteCode, nameof(GetInviteAsync));
 
         InviteJson? Json = await rest.GetAsync<InviteJson>($"/invites/{inviteCode}");
         if (Json == null)
@@ -100,7 +100,7 @@ public static class InviteHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<CreatedInvite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, "CreateInviteAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(CreateInviteAsync));
 
         CreateInviteJson Json = await rest.PostAsync<CreateInviteJson>($"/channels/{channelId}/invites");
         return new CreatedInvite(rest.Client, Json);

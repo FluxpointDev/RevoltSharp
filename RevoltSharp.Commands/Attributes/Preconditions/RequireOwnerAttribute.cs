@@ -35,7 +35,9 @@ public class RequireOwnerAttribute : PreconditionAttribute
     public override string? ErrorMessage { get; set; }
 
     /// <inheritdoc />
+#pragma warning disable CS1998
     public override async Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)
+#pragma warning restore CS1998
     {
         if (context.Client.CurrentUser.OwnerId == context.User.Id || (context.Client.Config.Owners != null && context.Client.Config.Owners.Any(x => x == context.User.Id)))
             return PreconditionResult.FromSuccess();

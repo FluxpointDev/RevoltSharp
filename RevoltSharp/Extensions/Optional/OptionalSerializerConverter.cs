@@ -17,7 +17,7 @@ internal class OptionalSerializerConverter<T> : JsonConverter
         _innerConverter = innerConverter;
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         T obj;
         if (_innerConverter != null)
@@ -34,9 +34,9 @@ internal class OptionalSerializerConverter<T> : JsonConverter
         return Optional.Some(obj);
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
-        value = ((Optional<T>)value).Value;
+        value = ((Optional<T>)value!).Value;
         if (_innerConverter != null)
             _innerConverter.WriteJson(writer, value, serializer);
         else
