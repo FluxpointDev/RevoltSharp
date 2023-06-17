@@ -17,7 +17,7 @@ public class CmdTest : ModuleBase
     [Command("permtest")]
     public async Task PermTest()
     {
-
+        await ReplyAsync(Context.Member.Permissions.Has(ServerPermission.BanMembers).ToString());
     }
 
     [Command("tag")]
@@ -42,8 +42,9 @@ public class CmdTest : ModuleBase
     [Command("perm")]
     public async Task Perm()
     {
-        TextChannel GC = (TextChannel)Context.Channel;
-        await ReplyAsync($"Allow: SP: {GC.DefaultPermissions.Server != null} C: {GC.DefaultPermissions.AddReactions} F: {GC.DefaultPermissions.Has(ChannelPermission.AddReactions)} S: {Context.Server.DefaultPermissions.AddReactions}");
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Context.Member.Permissions, Formatting.Indented));
+        //TextChannel GC = (TextChannel)Context.Channel;
+        //await ReplyAsync($"Allow: SP: {GC.DefaultPermissions.Server != null} C: {GC.DefaultPermissions.AddReactions} F: {GC.DefaultPermissions.Has(ChannelPermission.AddReactions)} S: {Context.Server.DefaultPermissions.AddReactions}");
 
     }
 

@@ -623,9 +623,6 @@ internal class RevoltSocketClient
                             if (Member == null)
                                 return;
                         }
-                            
-
-                        
 
                         if (@event.Clear.HasValue)
                         {
@@ -748,10 +745,23 @@ internal class RevoltSocketClient
                         if (!ServerCache.TryGetValue(@event.ServerId, out Server server))
                             return;
 
+                        if (@event.Data == null)
+                            @event.Data = new PartialRoleJson();
+
                         if (server.InternalRoles.TryGetValue(@event.RoleId, out Role role))
                         {
                             Role cloned = role.Clone();
                             role.Update(@event.Data);
+                            if (@event.Data.Permissions.HasValue)
+                            {
+                                _ = Task.Run(() =>
+                                {
+                                    foreach (var i in server.InternalMembers.Values)
+                                    {
+                                        i.Permissions = new ServerPermissions(server, i);
+                                    }
+                                });
+                            }
                             Client.InvokeRoleUpdated(cloned, role, new RoleUpdatedProperties(Client, role, @event.Data));
                         }
                         else
@@ -785,6 +795,7 @@ internal class RevoltSocketClient
                             foreach (ServerMember m in server.InternalMembers.Values)
                             {
                                 m.InternalRoles.TryRemove(@event.RoleId, out _);
+                                m.Permissions = new ServerPermissions(server, m);
                             }
                         });
                         Client.InvokeRoleDeleted(role);

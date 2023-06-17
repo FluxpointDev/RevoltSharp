@@ -1,4 +1,6 @@
-﻿namespace RevoltSharp;
+﻿using Newtonsoft.Json;
+
+namespace RevoltSharp;
 
 /// <summary>
 /// Permissions for the server that members can or can't use
@@ -6,6 +8,8 @@
 public class ServerPermissions
 {
     public static ulong AllServerPermissions = ulong.MaxValue;
+
+    [JsonIgnore]
     public Server Server { get; internal set; }
 
     internal ServerPermissions(Server server, ulong permissions)
