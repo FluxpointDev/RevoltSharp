@@ -946,6 +946,11 @@
             File has been reported by a user.
             </summary>
         </member>
+        <member name="M:RevoltSharp.Attachment.GetUrl(System.Nullable{System.Int32})">
+            <summary>
+            The URL of the attachment.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.EmbedBuilder">
             <summary>
             Create a embed to use for messages
@@ -1245,6 +1250,16 @@
             Date of when the server was created.
             </summary>
         </member>
+        <member name="P:RevoltSharp.Server.Name">
+            <summary>
+            Name of the server
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Server.Description">
+            <summary>
+            Description for the server
+            </summary>
+        </member>
         <member name="P:RevoltSharp.ServerBan.Id">
             <summary>
             Id of the ban.
@@ -1253,6 +1268,16 @@
         <member name="P:RevoltSharp.ServerBan.CreatedAt">
             <summary>
             Date of when the ban occured.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerBan.Username">
+            <summary>
+            Username of the banned user.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerBan.Reason">
+            <summary>
+            Reason for ban creation.
             </summary>
         </member>
         <member name="T:RevoltSharp.ServerMember">
@@ -1311,16 +1336,16 @@
             Will be <see langword="null" /> if member has no avatar set.
             </remarks>
         </member>
-        <member name="M:RevoltSharp.ServerMember.GetDefaultAvatarUrl">
-            <inheritdoc cref="M:RevoltSharp.User.GetDefaultAvatarUrl" />
+        <member name="M:RevoltSharp.ServerMember.GetDefaultAvatarUrl(System.Nullable{System.Int32})">
+            <inheritdoc cref="M:RevoltSharp.User.GetDefaultAvatarUrl(System.Nullable{System.Int32})" />
         </member>
-        <member name="M:RevoltSharp.ServerMember.GetServerAvatarUrl">
+        <member name="M:RevoltSharp.ServerMember.GetServerAvatarUrl(System.Nullable{System.Int32})">
             <summary>
             Get the avatar url for this member, may be empty.
             </summary>
             <returns>URL of the image</returns>
         </member>
-        <member name="M:RevoltSharp.ServerMember.GetServerAvatarOrDefaultUrl">
+        <member name="M:RevoltSharp.ServerMember.GetServerAvatarOrDefaultUrl(System.Nullable{System.Int32})">
             <summary>
             Get the avatar url of this member or the default Revolt avatar.
             </summary>
@@ -1330,7 +1355,9 @@
             <summary>
             Get the avatar url for the member, parent user or default Revolt avatar.
             </summary>
-            <returns></returns>
+        </member>
+        <member name="M:RevoltSharp.ServerMember.GetAvatarUrlExt(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+            <inheritdoc cref="M:RevoltSharp.User.GetAvatarUrlExt(RevoltSharp.AvatarSources,System.Nullable{System.Int32})"/>
         </member>
         <member name="P:RevoltSharp.ServerMember.RolesIds">
             <summary>
@@ -1342,7 +1369,7 @@
             The member is timed out/muted with the specified date time.
             </summary>
             <remarks>
-            <see cref="P:RevoltSharp.ServerMember.Timeout"/>.HasValue will be <see langword="false" /> if member is not timed out/muted.
+            Will be null if member is not timed out/muted.
             </remarks>
         </member>
         <member name="P:RevoltSharp.ServerMember.IsTimedOut">
@@ -1486,22 +1513,30 @@
             Will be <see langword="null" /> if the user has no custom avatar set.
             </remarks>
         </member>
-        <member name="M:RevoltSharp.User.GetDefaultAvatarUrl">
+        <member name="M:RevoltSharp.User.GetDefaultAvatarUrl(System.Nullable{System.Int32})">
             <summary>
             Get the default revolt avatar url for this user.
             </summary>
             <returns>URL of the image (No extension)</returns>
         </member>
-        <member name="M:RevoltSharp.User.GetAvatarUrl">
+        <member name="M:RevoltSharp.User.GetAvatarUrl(System.Nullable{System.Int32})">
             <summary>
             Get the user's custom avatar url, may be empty.
             </summary>
             <returns>URL of the image</returns>
         </member>
-        <member name="M:RevoltSharp.User.GetAvatarOrDefaultUrl">
+        <member name="M:RevoltSharp.User.GetAvatarOrDefaultUrl(System.Nullable{System.Int32})">
             <summary>
             Get the user's custom avatar url or the default revolt avatar url. 
             </summary>
+            <returns>URL of the image</returns>
+        </member>
+        <member name="M:RevoltSharp.User.GetAvatarUrlExt(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+            <summary>
+            Gets the user's avatar.
+            </summary>
+            <param name="which">Which avatar to return.</param>
+            <param name="size"></param>
             <returns>URL of the image</returns>
         </member>
         <member name="P:RevoltSharp.User.Badges">
@@ -2781,7 +2816,7 @@
         <member name="T:RevoltSharp.Rest.IRevoltRequest">
             <summary>
             Send a custom json body request to the Revolt instance API<br /><br />
-            Use <see cref="M:RevoltSharp.Rest.RevoltRestClient.SendRequestAsync(RevoltSharp.Rest.RequestType,System.String,RevoltSharp.Rest.IRevoltRequest)"/> or <see cref="!:RevoltRestClient.SendRequestAsync&lt;TResponse&gt;(RevoltSharp.Rest.RequestType, string, RevoltSharp.Rest.IRevoltRequest)"/>
+            Use <see cref="M:RevoltSharp.Rest.RevoltRestClient.SendRequestAsync(RevoltSharp.Rest.RequestType,System.String,RevoltSharp.Rest.IRevoltRequest)"/> or <see cref="M:RevoltSharp.Rest.RevoltRestClient.SendRequestAsync``1(RevoltSharp.Rest.RequestType,System.String,RevoltSharp.Rest.IRevoltRequest,System.Boolean)"/>
             </summary>
         </member>
         <member name="T:RevoltSharp.Rest.RevoltRestClient">
