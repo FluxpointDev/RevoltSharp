@@ -3,6 +3,7 @@
 using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
+using RevoltSharp.Commands.Attributes.Preconditions;
 using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
@@ -257,7 +258,7 @@ public class CmdTest : ModuleBase
         Console.WriteLine("- Delete");
     }
 
-    [Command("perms")]
+    [Command("perms"), RequireUserPermission(ServerPermission.ManageRoles)]
     public async Task Perms(string role = "")
     {
         ServerPermissions Perms = !string.IsNullOrEmpty(role) ? Context.Server.GetRole(role).Permissions : Context.Server.GetCachedMember(Context.Client.CurrentUser.Id).Permissions;

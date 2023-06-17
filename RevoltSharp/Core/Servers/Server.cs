@@ -39,6 +39,8 @@ public class Server : CreatedEntity
 
     public string OwnerId { get; internal set; }
 
+    public ServerMember CurrentUser => InternalMembers[Client.CurrentUser.Id];
+
     public async Task<ServerMember> GetOwnerAsync()
     {
         if (InternalMembers.TryGetValue(OwnerId, out ServerMember SM))

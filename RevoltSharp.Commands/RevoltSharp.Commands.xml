@@ -226,6 +226,12 @@
             <param name="command">The command being executed.</param>
             <param name="services">The service collection used for dependency injection.</param>
         </member>
+        <member name="P:RevoltSharp.Commands.RequireContextAttribute.ErrorMessage">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireContextAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
         <member name="T:RevoltSharp.Commands.RequireOwnerAttribute">
             <summary>
                 Requires the command to be invoked by the owner of the bot.
@@ -256,6 +262,17 @@
             <inheritdoc />
         </member>
         <member name="M:RevoltSharp.Commands.RequireOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="P:RevoltSharp.Commands.Attributes.Preconditions.RequirePermissionAttribute.ErrorMessage">
+            <inheritdoc />
+        </member>
+        <member name="F:RevoltSharp.Commands.Attributes.Preconditions.RequirePermissionAttribute.Perm">
+            <summary>
+            Permission to check for.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.Commands.Attributes.Preconditions.RequirePermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
         <member name="P:RevoltSharp.Commands.RequireServerAttribute.ErrorMessage">
