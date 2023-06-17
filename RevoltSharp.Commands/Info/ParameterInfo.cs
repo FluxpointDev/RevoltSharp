@@ -13,7 +13,7 @@ namespace RevoltSharp.Commands;
 [DebuggerDisplay(@"{DebuggerDisplay,nq}")]
 public class ParameterInfo
 {
-    private readonly TypeReader _reader;
+    private readonly TypeReader? _reader;
 
     /// <summary>
     ///     Gets the command that associates with this parameter.
@@ -22,11 +22,11 @@ public class ParameterInfo
     /// <summary>
     ///     Gets the name of this parameter.
     /// </summary>
-    public string Name { get; }
+    public string? Name { get; }
     /// <summary>
     ///     Gets the summary of this parameter.
     /// </summary>
-    public string Summary { get; }
+    public string? Summary { get; }
     /// <summary>
     ///     Gets a value that indicates whether this parameter is optional or not.
     /// </summary>
@@ -39,11 +39,11 @@ public class ParameterInfo
     /// <summary>
     ///     Gets the type of the parameter.
     /// </summary>
-    public Type Type { get; }
+    public Type? Type { get; }
     /// <summary>
     ///     Gets the default value for this optional parameter if applicable.
     /// </summary>
-    public object DefaultValue { get; }
+    public object? DefaultValue { get; }
 
     /// <summary>
     ///     Gets a read-only list of precondition that apply to this parameter.
@@ -93,6 +93,6 @@ public class ParameterInfo
         return await _reader.ReadAsync(context, input, services).ConfigureAwait(false);
     }
 
-    public override string ToString() => Name;
+    public override string? ToString() => Name;
     private string DebuggerDisplay => $"{Name}{(IsOptional ? " (Optional)" : "")}{(IsRemainder ? " (Remainder)" : "")}";
 }

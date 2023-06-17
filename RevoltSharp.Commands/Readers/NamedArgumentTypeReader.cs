@@ -123,7 +123,7 @@ internal sealed class NamedArgumentTypeReader<T> : TypeReader
             }
         }
 
-        async Task<object> ReadArgumentAsync(PropertyInfo prop, string arg)
+        async Task<object?> ReadArgumentAsync(PropertyInfo prop, string arg)
         {
             Type elemType = prop.PropertyType;
             bool isCollection = false;
@@ -154,7 +154,7 @@ internal sealed class NamedArgumentTypeReader<T> : TypeReader
         }
     }
 
-    private static async Task<object> ReadSingle(TypeReader reader, CommandContext context, string arg, IServiceProvider services)
+    private static async Task<object?> ReadSingle(TypeReader reader, CommandContext context, string arg, IServiceProvider services)
     {
         TypeReaderResult readResult = await reader.ReadAsync(context, arg, services).ConfigureAwait(false);
         return (readResult.IsSuccess)

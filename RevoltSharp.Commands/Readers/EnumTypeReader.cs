@@ -17,7 +17,7 @@ internal static class EnumTypeReader
     }
 }
 
-internal class EnumTypeReader<T> : TypeReader
+internal class EnumTypeReader<T> : TypeReader where T : notnull
 {
     private readonly IReadOnlyDictionary<string, object> _enumsByName;
     private readonly IReadOnlyDictionary<T, object> _enumsByValue;

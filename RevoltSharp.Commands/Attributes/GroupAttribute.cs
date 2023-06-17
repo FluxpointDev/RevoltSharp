@@ -11,7 +11,7 @@ public class GroupAttribute : Attribute
     /// <summary>
     ///     Gets the prefix set for the module.
     /// </summary>
-    public string Prefix { get; }
+    public string? Prefix { get; }
 
     /// <inheritdoc />
     public GroupAttribute()

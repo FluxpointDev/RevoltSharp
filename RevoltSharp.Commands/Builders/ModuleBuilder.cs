@@ -15,10 +15,10 @@ public class ModuleBuilder
 
     public CommandService Service { get; }
     public ModuleBuilder Parent { get; }
-    public string Name { get; set; }
-    public string Summary { get; set; }
-    public string Remarks { get; set; }
-    public string Group { get; set; }
+    public string? Name { get; set; }
+    public string? Summary { get; set; }
+    public string? Remarks { get; set; }
+    public string? Group { get; set; }
 
     public IReadOnlyList<CommandBuilder> Commands => _commands;
     public IReadOnlyList<ModuleBuilder> Modules => _submodules;
@@ -26,7 +26,7 @@ public class ModuleBuilder
     public IReadOnlyList<Attribute> Attributes => _attributes;
     public IReadOnlyList<string> Aliases => _aliases;
 
-    internal TypeInfo TypeInfo { get; set; }
+    internal TypeInfo? TypeInfo { get; set; }
 
     //Automatic
     internal ModuleBuilder(CommandService service, ModuleBuilder parent)

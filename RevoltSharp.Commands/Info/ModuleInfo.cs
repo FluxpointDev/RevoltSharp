@@ -18,19 +18,19 @@ public class ModuleInfo
     /// <summary>
     ///     Gets the name of this module.
     /// </summary>
-    public string Name { get; }
+    public string? Name { get; }
     /// <summary>
     ///     Gets the summary of this module.
     /// </summary>
-    public string Summary { get; }
+    public string? Summary { get; }
     /// <summary>
     ///     Gets the remarks of this module.
     /// </summary>
-    public string Remarks { get; }
+    public string? Remarks { get; }
     /// <summary>
     ///     Gets the group name (main prefix) of this module.
     /// </summary>
-    public string Group { get; }
+    public string? Group { get; }
 
     /// <summary>
     ///     Gets a read-only list of aliases associated with this module.

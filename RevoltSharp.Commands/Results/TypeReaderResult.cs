@@ -18,7 +18,7 @@ public struct TypeReaderValue
         Score = score;
     }
 
-    public override string ToString() => Value?.ToString();
+    public override string? ToString() => Value?.ToString();
     private string DebuggerDisplay => $"[{Value}, {Math.Round(Score, 2)}]";
 }
 

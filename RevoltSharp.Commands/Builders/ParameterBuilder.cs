@@ -11,15 +11,15 @@ public class ParameterBuilder
     private readonly List<Attribute> _attributes;
 
     public CommandBuilder Command { get; }
-    public string Name { get; internal set; }
-    public Type ParameterType { get; internal set; }
+    public string? Name { get; internal set; }
+    public Type? ParameterType { get; internal set; }
 
-    public TypeReader TypeReader { get; set; }
+    public TypeReader? TypeReader { get; set; }
     public bool IsOptional { get; set; }
     public bool IsRemainder { get; set; }
     public bool IsMultiple { get; set; }
-    public object DefaultValue { get; set; }
-    public string Summary { get; set; }
+    public object? DefaultValue { get; set; }
+    public string? Summary { get; set; }
 
     public IReadOnlyList<ParameterPreconditionAttribute> Preconditions => _preconditions;
     public IReadOnlyList<Attribute> Attributes => _attributes;
@@ -53,7 +53,7 @@ public class ParameterBuilder
         ParameterType = type;
     }
 
-    private TypeReader GetReader(Type type)
+    private TypeReader? GetReader(Type type)
     {
         CommandService commands = Command.Module.Service;
         if (type.GetTypeInfo().GetCustomAttribute<NamedArgumentTypeAttribute>() != null)
