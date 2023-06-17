@@ -150,8 +150,8 @@ public class RevoltRestClient
     /// <exception cref="RevoltRestException"></exception>
     public async Task<FileAttachment> UploadFileAsync(byte[] bytes, string name, UploadFileType type)
     {
-        Conditions.FileBytesEmpty(bytes, "SendFileAsync");
-        Conditions.FileNameEmpty(name, "SendFileAsync");
+        Conditions.FileBytesEmpty(bytes, nameof(UploadFileAsync));
+        Conditions.FileNameEmpty(name, nameof(UploadFileAsync));
 
         HttpRequestMessage Mes = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
         MultipartFormDataContent MP = new System.Net.Http.MultipartFormDataContent("file");

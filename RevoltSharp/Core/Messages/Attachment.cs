@@ -74,7 +74,7 @@ public class Attachment : CreatedEntity
     /// </summary>
     public string GetUrl(int? size = null)
     {
-        Conditions.ImageSizeLength(size, "GetUrl");
+        Conditions.ImageSizeLength(size, nameof(GetUrl));
         return $"{Client.Config.Debug.UploadUrl}{Tag}/{Id}/{Filename}{(size != null ? $"?size={size}" : null)}";
     }
 

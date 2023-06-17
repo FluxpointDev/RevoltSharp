@@ -46,8 +46,8 @@ public static class TextChannelHelper
 
     internal static async Task<TextChannel> InternalCreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null, bool nsfw = false)
     {
-        Conditions.ServerIdEmpty(serverId, "CreateTextChannelAsync");
-        Conditions.ChannelNameEmpty(name, "CreateTextChannelAsync");
+        Conditions.ServerIdEmpty(serverId, nameof(CreateTextChannelAsync));
+        Conditions.ChannelNameEmpty(name, nameof(CreateTextChannelAsync));
 
         CreateChannelRequest Req = new CreateChannelRequest
         {

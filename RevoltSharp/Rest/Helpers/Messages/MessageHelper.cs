@@ -28,10 +28,10 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<UserMessage> SendMessageAsync(this RevoltRestClient rest, string channelId, string text, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
     {
-        Conditions.ChannelIdEmpty(channelId, "SendMessageAsync");
-        Conditions.MessagePropertiesEmpty(text, attachments, embeds, "SendMessageAsync");
-        Conditions.MessageContentLength(text, "SendMessageAsync");
-        Conditions.EmbedsNotAllowedForUsers(rest, embeds, "SendMessageAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(SendMessageAsync));
+        Conditions.MessagePropertiesEmpty(text, attachments, embeds, nameof(SendMessageAsync));
+        Conditions.MessageContentLength(text, nameof(SendMessageAsync));
+        Conditions.EmbedsNotAllowedForUsers(rest, embeds, nameof(SendMessageAsync));
 
         if (embeds != null)
         {
@@ -107,10 +107,10 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<UserMessage> SendFileAsync(this RevoltRestClient rest, string channelId, byte[] bytes, string fileName, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
     {
-        Conditions.FileBytesEmpty(bytes, "SendFileAsync");
-        Conditions.FileNameEmpty(fileName, "SendFileAsync");
-        Conditions.MessageContentLength(text, "SendFileAsync");
-        Conditions.EmbedsNotAllowedForUsers(rest, embeds, "SendFileAsync");
+        Conditions.FileBytesEmpty(bytes, nameof(SendFileAsync));
+        Conditions.FileNameEmpty(fileName, nameof(SendFileAsync));
+        Conditions.MessageContentLength(text, nameof(SendFileAsync));
+        Conditions.EmbedsNotAllowedForUsers(rest, embeds, nameof(SendFileAsync));
 
         FileAttachment File = await rest.UploadFileAsync(bytes, fileName, UploadFileType.Attachment);
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
@@ -129,7 +129,7 @@ public static class MessageHelper
 
     public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
     {
-        Conditions.ChannelIdEmpty(channelId, "GetMessagesAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(GetMessagesAsync));
 
         GetMessagesRequest Req = new GetMessagesRequest
         {
@@ -161,8 +161,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Message?> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
-        Conditions.ChannelIdEmpty(channelId, "GetMessageAsync");
-        Conditions.MessageIdEmpty(messageId, "GetMessageAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(GetMessageAsync));
+        Conditions.MessageIdEmpty(messageId, nameof(GetMessageAsync));
 
         MessageJson? Data = await rest.GetAsync<MessageJson>($"channels/{channelId}/messages/{messageId}");
         if (Data == null)
@@ -185,8 +185,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<UserMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content = null, Option<Embed[]> embeds = null)
     {
-        Conditions.ChannelIdEmpty(channelId, "EditMessageAsync");
-        Conditions.MessageIdEmpty(messageId, "EditMessageAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(EditMessageAsync));
+        Conditions.MessageIdEmpty(messageId, nameof(EditMessageAsync));
 
         SendMessageRequest Req = new SendMessageRequest();
         if (content != null)
@@ -226,8 +226,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
-        Conditions.ChannelIdEmpty(channelId, "DeleteMessageAsync");
-        Conditions.MessageIdEmpty(messageId, "DeleteMessageAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(DeleteMessageAsync));
+        Conditions.MessageIdEmpty(messageId, nameof(DeleteMessageAsync));
 
 
         await rest.DeleteAsync($"channels/{channelId}/messages/{messageId}");
@@ -248,8 +248,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteMessagesAsync(this RevoltRestClient rest, string channelId, string[] messageIds)
     {
-        Conditions.ChannelIdEmpty(channelId, "DeleteMessagesAsync");
-        Conditions.MessageIdEmpty(messageIds, "DeleteMessagesAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(DeleteMessagesAsync));
+        Conditions.MessageIdEmpty(messageIds, nameof(DeleteMessagesAsync));
 
 
         await rest.DeleteAsync($"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest
@@ -273,7 +273,7 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task CloseDMChannelAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, "CloseDMChannelAsync");
+        Conditions.ChannelIdEmpty(channelId, nameof(CloseDMChannelAsync));
 
         await rest.DeleteAsync($"channels/{channelId}");
     }

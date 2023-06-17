@@ -110,7 +110,7 @@ public class User : CreatedEntity
 
         if ((which | AvatarSources.Default) != 0)
         {
-            Conditions.ImageSizeLength(size, "GetAvatarUrlExt");
+            Conditions.ImageSizeLength(size, nameof(GetAvatarURL));
             return $"{Client.Config.ApiUrl}users/{Id}/default_avatar{(size != null ? $"?size={size}" : null)}";
         }
 
