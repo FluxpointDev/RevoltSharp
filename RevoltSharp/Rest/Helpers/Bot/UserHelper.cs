@@ -75,6 +75,7 @@ public static class UserHelper
     public static async Task<DMChannel?> GetUserDMChannelAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, nameof(GetUserDMChannelAsync));
+        Conditions.NotSelf(rest, userId, nameof(GetUserDMChannelAsync));
 
         ChannelJson? Data = await rest.GetAsync<ChannelJson>($"users/{userId}/dm");
         if (Data == null)
