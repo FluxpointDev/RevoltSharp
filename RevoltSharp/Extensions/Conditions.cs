@@ -147,4 +147,10 @@ internal static class Conditions
         if (userId == selfId)
             throw new RevoltArgumentException($"Cannot perform the {request} request against yourself.");
     }
+
+    internal static void ImageSizeLength(int? size, string request)
+    {
+        if (size != null && size <= 0)
+            throw new RevoltArgumentException($"Image size cannot be zero for the {request} request.");
+    }
 }
