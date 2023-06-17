@@ -142,10 +142,10 @@ internal static class Conditions
             throw new RevoltArgumentException($"Role name can't be empty for the {request} request.");
     }
 
-    internal static void NotSelf(string userId, string selfId, string request)
+    internal static void NotSelf(RevoltRestClient rest, string userId, string request)
     {
-        if (userId == selfId)
-            throw new RevoltArgumentException($"Cannot perform the {request} request against yourself.");
+        if (userId == rest.Client.CurrentUser.Id)
+            throw new RevoltArgumentException($"Cannot perform the {request} request against the current user/bot account.");
     }
 
     internal static void ImageSizeLength(int? size, string request)
