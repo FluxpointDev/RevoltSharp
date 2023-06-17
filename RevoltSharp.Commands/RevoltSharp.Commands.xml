@@ -258,6 +258,24 @@
         <member name="M:RevoltSharp.Commands.RequireOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
+        <member name="P:RevoltSharp.Commands.RequireServerAttribute.ErrorMessage">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireServerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="P:RevoltSharp.Commands.RequireServerOwnerAttribute.ErrorMessage">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireServerOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="P:RevoltSharp.Commands.TemplateAttribute.ErrorMessage">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.TemplateAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
         <member name="T:RevoltSharp.Commands.PriorityAttribute">
             <summary>
                 Sets priority of commands.
