@@ -141,4 +141,10 @@ internal static class Conditions
         if (string.IsNullOrEmpty(rolename))
             throw new RevoltArgumentException($"Role name can't be empty for the {request} request.");
     }
+
+    internal static void NotSelf(string userId, string selfId, string request)
+    {
+        if (userId == selfId)
+            throw new RevoltArgumentException($"Cannot perform the {request} request against yourself.");
+    }
 }

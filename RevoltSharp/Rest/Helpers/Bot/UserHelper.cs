@@ -100,6 +100,7 @@ public static class UserHelper
     public static async Task<User> BlockUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "BlockUserAsync");
+        Conditions.NotSelf(userId, rest.Client.CurrentUser.Id, "BlockUserAsync");
 
         UserJson Data = await rest.PutAsync<UserJson>($"users/{userId}/block");
         return new User(rest.Client, Data);
@@ -120,6 +121,7 @@ public static class UserHelper
     public static async Task<User> UnBlockUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdEmpty(userId, "UnBlockUserAsync");
+        Conditions.NotSelf(userId, rest.Client.CurrentUser.Id, "UnBlockUserAsync");
 
         UserJson Data = await rest.DeleteAsync<UserJson>($"users/{userId}/block");
         return new User(rest.Client, Data);
