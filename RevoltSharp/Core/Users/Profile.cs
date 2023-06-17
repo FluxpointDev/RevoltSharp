@@ -8,6 +8,6 @@ public class Profile : Entity
         Background = Attachment.Create(client, model.Background);
     }
 
-    public string Bio { get; internal set; }
-    public Attachment Background { get; internal set; }
+    public string? Bio { get; internal set; }
+    public Attachment? Background { get; internal set; }
 }

@@ -8,8 +8,18 @@ namespace RevoltSharp;
 public abstract class Message : CreatedEntity
 {
     internal Message(RevoltClient client, MessageJson model)
-        : base(client, model?.Id)
-    { }
+        : base(client, model.Id)
+    {
+        ChannelId = model.Channel;
+        ServerId = null!;
+        AuthorId = model.Author;
+
+        Author = client.GetUser(model.Author);
+        Channel = client.GetChannel(model.Channel);
+
+        if (Channel != null && Channel is ServerChannel SC)
+            ServerId = SC.ServerId;
+    }
 
     internal static Message Create(RevoltClient client, MessageJson model)
     {

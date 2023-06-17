@@ -7,10 +7,10 @@ namespace RevoltSharp;
 internal class ServerMemberJson
 {
     [JsonProperty("_id")]
-    public ServerMemberIdsJson? Id;
+    public ServerMemberIdsJson Id = null!;
 
     [JsonProperty("nickname")]
-    public string? Nickname;
+    public string Nickname = null!;
 
     [JsonProperty("avatar")]
     public AttachmentJson? Avatar;
@@ -27,8 +27,8 @@ internal class ServerMemberJson
 internal class ServerMemberIdsJson
 {
     [JsonProperty("server")]
-    public string? Server;
+    public string Server = null!;
 
     [JsonProperty("user")]
-    public string? User;
+    public string User = null!;
 }

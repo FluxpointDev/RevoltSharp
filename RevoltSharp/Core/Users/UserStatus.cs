@@ -1,4 +1,5 @@
 ﻿using System;
+using Optionals;
 
 namespace RevoltSharp;
 
@@ -9,49 +10,35 @@ public class UserStatus
 {
     internal UserStatus(UserJson json)
     {
-        if (json == null)
-            return;
-
-        if (json.Online)
-            Type = UserStatusType.Online;
-        else
-            Type = UserStatusType.Offline;
-        if (json.Status != null)
-        {
-            Text = json.Status.Text;
-            if (json.Status != null && Enum.TryParse(json.Status.Presence, ignoreCase: true, out UserStatusType ST))
-                Type = ST;
-            else
-                Type = UserStatusType.Offline;
-        }
-        else
-            Type = UserStatusType.Offline;
+        Update(Optional.Some(json.Online), json.Status == null ? Optional.None<UserStatusJson>() : Optional.Some(json.Status));
     }
 
     internal void Update(PartialUserJson json)
     {
-        if (json.online.HasValue)
+        Update(json.Online, json.Status);
+    }
+
+    internal void Update(Optional<bool> online, Optional<UserStatusJson> status)
+    {
+        if (!status.HasValue)
         {
-            if (json.online.Value)
-                Type = UserStatusType.Online;
-            else
-                Type = UserStatusType.Offline;
+            Type = UserStatusType.Offline;
+            Text = null;
+            return;
         }
 
-        if (json.status.HasValue && json.status.Value != null)
-        {
-            Text = json.status.Value.Text;
-            if (json.status.Value != null && Enum.TryParse(json.status.Value.Presence, ignoreCase: true, out UserStatusType ST))
-                Type = ST;
-            else
-                Type = UserStatusType.Offline;
-        }
+        Text = status.Value.Text;
+        if (Enum.TryParse(status.Value.Presence, ignoreCase: true, out UserStatusType ST))
+            Type = ST;
+        else
+            if (online.HasValue)
+                Type = online.Value ? UserStatusType.Online : UserStatusType.Offline;
     }
 
     /// <summary>
     /// Custom text status for the user.
     /// </summary>
-    public string Text { get; internal set; }
+    public string? Text { get; internal set; }
 
     /// <summary>
     /// Status mode for the user.

@@ -43,12 +43,20 @@ public class Server : CreatedEntity
     {
         if (InternalMembers.TryGetValue(OwnerId, out ServerMember SM))
             return SM;
-        return await Client.Rest.GetMemberAsync(Id, OwnerId);
+
+        //we assume revolt will ALWAYS successfully return an owner. ownerless servers aren't possible on revolt even if the owner gets platform banned.
+        return (await Client.Rest.GetMemberAsync(Id, OwnerId))!;
     }
 
+    /// <summary>
+    /// Name of the server
+    /// </summary>
     public string Name { get; internal set; }
 
-    public string Description { get; internal set; }
+    /// <summary>
+    /// Description for the server
+    /// </summary>
+    public string? Description { get; internal set; }
 
     internal HashSet<string> ChannelIds { get; set; }
 
@@ -65,11 +73,11 @@ public class Server : CreatedEntity
 
     public Attachment? Icon { get; internal set; }
 
-    public string GetIconUrl() => Icon != null ? Icon.GetUrl() : string.Empty;
+    public string? GetIconUrl() => Icon?.GetUrl();
 
     public Attachment? Banner { get; internal set; }
 
-    public string GetBannerUrl() => Banner != null ? Banner.GetUrl() : string.Empty;
+    public string? GetBannerUrl() => Banner?.GetUrl();
 
     public bool HasAnalytics { get; internal set; }
 

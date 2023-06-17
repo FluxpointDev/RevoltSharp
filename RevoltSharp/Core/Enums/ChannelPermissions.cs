@@ -12,13 +12,10 @@ public class ChannelPermissions
     public ulong RawDenied { get; internal set; }
     internal ChannelPermissions(Server server, PermissionsJson permissions)
     {
-        if (server != null)
-            Server = server;
+        Server = server;
 
         if (permissions == null)
             return;
-
-
 
         RawAllowed = permissions.Allowed;
         RawDenied = permissions.Denied;
@@ -26,6 +23,7 @@ public class ChannelPermissions
 
     internal ChannelPermissions(Server server, ulong allowed, ulong denied)
     {
+        Server = server;
         RawAllowed = allowed;
         RawDenied = denied;
     }

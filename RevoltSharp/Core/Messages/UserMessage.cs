@@ -9,9 +9,9 @@ namespace RevoltSharp;
 /// </summary>
 public class UserMessage : Message
 {
-    public string Nonce { get; internal set; }
+    public string? Nonce { get; internal set; }
 
-    public string Content { get; internal set; }
+    public string? Content { get; internal set; }
 
     public IReadOnlyList<Attachment> Attachments { get; internal set; }
 
@@ -30,32 +30,27 @@ public class UserMessage : Message
     internal UserMessage(RevoltClient client, MessageJson model)
         : base(client, model)
     {
-        AuthorId = model.Author;
-        Author = client.GetUser(model.Author);
-        ChannelId = model.Channel;
-        Channel = client.GetChannel(model.Channel);
-        if (Channel != null && Channel is ServerChannel SC)
-            ServerId = SC.ServerId;
         Nonce = model.Nonce;
         Content = model.Content;
         Masquerade = MessageMasquerade.Create(model.Masquerade);
-        Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => Attachment.Create(client, a)));
+        Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => Attachment.Create(client, a)!));
         Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
         Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
         if (model.Edited.HasValue)
             EditedAt = model.Edited.Value;
-        Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(x)));
+        Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(x)!));
+
         if (!model.Reactions.HasValue)
+        {
             Reactions = new Dictionary<Emoji, User[]>();
+        }
         else
         {
-            Dictionary<Emoji, User[]> React = new Dictionary<Emoji, User[]>();
+            // GetUser usually shouldn't return null here. If it can, change this from User[] to User?[].
+            Dictionary<Emoji, User[]> react = new Dictionary<Emoji, User[]>();
             foreach (KeyValuePair<string, string[]> r in model.Reactions.Value)
-            {
-                React.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray());
-            }
-            Reactions = React;
+                react.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray()!);
+            Reactions = react;
         }
-
     }
 }

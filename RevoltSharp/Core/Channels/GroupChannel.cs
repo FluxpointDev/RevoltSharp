@@ -27,8 +27,8 @@ public class GroupChannel : Channel
         }
         Description = model.Description;
         LastMessageId = model.LastMessageId;
-        Name = model.Name;
-        OwnerId = model.OwnerId;
+        Name = model.Name!;
+        OwnerId = model.OwnerId!;
         Permissions = new ChannelPermissions(null, model.Permissions, 0);
         Icon = Attachment.Create(client, model.Icon);
         IsNsfw = model.IsNsfw;
@@ -54,7 +54,7 @@ public class GroupChannel : Channel
     /// <summary>
     /// The last message id sent in this Group channel.
     /// </summary>
-    public string LastMessageId { get; internal set; }
+    public string? LastMessageId { get; internal set; }
 
     /// <summary>
     /// Owner of the channel
@@ -71,7 +71,7 @@ public class GroupChannel : Channel
     /// <summary>
     /// Description of the channel
     /// </summary>
-    public string Description { get; internal set; }
+    public string? Description { get; internal set; }
 
     /// <summary>
     /// Icon attachment of the channel

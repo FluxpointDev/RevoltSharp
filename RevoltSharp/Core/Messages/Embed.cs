@@ -1,4 +1,5 @@
-﻿using Optionals;
+﻿using System;
+using Optionals;
 
 namespace RevoltSharp;
 
@@ -63,10 +64,10 @@ public class MessageEmbed
         switch (Type)
         {
             case EmbedType.Image:
-                Image = new EmbedMedia(null) { Url = model.url, Height = model.height, Width = model.width };
+                Image = new EmbedMedia(model.url, model.width, model.height);
                 break;
             case EmbedType.Video:
-                Video = new EmbedMedia(null) { Url = model.url, Height = model.height, Width = model.width };
+                Video = new EmbedMedia(model.url, model.width, model.height);
                 break;
         }
         Url = model.url;
@@ -99,32 +100,32 @@ public class MessageEmbed
     /// <summary>
     /// Embed url
     /// </summary>
-    public string Url { get; internal set; }
+    public string? Url { get; internal set; }
 
     /// <summary>
     /// Embed icon url
     /// </summary>
-    public string IconUrl { get; internal set; }
+    public string? IconUrl { get; internal set; }
 
     /// <summary>
     /// Embed title
     /// </summary>
-    public string Title { get; internal set; }
+    public string? Title { get; internal set; }
 
     /// <summary>
     /// Embed description
     /// </summary>
-    public string Description { get; internal set; }
+    public string? Description { get; internal set; }
 
     /// <summary>
     /// Embed site name
     /// </summary>
-    public string Site { get; }
+    public string? Site { get; }
 
     /// <summary>
     /// Embed color
     /// </summary>
-    public RevoltColor Color { get; internal set; }
+    public RevoltColor? Color { get; internal set; }
 
     /// <summary>
     /// Embed image attachment
@@ -149,41 +150,35 @@ public class MessageEmbed
 /// </summary>
 public class Embed
 {
-
-    public Embed()
-    {
-
-    }
-
     /// <summary>
     /// Embed url
     /// </summary>
-    public string Url { get; internal set; }
+    public string? Url { get; internal set; }
 
     /// <summary>
     /// Embed icon url
     /// </summary>
-    public string IconUrl { get; internal set; }
+    public string? IconUrl { get; internal set; }
 
     /// <summary>
     /// Embed title
     /// </summary>
-    public string Title { get; internal set; }
+    public string? Title { get; internal set; }
 
     /// <summary>
     /// Embed description
     /// </summary>
-    public string Description { get; internal set; }
+    public string? Description { get; internal set; }
 
     /// <summary>
     /// Embed image url
     /// </summary>
-    public string Image { get; internal set; }
+    public string? Image { get; internal set; }
 
     /// <summary>
     /// Embed color
     /// </summary>
-    public RevoltColor Color { get; internal set; }
+    public RevoltColor? Color { get; internal set; }
 
 
     internal EmbedJson ToJson()
@@ -215,11 +210,20 @@ public class EmbedMedia
     internal EmbedMedia(EmbedMediaJson model)
     {
         if (model == null)
-            return;
-        Url = model.url;
-        Width = model.width;
-        Height = model.height;
+            throw new ArgumentNullException(nameof(model));
+
+        Url = model.URL;
+        Width = model.Width;
+        Height = model.Height;
     }
+
+    internal EmbedMedia(string url, int width, int height)
+    {
+        Url = url;
+        Width = width;
+        Height = height;
+    }
+
     public string Url;
     public int Width;
     public int Height;

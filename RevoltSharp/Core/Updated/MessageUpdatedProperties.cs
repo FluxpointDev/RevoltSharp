@@ -10,15 +10,9 @@ public class MessageUpdatedProperties : CreatedEntity
     internal MessageUpdatedProperties(RevoltClient client, MessageUpdateEventJson json) : base(client, json.MessageId)
     {
         Content = json.Data.Content;
-        if (json.Data.Embeds.HasValue)
-        {
-            if (!json.Data.Embeds.HasValue)
-                Embeds = Optional.None<MessageEmbed[]>();
-            else
-                Embeds = Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)).ToArray());
-        }
         EditedAt = json.Data.EditedAt;
         ChannelId = json.ChannelId;
+        Embeds = json.Data.Embeds.HasValue ? Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)!).ToArray()) : Optional.None<MessageEmbed[]>();
         if (Channel is ServerChannel SC)
             ServerId = SC.ServerId;
     }
@@ -43,7 +37,7 @@ public class MessageUpdatedProperties : CreatedEntity
 
     public Channel? Channel => Client.GetChannel(ChannelId);
 
-    public string ServerId { get; private set; }
+    public string? ServerId { get; private set; }
 
     public Server? Server => Client.GetServer(ServerId);
 

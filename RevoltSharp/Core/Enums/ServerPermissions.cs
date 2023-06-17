@@ -10,16 +10,13 @@ public class ServerPermissions
 
     internal ServerPermissions(Server server, ulong permissions)
     {
-        if (server != null)
-            Server = server;
-
+        Server = server;
         RawServer = permissions;
     }
 
     internal ServerPermissions(Server server, ServerMember member)
     {
-        if (server != null)
-            Server = server;
+        Server = server;
 
         if (server != null && server.OwnerId == member.Id)
         {

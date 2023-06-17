@@ -15,7 +15,7 @@ public class SelfUser : User
     public User? Owner
         => Client.GetUser(OwnerId);
 
-    public string ProfileBio { get; internal set; }
+    public string? ProfileBio { get; internal set; }
 
     public Attachment? Background { get; internal set; }
 

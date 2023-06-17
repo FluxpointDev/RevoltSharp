@@ -15,7 +15,7 @@ public class TextChannel : ServerChannel
     /// <summary>
     /// The last message id sent in this Text channel.
     /// </summary>
-    public string LastMessageId { get; internal set; }
+    public string? LastMessageId { get; internal set; }
 
     /// <summary>
     /// Channel has nsfw content.

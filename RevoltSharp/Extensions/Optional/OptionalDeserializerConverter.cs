@@ -14,7 +14,7 @@ public class OptionalDeserializerConverter : JsonConverter
         return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(Optional<>);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         if (reader == null) throw new ArgumentNullException(nameof(reader));
         if (objectType == null) throw new ArgumentNullException(nameof(objectType));
@@ -39,7 +39,7 @@ public class OptionalDeserializerConverter : JsonConverter
         return someMethod.Invoke(noneMethod, new[] { innerValue });
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
         if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -54,7 +54,7 @@ public class OptionalDeserializerConverter : JsonConverter
         var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
         var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
 
-        var hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
+        bool hasValue = (bool)hasValueMethod.Invoke(null, new[] { value })!;
 
         if (!hasValue)
         {

@@ -33,7 +33,7 @@ public class DMChannel : Channel
     /// <summary>
     /// The last message id sent in this DM channel.
     /// </summary>
-    public string LastMessageId { get; internal set; }
+    public string? LastMessageId { get; internal set; }
 
     internal override void Update(PartialChannelJson json)
     {

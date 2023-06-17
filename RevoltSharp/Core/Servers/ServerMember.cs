@@ -63,30 +63,40 @@ public class ServerMember : Entity
     /// </remarks>
     public Attachment? ServerAvatar { get; internal set; }
 
-    /// <inheritdoc cref="User.GetDefaultAvatarUrl()" />
-    public string GetDefaultAvatarUrl()
-        => Client.Config.ApiUrl + "users/" + Id + "/default_avatar";
+    #region Obsolete
+    /// <inheritdoc cref="User.GetDefaultAvatarUrl" />
+    [Obsolete("Use GetAvatarUrlExt instead.")]
+    public string GetDefaultAvatarUrl(int? size = null) => GetAvatarUrlExt(AvatarSources.Default, size)!;
 
     /// <summary>
     /// Get the avatar url for this member, may be empty.
     /// </summary>
     /// <returns>URL of the image</returns>
-    public string GetServerAvatarUrl()
-        => Avatar != null ? Avatar.GetUrl() : string.Empty;
+    [Obsolete("Use GetAvatarUrlExt instead.")]
+    public string? GetServerAvatarUrl(int? size = null) => GetAvatarUrlExt(AvatarSources.Server, size)!;
 
     /// <summary>
     /// Get the avatar url of this member or the default Revolt avatar.
     /// </summary>
     /// <returns>URL of the image</returns>
-    public string GetServerAvatarOrDefaultUrl()
-        => Avatar != null ? Avatar.GetUrl() : GetDefaultAvatarUrl();
+    [Obsolete("Use GetAvatarUrlExt instead.")]
+    public string GetServerAvatarOrDefaultUrl(int? size = null) => GetAvatarUrlExt(AvatarSources.Server | AvatarSources.Default, size)!;
 
     /// <summary>
     /// Get the avatar url for the member, parent user or default Revolt avatar.
     /// </summary>
-    /// <returns></returns>
-    public string GetServerAvatarOrUserAvatarOrDefaultUrl()
-        => Avatar != null ? Avatar.GetUrl() : User.GetAvatarOrDefaultUrl();
+    [Obsolete("Use GetAvatarUrlExt instead.")]
+    public string GetServerAvatarOrUserAvatarOrDefaultUrl() => GetAvatarUrlExt(AvatarSources.Any)!;
+    #endregion
+
+    /// <inheritdoc cref="User.GetAvatarUrlExt"/>
+    public string? GetAvatarUrlExt(AvatarSources which = AvatarSources.Any, int? size = null)
+    {
+        if (Avatar != null && (which | AvatarSources.Server) != 0)
+            return Avatar.GetUrl(size);
+
+        return User.GetAvatarUrlExt(which, size);
+    }
 
     /// <summary>
     /// List of role IDs that the member has.
@@ -97,7 +107,7 @@ public class ServerMember : Entity
     /// The member is timed out/muted with the specified date time.
     /// </summary>
     /// <remarks>
-    /// <see cref="ServerMember.Timeout"/>.HasValue will be <see langword="false" /> if member is not timed out/muted.
+    /// Will be null if member is not timed out/muted.
     /// </remarks>
     public DateTime? Timeout { get; internal set; }
 

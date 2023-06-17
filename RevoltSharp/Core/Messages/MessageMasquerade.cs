@@ -27,9 +27,9 @@ public class MessageMasquerade
         return null;
     }
 
-    public string Name { get; }
-    public string Avatar { get; }
-    public RevoltColor Color { get; }
+    public string? Name { get; }
+    public string? Avatar { get; }
+    public RevoltColor? Color { get; }
 
     internal MessageMasqueradeJson ToJson()
     {

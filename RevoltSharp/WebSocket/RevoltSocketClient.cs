@@ -797,17 +797,21 @@ internal class RevoltSocketClient
                             return;
                         if (@event.Clear.HasValue)
                         {
-                            if (@event.Clear.Value.Contains("ProfileContent"))
-                                @event.Data.ProfileContent = Optional.Some<string>("");
+                            string[] clr = @event.Clear.Value;
+                            if (@event.Data.Profile.HasValue)
+                            {
+                                if (clr.Contains("ProfileContent"))
+                                    @event.Data.Profile.Value.Content = null;
 
-                            if (@event.Clear.Value.Contains("StatusText"))
-                                @event.Data.status = Optional.Some<UserStatusJson>(new UserStatusJson { Text = null });
+                                if (clr.Contains("ProfileBackground"))
+                                    @event.Data.Profile.Value.Background = null;
+                            }
 
-                            if (@event.Clear.Value.Contains("ProfileBackground"))
-                                @event.Data.ProfileBackground = Optional.Some<AttachmentJson>(null);
+                            if (clr.Contains("StatusText"))
+                                @event.Data.Status = Optional.Some(new UserStatusJson());
 
-                            if (@event.Clear.Value.Contains("Avatar"))
-                                @event.Data.avatar = Optional.Some<AttachmentJson>(null);
+                            if (clr.Contains("Avatar"))
+                                @event.Data.Avatar = Optional.Some<AttachmentJson>(null);
                         }
                         if (@event.Id == CurrentUser.Id)
                         {

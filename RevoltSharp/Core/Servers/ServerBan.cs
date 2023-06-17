@@ -10,7 +10,6 @@ public class ServerBan : CreatedEntity
         Username = json.Username;
         Reason = jsonInfo.Reason;
         Avatar = Attachment.Create(client, json.Avatar);
-
     }
 
     /// <summary>
@@ -23,9 +22,15 @@ public class ServerBan : CreatedEntity
     /// </summary>
     public new DateTimeOffset CreatedAt => base.CreatedAt;
 
+    /// <summary>
+    /// Username of the banned user.
+    /// </summary>
     public string Username { get; }
 
-    public string Reason { get; internal set; }
+    /// <summary>
+    /// Reason for ban creation.
+    /// </summary>
+    public string? Reason { get; internal set; }
 
     public Attachment? Avatar { get; }
 }

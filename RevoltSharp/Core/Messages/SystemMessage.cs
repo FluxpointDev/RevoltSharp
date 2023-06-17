@@ -10,22 +10,13 @@ public class SystemMessage<Type> : Message where Type : SystemType
     internal SystemMessage(RevoltClient client, MessageJson model, Type type)
         : base(client, model)
     {
-        ChannelId = model.Channel;
-        Channel = client.GetChannel(ChannelId);
-        if (Channel != null && Channel is ServerChannel SC)
-            ServerId = SC.ServerId;
-
-        AuthorId = model.Author;
         Content = type;
-        if (Content != null)
-        {
-            Content.BaseId = model.System.Id;
-            Content.BaseBy = model.System.By;
-            Content.BaseName = model.System.Name;
-            Content.BaseFrom = model.System.From;
-            Content.BaseTo = model.System.To;
-            Content.BaseText = model.System.Content;
-        }
+        Content.BaseId = model.System.Id;
+        Content.BaseBy = model.System.By;
+        Content.BaseName = model.System.Name;
+        Content.BaseFrom = model.System.From;
+        Content.BaseTo = model.System.To;
+        Content.BaseText = model.System.Content;
     }
 }
 public abstract class SystemType
@@ -45,12 +36,12 @@ public class SystemUnknown : SystemType
 {
     public SystemUnknown()
     {
-        Name = BaseName;
-        Text = BaseText;
-        Id = BaseId;
-        By = BaseBy;
-        From = BaseFrom;
-        To = BaseTo;
+        Name = BaseName!;
+        Text = BaseText!;
+        Id = BaseId!;
+        By = BaseBy!;
+        From = BaseFrom!;
+        To = BaseTo!;
     }
 
     public string Name { get; internal set; }
@@ -68,7 +59,7 @@ public class SystemText : SystemType
 {
     public SystemText()
     {
-        Text = BaseText;
+        Text = BaseText!;
     }
     public string Text { get; internal set; }
 }
@@ -80,8 +71,8 @@ public class SystemUserAdded : SystemType
 {
     public SystemUserAdded()
     {
-        Id = BaseId;
-        By = BaseBy;
+        Id = BaseId!;
+        By = BaseBy!;
     }
     public string Id { get; internal set; }
     public string By { get; internal set; }
@@ -94,8 +85,8 @@ public class SystemUserRemoved : SystemType
 {
     public SystemUserRemoved()
     {
-        Id = BaseId;
-        By = BaseBy;
+        Id = BaseId!;
+        By = BaseBy!;
     }
     public string Id { get; internal set; }
     public string By { get; internal set; }
@@ -108,7 +99,7 @@ public class SystemUserJoined : SystemType
 {
     public SystemUserJoined()
     {
-        Id = BaseId;
+        Id = BaseId!;
     }
     public string Id { get; internal set; }
 }
@@ -120,7 +111,7 @@ public class SystemUserLeft : SystemType
 {
     public SystemUserLeft()
     {
-        Id = BaseId;
+        Id = BaseId!;
     }
     public string Id { get; internal set; }
 }
@@ -132,7 +123,7 @@ public class SystemUserKicked : SystemType
 {
     public SystemUserKicked()
     {
-        Id = BaseId;
+        Id = BaseId!;
     }
     public string Id { get; internal set; }
 }
@@ -144,7 +135,7 @@ public class SystemUserBanned : SystemType
 {
     public SystemUserBanned()
     {
-        Id = BaseId;
+        Id = BaseId!;
     }
     public string Id { get; internal set; }
 }
@@ -156,8 +147,8 @@ public class SystemChannelRenamed : SystemType
 {
     public SystemChannelRenamed()
     {
-        Name = BaseName;
-        By = BaseBy;
+        Name = BaseName!;
+        By = BaseBy!;
     }
     public string Name { get; internal set; }
     public string By { get; internal set; }
@@ -170,7 +161,7 @@ public class SystemChannelDescriptionChanged : SystemType
 {
     public SystemChannelDescriptionChanged()
     {
-        By = BaseBy;
+        By = BaseBy!;
     }
     public string By { get; internal set; }
 }
@@ -182,7 +173,7 @@ public class SystemChannelIconChanged : SystemType
 {
     public SystemChannelIconChanged()
     {
-        By = BaseBy;
+        By = BaseBy!;
     }
     public string By { get; internal set; }
 }
@@ -194,8 +185,8 @@ public class SystemChannelOwnershipChanged : SystemType
 {
     public SystemChannelOwnershipChanged()
     {
-        From = BaseFrom;
-        To = BaseTo;
+        From = BaseFrom!;
+        To = BaseTo!;
     }
     public string From { get; internal set; }
     public string To { get; internal set; }

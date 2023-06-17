@@ -59,7 +59,7 @@ public static class ServerHelper
         if (Bans == null)
             return System.Array.Empty<ServerBan>();
 
-        return Bans.Users.Select(x => new ServerBan(rest.Client, x, Bans.Bans.Where(b => b.Ids.UserId == x.Id).FirstOrDefault())).ToImmutableArray();
+        return Bans.Users.Select(x => new ServerBan(rest.Client, x, Bans.Bans.Where(b => b.Id.UserId == x.Id).FirstOrDefault())).ToImmutableArray();
 
     }
 

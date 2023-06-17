@@ -5,18 +5,18 @@ namespace RevoltSharp.Core.Servers;
 internal class ServerBansJson
 {
     [JsonProperty("users")]
-    public ServerBanUserJson[]? Users;
+    public ServerBanUserJson[] Users = null!;
 
     [JsonProperty("bans")]
-    public ServerBanInfoJson[]? Bans;
+    public ServerBanInfoJson[] Bans = null!;
 }
 internal class ServerBanUserJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string Id = null!;
 
     [JsonProperty("username")]
-    public string? Username;
+    public string Username = null!;
 
     [JsonProperty("avatar")]
     public AttachmentJson? Avatar;
@@ -27,7 +27,7 @@ internal class ServerBanInfoJson
     public string? Reason;
 
     [JsonProperty("_id")]
-    public ServerBanIdJson? Ids;
+    public ServerBanIdJson Id = null!;
 }
 internal class ServerBanIdJson
 {

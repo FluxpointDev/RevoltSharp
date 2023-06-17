@@ -9,7 +9,7 @@ public class Emoji : CreatedEntity
 {
     internal Emoji(RevoltClient client, EmojiJson model) : base(client, model.Id)
     {
-        Name = model.Name;
+        Name = model.Name!;
         CreatorId = model.CreatorId;
         ServerId = model.Parent.ServerId;
         IsAnimated = model.Animated;
@@ -43,7 +43,7 @@ public class Emoji : CreatedEntity
     public bool IsServerEmoji
         => !string.IsNullOrEmpty(ServerId);
 
-    public string ServerId { get; internal set; }
+    public string? ServerId { get; internal set; }
 
     /// <summary>
     /// Server that the Emoji is from.
@@ -53,7 +53,7 @@ public class Emoji : CreatedEntity
     /// </remarks>
     public Server? Server => Client.GetServer(ServerId);
 
-    public string CreatorId { get; internal set; }
+    public string? CreatorId { get; internal set; }
 
     public User? Creator => Client.GetUser(CreatorId);
 

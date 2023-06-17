@@ -34,7 +34,7 @@ public class RevoltContractResolver : DefaultContractResolver
         return property;
     }
 
-    private static JsonConverter GetConverter(JsonProperty property, PropertyInfo propInfo, Type type, int depth)
+    private static JsonConverter? GetConverter(JsonProperty property, PropertyInfo propInfo, Type type, int depth)
     {
         if (type.IsArray)
             return MakeGenericConverter(property, propInfo, typeof(ArrayConverter<>), type.GetElementType(), depth);
@@ -110,7 +110,7 @@ public class RevoltContractResolver : DefaultContractResolver
         return (getter as Func<TOwner, Optional<TValue>>)((TOwner)owner).HasValue;
     }
 
-    private static JsonConverter MakeGenericConverter(JsonProperty property, PropertyInfo propInfo, Type converterType, Type innerType, int depth)
+    private static JsonConverter? MakeGenericConverter(JsonProperty property, PropertyInfo propInfo, Type converterType, Type innerType, int depth)
     {
         TypeInfo genericType = converterType.MakeGenericType(innerType).GetTypeInfo();
         JsonConverter innerConverter = GetConverter(property, propInfo, innerType, depth + 1);
@@ -131,7 +131,7 @@ internal class ArrayConverter<T> : JsonConverter
         _innerConverter = innerConverter;
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         List<T> result = new List<T>();
         if (reader.TokenType == JsonToken.StartArray)
@@ -150,7 +150,7 @@ internal class ArrayConverter<T> : JsonConverter
         }
         return result.ToArray();
     }
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         if (value != null)
         {
@@ -185,7 +185,7 @@ internal class NullableConverter<T> : JsonConverter
         _innerConverter = innerConverter;
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         object value = reader.Value;
         if (value == null)
@@ -194,14 +194,14 @@ internal class NullableConverter<T> : JsonConverter
         {
             T obj;
             if (_innerConverter != null)
-                obj = (T)_innerConverter.ReadJson(reader, typeof(T), null, serializer);
+                obj = (T)_innerConverter.ReadJson(reader, typeof(T), null, serializer)!;
             else
                 obj = serializer.Deserialize<T>(reader);
             return obj;
         }
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         if (value == null)
             writer.WriteNull();
