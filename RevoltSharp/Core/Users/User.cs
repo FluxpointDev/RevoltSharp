@@ -86,22 +86,15 @@ public class User : CreatedEntity
     /// Get the default revolt avatar url for this user.
     /// </summary>
     /// <returns>URL of the image (No extension)</returns>
-    [Obsolete("Use GetAvatarUrlExt instead.")]
-    public string GetDefaultAvatarUrl(int? size = null) => GetAvatarUrlExt(AvatarSources.Default, size)!;
-
-    /// <summary>
-    /// Get the user's custom avatar url, may be empty.
-    /// </summary>
-    /// <returns>URL of the image</returns>
-    [Obsolete("Use GetAvatarUrlExt instead.")]
-    public string? GetAvatarUrl(int? size = null) => GetAvatarUrlExt(AvatarSources.User, size);
+    [Obsolete("Use GetAvatarURL instead.")]
+    public string GetDefaultAvatarUrl(int? size = null) => GetAvatarURL(AvatarSources.Default, size)!;
 
     /// <summary>
     /// Get the user's custom avatar url or the default revolt avatar url. 
     /// </summary>
     /// <returns>URL of the image</returns>
-    [Obsolete("Use GetAvatarUrlExt instead.")]
-    public string GetAvatarOrDefaultUrl(int? size = null) => GetAvatarUrlExt(AvatarSources.UserOrDefault, size)!;
+    [Obsolete("Use GetAvatarURL instead.")]
+    public string GetAvatarOrDefaultUrl(int? size = null) => GetAvatarURL(AvatarSources.UserOrDefault, size)!;
     #endregion
 
     /// <summary>
@@ -110,7 +103,7 @@ public class User : CreatedEntity
     /// <param name="which">Which avatar to return.</param>
     /// <param name="size"></param>
     /// <returns>URL of the image</returns>
-    public string? GetAvatarUrlExt(AvatarSources which = AvatarSources.Any, int? size = null)
+    public string? GetAvatarURL(AvatarSources which = AvatarSources.Any, int? size = null)
     {
         if (Avatar != null && (which | AvatarSources.User) != 0)
             return Avatar.GetUrl(size);
