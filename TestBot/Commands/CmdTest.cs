@@ -14,6 +14,12 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("permtest")]
+    public async Task PermTest()
+    {
+
+    }
+
     [Command("tag")]
     public async Task Tag()
     {
