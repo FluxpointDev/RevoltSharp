@@ -1,4 +1,4 @@
-﻿namespace RevoltSharp.Core;
+﻿namespace RevoltSharp;
 
 internal class RetryRequest
 {

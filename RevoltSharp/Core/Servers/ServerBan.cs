@@ -1,5 +1,4 @@
-﻿using RevoltSharp.Core.Servers;
-using System;
+﻿using System;
 
 namespace RevoltSharp;
 

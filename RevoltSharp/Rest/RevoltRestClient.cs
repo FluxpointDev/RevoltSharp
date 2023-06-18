@@ -1,6 +1,5 @@
 ﻿using Microsoft.IO;
 using Newtonsoft.Json;
-using RevoltSharp.Core;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

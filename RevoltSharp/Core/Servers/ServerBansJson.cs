@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.Core;
+namespace RevoltSharp;
 
 internal class ServerBansJson
 {

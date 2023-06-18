@@ -226,26 +226,15 @@
             <param name="command">The command being executed.</param>
             <param name="services">The service collection used for dependency injection.</param>
         </member>
-        <member name="P:RevoltSharp.Commands.Attributes.Preconditions.RequireBotPermissionAttribute.ErrorMessage">
+        <member name="P:RevoltSharp.Commands.RequireBotPermissionAttribute.ErrorMessage">
             <inheritdoc />
         </member>
-        <member name="F:RevoltSharp.Commands.Attributes.Preconditions.RequireBotPermissionAttribute.Perm">
+        <member name="F:RevoltSharp.Commands.RequireBotPermissionAttribute.Perm">
             <summary>
             Permission to check for.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Commands.Attributes.Preconditions.RequireBotPermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
-            <inheritdoc />
-        </member>
-        <member name="P:RevoltSharp.Commands.Attributes.Preconditions.RequireUserPermissionAttribute.ErrorMessage">
-            <inheritdoc />
-        </member>
-        <member name="F:RevoltSharp.Commands.Attributes.Preconditions.RequireUserPermissionAttribute.Perm">
-            <summary>
-            Permission to check for.
-            </summary>
-        </member>
-        <member name="M:RevoltSharp.Commands.Attributes.Preconditions.RequireUserPermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+        <member name="M:RevoltSharp.Commands.RequireBotPermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
         <member name="P:RevoltSharp.Commands.RequireContextAttribute.ErrorMessage">
@@ -301,6 +290,17 @@
             <inheritdoc />
         </member>
         <member name="M:RevoltSharp.Commands.RequireServerOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="P:RevoltSharp.Commands.RequireUserPermissionAttribute.ErrorMessage">
+            <inheritdoc />
+        </member>
+        <member name="F:RevoltSharp.Commands.RequireUserPermissionAttribute.Perm">
+            <summary>
+            Permission to check for.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireUserPermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
         <member name="P:RevoltSharp.Commands.TemplateAttribute.ErrorMessage">

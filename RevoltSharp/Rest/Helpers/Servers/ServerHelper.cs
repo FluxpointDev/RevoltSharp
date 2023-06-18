@@ -1,5 +1,4 @@
-﻿using RevoltSharp.Core.Servers;
-using RevoltSharp.Rest;
+﻿using RevoltSharp.Rest;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;

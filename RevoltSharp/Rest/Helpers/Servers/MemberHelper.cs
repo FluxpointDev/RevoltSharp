@@ -292,7 +292,7 @@ public static class MemberHelper
             Req.reason = Optional.Some(reason);
 
         await rest.PutAsync<ServerBan>($"servers/{serverId}/bans/{userId}", Req);
-        return new ServerBan(rest.Client, new Core.Servers.ServerBanUserJson { Id = userId }, null) { Reason = reason };
+        return new ServerBan(rest.Client, new ServerBanUserJson { Id = userId }, null) { Reason = reason };
     }
 
     /// <inheritdoc cref="UnBanMemberAsync(RevoltRestClient, string, string)" />
