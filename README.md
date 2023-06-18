@@ -4,7 +4,7 @@ RevoltSharp is a bot lib used to connect to [Revolt](https://revolt.chat/) chat 
 This lib supports both bots and user accounts.
 
 ### Core Features
-- `Stablity:` The lib is designed to handle errors and exceptions with logging and nice error messages to help you build a public bot.
+- `Stability:` The lib is designed to handle errors and exceptions with logging and nice error messages to help you build a public bot.
 - `Easy to Use:` RevoltSharp has similar design principals to discord.net with easy to use objects and properties.
 - `Connection:` The WebSocket is error proof and will keep the connection alive even during an outage or unstable network!
 - `Efficient:` You can run a private 1 server bot using 30mb of ram (with command handling, commands and cache) or a public bot in 450+ servers with 210mb of ram that can run on any $3 hosting service with 1GB ram!
