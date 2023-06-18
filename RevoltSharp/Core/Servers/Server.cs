@@ -62,6 +62,30 @@ public class Server : CreatedEntity
 
     internal HashSet<string> ChannelIds { get; set; }
 
+    /// <summary>
+    /// Get the actual channel count of the server regardless of permissions.
+    /// </summary>
+    public int ChannelCount => ChannelIds.Count();
+
+    /// <summary>
+    /// List of text channels for the server.
+    /// </summary>
+    /// <remarks>
+    /// This will only show channels the bot has permission for.
+    /// </remarks>
+    [JsonIgnore]
+    public IReadOnlyCollection<TextChannel> TextChannels => (IReadOnlyCollection<TextChannel>)Client.WebSocket.ChannelCache.Values.Where(x => x is TextChannel TC && TC.ServerId == Id);
+
+    /// <summary>
+    /// List of voice channels for the server.
+    /// </summary>
+    /// <remarks>
+    /// This will only show channels the bot has permission for.
+    /// </remarks>
+    [JsonIgnore]
+    public IReadOnlyCollection<VoiceChannel> VoiceChannels => (IReadOnlyCollection<VoiceChannel>)Client.WebSocket.ChannelCache.Values.Where(x => x is VoiceChannel VC && VC.ServerId == Id);
+
+
     //public ServerCategory[] Categories;
     public ServerSystemMessages SystemMessages;
 

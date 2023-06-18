@@ -1260,6 +1260,27 @@
             Description for the server
             </summary>
         </member>
+        <member name="P:RevoltSharp.Server.ChannelCount">
+            <summary>
+            Get the actual channel count of the server regardless of permissions.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Server.TextChannels">
+            <summary>
+            List of text channels for the server.
+            </summary>
+            <remarks>
+            This will only show channels the bot has permission for.
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.Server.VoiceChannels">
+            <summary>
+            List of voice channels for the server.
+            </summary>
+            <remarks>
+            This will only show channels the bot has permission for.
+            </remarks>
+        </member>
         <member name="P:RevoltSharp.ServerBan.Id">
             <summary>
             Id of the ban.

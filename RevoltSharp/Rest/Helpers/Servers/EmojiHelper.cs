@@ -64,7 +64,7 @@ public static class EmojiHelper
     /// Create a server <see cref="Emoji" />
     /// </summary>
     /// <remarks>
-    /// You need <see cref="ServerPermission.ManageCustomisation" />
+    /// You need <see cref="ServerPermission.ManageCustomisation" /> and has a max count of 100 per-server.
     /// </remarks>
     /// <param name="rest"></param>
     /// <param name="attachmentId">Uploaded file attachment from rest UploadFileAsync</param>
