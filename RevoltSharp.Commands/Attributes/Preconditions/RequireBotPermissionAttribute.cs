@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Commands.Attributes.Preconditions;
+namespace RevoltSharp.Commands;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class RequireBotPermissionAttribute : PreconditionAttribute
