@@ -7,7 +7,7 @@ namespace RevoltSharp;
 /// </summary>
 public class Attachment : CreatedEntity
 {
-    private Attachment(RevoltClient client, AttachmentJson model) : base(client, model.Id)
+    internal Attachment(RevoltClient client, AttachmentJson model) : base(client, model.Id)
     {
         Tag = model.Tag;
         Filename = model.Filename;

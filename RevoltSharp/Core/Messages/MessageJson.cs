@@ -40,6 +40,9 @@ internal class MessageJson
     [JsonProperty("system")]
     public MessageSystemJson? System;
 
+    [JsonProperty("webhook")]
+    public MessageWebhookJson? Webhook;
+
     [JsonProperty("edited")]
     public Optional<DateTime> Edited;
 
