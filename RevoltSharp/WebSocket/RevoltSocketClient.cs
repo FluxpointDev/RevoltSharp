@@ -617,7 +617,7 @@ internal class RevoltSocketClient
                         if (!ServerCache.TryGetValue(@event.Id.Server, out Server Server))
                             return;
 
-                        if (Server.InternalMembers.TryGetValue(@event.Id.User, out ServerMember Member))
+                        if (!Server.InternalMembers.TryGetValue(@event.Id.User, out ServerMember Member))
                         {
                             Member = await Server.GetMemberAsync(@event.Id.User);
                             if (Member == null)
