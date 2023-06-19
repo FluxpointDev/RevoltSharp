@@ -39,7 +39,7 @@ public static class ServerHelper
     }
 
     /// <inheritdoc cref="GetBansAsync(RevoltRestClient, string)" />
-    public static Task<IReadOnlyCollection<ServerBan>> GetBansAsync(this Server server)
+    public static Task<IReadOnlyCollection<ServerBanUser>> GetBansAsync(this Server server)
         => GetBansAsync(server.Client.Rest, server.Id);
 
     /// <summary>
@@ -50,15 +50,15 @@ public static class ServerHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<ServerBan>> GetBansAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<IReadOnlyCollection<ServerBanUser>> GetBansAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdEmpty(serverId, nameof(GetBansAsync));
 
         ServerBansJson? Bans = await rest.GetAsync<ServerBansJson>($"/servers/{serverId}/bans");
         if (Bans == null)
-            return System.Array.Empty<ServerBan>();
+            return System.Array.Empty<ServerBanUser>();
 
-        return Bans.Users.Select(x => new ServerBan(rest.Client, x, Bans.Bans.Where(b => b.Id.UserId == x.Id).FirstOrDefault())).ToImmutableArray();
+        return Bans.Users.Select(x => new ServerBanUser(rest.Client, x, Bans.Bans.Where(b => b.Id.UserId == x.Id).FirstOrDefault())).ToImmutableArray();
 
     }
 

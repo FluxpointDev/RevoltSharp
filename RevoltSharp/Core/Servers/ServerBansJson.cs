@@ -21,6 +21,7 @@ internal class ServerBanUserJson
     [JsonProperty("avatar")]
     public AttachmentJson? Avatar;
 }
+
 internal class ServerBanInfoJson
 {
     [JsonProperty("reason")]

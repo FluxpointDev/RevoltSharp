@@ -259,19 +259,19 @@ public static class MemberHelper
     }
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBan> BanMemberAsync(this Server server, string userId, string reason = "")
+    public static Task<ServerBanInfo> BanMemberAsync(this Server server, string userId, string reason = "")
         => BanMemberAsync(server.Client.Rest, server.Id, userId, reason);
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBan> BanMemberAsync(this Server server, ServerMember member, string reason = "")
+    public static Task<ServerBanInfo> BanMemberAsync(this Server server, ServerMember member, string reason = "")
         => BanMemberAsync(server.Client.Rest, server.Id, member.Id, reason);
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBan> BanMemberAsync(this Server server, User user, string reason = "")
+    public static Task<ServerBanInfo> BanMemberAsync(this Server server, User user, string reason = "")
         => BanMemberAsync(server.Client.Rest, server.Id, user.Id, reason);
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBan> BanAsync(this ServerMember member, string reason = "")
+    public static Task<ServerBanInfo> BanAsync(this ServerMember member, string reason = "")
         => BanMemberAsync(member.Client.Rest, member.ServerId, member.Id, reason);
 
     /// <summary>
@@ -282,7 +282,7 @@ public static class MemberHelper
     /// </remarks>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<ServerBan> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string reason = "")
+    public static async Task<ServerBanInfo> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string reason = "")
     {
         Conditions.ServerIdEmpty(serverId, nameof(BanMemberAsync));
         Conditions.UserIdEmpty(userId, nameof(BanMemberAsync));
@@ -291,8 +291,8 @@ public static class MemberHelper
         if (!string.IsNullOrEmpty(reason))
             Req.reason = Optional.Some(reason);
 
-        await rest.PutAsync<ServerBan>($"servers/{serverId}/bans/{userId}", Req);
-        return new ServerBan(rest.Client, new ServerBanUserJson { Id = userId }, null) { Reason = reason };
+        ServerBanInfoJson ServerBanJson = await rest.PutAsync<ServerBanInfoJson>($"servers/{serverId}/bans/{userId}", Req);
+        return new ServerBanInfo(rest.Client, ServerBanJson);
     }
 
     /// <inheritdoc cref="UnBanMemberAsync(RevoltRestClient, string, string)" />

@@ -1281,22 +1281,22 @@
             This will only show channels the bot has permission for.
             </remarks>
         </member>
-        <member name="P:RevoltSharp.ServerBan.Id">
+        <member name="P:RevoltSharp.ServerBanUser.Id">
             <summary>
             Id of the ban.
             </summary>
         </member>
-        <member name="P:RevoltSharp.ServerBan.CreatedAt">
+        <member name="P:RevoltSharp.ServerBanUser.CreatedAt">
             <summary>
             Date of when the ban occured.
             </summary>
         </member>
-        <member name="P:RevoltSharp.ServerBan.Username">
+        <member name="P:RevoltSharp.ServerBanUser.Username">
             <summary>
             Username of the banned user.
             </summary>
         </member>
-        <member name="P:RevoltSharp.ServerBan.Reason">
+        <member name="P:RevoltSharp.ServerBanUser.Reason">
             <summary>
             Reason for ban creation.
             </summary>
@@ -2725,7 +2725,7 @@
             Get a list of banned users for a server.
             </summary>
             <returns>
-            List of <see cref="T:RevoltSharp.ServerBan"/>
+            List of <see cref="!:ServerBan"/>
             </returns>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>

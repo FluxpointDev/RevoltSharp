@@ -2,9 +2,20 @@
 
 namespace RevoltSharp;
 
-public class ServerBan : CreatedEntity
+public class ServerBanInfo : CreatedEntity
 {
-    internal ServerBan(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json.Id)
+    internal ServerBanInfo(RevoltClient client, ServerBanInfoJson jsonInfo) : base(client, jsonInfo.Id.UserId)
+    {
+        UserId = jsonInfo.Id.UserId;
+        Reason = jsonInfo.Reason;
+    }
+
+    public string UserId { get; internal set; }
+    public string Reason { get; internal set; }
+}
+public class ServerBanUser : CreatedEntity
+{
+    internal ServerBanUser(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json.Id)
     {
         Username = json.Username;
         Reason = jsonInfo.Reason;
