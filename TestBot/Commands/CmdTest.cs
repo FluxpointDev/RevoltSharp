@@ -3,7 +3,6 @@
 using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
-using RevoltSharp.Commands.Attributes.Preconditions;
 using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;

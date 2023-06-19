@@ -41,7 +41,7 @@ public class UserMessage : Message
         Webhook = model.Webhook != null ? new MessageWebhook(client, model.Webhook) : null;
         if (model.Edited.HasValue)
             EditedAt = model.Edited.Value;
-        Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(x)!));
+        Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(client, x)!));
 
         if (!model.Reactions.HasValue)
         {

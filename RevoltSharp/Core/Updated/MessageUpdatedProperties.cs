@@ -12,7 +12,7 @@ public class MessageUpdatedProperties : CreatedEntity
         Content = json.Data.Content;
         EditedAt = json.Data.EditedAt;
         ChannelId = json.ChannelId;
-        Embeds = json.Data.Embeds.HasValue ? Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(x)!).ToArray()) : Optional.None<MessageEmbed[]>();
+        Embeds = json.Data.Embeds.HasValue ? Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(client, x)!).ToArray()) : Optional.None<MessageEmbed[]>();
         if (Channel is ServerChannel SC)
             ServerId = SC.ServerId;
     }

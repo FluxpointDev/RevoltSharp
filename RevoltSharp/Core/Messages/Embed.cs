@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json.Linq;
 using Optionals;
 
 namespace RevoltSharp;
@@ -58,7 +59,7 @@ public class EmbedBuilder
 
 public class MessageEmbed
 {
-    private MessageEmbed(EmbedJson model)
+    private MessageEmbed(RevoltClient client, EmbedJson model)
     {
         Type = model.type;
         switch (Type)
@@ -80,15 +81,15 @@ public class MessageEmbed
         else
             Color = new RevoltColor("");
         Image = model.image == null ? null : new EmbedMedia(model.image);
-        Media = model.media == null ? null : new EmbedMedia(model.media as EmbedMediaJson);
+        Media = model.media == null ? null : new Attachment(client, (model.media as JObject).ToObject<AttachmentJson>());
         Video = model.video == null ? null : new EmbedMedia(model.video);
         Provider = model.special == null ? EmbedProviderType.None : model.special.Type;
     }
 
-    internal static MessageEmbed? Create(EmbedJson model)
+    internal static MessageEmbed? Create(RevoltClient client, EmbedJson model)
     {
         if (model != null)
-            return new MessageEmbed(model);
+            return new MessageEmbed(client, model);
         return null;
     }
 
@@ -132,7 +133,7 @@ public class MessageEmbed
     /// </summary>
     public EmbedMedia? Image { get; internal set; }
 
-    public EmbedMedia? Media { get; internal set; }
+    public Attachment? Media { get; internal set; }
 
     /// <summary>
     /// Embed video attachment
