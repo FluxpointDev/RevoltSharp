@@ -18,7 +18,8 @@ public class ServerBanUser : CreatedEntity
     internal ServerBanUser(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json.Id)
     {
         Username = json.Username;
-        Reason = jsonInfo.Reason;
+        Discriminator = json.Discriminator;
+		Reason = jsonInfo.Reason;
         Avatar = Attachment.Create(client, json.Avatar);
     }
 
@@ -36,6 +37,8 @@ public class ServerBanUser : CreatedEntity
     /// Username of the banned user.
     /// </summary>
     public string Username { get; }
+
+    private string Discriminator { get; set; }
 
     /// <summary>
     /// Reason for ban creation.

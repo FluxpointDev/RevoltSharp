@@ -92,7 +92,7 @@ public class EventTests
         Console.WriteLine(value.Message);
     }
 
-    private void Client_OnUserUpdated(User value, User value2)
+    private void Client_OnUserUpdated(User value, User value2, UserUpdatedProperties props)
     {
         Console.WriteLine("--- EVENT: User Updated ---");
         Console.WriteLine($"{value.Username}");
@@ -201,7 +201,7 @@ public class EventTests
         Console.WriteLine(value.Name);
     }
 
-    private void Client_OnCurrentUserUpdated(SelfUser value, SelfUser value2)
+    private void Client_OnCurrentUserUpdated(SelfUser value, SelfUser value2, SelfUserUpdatedProperties props)
     {
         Console.WriteLine("--- EVENT: Current User Updated ---");
         if (value.ProfileBio == value2.ProfileBio)
