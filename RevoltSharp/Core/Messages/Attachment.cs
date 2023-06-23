@@ -78,7 +78,7 @@ public class Attachment : CreatedEntity
         return $"{Client.Config.Debug.UploadUrl}{Tag}/{Id}/{Filename}{(size != null ? $"?size={size}" : null)}";
     }
 
-    internal static Attachment? Create(RevoltClient client, AttachmentJson model)
+    internal static Attachment? Create(RevoltClient client, AttachmentJson? model)
     {
         if (model != null)
             return new Attachment(client, model);

@@ -8,8 +8,10 @@ namespace RevoltSharp;
 /// </summary>
 public class UserStatus
 {
-    internal UserStatus(UserJson json)
+    internal UserStatus(UserJson? json)
     {
+        if (json == null)
+            return;
         Update(Optional.Some(json.Online), json.Status == null ? Optional.None<UserStatusJson>() : Optional.Some(json.Status));
     }
 

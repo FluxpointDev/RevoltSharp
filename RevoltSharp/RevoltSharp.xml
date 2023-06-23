@@ -1212,6 +1212,11 @@
             User messages sent with text, author, attachments, embeds, replies, mentions and optional parent server.
             </summary>
         </member>
+        <member name="P:RevoltSharp.UserMessage.IsWebhook">
+            <summary>
+            This message was sent by webhook.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.Invite">
             <summary>
             Server invite
@@ -1592,7 +1597,12 @@
         </member>
         <member name="P:RevoltSharp.User.IsBot">
             <summary>
-            Is the user a bot account.
+            Is the user a bot account or webhook.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.User.IsWebhook">
+            <summary>
+            Is the user a webhook.
             </summary>
         </member>
         <member name="P:RevoltSharp.User.IsBlocked">

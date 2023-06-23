@@ -31,6 +31,18 @@ public class User : CreatedEntity
         Privileged = model.Privileged;
     }
 
+    internal User(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
+    {
+        Username = model.Name;
+        Discriminator = "0000";
+        Status = new UserStatus(null) { Type = UserStatusType.Online };
+        Avatar = Attachment.Create(client, model.Avatar);
+        Badges = new UserBadges(0);
+        Flags = new UserFlags(0);
+        Relationship = UserRelationship.None;
+        IsWebhook = true;
+	}
+
     /// <summary>
     /// Id of the user.
     /// </summary>
@@ -154,9 +166,14 @@ public class User : CreatedEntity
     public UserRelationship Relationship { get; internal set; }
 
     /// <summary>
-    /// Is the user a bot account.
+    /// Is the user a bot account or webhook.
     /// </summary>
-    public bool IsBot => BotData != null;
+    public bool IsBot => IsWebhook ? true : BotData != null;
+
+    /// <summary>
+    /// Is the user a webhook.
+    /// </summary>
+    public bool IsWebhook { get; internal set; }
 
     /// <summary>
     /// Is ther user blocked by the current user/bot account.
