@@ -127,20 +127,19 @@ public static class MessageHelper
     public static Task<IReadOnlyCollection<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
         => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
 
-    public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+    public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
     {
         Conditions.ChannelIdEmpty(channelId, nameof(GetMessagesAsync));
 
-        GetMessagesRequest Req = new GetMessagesRequest
-        {
-            limit = messageCount,
-            include_users = includeUserDetails
-        };
-        if (!string.IsNullOrEmpty(afterMessageId))
-            Req.after = Optional.Some(afterMessageId);
-        if (!string.IsNullOrEmpty(beforeMessageId))
-            Req.after = Optional.Some(beforeMessageId);
-        MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages", Req);
+        QueryBuilder QueryBuilder = new QueryBuilder()
+            .Add("limit", messageCount)
+            .Add("include_users", includeUserDetails)
+            .Add("sort", "Latest")
+            .AddIf(!string.IsNullOrEmpty(nearbyMessageId), "nearby", nearbyMessageId)
+            .AddIf(!string.IsNullOrEmpty(afterMessageId), "after", afterMessageId)
+            .AddIf(!string.IsNullOrEmpty(beforeMessageId), "before", beforeMessageId);
+
+        MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages" + QueryBuilder.GetQuery());
         if (Data == null)
             return Array.Empty<Message>();
 

@@ -1,5 +1,5 @@
 ﻿using Optionals;
-using RevoltSharp.WebSocket.Events;
+using RevoltSharp.WebSocket;
 using System;
 using System.Linq;
 

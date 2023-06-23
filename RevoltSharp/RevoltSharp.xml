@@ -2957,25 +2957,6 @@
             </summary>
             <returns>An empty optional.</returns>
         </member>
-        <member name="T:Optionals.OptionExtensions">
-            <summary>
-            Optional wrapper for specifying properties that can be missing or included.
-            </summary>
-        </member>
-        <member name="M:Optionals.OptionExtensions.Some``1(``0)">
-            <summary>
-            Wraps an existing value in an Option&lt;T&gt; instance.
-            </summary>
-            <param name="value">The value to be wrapped.</param>
-            <returns>An optional containing the specified value.</returns>
-        </member>
-        <member name="M:Optionals.OptionExtensions.None``1(``0)">
-            <summary>
-            Creates an empty Option&lt;T&gt; instance from a specified value.
-            </summary>
-            <param name="value">A value determining the type of the optional.</param>
-            <returns>An empty optional.</returns>
-        </member>
         <member name="T:Optionals.Optional`1">
             <summary>
             Represents an optional value.

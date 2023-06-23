@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace RevoltSharp;
+﻿namespace RevoltSharp;
 
 public class SelfUser : User
 {

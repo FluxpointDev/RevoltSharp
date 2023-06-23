@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RevoltSharp;
+﻿namespace RevoltSharp;
 public class MessageWebhook : CreatedEntity
 {
     internal MessageWebhook(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)

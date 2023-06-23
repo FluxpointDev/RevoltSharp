@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket.Events;
+namespace RevoltSharp.WebSocket;
 
 internal class ChannelGroupJoinEventJson
 {
@@ -9,4 +9,12 @@ internal class ChannelGroupJoinEventJson
 
     [JsonProperty("user")]
     public string? UserId;
+}
+internal class ChannelGroupLeaveEventJson
+{
+	[JsonProperty("id")]
+	public string? ChannelId;
+
+	[JsonProperty("user")]
+	public string? UserId;
 }

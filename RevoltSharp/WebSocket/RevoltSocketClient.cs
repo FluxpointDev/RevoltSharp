@@ -267,7 +267,7 @@ internal class RevoltSocketClient
 
                             Client.SavedMessagesChannel = (SavedMessagesChannel)ChannelCache.Values.FirstOrDefault(x => x.Type == ChannelType.SavedMessages);
 
-                            foreach (var c in ChannelCache.Values.Where(x => x.Type == ChannelType.DM))
+                            foreach (Channel? c in ChannelCache.Values.Where(x => x.Type == ChannelType.DM))
                             {
                                 DMChannel DM = (DMChannel)c;
                                 if (UserCache.TryGetValue(DM.UserId, out User user))
@@ -373,7 +373,7 @@ internal class RevoltSocketClient
                                 return;
                         }
 
-                        Client.InvokeMessageDeleted(channel, @event.Id);
+                        Client.InvokeMessageDeleted(channel, @event.MessageId);
                     }
                     break;
                 case "BulkMessageDelete":
@@ -387,7 +387,7 @@ internal class RevoltSocketClient
                                 return;
                         }
 
-                        Client.InvokeMessagesBulkDeleted(channel, @event.Ids);
+                        Client.InvokeMessagesBulkDeleted(channel, @event.MessageIds);
                     }
                     break;
 
@@ -637,13 +637,13 @@ internal class RevoltSocketClient
                                         @event.Data.Avatar = Optional.Some<AttachmentJson>(null);
                                         break;
                                     case "Nickname":
-                                        @event.Data.Nickname = Optional.Some<string>("");
+                                        @event.Data.Nickname = Optional.Some("");
                                         break;
                                     case "Timeout":
                                         @event.Data.ClearTimeout = true;
                                         break;
                                     case "Roles":
-                                        @event.Data.Roles = Optional.Some<string[]>(Array.Empty<string>());
+                                        @event.Data.Roles = Optional.Some(Array.Empty<string>());
                                         break;
                                 }
                             }
@@ -756,7 +756,7 @@ internal class RevoltSocketClient
                             {
                                 _ = Task.Run(() =>
                                 {
-                                    foreach (var i in server.InternalMembers.Values)
+                                    foreach (ServerMember i in server.InternalMembers.Values)
                                     {
                                         i.Permissions = new ServerPermissions(server, i);
                                     }
@@ -775,7 +775,7 @@ internal class RevoltSocketClient
                     break;
                 case "ServerRoleDelete":
                     {
-                        ServerRoleDeleteEventJson @event = payload.ToObject<ServerRoleDeleteEventJson>(Client.Deserializer);
+                        ServerRoleEventsJson @event = payload.ToObject<ServerRoleEventsJson>(Client.Deserializer);
                         if (!ServerCache.TryGetValue(@event.Id, out Server server))
                             return;
 
@@ -984,7 +984,7 @@ internal class RevoltSocketClient
                             return;
                         _ = Task.Run(() =>
                         {
-                            foreach (var c in ChannelCache.Values)
+                            foreach (Channel c in ChannelCache.Values)
                             {
                                 switch (c.Type)
                                 {
@@ -1005,7 +1005,7 @@ internal class RevoltSocketClient
                                         break;
                                 }
                             }
-                            foreach (var s in ServerCache.Values)
+                            foreach (Server s in ServerCache.Values)
                             {
                                 User.InternalMutualServers.TryRemove(s.Id, out Server _);
                                 s.InternalMembers.Remove(User.Id, out ServerMember SM);

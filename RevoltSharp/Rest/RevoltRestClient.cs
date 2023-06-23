@@ -40,14 +40,14 @@ public class RevoltRestClient
 
         HttpClient = new HttpClient()
         {
-            BaseAddress = new System.Uri(Client.Config.ApiUrl)
+            BaseAddress = new Uri(Client.Config.ApiUrl)
         };
         HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
         HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         FileHttpClient = new HttpClient()
         {
-            BaseAddress = new System.Uri(Client.Config.Debug.UploadUrl)
+            BaseAddress = new Uri(Client.Config.Debug.UploadUrl)
         };
         FileHttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
 
@@ -153,11 +153,11 @@ public class RevoltRestClient
         Conditions.FileNameEmpty(name, nameof(UploadFileAsync));
 
         HttpRequestMessage Mes = new HttpRequestMessage(HttpMethod.Post, GetUploadType(type));
-        MultipartFormDataContent MP = new System.Net.Http.MultipartFormDataContent("file");
+        MultipartFormDataContent MP = new MultipartFormDataContent("file");
         ByteArrayContent Image = new ByteArrayContent(bytes);
         MP.Add(Image, "file", name);
         Mes.Content = MP;
-        HttpResponseMessage Req = await FileHttpClient.SendAsync(Mes);
+		HttpResponseMessage Req = await FileHttpClient.SendAsync(Mes);
 
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {

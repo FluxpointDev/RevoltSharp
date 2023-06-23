@@ -6,6 +6,5 @@ public class Option<TValue>
     {
         Value = value;
     }
-    public TValue Value;
-
+    public readonly TValue Value;
 }

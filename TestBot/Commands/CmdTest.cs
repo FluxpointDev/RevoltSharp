@@ -14,6 +14,13 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("messages")]
+    public async Task Messages()
+    {
+        var Messages = await Context.Channel.GetMessagesAsync(1);
+        await ReplyAsync(Messages.Count().ToString());
+    }
+
     [Command("permtest")]
     public async Task PermTest()
     {
@@ -342,7 +349,7 @@ public class CmdTest : ModuleBase
     [Command("embed")]
     public async Task Embed()
     {
-        await Context.Channel.SendMessageAsync("Hello", new RevoltSharp.Embed[]
+        await Context.Channel.SendMessageAsync("Hello", new Embed[]
         {
             new EmbedBuilder
             {
@@ -381,7 +388,7 @@ public class CmdTest : ModuleBase
     public async Task FullTestClient()
     {
         Console.WriteLine("Running self user tests");
-        var SP = await Context.Client.CurrentUser.GetProfileAsync();
+		Profile SP = await Context.Client.CurrentUser.GetProfileAsync();
         if (SP == null)
             Console.WriteLine("- Profile null");
 
@@ -393,16 +400,16 @@ public class CmdTest : ModuleBase
             throw new Exception("Failed to get user");
         await User.BlockAsync();
         await User.UnBlockAsync();
-        var DM = await User.GetDMChannelAsync();
+		DMChannel DM = await User.GetDMChannelAsync();
         if (DM == null)
             throw new Exception("Failed to get DM");
 
-        var UP = await User.GetProfileAsync();
+		Profile UP = await User.GetProfileAsync();
         if (UP == null)
             throw new Exception("Failed to get DM");
 
         Console.WriteLine("Running dm tests");
-        var DMM = await DM.SendMessageAsync("Hi");
+		UserMessage DMM = await DM.SendMessageAsync("Hi");
 
         await DMM.DeleteAsync();
         await DM.CloseAsync();
@@ -410,11 +417,11 @@ public class CmdTest : ModuleBase
 
         Console.WriteLine("Running group tests");
 
-        var GC = Context.Client.GetGroupChannel("01G2GCGG376T4E3AV41S6ADGPQ");
+		GroupChannel GC = Context.Client.GetGroupChannel("01G2GCGG376T4E3AV41S6ADGPQ");
         if (GC == null)
             throw new Exception("Failed to get Group");
 
-        var GCM = await GC.SendMessageAsync("Hi");
+		UserMessage GCM = await GC.SendMessageAsync("Hi");
         await GCM.DeleteAsync();
 
         //var GCMembers = await GC.GetMembersAsync();
@@ -424,11 +431,11 @@ public class CmdTest : ModuleBase
         await GC.ModifyAsync(new Option<string>("Tags Test"), new Option<string>("Desc here"));
 
         Console.WriteLine("Running saved message tests");
-        var Saved = await Context.Client.Rest.GetOrCreateSavedMessageChannelAsync();
+		SavedMessagesChannel Saved = await Context.Client.Rest.GetOrCreateSavedMessageChannelAsync();
         if (Saved == null)
             throw new Exception("Failed to get saved message channel");
 
-        var SM = await Saved.SendMessageAsync("Hi");
+		UserMessage SM = await Saved.SendMessageAsync("Hi");
         await SM.DeleteAsync();
     }
 
@@ -437,7 +444,7 @@ public class CmdTest : ModuleBase
     {
 
         Server Server = Context.Client.GetServer("01G2RNRDXXEZP3WEHQZEY4GE79");
-        var MSG = await Context.Channel.SendMessageAsync("Hi", new RevoltSharp.Embed[]
+		UserMessage MSG = await Context.Channel.SendMessageAsync("Hi", new Embed[]
         {
             new EmbedBuilder
             {

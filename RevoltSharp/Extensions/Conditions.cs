@@ -92,8 +92,6 @@ internal static class Conditions
             throw new RevoltArgumentException($"Message content is more than 2000 characters for the {request} request.");
     }
 
-
-
     internal static void ServerIdEmpty(string serverId, string request)
     {
         if (string.IsNullOrEmpty(serverId))

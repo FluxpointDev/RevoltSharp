@@ -52,7 +52,7 @@ internal static class ReflectionUtils
     }
     private static PropertyInfo[] GetProperties(TypeInfo ownerType)
     {
-        List<PropertyInfo> result = new List<System.Reflection.PropertyInfo>();
+        List<PropertyInfo> result = new List<PropertyInfo>();
         while (ownerType != ObjectTypeInfo)
         {
             foreach (PropertyInfo prop in ownerType.DeclaredProperties)

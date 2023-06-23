@@ -9,7 +9,6 @@ using System.Reflection;
 namespace Optionals;
 public class RevoltContractResolver : DefaultContractResolver
 {
-    #region DiscordContractResolver
     private static readonly TypeInfo _ienumerable = typeof(IEnumerable<ulong[]>).GetTypeInfo();
     private static readonly MethodInfo _shouldSerialize = typeof(RevoltContractResolver).GetTypeInfo().GetDeclaredMethod("ShouldSerialize");
 
@@ -57,51 +56,7 @@ public class RevoltContractResolver : DefaultContractResolver
             }
             else if (genericType == typeof(Nullable<>))
                 return MakeGenericConverter(property, propInfo, typeof(NullableConverter<>), type.GenericTypeArguments[0], depth);
-            //else if (genericType == typeof(EntityOrId<>))
-            //    return MakeGenericConverter(property, propInfo, typeof(UInt64EntityOrIdConverter<>), type.GenericTypeArguments[0], depth);
         }
-        #endregion
-
-        #region Primitives
-        //bool hasInt53 = propInfo.GetCustomAttribute<Int53Attribute>() != null;
-        //if (!hasInt53)
-        //{
-        //    if (type == typeof(ulong))
-        //        return UInt64Converter.Instance;
-        //}
-        //bool hasUnixStamp = propInfo.GetCustomAttribute<UnixTimestampAttribute>() != null;
-        //if (hasUnixStamp)
-        //{
-        //    if (type == typeof(DateTimeOffset))
-        //        return UnixTimestampConverter.Instance;
-        //}
-
-        //Enums
-        //if (type == typeof(UserStatus))
-        //    return UserStatusConverter.Instance;
-        //if (type == typeof(EmbedType))
-        //    return EmbedTypeConverter.Instance;
-
-        //Special
-        //if (type == typeof(API.Image))
-        //    return ImageConverter.Instance;
-        //if (typeof(IMessageComponent).IsAssignableFrom(type))
-        //    return MessageComponentConverter.Instance;
-        //if (type == typeof(API.Interaction))
-        //    return InteractionConverter.Instance;
-        //if (type == typeof(API.DiscordError))
-        //    return DiscordErrorConverter.Instance;
-        //if (type == typeof(GuildFeatures))
-        //    return GuildFeaturesConverter.Instance;
-
-        //Entities
-        //TypeInfo typeInfo = type.GetTypeInfo();
-        //if (typeInfo.ImplementedInterfaces.Any(x => x == typeof(IEntity<ulong>)))
-        //    return UInt64EntityConverter.Instance;
-
-        //if (typeInfo.ImplementedInterfaces.Any(x => x == typeof(IEntity<string>)))
-        //    return StringEntityConverter.Instance;
-
         return null;
     }
 
@@ -116,7 +71,6 @@ public class RevoltContractResolver : DefaultContractResolver
         JsonConverter innerConverter = GetConverter(property, propInfo, innerType, depth + 1);
         return genericType.DeclaredConstructors.First().Invoke(new object[] { innerConverter }) as JsonConverter;
     }
-    #endregion
 }
 internal class ArrayConverter<T> : JsonConverter
 {

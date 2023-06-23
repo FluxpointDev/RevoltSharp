@@ -63,7 +63,8 @@ public partial struct Ulid
 
     public static Ulid Parse(ReadOnlySpan<char> base32)
     {
-        if (base32.Length != 26) throw new ArgumentException("invalid base32 length, length:" + base32.Length);
+        if (base32.Length != 26) 
+            throw new ArgumentException("invalid base32 length, length:" + base32.Length);
         return new Ulid(base32);
     }
 
@@ -72,7 +73,7 @@ public partial struct Ulid
         return TryParse(base32.AsSpan(), out ulid);
     }
 
-    public static bool TryParse(ReadOnlySpan<char> base32, out Ulid ulid)
+    internal static bool TryParse(ReadOnlySpan<char> base32, out Ulid ulid)
     {
         if (base32.Length != 26)
         {
