@@ -209,11 +209,11 @@ public class User : CreatedEntity
 
         if (this is SelfUser self && data.Profile.HasValue)
         {
-            if (data.Profile.Value.Background != null)
-                self.Background = Attachment.Create(Client, data.Profile.Value.Background);
+            if (data.Profile.Value.Background.HasValue)
+                self.Background = Attachment.Create(Client, data.Profile.Value.Background.Value);
 
-            if (data.Profile.Value.Content != null)
-                self.ProfileBio = data.Profile.Value.Content;
+            if (data.Profile.Value.Content.HasValue)
+                self.ProfileBio = data.Profile.Value.Content.Value;
         }
 
         if (data.Privileged.HasValue)

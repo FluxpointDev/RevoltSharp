@@ -13,6 +13,8 @@ public class UserUpdatedProperties
         Online = json.Online;
         Privileged = json.Privileged;
         Username = json.Username;
+        Discriminator = json.Discriminator;
+        DisplayName = json.DisplayName;
         Badges = json.Badges;
         Flags = json.Flags;
     }
@@ -26,6 +28,10 @@ public class UserUpdatedProperties
     public Optional<bool> Privileged { get; internal set; }
 
     public Optional<string> Username { get; internal set; }
+
+    public Optional<string> Discriminator { get; internal set; }
+
+    public Optional<string> DisplayName { get; internal set; }
 
     public Optional<ulong> Badges { get; internal set; }
 

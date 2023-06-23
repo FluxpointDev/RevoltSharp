@@ -5,19 +5,21 @@ public class Webhook : CreatedEntity
     internal Webhook(RevoltClient client, WebhookJson model) : base(client, model.Id)
     {
         Name = model.Name;
-        Avatar = model.Avatar != null ? new Attachment(Client, model.Avatar) : null;
+        Avatar = Attachment.Create(Client, model.Avatar);
         ChannelId = model.ChannelId;
         Permissions = model.Permissions.HasValue ? model.Permissions.Value : 0;
         Token = model.Token;
     }
 
-    public string Name;
+    public string Name { get; internal set; }
 
-    public Attachment? Avatar;
+    public Attachment? Avatar { get; internal set; }
 
-    public string ChannelId;
+	public string ChannelId { get; internal set; }
 
-    public ulong Permissions;
+	public Channel? Channel => Client.GetChannel(ChannelId); 
 
-    public string Token;
+    public ulong Permissions { get; internal set; }
+
+	public string Token { get; internal set; }
 }

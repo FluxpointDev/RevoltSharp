@@ -4,7 +4,7 @@ public class MessageWebhook : CreatedEntity
     internal MessageWebhook(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
     {
         Name = model.Name;
-        Avatar = model.Avatar != null ? new Attachment(client, model.Avatar) : null;
+        Avatar = Attachment.Create(client, model.Avatar);
     }
 
     public string Id;

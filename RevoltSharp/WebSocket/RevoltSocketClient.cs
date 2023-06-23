@@ -812,10 +812,10 @@ internal class RevoltSocketClient
                             if (@event.Data.Profile.HasValue)
                             {
                                 if (clr.Contains("ProfileContent"))
-                                    @event.Data.Profile.Value.Content = null;
+                                    @event.Data.Profile.Value.Content = Optional.Some<string>(null);
 
                                 if (clr.Contains("ProfileBackground"))
-                                    @event.Data.Profile.Value.Background = null;
+                                    @event.Data.Profile.Value.Background = Optional.Some<AttachmentJson?>(null);
                             }
 
                             if (clr.Contains("StatusText"))
@@ -823,19 +823,22 @@ internal class RevoltSocketClient
 
                             if (clr.Contains("Avatar"))
                                 @event.Data.Avatar = Optional.Some<AttachmentJson>(null);
+
+                            if (clr.Contains("DisplayName"))
+                                @event.Data.DisplayName = Optional.Some<string>(null);
                         }
                         if (@event.Id == CurrentUser.Id)
                         {
                             SelfUser cloned = CurrentUser.Clone();
                             user.Update(@event.Data);
                             CurrentUser.Update(@event.Data);
-                            Client.InvokeCurrentUserUpdated(cloned, CurrentUser);
+                            Client.InvokeCurrentUserUpdated(cloned, CurrentUser, new SelfUserUpdatedProperties(Client, @event.Data));
                         }
                         else
                         {
                             User cloned = user.Clone();
                             user.Update(@event.Data);
-                            Client.InvokeUserUpdated(cloned, user);
+                            Client.InvokeUserUpdated(cloned, user, new UserUpdatedProperties(Client, @event.Data));
                         }
                     }
                     break;

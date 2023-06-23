@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using Optionals;
 
 namespace RevoltSharp;
 
 internal class ProfileJson
 {
     [JsonProperty("content")]
-    public string? Content;
+    public Optional<string?> Content;
 
     [JsonProperty("background")]
-    public AttachmentJson? Background;
+    public Optional<AttachmentJson?> Background;
 }

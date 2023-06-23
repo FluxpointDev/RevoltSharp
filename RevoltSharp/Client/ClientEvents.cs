@@ -31,13 +31,13 @@ public class ClientEvents
     public delegate void RoleEvent(Role role);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void RoleUpdatedEvent(Role old_role, Role new_role, RoleUpdatedProperties updated_props);
+    public delegate void RoleUpdatedEvent(Role old_role, Role new_role, RoleUpdatedProperties properties);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void UserUpdatedEvent(User old_user, User new_user);
+    public delegate void UserUpdatedEvent(User old_user, User new_user, UserUpdatedProperties properties);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void SelfUserUpdatedEvent(SelfUser old_user, SelfUser new_user);
+    public delegate void SelfUserUpdatedEvent(SelfUser old_user, SelfUser new_user, SelfUserUpdatedProperties properties);
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void ServerEvent(Server server);
@@ -73,10 +73,10 @@ public class ClientEvents
     public delegate void GroupChannelUserEvent(GroupChannel channel, User user);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void ChannelUpdatedEvent(Channel old_channel, Channel new_channel, ChannelUpdatedProperties updated_props);
+    public delegate void ChannelUpdatedEvent(Channel old_channel, Channel new_channel, ChannelUpdatedProperties properties);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void ServerUpdatedEvent(Server old_server, Server new_server, ServerUpdatedProperties updated_props);
+    public delegate void ServerUpdatedEvent(Server old_server, Server new_server, ServerUpdatedProperties properties);
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void ReactionEvent(Emoji emoji, Channel channel, Downloadable<string, User> user_cache, Downloadable<string, Message> message_cache);
@@ -358,18 +358,18 @@ public class ClientEvents
     /// </summary>
 
     public event UserUpdatedEvent? OnUserUpdated;
-    internal void InvokeUserUpdated(User old, User newu)
+    internal void InvokeUserUpdated(User old, User newu, UserUpdatedProperties props)
     {
-        OnUserUpdated?.Invoke(old, newu);
+        OnUserUpdated?.Invoke(old, newu, props);
     }
 
     /// <summary>
     /// The current user/bot account has been updated.
     /// </summary>
     public event SelfUserUpdatedEvent? OnCurrentUserUpdated;
-    internal void InvokeCurrentUserUpdated(SelfUser old, SelfUser newu)
+    internal void InvokeCurrentUserUpdated(SelfUser old, SelfUser newu, SelfUserUpdatedProperties props)
     {
-        OnCurrentUserUpdated?.Invoke(old, newu);
+        OnCurrentUserUpdated?.Invoke(old, newu, props);
     }
 
     /// <summary>

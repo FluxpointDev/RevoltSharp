@@ -14,11 +14,11 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
-    [Command("messages")]
+    [Command("bans")]
     public async Task Messages()
     {
-        var Messages = await Context.Channel.GetMessagesAsync(1);
-        await ReplyAsync(Messages.Count().ToString());
+        var Messages = await Context.Server.GetBansAsync();
+
     }
 
     [Command("permtest")]
