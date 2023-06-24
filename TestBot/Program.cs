@@ -23,14 +23,13 @@ class Program
         
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
-            LogMode = RevoltLogSeverity.Verbose,
-            LogReducedColors = true,
+            LogMode = RevoltLogSeverity.Warn,
             ApiUrl = "https://revolt.chat/api/",
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = false,
                 LogRestResponseJson = false,
-                LogRestRequest = false,
+                LogRestRequest = true,
                 LogWebSocketFull = false,
                 LogWebSocketReady = false,
                 LogWebSocketError = false,

@@ -86,7 +86,7 @@ public class RevoltLogger
 		}
 	}
 
-	public void LogRestMessage(RevoltClient client, HttpResponseMessage res, string message)
+	public void LogRestMessage(RevoltClient client, HttpResponseMessage res, HttpMethod method, string message)
 	{
 		if (!client.Config.Debug.LogRestRequest)
 			return;
@@ -94,16 +94,16 @@ public class RevoltLogger
 		if (res.IsSuccessStatusCode)
 		{
 			if (!client.Config.LogReducedColors)
-				Console.WriteLine($"[RevoltSharp] {Green}{message}{Reset}");
+				Console.WriteLine($"[RevoltSharp] {Green}({method.Method.ToUpper()}) {message}{Reset}");
 			else
-				Console.WriteLine($"[RevoltSharp] {Green}Ok{Reset}   : {message}");
+				Console.WriteLine($"[RevoltSharp] {Green}Ok{Reset}   : ({method.Method.ToUpper()}) {message}");
 		}
 		else
 		{
 			if (!client.Config.LogReducedColors)
-				Console.WriteLine($"[RevoltSharp] {Cyan}{message}{Reset}");
+				Console.WriteLine($"[RevoltSharp] {Cyan}({method.Method.ToUpper()}) {message}{Reset}");
 			else
-				Console.WriteLine($"[RevoltSharp] {Cyan}Fail{Reset} : {message}");
+				Console.WriteLine($"[RevoltSharp] {Cyan}Fail{Reset} : ({method.Method.ToUpper()}) {message}");
 		}
 	}
 }

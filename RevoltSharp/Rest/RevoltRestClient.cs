@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -181,10 +182,15 @@ public class RevoltRestClient
             }
         }
 
-        if (Client.Config.Debug.LogRestRequest)
-            Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, Client.SerializerSettings));
+		if (Client.Config.Debug.LogRestRequest)
+		{
+			Client.Logger.LogRestMessage(Client, Req, HttpMethod.Post, "upload: " + GetUploadType(type));
 
-        if (!Req.IsSuccessStatusCode)
+			if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
+				Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+		}
+
+		if (!Req.IsSuccessStatusCode)
         {
             RestError Error = null;
             if (Req.Content.Headers.ContentLength.HasValue)
@@ -268,12 +274,16 @@ public class RevoltRestClient
             }
         }
 
-        if (Client.Config.Debug.LogRestRequest)
-            Console.WriteLine("--- Rest Request ---\n" + JsonConvert.SerializeObject(Req, Formatting.Indented, Client.SerializerSettings));
+		if (Client.Config.Debug.LogRestRequest)
+		{
+			Client.Logger.LogRestMessage(Client, Req, method, endpoint);
+
+			if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
+				Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+		}
 
 
-
-        if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
+		if (method != HttpMethod.Get && !Req.IsSuccessStatusCode)
         {
             RestError Error = null;
             if (Req.Content.Headers.ContentLength.HasValue)
@@ -349,7 +359,7 @@ public class RevoltRestClient
 
         if (Client.Config.Debug.LogRestRequest)
         {
-            Client.Logger.LogRestMessage(Client, Req, endpoint);
+            Client.Logger.LogRestMessage(Client, Req, method, endpoint);
 
             if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
                 Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
@@ -380,7 +390,7 @@ public class RevoltRestClient
                 }
                 catch { }
             }
-			Client.Logger.LogRestMessage(Client, Req, endpoint);
+			Client.Logger.LogRestMessage(Client, Req, method, endpoint);
 			if (Error != null)
                 throw new RevoltRestException($"Request failed due to {Error.Type} ({Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
             else

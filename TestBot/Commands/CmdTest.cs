@@ -5,9 +5,10 @@ using RevoltSharp;
 using RevoltSharp.Commands;
 using RevoltSharp.Rest;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestBot.Commands;
@@ -238,11 +239,26 @@ public class CmdTest : ModuleBase
         Console.WriteLine("--- --- ---");
     }
 
-    [Command("test")]
+    public static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
+
+	[Command("test")]
     public async Task Test()
     {
-        await ReplyAsync("Hi");
-    }
+		Console.WriteLine(semaphoreSlim.CurrentCount);
+		await semaphoreSlim.WaitAsync();
+		try
+		{
+            
+			await ReplyAsync("Test");
+			await Task.Delay(30000);
+            Console.WriteLine("Done delay");
+		}
+		finally
+		{
+            Console.WriteLine("Release");
+			semaphoreSlim.Release();
+		}
+	}
 
     [Command("testcontext")]
     public async Task TestContext()
