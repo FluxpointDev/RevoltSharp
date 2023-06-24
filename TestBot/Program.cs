@@ -85,7 +85,7 @@ public class CommandHandler
     private void Client_OnMessageRecieved(Message msg)
     {
         UserMessage Message = msg as UserMessage;
-        if (Message == null || Message.Author.IsBot)
+        if (Message == null || Message.Type != MessageType.User || Message.Author.IsBot)
             return;
         int argPos = 0;
         if (!(Message.HasStringPrefix(Prefix, ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
