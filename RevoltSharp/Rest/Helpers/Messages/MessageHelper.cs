@@ -167,7 +167,21 @@ public static class MessageHelper
         if (Data == null)
             return null;
 
-        return Message.Create(rest.Client, Data);
+		Message msg = Message.Create(rest.Client, Data);
+
+        if (msg.Type == MessageType.User && rest.Client.Mode == ClientMode.Http)
+        {
+            rest.Client.InvokeLog("Http mode fetching ", RevoltLogSeverity.Verbose);
+			msg.Author = await rest.GetUserAsync(msg.AuthorId);
+		}
+        else
+        {
+
+            if (msg.Type == MessageType.User && msg.Author == null)
+                msg.Author = await rest.GetUserAsync(msg.AuthorId);
+        }
+
+        return msg;
     }
 
     /// <inheritdoc cref="EditMessageAsync(RevoltRestClient, string, string, Option{string}, Option{Embed[]})" />

@@ -28,12 +28,6 @@ public class UserMessage : Message
     public MessageMasquerade? Masquerade { get; internal set; }
 
     //public MessageWebhook? Webhook { get; internal set; }
-
-    /// <summary>
-    /// This message was sent by webhook.
-    /// </summary>
-    public bool IsWebhook => Author != null && Author.IsWebhook;
-
     internal UserMessage(RevoltClient client, MessageJson model)
         : base(client, model)
     {
@@ -43,14 +37,9 @@ public class UserMessage : Message
         Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => Attachment.Create(client, a)!));
         Mentions = model.Mentions == null ? new List<string>() : new List<string>(model.Mentions);
         Replies = model.Replies == null ? new List<string>() : new List<string>(model.Replies);
-        if (model.Webhook != null)
-        {
-            AuthorId = model.Webhook.Id;
-            Author = new User(Client, model.Webhook);
-		}
         //Webhook = model.Webhook != null ? new MessageWebhook(client, model.Webhook) : null;
-        if (model.Edited.HasValue)
-            EditedAt = model.Edited.Value;
+        if (model.EditedAt.HasValue)
+            EditedAt = model.EditedAt.Value;
         Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(client, x)!));
 
         if (!model.Reactions.HasValue)

@@ -6,6 +6,7 @@ using RevoltSharp.Commands;
 using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +15,15 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("testlog")]
+    public async Task TestLog()
+    {
+        Context.Client.InvokeLog("Info", RevoltLogSeverity.Info);
+        Context.Client.InvokeLog("Warn", RevoltLogSeverity.Warn);
+        Context.Client.InvokeLog("Error", RevoltLogSeverity.Error);
+        Context.Client.InvokeLog("Debug", RevoltLogSeverity.Verbose);
+    }
+
     [Command("bans")]
     public async Task Messages()
     {

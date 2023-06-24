@@ -33,19 +33,21 @@ public class RevoltClient : ClientEvents
     /// <param name="config">Optional config stuff for the bot and lib.</param>
     public RevoltClient(string token, ClientMode mode, ClientConfig? config = null)
     {
-        if (string.IsNullOrEmpty(token))
+        Logger = new RevoltLogger();
+
+		if (string.IsNullOrEmpty(token))
             throw new RevoltArgumentException("Client token is missing!");
 
         Token = token;
         Config = config ?? new ClientConfig();
         ConfigSafetyChecks();
 
-        if (!Config.Debug.EnableConsoleQuickEdit)
+		if (!Config.Debug.EnableConsoleQuickEdit)
         {
             try
             {
                 DisableConsoleQuickEdit.Go();
-            }
+			}
             catch { }
         }
         UserBot = Config.UserBot;
@@ -61,11 +63,14 @@ public class RevoltClient : ClientEvents
         Deserializer.Converters.Add(Converter);
 
         Rest = new RevoltRestClient(this);
-        if (mode == ClientMode.WebSocket)
+        Mode = mode;
+		if (Mode == ClientMode.WebSocket)
             WebSocket = new RevoltSocketClient(this);
     }
 
-    private void ConfigSafetyChecks()
+    public ClientMode Mode { get; internal set; }
+
+	private void ConfigSafetyChecks()
     {
         if (string.IsNullOrEmpty(Config.ApiUrl))
             throw new RevoltException("Config API Url is missing");
@@ -114,6 +119,8 @@ public class RevoltClient : ClientEvents
 
     internal RevoltSocketClient? WebSocket;
 
+    internal RevoltLogger Logger;
+
     internal bool FirstConnection = true;
     internal bool IsConnected = false;
 
@@ -159,7 +166,7 @@ public class RevoltClient : ClientEvents
             }
 
             if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
-                InvokeLogAndThrowException("Server Image server URL is an invalid format.");
+                InvokeLogAndThrowException("Image server url is an invalid format.");
 
             RevoltVersion = Query.revoltVersion;
             Config.Debug.WebsocketUrl = Query.websocketUrl;
@@ -186,7 +193,7 @@ public class RevoltClient : ClientEvents
             }
 
             CurrentUser = new SelfUser(this, SelfUser);
-            InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Standard);
+            InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Info);
             InvokeStarted(CurrentUser);
         }
 
@@ -217,7 +224,7 @@ public class RevoltClient : ClientEvents
     /// <exception cref="RevoltException"></exception>
     public async Task StopAsync()
     {
-        if (WebSocket == null)
+        if (Mode == ClientMode.Http)
             throw new RevoltException("Client is in HTTP-only mode.");
 
         if (WebSocket.WebSocket != null)
@@ -270,6 +277,32 @@ public class RevoltClient : ClientEvents
             return Chan;
         return null;
     }
+
+	#region Log Event
+
+	/// <summary>
+	/// Called to display information, events, and errors originating from the <see cref="RevoltClient"/>.
+	/// </summary>
+	/// <remarks>
+	/// By default, RevoltSharp will log its events to the <see cref="Console"/>. Adding a subscriber to this event overrides this behavior.
+	/// </remarks>
+	public event LogEvent? OnLog;
+
+	public void InvokeLog(string message, RevoltLogSeverity severity)
+	{
+		if (Config.LogMode != RevoltLogSeverity.None)
+            Logger.LogMessage(this, message, severity);
+
+		OnLog?.Invoke(message, severity);
+	}
+
+	internal void InvokeLogAndThrowException(string message)
+	{
+		InvokeLog(message, RevoltLogSeverity.Error);
+		throw new RevoltException(message);
+	}
+
+	#endregion
 }
 
 /// <summary>

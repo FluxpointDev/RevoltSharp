@@ -6,10 +6,7 @@ namespace RevoltSharp.WebSocket;
 
 internal class MessageEventJson : MessageJson
 {
-    internal Message ToEntity(RevoltClient client)
-    {
-        return Message.Create(client, this);
-    }
+    
 }
 internal class MessageDeleteEventJson
 {

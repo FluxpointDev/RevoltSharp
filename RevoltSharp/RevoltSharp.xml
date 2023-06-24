@@ -373,34 +373,6 @@
             Contains message id or <see cref="T:RevoltSharp.Message" /> that can be downloaded.
             </remarks>
         </member>
-        <member name="E:RevoltSharp.ClientEvents.OnLog">
-            <summary>
-            Called to display information, events, and errors originating from the <see cref="T:RevoltSharp.RevoltClient"/>.
-            </summary>
-            <remarks>
-            By default, RevoltSharp will log its events to the <see cref="T:System.Console"/>. Adding a subscriber to this event overrides this behavior.
-            </remarks>
-        </member>
-        <member name="T:RevoltSharp.RevoltLogSeverity">
-            <summary>
-            The severity of a log message raised by <see cref="E:RevoltSharp.ClientEvents.OnLog"/>.
-            </summary>
-        </member>
-        <member name="F:RevoltSharp.RevoltLogSeverity.Verbose">
-            <summary>
-            Debug info message.
-            </summary>
-        </member>
-        <member name="F:RevoltSharp.RevoltLogSeverity.Error">
-            <summary>
-            Error message info.
-            </summary>
-        </member>
-        <member name="F:RevoltSharp.RevoltLogSeverity.Standard">
-            <summary>
-            Standard error message.
-            </summary>
-        </member>
         <member name="T:RevoltSharp.RevoltClient">
             <summary>
             Revolt client used to connect to the Revolt chat API and WebSocket with a user or bot token.
@@ -513,6 +485,14 @@
             </summary>
             <remarks>
             Will be empty if <see cref="F:RevoltSharp.ClientMode.Http"/>.
+            </remarks>
+        </member>
+        <member name="E:RevoltSharp.RevoltClient.OnLog">
+            <summary>
+            Called to display information, events, and errors originating from the <see cref="T:RevoltSharp.RevoltClient"/>.
+            </summary>
+            <remarks>
+            By default, RevoltSharp will log its events to the <see cref="T:System.Console"/>. Adding a subscriber to this event overrides this behavior.
             </remarks>
         </member>
         <member name="T:RevoltSharp.ClientMode">
@@ -649,6 +629,36 @@
         <member name="T:RevoltSharp.RevoltArgumentException">
             <summary>
             Custom exception for the Revolt client when user enters a missing or wrong argument.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.RevoltLogSeverity">
+            <summary>
+            The severity of a log message raised by <see cref="!:ClientEvents.OnLog"/>.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogSeverity.Verbose">
+            <summary>
+            Debug info message.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogSeverity.Error">
+            <summary>
+            Error message info.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogSeverity.Warn">
+            <summary>
+            Log info and warning messages.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogSeverity.Info">
+            <summary>
+            Only log info messages.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogSeverity.None">
+            <summary>
+            Do not log anything.
             </summary>
         </member>
         <member name="T:RevoltSharp.Channel">
@@ -1141,6 +1151,11 @@
             Will be <see langword="null" /> for system/webhook messages.
             </remarks>
         </member>
+        <member name="P:RevoltSharp.Message.Type">
+            <summary>
+            Get the type of message this is.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.SystemMessage`1">
             <summary>
             System messages sent by Revolt for information/changes
@@ -1210,11 +1225,6 @@
         <member name="T:RevoltSharp.UserMessage">
             <summary>
             User messages sent with text, author, attachments, embeds, replies, mentions and optional parent server.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.UserMessage.IsWebhook">
-            <summary>
-            This message was sent by webhook.
             </summary>
         </member>
         <member name="T:RevoltSharp.Invite">
@@ -1363,7 +1373,7 @@
             </remarks>
         </member>
         <member name="M:RevoltSharp.ServerMember.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
-            <inheritdoc cref="M:RevoltSharp.User.GetAvatarURL(RevoltSharp.AvatarSources,System.Nullable{System.Int32})"/>
+            <inheritdoc cref="M:RevoltSharp.User.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})"/>
         </member>
         <member name="P:RevoltSharp.ServerMember.RolesIds">
             <summary>
@@ -1437,26 +1447,6 @@
         </member>
         <member name="P:RevoltSharp.ServerMember.MutualGroups">
             <inheritdoc cref="P:RevoltSharp.User.MutualGroups"/>
-        </member>
-        <member name="M:RevoltSharp.ServerMember.GetDefaultAvatarUrl(System.Nullable{System.Int32})">
-            <inheritdoc cref="M:RevoltSharp.User.GetDefaultAvatarUrl(System.Nullable{System.Int32})" />
-        </member>
-        <member name="M:RevoltSharp.ServerMember.GetServerAvatarUrl(System.Nullable{System.Int32})">
-            <summary>
-            Get the avatar url for this member, may be empty.
-            </summary>
-            <returns>URL of the image</returns>
-        </member>
-        <member name="M:RevoltSharp.ServerMember.GetServerAvatarOrDefaultUrl(System.Nullable{System.Int32})">
-            <summary>
-            Get the avatar url of this member or the default Revolt avatar.
-            </summary>
-            <returns>URL of the image</returns>
-        </member>
-        <member name="M:RevoltSharp.ServerMember.GetServerAvatarOrUserAvatarOrDefaultUrl">
-            <summary>
-            Get the avatar url for the member, parent user or default Revolt avatar.
-            </summary>
         </member>
         <member name="P:RevoltSharp.MessageUpdatedProperties.Id">
             <summary>
@@ -1539,19 +1529,7 @@
             Will be <see langword="null" /> if the user has no custom avatar set.
             </remarks>
         </member>
-        <member name="M:RevoltSharp.User.GetDefaultAvatarUrl(System.Nullable{System.Int32})">
-            <summary>
-            Get the default revolt avatar url for this user.
-            </summary>
-            <returns>URL of the image (No extension)</returns>
-        </member>
-        <member name="M:RevoltSharp.User.GetAvatarOrDefaultUrl(System.Nullable{System.Int32})">
-            <summary>
-            Get the user's custom avatar url or the default revolt avatar url. 
-            </summary>
-            <returns>URL of the image</returns>
-        </member>
-        <member name="M:RevoltSharp.User.GetAvatarURL(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+        <member name="M:RevoltSharp.User.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
             <summary>
             Gets the user's avatar.
             </summary>

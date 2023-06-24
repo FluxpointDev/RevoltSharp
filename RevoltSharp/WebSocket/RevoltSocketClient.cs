@@ -223,7 +223,7 @@ internal class RevoltSocketClient
                             await Client.StopAsync();
                         }
 
-                        Client.InvokeWebSocketError(new SocketError { Message = @event.Message, Type = @event.Error });
+                        Client.InvokeWebSocketError(Client, new SocketError { Message = @event.Message, Type = @event.Error });
                     }
                     break;
                 case "Ready":
@@ -301,7 +301,7 @@ internal class RevoltSocketClient
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
-                            Client.InvokeWebSocketError(new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
+                            Client.InvokeWebSocketError(Client, new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
                             await Client.StopAsync();
                         }
                     }
@@ -310,15 +310,15 @@ internal class RevoltSocketClient
                     {
                         MessageEventJson @event = payload.ToObject<MessageEventJson>(Client.Deserializer);
 
-                        if (@event.Author != "00000000000000000000000000" && !UserCache.ContainsKey(@event.Author))
+                        if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
                         {
-                            User user = await Client.Rest.GetUserAsync(@event.Author);
+                            User user = await Client.Rest.GetUserAsync(@event.AuthorId);
                             if (user == null)
                                 return;
                         }
 
-                        if (!ChannelCache.TryGetValue(@event.Channel, out Channel channel))
-                            channel = await Client.Rest.GetChannelAsync(@event.Channel);
+                        if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel channel))
+                            channel = await Client.Rest.GetChannelAsync(@event.ChannelId);
 
                         if (channel == null)
                             return;
@@ -326,23 +326,23 @@ internal class RevoltSocketClient
                         switch (channel.Type)
                         {
                             case ChannelType.Group:
-                                (channel as GroupChannel).LastMessageId = @event.Id;
+                                (channel as GroupChannel).LastMessageId = @event.MessageId;
                                 break;
                             case ChannelType.Text:
                                 {
-                                    (channel as TextChannel).LastMessageId = @event.Id;
-                                    if (@event.Author != "00000000000000000000000000" && channel is TextChannel TC)
+                                    (channel as TextChannel).LastMessageId = @event.MessageId;
+                                    if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && channel is TextChannel TC)
                                     {
-                                        await TC.Server.GetMemberAsync(@event.Author);
+                                        await TC.Server.GetMemberAsync(@event.AuthorId);
                                     }
                                 }
                                 break;
                             case ChannelType.DM:
-                                (channel as DMChannel).LastMessageId = @event.Id;
+                                (channel as DMChannel).LastMessageId = @event.MessageId;
                                 break;
                         }
 
-                        Message MSG = @event.ToEntity(Client);
+                        Message MSG = Message.Create(Client, @event);
                         Client.InvokeMessageRecieved(MSG);
                     }
                     break;

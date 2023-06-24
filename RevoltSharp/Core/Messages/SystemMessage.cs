@@ -10,6 +10,7 @@ public class SystemMessage<Type> : Message where Type : SystemType
     internal SystemMessage(RevoltClient client, MessageJson model, Type type)
         : base(client, model)
     {
+        base.Type = MessageType.System;
         Content = type;
         Content.BaseId = model.System.Id;
         Content.BaseBy = model.System.By;

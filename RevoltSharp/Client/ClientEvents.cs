@@ -106,9 +106,9 @@ public class ClientEvents
     /// Event used when the <see cref="RevoltClient"/> WebSocket has encountered an error.
     /// </summary>
     public event SocketErrorEvent? OnWebSocketError;
-    internal void InvokeWebSocketError(SocketError error)
+    internal void InvokeWebSocketError(RevoltClient client, SocketError error)
     {
-        InvokeLog(error.Message, RevoltLogSeverity.Error);
+        client.InvokeLog(error.Message, RevoltLogSeverity.Error);
         OnWebSocketError?.Invoke(error);
     }
 
@@ -428,41 +428,5 @@ public class ClientEvents
         OnReactionBulkRemoved?.Invoke(emoji, channel, messageDownload);
     }
 
-    #endregion
-
-    #region Log Event
-
-    /// <summary>
-    /// Called to display information, events, and errors originating from the <see cref="RevoltClient"/>.
-    /// </summary>
-    /// <remarks>
-    /// By default, RevoltSharp will log its events to the <see cref="Console"/>. Adding a subscriber to this event overrides this behavior.
-    /// </remarks>
-    public event LogEvent? OnLog;
-
-    internal void InvokeLog(string message, RevoltLogSeverity severity)
-    {
-        if (OnLog == null)
-        {
-            ConsoleColor prevColor = Console.ForegroundColor;
-            switch (severity)
-            {
-                case RevoltLogSeverity.Verbose: Console.ForegroundColor = ConsoleColor.DarkGray; break;
-                case RevoltLogSeverity.Standard: Console.ForegroundColor = ConsoleColor.Gray; break;
-                case RevoltLogSeverity.Error: Console.ForegroundColor = ConsoleColor.Red; break;
-            }
-            Console.WriteLine($"[RevoltSharp] {message}"); // Default implementation
-            Console.ForegroundColor = prevColor;
-        }
-        else
-            OnLog.Invoke(message, severity);
-    }
-
-    internal void InvokeLogAndThrowException(string message)
-    {
-        InvokeLog(message, RevoltLogSeverity.Error);
-        throw new RevoltException(message);
-    }
-
-    #endregion
+	#endregion
 }

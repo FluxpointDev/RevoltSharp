@@ -43,6 +43,10 @@ public class ClientConfig
     /// Please ensure that the user agent and IP used to generate the clearance cookie will be identical to the ones used by your RevoltSharp client, or else CloudFlare will not accept the clearance.
     /// </remarks>
     public string? CfClearance = null;
+
+    public RevoltLogSeverity LogMode = RevoltLogSeverity.Warn;
+
+    public bool LogReducedColors;
 }
 
 /// <summary>

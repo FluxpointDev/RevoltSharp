@@ -63,13 +63,13 @@ public class ServerMember : Entity
     /// </remarks>
     public Attachment? ServerAvatar { get; internal set; }
 
-    /// <inheritdoc cref="User.GetAvatarURL"/>
+    /// <inheritdoc cref="User.GetAvatarUrl"/>
     public string? GetAvatarUrl(AvatarSources which = AvatarSources.Any, int? size = null)
     {
         if (Avatar != null && (which | AvatarSources.Server) != 0)
             return Avatar.GetUrl(size);
 
-        return User.GetAvatarURL(which, size);
+        return User.GetAvatarUrl(which, size);
     }
 
     /// <summary>
@@ -169,36 +169,10 @@ public class ServerMember : Entity
     /// <inheritdoc cref="User.MutualGroups"/>
     [JsonIgnore]
     public IReadOnlyCollection<GroupChannel> MutualGroups => User.MutualGroups;
+	#endregion
 
 
-    /// <inheritdoc cref="User.GetDefaultAvatarUrl" />
-    [Obsolete("Use GetAvatarUrl instead.")]
-    public string GetDefaultAvatarUrl(int? size = null) => GetAvatarUrl(AvatarSources.Default, size)!;
-
-    /// <summary>
-    /// Get the avatar url for this member, may be empty.
-    /// </summary>
-    /// <returns>URL of the image</returns>
-    [Obsolete("Use GetAvatarUrl instead.")]
-    public string? GetServerAvatarUrl(int? size = null) => GetAvatarUrl(AvatarSources.Server, size)!;
-
-    /// <summary>
-    /// Get the avatar url of this member or the default Revolt avatar.
-    /// </summary>
-    /// <returns>URL of the image</returns>
-    [Obsolete("Use GetAvatarUrl instead.")]
-    public string GetServerAvatarOrDefaultUrl(int? size = null) => GetAvatarUrl(AvatarSources.Server | AvatarSources.Default, size)!;
-
-    /// <summary>
-    /// Get the avatar url for the member, parent user or default Revolt avatar.
-    /// </summary>
-    [Obsolete("Use GetAvatarUrl instead.")]
-    public string GetServerAvatarOrUserAvatarOrDefaultUrl() => GetAvatarUrl(AvatarSources.Any)!;
-    #endregion
-
-
-
-    internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
+	internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
     {
         User = user;
         if (user == null && uModel != null)

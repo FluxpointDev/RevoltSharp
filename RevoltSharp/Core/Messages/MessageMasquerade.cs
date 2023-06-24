@@ -7,13 +7,13 @@ public class MessageMasquerade
     public MessageMasquerade(string name, string avatar = "", RevoltColor color = null)
     {
         Name = name;
-        Avatar = avatar;
+        AvatarUrl = avatar;
         Color = color == null ? new RevoltColor("") : color;
     }
     private MessageMasquerade(MessageMasqueradeJson model)
     {
         Name = model.Name;
-        Avatar = model.Avatar;
+        AvatarUrl = model.AvatarUrl;
         if (model.Color.HasValue)
             Color = new RevoltColor(model.Color.Value);
         else
@@ -28,7 +28,7 @@ public class MessageMasquerade
     }
 
     public string? Name { get; }
-    public string? Avatar { get; }
+    public string? AvatarUrl { get; }
     public RevoltColor? Color { get; }
 
     internal MessageMasqueradeJson ToJson()
@@ -37,8 +37,8 @@ public class MessageMasquerade
         if (!string.IsNullOrEmpty(Name))
             Json.Name = Name;
 
-        if (!string.IsNullOrEmpty(Avatar))
-            Json.Avatar = Avatar;
+        if (!string.IsNullOrEmpty(AvatarUrl))
+            Json.AvatarUrl = AvatarUrl;
 
         if (Color != null && !Color.IsEmpty)
             Json.Color = Optional.Some(Color.Hex);

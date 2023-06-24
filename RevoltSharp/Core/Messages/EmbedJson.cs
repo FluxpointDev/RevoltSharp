@@ -29,7 +29,7 @@ internal class EmbedSpecialJson
 internal class EmbedMediaJson
 {
     [JsonProperty("url")]
-    public string URL { get; set; } = null!;
+    public string Url { get; set; } = null!;
 
     [JsonProperty("width")]
     public int Width { get; set; }

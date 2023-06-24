@@ -23,16 +23,18 @@ class Program
         
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
+            LogMode = RevoltLogSeverity.Verbose,
+            LogReducedColors = true,
             ApiUrl = "https://revolt.chat/api/",
             Debug = new ClientDebugConfig
             {
-                LogRestRequestJson = true,
+                LogRestRequestJson = false,
                 LogRestResponseJson = false,
-                LogRestRequest = true,
-                LogWebSocketFull = true,
+                LogRestRequest = false,
+                LogWebSocketFull = false,
                 LogWebSocketReady = false,
-                LogWebSocketError = true,
-                LogWebSocketUnknownEvent = true
+                LogWebSocketError = false,
+                LogWebSocketUnknownEvent = false
             },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });

@@ -8,14 +8,25 @@ namespace RevoltSharp;
 public abstract class Message : CreatedEntity
 {
     internal Message(RevoltClient client, MessageJson model)
-        : base(client, model.Id)
+        : base(client, model.MessageId)
     {
-        ChannelId = model.Channel;
+        ChannelId = model.ChannelId;
         ServerId = null!;
-        AuthorId = model.Author;
+		if (model.Webhook != null)
+		{
+            Type = MessageType.Webhook;
+			AuthorId = model.Webhook.Id;
+			Author = new User(Client, model.Webhook);
+		}
+        else
+        {
+			AuthorId = model.AuthorId;
+			Author = client.GetUser(model.AuthorId);
+            if (Author != null)
+                Type = Author.IsBot ? MessageType.Bot : MessageType.User;
 
-        Author = client.GetUser(model.Author);
-        Channel = client.GetChannel(model.Channel);
+		}
+        Channel = client.GetChannel(model.ChannelId);
 
         if (Channel != null && Channel is ServerChannel SC)
             ServerId = SC.ServerId;
@@ -23,11 +34,11 @@ public abstract class Message : CreatedEntity
 
     internal static Message Create(RevoltClient client, MessageJson model)
     {
-        if (model.Author == "00000000000000000000000000")
+        if (model.AuthorId == "00000000000000000000000000")
         {
             if (model.System != null)
             {
-                switch (model.System.Type)
+                switch (model.System.SystemType)
                 {
                     case "text":
                         return new SystemMessage<SystemText>(client, model, new SystemText());
@@ -105,5 +116,12 @@ public abstract class Message : CreatedEntity
     /// </remarks>
     public User? Author { get; internal set; }
 
-
+    /// <summary>
+    /// Get the type of message this is.
+    /// </summary>
+	public MessageType Type { get; internal set; } = MessageType.User;
+}
+public enum MessageType
+{
+    User, Bot, System, Webhook
 }

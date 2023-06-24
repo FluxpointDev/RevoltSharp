@@ -337,21 +337,30 @@ public class RevoltRestClient
 
             if (Retry != null)
             {
+                Client.InvokeLog($"Retrying request: {endpoint} for {Retry.retry_after}s", RevoltLogSeverity.Warn);
                 await Task.Delay(Retry.retry_after + 2);
                 HttpRequestMessage MesRetry = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
                 if (request != null)
                     MesRetry.Content = Mes.Content;
                 Req = await HttpClient.SendAsync(MesRetry);
             }
-        }
+
+		}
 
         if (Client.Config.Debug.LogRestRequest)
-            Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+        {
+            Client.Logger.LogRestMessage(Client, Req, endpoint);
+
+            if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
+                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+        }
 
 
         if (endpoint == "/" && !Req.IsSuccessStatusCode)
+        {
+            Client.InvokeLog("Revolt API is down", RevoltLogSeverity.Warn);
             throw new RevoltRestException("The Revolt API is down. Please try again later.", 500, RevoltErrorType.Unknown);
-
+        }
 
 
         if (!Req.IsSuccessStatusCode && (throwGetRequest || method != HttpMethod.Get))
@@ -371,7 +380,8 @@ public class RevoltRestClient
                 }
                 catch { }
             }
-            if (Error != null)
+			Client.Logger.LogRestMessage(Client, Req, endpoint);
+			if (Error != null)
                 throw new RevoltRestException($"Request failed due to {Error.Type} ({Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
             else
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
@@ -392,9 +402,11 @@ public class RevoltRestClient
             }
             catch (Exception ex)
             {
+                Client.InvokeLog($"Failed to parse json for {endpoint}", RevoltLogSeverity.Error);
                 throw new RevoltRestException("Failed to parse json response: " + ex.Message, 500, RevoltErrorType.Unknown);
             }
-            if (Response != null && Client.Config.Debug.LogRestResponseJson)
+
+			if (Response != null && Client.Config.Debug.LogRestResponseJson)
                 Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.SerializerSettings));
         }
 #pragma warning disable CS8603 // Possible null reference return.

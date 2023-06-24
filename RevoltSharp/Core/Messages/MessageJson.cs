@@ -8,19 +8,19 @@ namespace RevoltSharp;
 internal class MessageJson
 {
     [JsonProperty("_id")]
-    public string Id = null!;
+    public string MessageId = null!;
 
     [JsonProperty("type")]
-    public string? Type;
+    public string? MessageType;
 
     [JsonProperty("nonce")]
     public string? Nonce;
 
     [JsonProperty("channel")]
-    public string Channel = null!;
+    public string ChannelId = null!;
 
     [JsonProperty("author")]
-    public string Author = null!;
+    public string AuthorId = null!;
 
     [JsonProperty("content")]
     public string? Content;
@@ -44,7 +44,7 @@ internal class MessageJson
     public MessageWebhookJson? Webhook;
 
     [JsonProperty("edited")]
-    public Optional<DateTime> Edited;
+    public Optional<DateTime> EditedAt;
 
     [JsonProperty("reactions")]
     public Optional<Dictionary<string, string[]>> Reactions;
@@ -58,7 +58,7 @@ internal class MessageMasqueradeJson
     public string? Name { get; set; }
 
     [JsonProperty("avatar")]
-    public string? Avatar { get; set; }
+    public string? AvatarUrl { get; set; }
 
     [JsonProperty("colour")]
     public Optional<string> Color { get; set; }
@@ -66,7 +66,7 @@ internal class MessageMasqueradeJson
 internal class MessageSystemJson
 {
     [JsonProperty("type")]
-    public string? Type;
+    public string? SystemType;
 
     [JsonProperty("id")]
     public string? Id;

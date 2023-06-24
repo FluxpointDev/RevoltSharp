@@ -213,7 +213,7 @@ public class EmbedMedia
         if (model == null)
             throw new ArgumentNullException(nameof(model));
 
-        Url = model.URL;
+        Url = model.Url;
         Width = model.Width;
         Height = model.Height;
     }
