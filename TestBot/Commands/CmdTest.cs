@@ -16,6 +16,16 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("webhooks")]
+    public async Task Webhooks()
+    {
+        var Webhooks = await (Context.Channel as TextChannel).GetWebhooksAsync();
+        foreach(var w in Webhooks)
+        {
+            Console.WriteLine($"WH: {w.Name}");
+        }
+    }
+
     [Command("testlog")]
     public async Task TestLog()
     {

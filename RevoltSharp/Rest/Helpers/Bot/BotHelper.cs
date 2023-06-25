@@ -31,7 +31,7 @@ public static class BotHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<SavedMessagesChannel?> GetOrCreateSavedMessageChannelAsync(this RevoltRestClient rest)
     {
-        ChannelJson SC = await rest.SendRequestAsync<ChannelJson>(RequestType.Get, "/users/" + rest.Client.CurrentUser.Id + "/dm");
+        ChannelJson SC = await rest.GetAsync<ChannelJson>("/users/" + rest.Client.CurrentUser.Id + "/dm");
         if (SC == null)
             return null;
         return Channel.Create(rest.Client, SC) as SavedMessagesChannel;
