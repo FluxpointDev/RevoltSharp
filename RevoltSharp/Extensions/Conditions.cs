@@ -165,7 +165,7 @@ internal static class Conditions
 	{
 		if (!string.IsNullOrEmpty(imageUrl) && imageUrl.Length > Const.All_MaxUrlLength)
 			throw new RevoltArgumentException($"Embed image url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
-	}
+	} 
 
 	internal static void EmbedTitleLength(string title, string request)
 	{

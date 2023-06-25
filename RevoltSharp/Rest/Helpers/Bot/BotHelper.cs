@@ -37,4 +37,12 @@ public static class BotHelper
         return Channel.Create(rest.Client, SC) as SavedMessagesChannel;
     }
 
+    public static async Task<PublicBot?> GetPublicBotAsync(this RevoltRestClient rest, string id)
+    {
+        PublicBotJson? Bot = await rest.GetAsync<PublicBotJson>($"/bots/{id}/invite");
+        if (Bot == null)
+            return null;
+
+        return new PublicBot(rest.Client, Bot);
+    }
 }
