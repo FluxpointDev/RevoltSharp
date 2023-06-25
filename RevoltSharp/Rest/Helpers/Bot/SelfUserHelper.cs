@@ -24,6 +24,9 @@ public static class SelfUserHelper
         if (avatar != null)
             Conditions.AvatarIdLength(avatar.Value, nameof(ModifySelfAsync));
 
+        if (statusText != null)
+            Conditions.UserStatusTextLength(statusText.Value, nameof(ModifySelfAsync));
+
         if (profileBackground != null)
             Conditions.BackgroundIdLength(profileBackground.Value, nameof(ModifySelfAsync));
 

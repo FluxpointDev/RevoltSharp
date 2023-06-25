@@ -143,6 +143,18 @@ internal static class Conditions
 			throw new RevoltArgumentException($"Attachment id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
 	}
 
+	internal static void MasqueradeNameLength(string url, string request)
+	{
+		if (url.Length > Const.All_MaxUrlLength)
+			throw new RevoltArgumentException($"Masquerade name can't be more than {Const.All_MaxNameLength} characters for the {request} request.");
+	}
+
+	internal static void MasqueradeAvatarUrlLength(string url, string request)
+	{
+		if (url.Length > Const.All_MaxUrlLength)
+			throw new RevoltArgumentException($"Masquerade avatar url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
+	}
+
 	internal static void MessageIdsCount(string[] ids, string request)
 	{
 		if (ids.Length > Const.Message_MaxDeleteListCount)
@@ -175,7 +187,7 @@ internal static class Conditions
 
 	internal static void MessageContentLength(string content, string request)
 	{
-		if (!string.IsNullOrEmpty(content) && content.Length > Const.Message_MaxContentLength)
+		if (content.Length > Const.Message_MaxContentLength)
 			throw new RevoltArgumentException($"Message content is more than {Const.Message_MaxContentLength} characters for the {request} request.");
 	}
 
@@ -267,6 +279,12 @@ internal static class Conditions
 
 		if (id.Length > Const.All_MaxIdLength)
 			throw new RevoltArgumentException($"Avatar id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+	}
+
+	internal static void UserStatusTextLength(string text, string request)
+	{
+		if (text.Length > Const.User_MaxStatusTextLength)
+			throw new RevoltArgumentException($"User status text length can't be more than {Const.User_MaxStatusTextLength} characters for the {request} request.");
 	}
 
 	internal static void BackgroundIdLength(string id, string request)

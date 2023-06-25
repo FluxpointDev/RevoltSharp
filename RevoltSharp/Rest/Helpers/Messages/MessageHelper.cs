@@ -83,7 +83,12 @@ public static class MessageHelper
             Req.embeds = Optional.Some(embeds.Select(x => x.ToJson()).ToArray());
 
         if (masquerade != null)
-            Req.masquerade = Optional.Some(masquerade.ToJson());
+        {
+            Conditions.MasqueradeNameLength(masquerade.Name, nameof(SendMessageAsync));
+            Conditions.MasqueradeAvatarUrlLength(masquerade.AvatarUrl, nameof(SendMessageAsync));
+
+			Req.masquerade = Optional.Some(masquerade.ToJson());
+		}
 
         if (replies != null)
         {
