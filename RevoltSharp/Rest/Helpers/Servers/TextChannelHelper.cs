@@ -55,7 +55,10 @@ public static class TextChannelHelper
             type = Optional.Some("Text")
         };
         if (!string.IsNullOrEmpty(description))
-            Req.description = Optional.Some(description);
+        {
+            Conditions.ChannelDescriptionLength(description, nameof(CreateTextChannelAsync));
+			Req.description = Optional.Some(description);
+		}
 
         if (nsfw)
             Req.nsfw = Optional.Some(true);

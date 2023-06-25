@@ -1,6 +1,7 @@
 ﻿using RevoltSharp.Rest;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace RevoltSharp;
@@ -132,6 +133,7 @@ internal static class Conditions
 		if (id.Length > Const.All_MaxIdLength)
 			throw new RevoltArgumentException($"Message id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
 	}
+
 	internal static void AttachmentIdLength(string id, string request)
 	{
 		if (id.Length < 1)
@@ -175,6 +177,33 @@ internal static class Conditions
 	{
 		if (!string.IsNullOrEmpty(content) && content.Length > Const.Message_MaxContentLength)
 			throw new RevoltArgumentException($"Message content is more than {Const.Message_MaxContentLength} characters for the {request} request.");
+	}
+
+	internal static void MessageSearchCount(int count, string request)
+	{
+		if (count < 1)
+			throw new RevoltArgumentException($"Message search count can't be less than 1 for the {request} request.");
+
+		if (count > Const.Message_MaxSearchListCount)
+			throw new RevoltArgumentException($"Message search count can't be more than {Const.Message_MaxSearchListCount} for the {request} request.");
+	}
+
+	internal static void MessageNearbyIdLength(string id, string request)
+	{
+		if (id.Length > Const.All_MaxIdLength)
+			throw new RevoltArgumentException($"Message nearby id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+	}
+
+	internal static void MessageAfterIdLength(string id, string request)
+	{
+		if (id.Length > Const.All_MaxIdLength)
+			throw new RevoltArgumentException($"Message after id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+	}
+
+	internal static void MessageBeforeIdLength(string id, string request)
+	{
+		if (id.Length > Const.All_MaxIdLength)
+			throw new RevoltArgumentException($"Message before id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
 	}
 
 	internal static void ImageSizeLength(int? size, string request)
@@ -229,6 +258,26 @@ internal static class Conditions
 
 	#endregion
 
+	#region Bot
+
+	internal static void AvatarIdLength(string id, string request)
+	{
+		if (id.Length < 1)
+			throw new RevoltArgumentException($"Avatar id can't be empty for the {request} request.");
+
+		if (id.Length > Const.All_MaxIdLength)
+			throw new RevoltArgumentException($"Avatar id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+	}
+
+	internal static void BackgroundIdLength(string id, string request)
+	{
+		if (id.Length < 1)
+			throw new RevoltArgumentException($"Background id can't be empty for the {request} request.");
+
+		if (id.Length > Const.All_MaxIdLength)
+			throw new RevoltArgumentException($"Background id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+	}
+
 	internal static void NotAllowedForBots(RevoltRestClient rest, string request)
     {
         if (!rest.Client.UserBot)
@@ -246,4 +295,6 @@ internal static class Conditions
 		if (userId == rest.Client.CurrentUser.Id)
 			throw new RevoltArgumentException($"Cannot perform the {request} request against the current user/bot account.");
 	}
+
+	#endregion
 }

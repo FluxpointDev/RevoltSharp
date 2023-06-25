@@ -21,6 +21,12 @@ public static class SelfUserHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<SelfUser> ModifySelfAsync(this RevoltRestClient rest, Option<string> avatar = null, Option<string> statusText = null, Option<UserStatusType> statusType = null, Option<string> profileBio = null, Option<string> profileBackground = null)
     {
+        if (avatar != null)
+            Conditions.AvatarIdLength(avatar.Value, nameof(ModifySelfAsync));
+
+        if (profileBackground != null)
+            Conditions.BackgroundIdLength(profileBackground.Value, nameof(ModifySelfAsync));
+
         UserJson Json = await rest.SendRequestAsync<UserJson>(RequestType.Patch, $"users/@me", ModifySelfRequest.Create(avatar, statusText, statusType, profileBio, profileBackground));
         return new SelfUser(rest.Client, Json);
     }

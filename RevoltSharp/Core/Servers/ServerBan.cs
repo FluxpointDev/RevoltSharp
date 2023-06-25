@@ -13,9 +13,9 @@ public class ServerBanInfo : CreatedEntity
     public string UserId { get; internal set; }
     public string Reason { get; internal set; }
 }
-public class ServerBanUser : CreatedEntity
+public class ServerBan : CreatedEntity
 {
-    internal ServerBanUser(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json.Id)
+    internal ServerBan(RevoltClient client, ServerBanUserJson json, ServerBanInfoJson jsonInfo) : base(client, json.Id)
     {
         Username = json.Username;
         Discriminator = json.Discriminator;

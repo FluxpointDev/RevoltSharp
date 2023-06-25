@@ -173,8 +173,6 @@ public static class MemberHelper
             return null;
 
         ServerMember SM = new ServerMember(rest.Client, Member, null, User);
-
-
         if (rest.Client.WebSocket != null)
         {
             try

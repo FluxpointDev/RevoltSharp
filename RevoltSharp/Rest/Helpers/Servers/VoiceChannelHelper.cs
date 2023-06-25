@@ -55,7 +55,10 @@ public static class VoiceChannelHelper
             type = Optional.Some("Voice")
         };
         if (!string.IsNullOrEmpty(description))
-            Req.description = Optional.Some(description);
+        {
+            Conditions.ChannelDescriptionLength(description, nameof(CreateVoiceChannelAsync));
+			Req.description = Optional.Some(description);
+		}
 
         ChannelJson Json = await rest.PostAsync<ChannelJson>($"/servers/{serverId}/channels", Req);
         return new VoiceChannel(rest.Client, Json);

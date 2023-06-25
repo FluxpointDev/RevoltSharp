@@ -144,16 +144,30 @@ public static class MessageHelper
     public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
     {
         Conditions.ChannelIdLength(channelId, nameof(GetMessagesAsync));
-
+        Conditions.MessageSearchCount(messageCount, nameof(GetMessagesAsync));
+        
         QueryBuilder QueryBuilder = new QueryBuilder()
             .Add("limit", messageCount)
             .Add("include_users", includeUserDetails)
-            .Add("sort", "Latest")
-            .AddIf(!string.IsNullOrEmpty(nearbyMessageId), "nearby", nearbyMessageId)
-            .AddIf(!string.IsNullOrEmpty(afterMessageId), "after", afterMessageId)
-            .AddIf(!string.IsNullOrEmpty(beforeMessageId), "before", beforeMessageId);
+            .Add("sort", "Latest");
 
-        MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages" + QueryBuilder.GetQuery());
+		if (!string.IsNullOrEmpty(nearbyMessageId))
+        {
+            QueryBuilder.Add("nearby", nearbyMessageId);
+			Conditions.MessageNearbyIdLength(nearbyMessageId, nameof(GetMessagesAsync));
+		}
+		if (!string.IsNullOrEmpty(afterMessageId))
+        {
+			QueryBuilder.Add("after", afterMessageId);
+			Conditions.MessageNearbyIdLength(afterMessageId, nameof(GetMessagesAsync));
+		}
+		if (!string.IsNullOrEmpty(beforeMessageId))
+        {
+			QueryBuilder.Add("before", beforeMessageId);
+			Conditions.MessageNearbyIdLength(beforeMessageId, nameof(GetMessagesAsync));
+		}
+
+		MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages" + QueryBuilder.GetQuery());
         if (Data == null)
             return Array.Empty<Message>();
 
@@ -256,7 +270,6 @@ public static class MessageHelper
         Conditions.ChannelIdLength(channelId, nameof(DeleteMessageAsync));
         Conditions.MessageIdLength(messageId, nameof(DeleteMessageAsync));
 
-
         await rest.DeleteAsync($"channels/{channelId}/messages/{messageId}");
     }
 
@@ -277,7 +290,6 @@ public static class MessageHelper
     {
         Conditions.ChannelIdLength(channelId, nameof(DeleteMessagesAsync));
         Conditions.MessageIdsCount(messageIds, nameof(DeleteMessagesAsync));
-
 
         await rest.DeleteAsync($"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest
         {
