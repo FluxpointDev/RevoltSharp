@@ -68,6 +68,9 @@ public static class ChannelHelper
     internal static async Task<TChannel> InternalModifyChannelAsync<TChannel>(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null) where TChannel : Channel
     {
         Conditions.ChannelIdEmpty(channelId, nameof(ModifyChannelAsync));
+        Conditions.CheckIdLength(channelId, "Channel ID", nameof(ModifyChannelAsync));
+        Conditions.CheckNameLength(name, "Channel name", nameof(ModifyChannelAsync));
+        Conditions.CheckDescriptionLength(desc, "Channel description", nameof(ModifyChannelAsync));
 
         ModifyChannelRequest Req = new ModifyChannelRequest();
         if (name != null)

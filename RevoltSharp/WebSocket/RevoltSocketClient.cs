@@ -310,6 +310,8 @@ internal class RevoltSocketClient
                     {
                         MessageEventJson @event = payload.ToObject<MessageEventJson>(Client.Deserializer);
 
+
+
                         if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
                         {
                             User user = await Client.Rest.GetUserAsync(@event.AuthorId);

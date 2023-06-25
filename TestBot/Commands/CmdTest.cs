@@ -356,7 +356,7 @@ public class CmdTest : ModuleBase
         await ReplyAsync(String.Join(", ", Member.Roles.Select(x => x.Name)));
     }
 
-    [Command("removerole")]
+    [Command("removerole"), RequireOwner]
     public async Task RemoveRole()
     {
         ServerMember Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");

@@ -1,11 +1,55 @@
 ﻿using RevoltSharp.Rest;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace RevoltSharp;
 
 internal static class Conditions
 {
-    internal static void EmbedsNotAllowedForUsers(RevoltRestClient rest, Embed[] embeds, string request)
+	internal static void CheckIdLength(Option<string> id, string type, string request)
+	{
+		if (id != null)
+			CheckIdLength(id.Value, type, request);
+	}
+
+	internal static void CheckIdLength(string id, string type, string request)
+    {
+        if (id.Length < 1)
+            throw new RevoltArgumentException($"{type} length can't be less than 1 character for the {request} request.");
+
+		if (id.Length > Const.All_MaxIdLength)
+            throw new RevoltArgumentException($"{type} length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+    }
+
+
+    internal static void CheckNameLength(Option<string> name, string type, string request)
+    {
+        if (name != null)
+            CheckNameLength(name.Value, type, request);
+    }
+
+	internal static void CheckNameLength(string name, string type, string request)
+	{
+		if (name.Length < 1)
+			throw new RevoltArgumentException($"{type} length can't be less than 1 character for the {request} request.");
+
+		if (name.Length > Const.All_MaxNameLength)
+			throw new RevoltArgumentException($"{type} length can't be more than {Const.All_MaxNameLength} characters for the {request} request.");
+	}
+
+	internal static void CheckDescriptionLength(Option<string> desc, string type, string request)
+	{
+		if (desc != null)
+			CheckDescriptionLength(desc.Value, type, request);
+	}
+
+	internal static void CheckDescriptionLength(string desc, string type, string request)
+    {
+		if (desc.Length > Const.All_MaxDescriptionLength)
+			throw new RevoltArgumentException($"{type} length can't be more than {Const.All_MaxDescriptionLength} characters for the {request} request.");
+	}
+
+	internal static void EmbedsNotAllowedForUsers(RevoltRestClient rest, Embed[] embeds, string request)
     {
         if (rest.Client.UserBot && embeds != null && embeds.Any())
             throw new RevoltArgumentException($"User accounts can't send messages with embeds for the {request} request.");
@@ -88,11 +132,12 @@ internal static class Conditions
 
     internal static void MessageContentLength(string content, string request)
     {
-        if (content != null && content.Length > 2000)
-            throw new RevoltArgumentException($"Message content is more than 2000 characters for the {request} request.");
+        if (!string.IsNullOrEmpty(content) && content.Length > Const.Message_MaxContentLength)
+            throw new RevoltArgumentException($"Message content is more than {Const.Message_MaxContentLength} characters for the {request} request.");
     }
 
-    internal static void ServerIdEmpty(string serverId, string request)
+
+	internal static void ServerIdEmpty(string serverId, string request)
     {
         if (string.IsNullOrEmpty(serverId))
             throw new RevoltArgumentException($"Server id can't be empty for the {request} request.");
