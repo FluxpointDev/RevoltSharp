@@ -22,7 +22,7 @@ public static class EmojiHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Emoji?> GetEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
-        Conditions.EmojiIdEmpty(emojiId, nameof(GetEmojiAsync));
+        Conditions.EmojiIdLength(emojiId, nameof(GetEmojiAsync));
 
         if (rest.Client.WebSocket != null && rest.Client.WebSocket.EmojiCache.TryGetValue(emojiId, out Emoji emoji))
             return emoji;
@@ -47,7 +47,7 @@ public static class EmojiHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<Emoji>> GetEmojisAsync(this RevoltRestClient rest, string serverId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(GetEmojisAsync));
+        Conditions.ServerIdLength(serverId, nameof(GetEmojisAsync));
 
         EmojiJson[]? Json = await rest.GetAsync<EmojiJson[]>($"/servers/{serverId}/emojis");
         if (Json == null)
@@ -76,9 +76,9 @@ public static class EmojiHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentId, string name, bool nsfw = false)
     {
-        Conditions.AttachmentIdEmpty(attachmentId, nameof(CreateEmojiAsync));
-        Conditions.ServerIdEmpty(serverId, nameof(CreateEmojiAsync));
-        Conditions.EmojiNameEmpty(name, nameof(CreateEmojiAsync));
+        Conditions.AttachmentIdLength(attachmentId, nameof(CreateEmojiAsync));
+        Conditions.ServerIdLength(serverId, nameof(CreateEmojiAsync));
+        Conditions.EmojiNameLength(name, nameof(CreateEmojiAsync));
 
         EmojiJson Emoji = await rest.PutAsync<EmojiJson>($"/custom/emoji/{attachmentId}", new CreateEmojiRequest
         {
@@ -113,7 +113,7 @@ public static class EmojiHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteEmojiAsync(this RevoltRestClient rest, string emojiId)
     {
-        Conditions.EmojiIdEmpty(emojiId, nameof(DeleteEmojiAsync));
+        Conditions.EmojiIdLength(emojiId, nameof(DeleteEmojiAsync));
         Conditions.NotAllowedForBots(rest, nameof(DeleteEmojiAsync));
 
         await rest.DeleteAsync($"/custom/emoji/{emojiId}");

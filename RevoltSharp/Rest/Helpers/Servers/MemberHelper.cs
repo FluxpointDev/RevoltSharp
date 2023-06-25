@@ -34,7 +34,7 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task AddRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
-        Conditions.RoleIdEmpty(roleId, nameof(AddRoleAsync));
+        Conditions.RoleIdLength(roleId, nameof(AddRoleAsync));
         Conditions.OwnerModifyCheck(member, nameof(AddRoleAsync));
 
         if (!member.RolesIds.Any(x => x == roleId))
@@ -70,7 +70,7 @@ public static class MemberHelper
 
         foreach (string r in roleIds)
         {
-            Conditions.RoleIdEmpty(r, nameof(AddRolesAsync));
+            Conditions.RoleIdLength(r, nameof(AddRolesAsync));
         }
 
         await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
@@ -99,7 +99,7 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
-        Conditions.RoleIdEmpty(roleId, nameof(RemoveRoleAsync));
+        Conditions.RoleIdLength(roleId, nameof(RemoveRoleAsync));
         Conditions.OwnerModifyCheck(member, nameof(RemoveRoleAsync));
 
         if (member.Roles.Any(x => x.Id == roleId))
@@ -134,7 +134,7 @@ public static class MemberHelper
         Conditions.RoleListEmpty(roleIds, nameof(RemoveRolesAsync));
         foreach (string r in roleIds)
         {
-            Conditions.RoleIdEmpty(r, nameof(RemoveRolesAsync));
+            Conditions.RoleIdLength(r, nameof(RemoveRolesAsync));
         }
 
         await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
@@ -158,8 +158,8 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<ServerMember?> GetMemberAsync(this RevoltRestClient rest, string serverId, string userId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(GetMemberAsync));
-        Conditions.UserIdEmpty(userId, nameof(GetMemberAsync));
+        Conditions.ServerIdLength(serverId, nameof(GetMemberAsync));
+        Conditions.UserIdLength(userId, nameof(GetMemberAsync));
 
         if (rest.Client.TryGetServer(serverId, out Server Server) && Server.InternalMembers.TryGetValue(userId, out ServerMember sm))
             return sm;
@@ -203,7 +203,7 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<ServerMember>> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(GetMembersAsync));
+        Conditions.ServerIdLength(serverId, nameof(GetMembersAsync));
 
         MembersListJson? List = await rest.GetAsync<MembersListJson>($"servers/{serverId}/members?exclude_offline=" + onlineOnly.ToString());
         if (List == null)
@@ -252,8 +252,8 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task KickMemberAsync(this RevoltRestClient rest, string serverId, string userId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(KickMemberAsync));
-        Conditions.UserIdEmpty(userId, nameof(KickMemberAsync));
+        Conditions.ServerIdLength(serverId, nameof(KickMemberAsync));
+        Conditions.UserIdLength(userId, nameof(KickMemberAsync));
 
         await rest.DeleteAsync($"servers/{serverId}/members/{userId}");
     }
@@ -284,8 +284,8 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<ServerBanInfo> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string reason = "")
     {
-        Conditions.ServerIdEmpty(serverId, nameof(BanMemberAsync));
-        Conditions.UserIdEmpty(userId, nameof(BanMemberAsync));
+        Conditions.ServerIdLength(serverId, nameof(BanMemberAsync));
+        Conditions.UserIdLength(userId, nameof(BanMemberAsync));
 
         ReasonRequest Req = new ReasonRequest();
         if (!string.IsNullOrEmpty(reason))
@@ -313,8 +313,8 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task UnBanMemberAsync(this RevoltRestClient rest, string serverId, string userId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(UnBanMemberAsync));
-        Conditions.MemberIdEmpty(userId, nameof(UnBanMemberAsync));
+        Conditions.ServerIdLength(serverId, nameof(UnBanMemberAsync));
+        Conditions.MemberIdLength(userId, nameof(UnBanMemberAsync));
 
         await rest.DeleteAsync($"servers/{serverId}/bans/{userId}");
     }
@@ -351,8 +351,8 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(ModifyMemberAsync));
-        Conditions.MemberIdEmpty(memberId, nameof(ModifyMemberAsync));
+        Conditions.ServerIdLength(serverId, nameof(ModifyMemberAsync));
+        Conditions.MemberIdLength(memberId, nameof(ModifyMemberAsync));
 
         EditMemberRequest Req = new EditMemberRequest();
         if (nickname != null)

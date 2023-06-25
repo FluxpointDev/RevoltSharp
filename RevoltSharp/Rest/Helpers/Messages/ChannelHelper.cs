@@ -28,11 +28,10 @@ public static class ChannelHelper
     internal static async Task<TValue?> InternalGetChannelAsync<TValue>(this RevoltRestClient rest, string channelId)
         where TValue : Channel
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(GetChannelAsync));
+        Conditions.ChannelIdLength(channelId, nameof(GetChannelAsync));
 
         if (rest.Client.TryGetChannel(channelId, out Channel chan))
             return (TValue)chan;
-
 
         ChannelJson? ChannelJson = await rest.GetAsync<ChannelJson>($"/channels/{channelId}");
         if (ChannelJson == null)
@@ -67,24 +66,24 @@ public static class ChannelHelper
 
     internal static async Task<TChannel> InternalModifyChannelAsync<TChannel>(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null) where TChannel : Channel
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(ModifyChannelAsync));
-        Conditions.CheckIdLength(channelId, "Channel ID", nameof(ModifyChannelAsync));
-        Conditions.CheckNameLength(name, "Channel name", nameof(ModifyChannelAsync));
-        Conditions.CheckDescriptionLength(desc, "Channel description", nameof(ModifyChannelAsync));
+        Conditions.ChannelIdLength(channelId, nameof(ModifyChannelAsync));
 
         ModifyChannelRequest Req = new ModifyChannelRequest();
         if (name != null)
         {
-            Conditions.ChannelNameEmpty(name.Value, nameof(ModifyChannelAsync));
-
-            Req.name = Optional.Some(name.Value);
+			Conditions.ChannelNameLength(name.Value, nameof(ModifyChannelAsync));
+			Req.name = Optional.Some(name.Value);
         }
+
         if (desc != null)
         {
             if (string.IsNullOrEmpty(desc.Value))
                 Req.RemoveValue("Description");
             else
+            {
+                Conditions.ChannelDescriptionLength(desc.Value, nameof(ModifyChannelAsync));
                 Req.description = Optional.Some(desc.Value);
+            }
         }
 
         if (iconId != null)
@@ -92,7 +91,11 @@ public static class ChannelHelper
             if (string.IsNullOrEmpty(iconId.Value))
                 Req.RemoveValue("Icon");
             else
+            {
+                Conditions.IconIdLength(owner.Value, nameof(ModifyChannelAsync));
                 Req.icon = Optional.Some(iconId.Value);
+            }
+                
         }
 
         if (nsfw != null)
@@ -100,7 +103,7 @@ public static class ChannelHelper
 
         if (owner != null)
         {
-            Conditions.UserIdEmpty(owner.Value, nameof(ModifyChannelAsync));
+            Conditions.OwnerIdLength(owner.Value, nameof(ModifyChannelAsync));
             Req.owner = Optional.Some(owner.Value);
         }
         ChannelJson Json = await rest.PatchAsync<ChannelJson>($"/channels/{channelId}", Req);
@@ -133,7 +136,7 @@ public static class ChannelHelper
 
     internal static async Task InternalDeleteChannelAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(DeleteChannelAsync));
+        Conditions.ChannelIdLength(channelId, nameof(DeleteChannelAsync));
 
         await rest.DeleteAsync($"/channels/{channelId}");
     }

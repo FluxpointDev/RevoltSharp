@@ -28,27 +28,35 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<UserMessage> SendMessageAsync(this RevoltRestClient rest, string channelId, string text, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(SendMessageAsync));
+        Conditions.ChannelIdLength(channelId, nameof(SendMessageAsync));
         Conditions.MessagePropertiesEmpty(text, attachments, embeds, nameof(SendMessageAsync));
-        Conditions.MessageContentLength(text, nameof(SendMessageAsync));
-        Conditions.EmbedsNotAllowedForUsers(rest, embeds, nameof(SendMessageAsync));
 
         if (embeds != null)
         {
-            IEnumerable<Task> uploadTasks = embeds.Where(x => !string.IsNullOrEmpty(x.Image)).Select(async x =>
+			Conditions.EmbedsNotAllowedForUsers(rest, embeds, nameof(SendMessageAsync));
+
+			IEnumerable<Task> uploadTasks = embeds.Where(x => !string.IsNullOrEmpty(x.Image)).Select(async x =>
             {
                 if (x.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || x.Image.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 {
                     byte[] Bytes = await rest.FileHttpClient.GetByteArrayAsync(x.Image);
-                    FileAttachment Upload = await rest.UploadFileAsync(Bytes, "image.png", UploadFileType.Attachment);
-                    x.Image = Upload.Id;
+                    try
+                    {
+                        FileAttachment Upload = await rest.UploadFileAsync(Bytes, "image.png", UploadFileType.Attachment);
+                        x.Image = Upload.Id;
+                    }
+                    catch { }
                 }
                 else if (x.Image.Contains('/') || x.Image.Contains('\\'))
                 {
                     if (!System.IO.File.Exists(x.Image))
                         throw new RevoltArgumentException("Embed image url path does not exist.");
-                    FileAttachment Upload = await rest.UploadFileAsync(x.Image, UploadFileType.Attachment);
-                    x.Image = Upload.Id;
+                    try
+                    {
+                        FileAttachment Upload = await rest.UploadFileAsync(x.Image, UploadFileType.Attachment);
+                        x.Image = Upload.Id;
+                    }
+                    catch { }
                 }
 
             });
@@ -56,17 +64,20 @@ public static class MessageHelper
                 await Task.WhenAll(uploadTasks);
         }
 
-        if (string.IsNullOrEmpty(text))
-            text = null;
         SendMessageRequest Req = new SendMessageRequest
         {
-            nonce = Guid.NewGuid().ToString()
+            //nonce = Guid.NewGuid().ToString()
         };
         if (!string.IsNullOrEmpty(text))
-            Req.content = Optional.Some(text);
+        {
+			Conditions.MessageContentLength(text, nameof(SendMessageAsync));
+			Req.content = Optional.Some(text);
+		}
 
         if (attachments != null)
-            Req.attachments = Optional.Some(attachments);
+        {
+			Req.attachments = Optional.Some(attachments);
+		}
 
         if (embeds != null)
             Req.embeds = Optional.Some(embeds.Select(x => x.ToJson()).ToArray());
@@ -75,7 +86,10 @@ public static class MessageHelper
             Req.masquerade = Optional.Some(masquerade.ToJson());
 
         if (replies != null)
-            Req.replies = Optional.Some(replies.Select(x => x.ToJson()).ToArray());
+        {
+            Conditions.ReplyListCount(replies, nameof(SendMessageAsync));
+			Req.replies = Optional.Some(replies.Select(x => x.ToJson()).ToArray());
+		}
 
         if (interactions != null)
             Req.interactions = Optional.Some(interactions.ToJson());
@@ -129,7 +143,7 @@ public static class MessageHelper
 
     public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(GetMessagesAsync));
+        Conditions.ChannelIdLength(channelId, nameof(GetMessagesAsync));
 
         QueryBuilder QueryBuilder = new QueryBuilder()
             .Add("limit", messageCount)
@@ -160,8 +174,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Message?> GetMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(GetMessageAsync));
-        Conditions.MessageIdEmpty(messageId, nameof(GetMessageAsync));
+        Conditions.ChannelIdLength(channelId, nameof(GetMessageAsync));
+        Conditions.MessageIdLength(messageId, nameof(GetMessageAsync));
 
         MessageJson? Data = await rest.GetAsync<MessageJson>($"channels/{channelId}/messages/{messageId}");
         if (Data == null)
@@ -198,8 +212,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<UserMessage> EditMessageAsync(this RevoltRestClient rest, string channelId, string messageId, Option<string> content = null, Option<Embed[]> embeds = null)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(EditMessageAsync));
-        Conditions.MessageIdEmpty(messageId, nameof(EditMessageAsync));
+        Conditions.ChannelIdLength(channelId, nameof(EditMessageAsync));
+        Conditions.MessageIdLength(messageId, nameof(EditMessageAsync));
 
         SendMessageRequest Req = new SendMessageRequest();
         if (content != null)
@@ -239,8 +253,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteMessageAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(DeleteMessageAsync));
-        Conditions.MessageIdEmpty(messageId, nameof(DeleteMessageAsync));
+        Conditions.ChannelIdLength(channelId, nameof(DeleteMessageAsync));
+        Conditions.MessageIdLength(messageId, nameof(DeleteMessageAsync));
 
 
         await rest.DeleteAsync($"channels/{channelId}/messages/{messageId}");
@@ -261,8 +275,8 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteMessagesAsync(this RevoltRestClient rest, string channelId, string[] messageIds)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(DeleteMessagesAsync));
-        Conditions.MessageIdEmpty(messageIds, nameof(DeleteMessagesAsync));
+        Conditions.ChannelIdLength(channelId, nameof(DeleteMessagesAsync));
+        Conditions.MessageIdsCount(messageIds, nameof(DeleteMessagesAsync));
 
 
         await rest.DeleteAsync($"channels/{channelId}/messages/bulk", new BulkDeleteMessagesRequest
@@ -286,7 +300,7 @@ public static class MessageHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task CloseDMChannelAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(CloseDMChannelAsync));
+        Conditions.ChannelIdLength(channelId, nameof(CloseDMChannelAsync));
 
         await rest.DeleteAsync($"channels/{channelId}");
     }

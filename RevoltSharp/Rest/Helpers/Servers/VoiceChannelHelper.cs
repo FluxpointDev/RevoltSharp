@@ -46,8 +46,8 @@ public static class VoiceChannelHelper
 
     internal static async Task<VoiceChannel> InternalCreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(CreateVoiceChannelAsync));
-        Conditions.ChannelNameEmpty(name, nameof(CreateVoiceChannelAsync));
+        Conditions.ServerIdLength(serverId, nameof(CreateVoiceChannelAsync));
+        Conditions.ChannelNameLength(name, nameof(CreateVoiceChannelAsync));
 
         CreateChannelRequest Req = new CreateChannelRequest
         {

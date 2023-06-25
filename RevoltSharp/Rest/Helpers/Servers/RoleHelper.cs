@@ -24,8 +24,8 @@ public static class RoleHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string name, Option<int> rank = null)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(CreateRoleAsync));
-        Conditions.RoleNameEmpty(name, nameof(CreateRoleAsync));
+        Conditions.ServerIdLength(serverId, nameof(CreateRoleAsync));
+        Conditions.RoleNameLength(name, nameof(CreateRoleAsync));
         CreateRoleRequest Req = new CreateRoleRequest
         {
             name = name
@@ -59,13 +59,13 @@ public static class RoleHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(ModifyRoleAsync));
-        Conditions.RoleIdEmpty(roleId, nameof(ModifyRoleAsync));
+        Conditions.ServerIdLength(serverId, nameof(ModifyRoleAsync));
+        Conditions.RoleIdLength(roleId, nameof(ModifyRoleAsync));
 
         ModifyRoleRequest Req = new ModifyRoleRequest();
         if (name != null)
         {
-            Conditions.RoleNameEmpty(name.Value, nameof(ModifyRoleAsync));
+            Conditions.RoleNameLength(name.Value, nameof(ModifyRoleAsync));
             Req.name = Optional.Some(name.Value);
         }
 
@@ -104,8 +104,8 @@ public static class RoleHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task DeleteRoleAsync(this RevoltRestClient rest, string serverId, string roleId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(DeleteRoleAsync));
-        Conditions.RoleIdEmpty(roleId, nameof(DeleteRoleAsync));
+        Conditions.ServerIdLength(serverId, nameof(DeleteRoleAsync));
+        Conditions.RoleIdLength(roleId, nameof(DeleteRoleAsync));
 
         await rest.DeleteAsync($"/servers/{serverId}/roles/{roleId}");
     }

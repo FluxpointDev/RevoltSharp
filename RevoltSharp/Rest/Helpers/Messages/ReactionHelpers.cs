@@ -24,9 +24,9 @@ public static class ReactionHelpers
     /// <exception cref="RevoltRestException"></exception>
     public static async Task AddMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(AddMessageReactionAsync));
-        Conditions.MessageIdEmpty(messageId, nameof(AddMessageReactionAsync));
-        Conditions.EmojiIdEmpty(emojiId, nameof(AddMessageReactionAsync));
+        Conditions.ChannelIdLength(channelId, nameof(AddMessageReactionAsync));
+        Conditions.MessageIdLength(messageId, nameof(AddMessageReactionAsync));
+        Conditions.EmojiIdLength(emojiId, nameof(AddMessageReactionAsync));
 
         await rest.PutAsync<HttpResponseMessage>($"channels/{channelId}/messages/{messageId}/reactions/{emojiId}");
     }
@@ -54,12 +54,12 @@ public static class ReactionHelpers
     /// <exception cref="RevoltRestException"></exception>
     public static async Task RemoveMessageReactionAsync(this RevoltRestClient rest, string channelId, string messageId, string emojiId, string userId, bool removeAll = false)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(RemoveMessageReactionAsync));
-        Conditions.MessageIdEmpty(messageId, nameof(RemoveMessageReactionAsync));
-        Conditions.EmojiIdEmpty(emojiId, nameof(RemoveMessageReactionAsync));
+        Conditions.ChannelIdLength(channelId, nameof(RemoveMessageReactionAsync));
+        Conditions.MessageIdLength(messageId, nameof(RemoveMessageReactionAsync));
+        Conditions.EmojiIdLength(emojiId, nameof(RemoveMessageReactionAsync));
 
         if (!removeAll)
-            Conditions.UserIdEmpty(userId, nameof(RemoveMessageReactionAsync));
+            Conditions.UserIdLength(userId, nameof(RemoveMessageReactionAsync));
 
 
         await rest.DeleteAsync($"channels/{channelId}/messages/{messageId}/reactions/{emojiId}?" +
@@ -77,8 +77,8 @@ public static class ReactionHelpers
     /// <exception cref="RevoltRestException"></exception>
     public static async Task RemoveAllMessageReactionsAsync(this RevoltRestClient rest, string channelId, string messageId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(RemoveAllMessageReactionsAsync));
-        Conditions.MessageIdEmpty(messageId, nameof(RemoveAllMessageReactionsAsync));
+        Conditions.ChannelIdLength(channelId, nameof(RemoveAllMessageReactionsAsync));
+        Conditions.MessageIdLength(messageId, nameof(RemoveAllMessageReactionsAsync));
 
         await rest.DeleteAsync($"channels/{channelId}/messages/{messageId}/reactions");
     }

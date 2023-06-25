@@ -21,7 +21,7 @@ public static class ServerHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Server?> GetServerAsync(this RevoltRestClient rest, string serverId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(GetServerAsync));
+        Conditions.ServerIdLength(serverId, nameof(GetServerAsync));
 
         if (rest.Client.WebSocket != null && rest.Client.WebSocket.ServerCache.TryGetValue(serverId, out Server server))
             return server;
@@ -52,7 +52,7 @@ public static class ServerHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<ServerBanUser>> GetBansAsync(this RevoltRestClient rest, string serverId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(GetBansAsync));
+        Conditions.ServerIdLength(serverId, nameof(GetBansAsync));
 
         ServerBansJson? Bans = await rest.GetAsync<ServerBansJson>($"/servers/{serverId}/bans");
         if (Bans == null)
@@ -73,7 +73,7 @@ public static class ServerHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task LeaveServerAsync(this RevoltRestClient rest, string serverId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(LeaveServerAsync));
+        Conditions.ServerIdLength(serverId, nameof(LeaveServerAsync));
 
         await rest.DeleteAsync($"/servers/{serverId}");
     }

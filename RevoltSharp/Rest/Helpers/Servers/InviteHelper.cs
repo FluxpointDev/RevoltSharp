@@ -53,7 +53,7 @@ public static class InviteHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this RevoltRestClient rest, string serverId)
     {
-        Conditions.ServerIdEmpty(serverId, nameof(GetInvitesAsync));
+        Conditions.ServerIdLength(serverId, nameof(GetInvitesAsync));
 
         InviteJson[]? Json = await rest.GetAsync<InviteJson[]>($"/servers/{serverId}/invites");
         if (Json == null)
@@ -100,7 +100,7 @@ public static class InviteHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<CreatedInvite> CreateInviteAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.ChannelIdEmpty(channelId, nameof(CreateInviteAsync));
+        Conditions.ChannelIdLength(channelId, nameof(CreateInviteAsync));
 
         CreateInviteJson Json = await rest.PostAsync<CreateInviteJson>($"/channels/{channelId}/invites");
         return new CreatedInvite(rest.Client, Json);

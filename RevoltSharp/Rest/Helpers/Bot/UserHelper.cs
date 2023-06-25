@@ -22,7 +22,7 @@ public static class UserHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<User?> GetUserAsync(this RevoltRestClient rest, string userId)
     {
-        Conditions.UserIdEmpty(userId, nameof(GetUserAsync));
+        Conditions.UserIdLength(userId, nameof(GetUserAsync));
 
         if (rest.Client.WebSocket != null && rest.Client.WebSocket.UserCache.TryGetValue(userId, out User User))
             return User;
@@ -51,7 +51,7 @@ public static class UserHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Profile?> GetProfileAsync(this RevoltRestClient rest, string userId)
     {
-        Conditions.UserIdEmpty(userId, nameof(GetProfileAsync));
+        Conditions.UserIdLength(userId, nameof(GetProfileAsync));
 
         ProfileJson? Data = await rest.GetAsync<ProfileJson>($"users/{userId}/profile");
         if (Data == null)
@@ -74,7 +74,7 @@ public static class UserHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<DMChannel?> GetUserDMChannelAsync(this RevoltRestClient rest, string userId)
     {
-        Conditions.UserIdEmpty(userId, nameof(GetUserDMChannelAsync));
+        Conditions.UserIdLength(userId, nameof(GetUserDMChannelAsync));
         Conditions.NotSelf(rest, userId, nameof(GetUserDMChannelAsync));
 
         ChannelJson? Data = await rest.GetAsync<ChannelJson>($"users/{userId}/dm");
@@ -100,7 +100,7 @@ public static class UserHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<User> BlockUserAsync(this RevoltRestClient rest, string userId)
     {
-        Conditions.UserIdEmpty(userId, nameof(BlockUserAsync));
+        Conditions.UserIdLength(userId, nameof(BlockUserAsync));
         Conditions.NotSelf(rest, userId, nameof(BlockUserAsync));
 
         UserJson Data = await rest.PutAsync<UserJson>($"users/{userId}/block");
@@ -121,7 +121,7 @@ public static class UserHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<User> UnBlockUserAsync(this RevoltRestClient rest, string userId)
     {
-        Conditions.UserIdEmpty(userId, nameof(UnBlockUserAsync));
+        Conditions.UserIdLength(userId, nameof(UnBlockUserAsync));
         Conditions.NotSelf(rest, userId, nameof(UnBlockUserAsync));
 
         UserJson Data = await rest.DeleteAsync<UserJson>($"users/{userId}/block");

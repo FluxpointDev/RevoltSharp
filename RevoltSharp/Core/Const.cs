@@ -13,6 +13,7 @@ public static class Const
 	public const int Group_MaxUserIdsListCount = 49;
 
 	public const int Message_MaxSearchListCount = 100;
+	public const int Message_MaxDeleteListCount = 100;
 	public const int Message_MaxEmbedsListCount = 10;
 	public const int Message_MaxContentLength = 2000;
 }
