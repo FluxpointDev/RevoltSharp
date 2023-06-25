@@ -339,4 +339,26 @@ internal static class Conditions
 	}
 
 	#endregion
+
+	#region Webhook
+
+	internal static void WebhookNameLength(string name, string request)
+	{
+		if (string.IsNullOrEmpty(name) || name.Length < 1)
+			throw new RevoltArgumentException($"Webhook name can't be empty for the {request} request.");
+
+		if (name.Length > Const.All_MaxNameLength)
+			throw new RevoltArgumentException($"Webhook name length can't be more than {Const.All_MaxNameLength} characters for the {request} request.");
+	}
+
+	internal static void WebhookAvatarIdLength(string name, string request)
+	{
+		if (string.IsNullOrEmpty(name) || name.Length < 1)
+			throw new RevoltArgumentException($"Webhook avatar id can't be empty for the {request} request.");
+
+		if (name.Length > Const.All_MaxIdLength)
+			throw new RevoltArgumentException($"Webhook avatar id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
+	}
+
+	#endregion
 }
