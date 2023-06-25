@@ -18,7 +18,7 @@ internal static class Conditions
 	#region Channel
 	internal static void ChannelIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Channel id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -27,7 +27,7 @@ internal static class Conditions
 
 	internal static void ChannelNameLength(string name, string request)
 	{
-		if (name.Length < 1)
+		if (string.IsNullOrEmpty(name) || name.Length < 1)
 			throw new RevoltArgumentException($"Channel name can't be empty for the {request} request.");
 
 		if (name.Length > Const.All_MaxNameLength)
@@ -36,13 +36,13 @@ internal static class Conditions
 
 	internal static void ChannelDescriptionLength(string desc, string request)
 	{
-		if (desc.Length > Const.All_MaxDescriptionLength)
+		if (!string.IsNullOrEmpty(desc) && desc.Length > Const.All_MaxDescriptionLength)
 			throw new RevoltArgumentException($"Channel description length can't be more than {Const.All_MaxDescriptionLength} characters for the {request} request.");
 	}
 
 	internal static void OwnerIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Owner id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -53,7 +53,7 @@ internal static class Conditions
 
 	internal static void OwnerModifyCheck(Server server, string memberId, string request)
 	{
-		if (server.OwnerId == memberId)
+		if (!string.IsNullOrEmpty(memberId) && server.OwnerId == memberId)
 			throw new RevoltRestException($"You can't modify the server owner for the {request} request.", 400, RevoltErrorType.InvalidOperation);
 	}
 	#endregion
@@ -61,7 +61,7 @@ internal static class Conditions
 	#region Member
 	internal static void MemberIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Member id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -72,7 +72,7 @@ internal static class Conditions
 	#region Role
 	internal static void RoleIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Role id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -81,7 +81,7 @@ internal static class Conditions
 
 	internal static void RoleNameLength(string name, string request)
 	{
-		if (name.Length < 1)
+		if (string.IsNullOrEmpty(name) || name.Length < 1)
 			throw new RevoltArgumentException($"Role name can't be empty for the {request} request.");
 
 		if (name.Length > Const.All_MaxNameLength)
@@ -93,18 +93,12 @@ internal static class Conditions
 		if (roles == null || !roles.Any())
 			throw new RevoltArgumentException($"Role id list can't be empty for the {request} request.");
 	}
-
-	internal static void RoleList(string[] roles, string request)
-	{
-		if (roles == null || !roles.Any())
-			throw new RevoltArgumentException($"Role id list can't be empty for the {request} request.");
-	}
 	#endregion
 
 	#region User
 	internal static void UserIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"User id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -115,7 +109,7 @@ internal static class Conditions
 	#region Icon
 	internal static void IconIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Icon id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -127,7 +121,7 @@ internal static class Conditions
 
 	internal static void MessageIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Message id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -136,7 +130,7 @@ internal static class Conditions
 
 	internal static void AttachmentIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Attachment id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -145,19 +139,19 @@ internal static class Conditions
 
 	internal static void MasqueradeNameLength(string url, string request)
 	{
-		if (url.Length > Const.All_MaxUrlLength)
+		if (!string.IsNullOrEmpty(url) && url.Length > Const.All_MaxUrlLength)
 			throw new RevoltArgumentException($"Masquerade name can't be more than {Const.All_MaxNameLength} characters for the {request} request.");
 	}
 
 	internal static void MasqueradeAvatarUrlLength(string url, string request)
 	{
-		if (url.Length > Const.All_MaxUrlLength)
+		if (!string.IsNullOrEmpty(url) && url.Length > Const.All_MaxUrlLength)
 			throw new RevoltArgumentException($"Masquerade avatar url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
 	}
 
 	internal static void MessageIdsCount(string[] ids, string request)
 	{
-		if (ids.Length > Const.Message_MaxDeleteListCount)
+		if (ids != null && ids.Length > Const.Message_MaxDeleteListCount)
 			throw new RevoltArgumentException($"Message ids list can't be more than {Const.Message_MaxDeleteListCount} for the {request} request.");
 	}
 
@@ -187,7 +181,7 @@ internal static class Conditions
 
 	internal static void MessageContentLength(string content, string request)
 	{
-		if (content.Length > Const.Message_MaxContentLength)
+		if (!string.IsNullOrEmpty(content) && content.Length > Const.Message_MaxContentLength)
 			throw new RevoltArgumentException($"Message content is more than {Const.Message_MaxContentLength} characters for the {request} request.");
 	}
 
@@ -202,19 +196,19 @@ internal static class Conditions
 
 	internal static void MessageNearbyIdLength(string id, string request)
 	{
-		if (id.Length > Const.All_MaxIdLength)
+		if (!string.IsNullOrEmpty(id) && id.Length > Const.All_MaxIdLength)
 			throw new RevoltArgumentException($"Message nearby id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
 	}
 
 	internal static void MessageAfterIdLength(string id, string request)
 	{
-		if (id.Length > Const.All_MaxIdLength)
+		if (!string.IsNullOrEmpty(id) && id.Length > Const.All_MaxIdLength)
 			throw new RevoltArgumentException($"Message after id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
 	}
 
 	internal static void MessageBeforeIdLength(string id, string request)
 	{
-		if (id.Length > Const.All_MaxIdLength)
+		if (!string.IsNullOrEmpty(id) && id.Length > Const.All_MaxIdLength)
 			throw new RevoltArgumentException($"Message before id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
 	}
 
@@ -226,7 +220,7 @@ internal static class Conditions
 
 	internal static void ReplyListCount(MessageReply[] list, string request)
 	{
-		if (list.Length > 5)
+		if (list != null && list.Length > 5)
 			throw new RevoltArgumentException($"Replies list can't be more than 5 for the {request} request.");
 	}
 
@@ -235,7 +229,7 @@ internal static class Conditions
 	#region Server
 	internal static void ServerIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Server id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -252,7 +246,7 @@ internal static class Conditions
 
 	internal static void EmojiIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Emoji id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -261,7 +255,7 @@ internal static class Conditions
 
 	internal static void EmojiNameLength(string name, string request)
 	{
-		if (name.Length < 1)
+		if (string.IsNullOrEmpty(name) || name.Length < 1)
 			throw new RevoltArgumentException($"Emoji name can't be empty for the {request} request.");
 
 		if (name.Length > Const.All_MaxNameLength)
@@ -274,7 +268,7 @@ internal static class Conditions
 
 	internal static void AvatarIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Avatar id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -283,13 +277,13 @@ internal static class Conditions
 
 	internal static void UserStatusTextLength(string text, string request)
 	{
-		if (text.Length > Const.User_MaxStatusTextLength)
+		if (!string.IsNullOrEmpty(text) && text.Length > Const.User_MaxStatusTextLength)
 			throw new RevoltArgumentException($"User status text length can't be more than {Const.User_MaxStatusTextLength} characters for the {request} request.");
 	}
 
 	internal static void BackgroundIdLength(string id, string request)
 	{
-		if (id.Length < 1)
+		if (string.IsNullOrEmpty(id) || id.Length < 1)
 			throw new RevoltArgumentException($"Background id can't be empty for the {request} request.");
 
 		if (id.Length > Const.All_MaxIdLength)
@@ -310,7 +304,7 @@ internal static class Conditions
 
 	internal static void NotSelf(RevoltRestClient rest, string userId, string request)
 	{
-		if (userId == rest.Client.CurrentUser.Id)
+		if (!string.IsNullOrEmpty(userId) && userId == rest.Client.CurrentUser.Id)
 			throw new RevoltArgumentException($"Cannot perform the {request} request against the current user/bot account.");
 	}
 

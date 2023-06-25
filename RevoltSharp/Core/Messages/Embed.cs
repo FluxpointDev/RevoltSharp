@@ -186,7 +186,11 @@ public class Embed
     {
         EmbedJson Json = new EmbedJson();
         if (!string.IsNullOrEmpty(IconUrl))
-            Json.icon_url = IconUrl;
+        {
+
+
+			Json.icon_url = IconUrl;
+		}
 
         if (!string.IsNullOrEmpty(Url))
             Json.url = Url;

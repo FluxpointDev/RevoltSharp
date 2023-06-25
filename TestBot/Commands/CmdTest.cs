@@ -16,6 +16,13 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("testnull")]
+    public async Task TestNull()
+    {
+        string Test = null;
+
+        await ReplyAsync(Test.Length.ToString());
+    }
     [Command("testlog")]
     public async Task TestLog()
     {
