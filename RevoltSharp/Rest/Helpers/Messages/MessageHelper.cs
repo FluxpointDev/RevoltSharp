@@ -74,12 +74,12 @@ public static class MessageHelper
 			Req.content = Optional.Some(text);
 		}
 
-        if (attachments != null)
+        if (attachments != null && attachments.Any())
         {
 			Req.attachments = Optional.Some(attachments);
 		}
 
-        if (embeds != null)
+        if (embeds != null && embeds.Any())
             Req.embeds = Optional.Some(embeds.Select(x => x.ToJson()).ToArray());
 
         if (masquerade != null)
@@ -90,7 +90,7 @@ public static class MessageHelper
 			Req.masquerade = Optional.Some(masquerade.ToJson());
 		}
 
-        if (replies != null)
+        if (replies != null && replies.Any())
         {
             Conditions.ReplyListCount(replies, nameof(SendMessageAsync));
 			Req.replies = Optional.Some(replies.Select(x => x.ToJson()).ToArray());

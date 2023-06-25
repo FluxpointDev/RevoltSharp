@@ -187,22 +187,33 @@ public class Embed
         EmbedJson Json = new EmbedJson();
         if (!string.IsNullOrEmpty(IconUrl))
         {
-
-
+            Conditions.EmbedIconUrl(IconUrl, nameof(MessageHelper.SendMessageAsync));
 			Json.icon_url = IconUrl;
 		}
 
         if (!string.IsNullOrEmpty(Url))
-            Json.url = Url;
+        {
+            Conditions.EmbedUrlLength(Url, nameof(MessageHelper.SendMessageAsync));
+			Json.url = Url;
+		}
 
         if (!string.IsNullOrEmpty(Title))
-            Json.title = Title;
+        {
+            Conditions.EmbedTitleLength(Title, nameof(MessageHelper.SendMessageAsync));
+			Json.title = Title;
+		}
 
         if (!string.IsNullOrEmpty(Description))
-            Json.description = Description;
+        {
+            Conditions.EmbedDescriptionLength(Description, nameof(MessageHelper.SendMessageAsync));
+			Json.description = Description;
+		}
 
         if (!string.IsNullOrEmpty(Image))
-            Json.media = Image;
+        {
+            Conditions.EmbedImageUrlLength(Image, nameof(MessageHelper.SendMessageAsync));
+			Json.media = Image;
+		}
 
         if (Color != null && !Color.IsEmpty)
             Json.colour = Optional.Some(Color.Hex);

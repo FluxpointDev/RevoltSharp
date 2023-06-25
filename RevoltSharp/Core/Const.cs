@@ -19,4 +19,7 @@ public static class Const
 	public const int Message_MaxDeleteListCount = 100;
 	public const int Message_MaxEmbedsListCount = 10;
 	public const int Message_MaxContentLength = 2000;
+	public const int Message_EmbedTitleMaxLength = 100;
+
+	public const int Message_ReactionsMaxCount = 20;
 }

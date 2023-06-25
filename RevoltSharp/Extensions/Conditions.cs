@@ -155,6 +155,36 @@ internal static class Conditions
 			throw new RevoltArgumentException($"Message ids list can't be more than {Const.Message_MaxDeleteListCount} for the {request} request.");
 	}
 
+	internal static void EmbedUrlLength(string url, string request)
+	{
+		if (!string.IsNullOrEmpty(url) && url.Length > Const.All_MaxUrlLength)
+			throw new RevoltArgumentException($"Embed url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
+	}
+
+	internal static void EmbedImageUrlLength(string imageUrl, string request)
+	{
+		if (!string.IsNullOrEmpty(imageUrl) && imageUrl.Length > Const.All_MaxUrlLength)
+			throw new RevoltArgumentException($"Embed image url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
+	}
+
+	internal static void EmbedTitleLength(string title, string request)
+	{
+		if (!string.IsNullOrEmpty(title) && title.Length > Const.Message_EmbedTitleMaxLength)
+			throw new RevoltArgumentException($"Embed title can't be more than {Const.Message_EmbedTitleMaxLength} characters for the {request} request.");
+	}
+
+	internal static void EmbedDescriptionLength(string description, string request)
+	{
+		if (!string.IsNullOrEmpty(description) && description.Length > Const.All_MaxDescriptionLength)
+			throw new RevoltArgumentException($"Embed description can't be more than {Const.All_MaxDescriptionLength} characters for the {request} request.");
+	}
+
+	internal static void EmbedIconUrl(string url, string request)
+	{
+		if (!string.IsNullOrEmpty(url) && url.Length > Const.All_MaxUrlLength)
+			throw new RevoltArgumentException($"Embed icon url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
+	}
+
 	internal static void EmbedsNotAllowedForUsers(RevoltRestClient rest, Embed[] embeds, string request)
 	{
 		if (rest.Client.UserBot && embeds != null && embeds.Any())
