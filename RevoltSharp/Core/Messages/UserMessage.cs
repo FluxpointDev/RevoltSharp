@@ -51,7 +51,13 @@ public class UserMessage : Message
             // GetUser usually shouldn't return null here. If it can, change this from User[] to User?[].
             Dictionary<Emoji, User[]> react = new Dictionary<Emoji, User[]>();
             foreach (KeyValuePair<string, string[]> r in model.Reactions.Value)
-                react.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray()!);
+            {
+                try
+                {
+					react.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray()!);
+				}
+                catch { }
+            }
             Reactions = react;
         }
     }

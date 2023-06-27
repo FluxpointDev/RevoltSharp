@@ -40,8 +40,8 @@ class Program
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
-        //new EventTests(Client);
-        await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));
+        new EventTests(Client);
+        //await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));
 
 
         CommandHandler CommandHandler = new CommandHandler(Client);

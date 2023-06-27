@@ -62,6 +62,6 @@ public class Emoji : CreatedEntity
     public bool IsNsfw { get; internal set; }
 
     public string ImageUrl
-        => Client.Config.Debug.UploadUrl + "/emojis/" + Id;
+        => IsServerEmoji ? Client.Config.Debug.UploadUrl + "/emojis/" + Id : string.Empty;
 
 }

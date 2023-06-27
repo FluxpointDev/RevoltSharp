@@ -1,5 +1,6 @@
 ﻿using RevoltSharp;
 using System;
+using System.Threading.Tasks;
 
 namespace TestBot;
 
@@ -65,8 +66,16 @@ public class EventTests
 
     private void Client_OnReactionAdded(Emoji emoji, Channel channel, Downloadable<string, User> user_cache, Downloadable<string, Message> message_cache)
     {
-        Console.WriteLine("--- EVENT: Reaction added ---");
-        Console.WriteLine($"{emoji.Name} - {channel.Id}");
+        _ = Task.Run(async () =>
+        {
+			Console.WriteLine("--- EVENT: Reaction added ---");
+			Console.WriteLine("Message: " + message_cache.Id);
+			var message = await message_cache.GetOrDownloadAsync();
+			Console.WriteLine($"MSG: " + message.Author.Tag);
+
+			Console.WriteLine($"{emoji.Name} - {channel.Id}");
+		});
+        
     }
 
     private void Client_OnConnected()

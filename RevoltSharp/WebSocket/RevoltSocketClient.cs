@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -915,7 +916,11 @@ internal class RevoltSocketClient
 
                             return await Client.Rest.GetUserAsync(@event.UserId);
                         });
-                        Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
+                        Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, async () =>
+                        {
+                            return await Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId);
+
+						});
                         Client.InvokeReactionAdded(emoji, channel, DownloadUser, message);
                     }
                     break;
@@ -951,8 +956,12 @@ internal class RevoltSocketClient
 
                             return await Client.Rest.GetUserAsync(@event.UserId);
                         });
-                        Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
-                        Client.InvokeReactionRemoved(emoji, channel, DownloadUser, message);
+						Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, async () =>
+						{
+							return await Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId);
+
+						});
+						Client.InvokeReactionRemoved(emoji, channel, DownloadUser, message);
                     }
                     break;
                 case "MessageRemoveReaction":
@@ -978,8 +987,12 @@ internal class RevoltSocketClient
                             }
                         }
 
-                        Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, () => Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId));
-                        Client.InvokeReactionBulkRemoved(emoji, channel, message);
+						Downloadable<string, Message> message = new Downloadable<string, Message>(@event.MessageId, async () =>
+						{
+							return await Client.Rest.GetMessageAsync(@event.ChannelId, @event.MessageId);
+
+						});
+						Client.InvokeReactionBulkRemoved(emoji, channel, message);
                     }
                     break;
                 case "UserPlatformWipe":

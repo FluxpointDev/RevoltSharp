@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>6.5.0</Version>
+    <Version>6.5.1</Version>
     <Authors>Builderb (Fluxpoint Development)</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway with a user or bot account.</Description>
