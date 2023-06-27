@@ -58,4 +58,11 @@ public abstract class Channel : CreatedEntity
                 }
         }
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Channel </returns>
+	public override string ToString()
+	{
+		return Type.ToString();
+	}
 }

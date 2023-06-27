@@ -102,4 +102,11 @@ public class Attachment : CreatedEntity
             Size = Size
         };
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> File.png </returns>
+	public override string ToString()
+	{
+		return Filename;
+	}
 }

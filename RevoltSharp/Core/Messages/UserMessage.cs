@@ -61,4 +61,11 @@ public class UserMessage : Message
             Reactions = react;
         }
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> User message </returns>
+	public override string ToString()
+	{
+		return "User message";
+	}
 }

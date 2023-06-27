@@ -1,8 +1,5 @@
 ﻿using RevoltSharp.Rest;
-using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 
 namespace RevoltSharp;
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RevoltSharp;
+﻿namespace RevoltSharp;
 
 /// <summary>
 /// Do not use this class! only used for <see cref="RevoltClient"/>

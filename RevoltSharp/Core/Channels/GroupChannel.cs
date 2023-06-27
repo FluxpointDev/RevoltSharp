@@ -155,4 +155,11 @@ public class GroupChannel : Channel
             client.WebSocket.UserCache.TryRemove(userId, out _);
         }
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Group channel name </returns>
+	public override string ToString()
+	{
+		return Name;
+	}
 }

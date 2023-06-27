@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -69,10 +68,9 @@ public class User : CreatedEntity
     public string? DisplayName { get; internal set; }
 
     /// <summary>
-    /// Get the name of the user which will use username or display name if set.
+    /// Get the display name or username of the user.
     /// </summary>
-    public string Name
-        => DisplayName ?? Username;
+    public string CurrentName => DisplayName ?? Username;
 
     /// <summary>
     /// Get the username and discriminator of the user.
@@ -246,13 +244,14 @@ public class User : CreatedEntity
     {
         return (User)this.MemberwiseClone();
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Name#0001 </returns>
+	public override string ToString()
+	{
+		return Tag;
+	}
 }
-
-
-
-
-
-
 
 /// <summary>
 /// Data for the bot account that this user is.
@@ -275,8 +274,6 @@ public class BotData
     /// Owner ID of the bot account.
     /// </summary>
     public string OwnerId { get; }
-
-
 }
 
 

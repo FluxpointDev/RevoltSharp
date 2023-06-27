@@ -36,7 +36,7 @@ public class Emoji : CreatedEntity
     /// <summary>
     /// Date of when the emoji was created.
     /// </summary>
-    public new DateTimeOffset CreatedAt => base.CreatedAt;
+    public new DateTimeOffset? CreatedAt => base.CreatedAt;
 
     public string Name { get; internal set; }
 
@@ -63,5 +63,12 @@ public class Emoji : CreatedEntity
 
     public string ImageUrl
         => IsServerEmoji ? Client.Config.Debug.UploadUrl + "/emojis/" + Id : string.Empty;
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Emoji name or unicode </returns>
+	public override string ToString()
+	{
+		return Name;
+	}
 
 }

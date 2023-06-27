@@ -121,4 +121,11 @@ public class ServerChannel : Channel
             }
         }
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Server channel name </returns>
+	public override string ToString()
+	{
+		return Name;
+	}
 }

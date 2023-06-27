@@ -86,4 +86,11 @@ public class Role : CreatedEntity
     {
         return (Role)this.MemberwiseClone();
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Role name </returns>
+	public override string ToString()
+	{
+		return Name;
+	}
 }

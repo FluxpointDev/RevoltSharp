@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RevoltSharp;
+﻿namespace RevoltSharp;
 
 public class PublicBot : CreatedEntity
 {
@@ -20,4 +14,11 @@ public class PublicBot : CreatedEntity
 	public string AvatarId { get; internal set; }
 
 	public string Description { get; internal set; }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Bot username </returns>
+	public override string ToString()
+	{
+		return Username;
+	}
 }

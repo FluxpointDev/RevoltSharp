@@ -120,6 +120,13 @@ public abstract class Message : CreatedEntity
     /// Get the type of message this is.
     /// </summary>
 	public MessageType Type { get; internal set; } = MessageType.User;
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> User/bot/system message </returns>
+	public override string ToString()
+	{
+		return Type.ToString() + " message";
+	}
 }
 public enum MessageType
 {

@@ -51,9 +51,9 @@ public class ServerMember : Entity
     public User User { get; internal set; }
 
     /// <summary>
-    /// Get the current name of this user from the nickname or username.
+    /// Get the current name of this user from the nickname, display name or username.
     /// </summary>
-    public string CurrentName => !string.IsNullOrEmpty(Nickname) ? Nickname : User.Username;
+    public string CurrentName => !string.IsNullOrEmpty(Nickname) ? Nickname : User.CurrentName;
 
     /// <summary>
     /// The avatar attachment for the custom member's avatar.
@@ -223,4 +223,11 @@ public class ServerMember : Entity
         if (json.ClearTimeout)
             Timeout = null;
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Nickname, Display name or Username </returns>
+	public override string ToString()
+	{
+		return CurrentName;
+	}
 }

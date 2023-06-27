@@ -29,6 +29,13 @@ public class Invite : Entity
     public Attachment? CreatorAvatar { get; internal set; }
     public bool IsServer { get; internal set; }
     public bool IsGroup { get; internal set; }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Channel name invite </returns>
+	public override string ToString()
+	{
+		return ChannelName + " invite";
+	}
 }
 
 public class CreatedInvite : Entity

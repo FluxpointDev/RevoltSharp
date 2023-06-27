@@ -661,6 +661,10 @@
             Do not log anything.
             </summary>
         </member>
+        <member name="M:RevoltSharp.PublicBot.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Bot username </returns>
+        </member>
         <member name="T:RevoltSharp.Channel">
             <summary>
             Revolt channel that can be casted to types <see cref="T:RevoltSharp.GroupChannel"/>, <see cref="T:RevoltSharp.TextChannel"/>, <see cref="T:RevoltSharp.VoiceChannel"/> <see cref="T:RevoltSharp.ServerChannel" /> <see cref="T:RevoltSharp.UnknownServerChannel" /> or <see cref="T:RevoltSharp.UnknownChannel"/>
@@ -680,6 +684,10 @@
             <summary>
             The channel type to cast to.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.Channel.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Channel </returns>
         </member>
         <member name="T:RevoltSharp.DMChannel">
             <summary>
@@ -705,6 +713,10 @@
             <summary>
             The last message id sent in this DM channel.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.DMChannel.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> User#0001 or Unknown User </returns>
         </member>
         <member name="T:RevoltSharp.GroupChannel">
             <summary>
@@ -753,6 +765,14 @@
             <summary>
             Channel has nsfw content
             </summary>
+        </member>
+        <member name="M:RevoltSharp.GroupChannel.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Group channel name </returns>
+        </member>
+        <member name="M:RevoltSharp.SavedMessagesChannel.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> CurrentUser#0001 </returns>
         </member>
         <member name="T:RevoltSharp.ServerChannel">
             <summary>
@@ -813,6 +833,10 @@
             <param name="permission"></param>
             <returns><see langword="true" /> if member has permission</returns>
         </member>
+        <member name="M:RevoltSharp.ServerChannel.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Server channel name </returns>
+        </member>
         <member name="T:RevoltSharp.TextChannel">
             <summary>
             Server text channel that members can talk in.
@@ -832,6 +856,10 @@
             <summary>
             Channel is an unknown type that can't be fully used 
             </summary>
+        </member>
+        <member name="M:RevoltSharp.UnknownChannel.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Unknown Channel </returns>
         </member>
         <member name="T:RevoltSharp.UnknownServerChannel">
             <summary>
@@ -865,6 +893,10 @@
             <remarks>
             Will be <see langword="null" /> if using <see cref="F:RevoltSharp.ClientMode.Http"/>.
             </remarks>
+        </member>
+        <member name="M:RevoltSharp.Emoji.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Emoji name or unicode </returns>
         </member>
         <member name="P:RevoltSharp.CreatedEntity.Id">
             <summary>
@@ -960,6 +992,10 @@
             <summary>
             The URL of the attachment.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.Attachment.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> File.png </returns>
         </member>
         <member name="T:RevoltSharp.EmbedBuilder">
             <summary>
@@ -1156,11 +1192,19 @@
             Get the type of message this is.
             </summary>
         </member>
+        <member name="M:RevoltSharp.Message.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> User/bot/system message </returns>
+        </member>
         <member name="T:RevoltSharp.SystemMessage`1">
             <summary>
             System messages sent by Revolt for information/changes
             </summary>
             <typeparam name="Type"></typeparam>
+        </member>
+        <member name="M:RevoltSharp.SystemMessage`1.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> System message </returns>
         </member>
         <member name="T:RevoltSharp.SystemUnknown">
             <summary>
@@ -1227,10 +1271,18 @@
             User messages sent with text, author, attachments, embeds, replies, mentions and optional parent server.
             </summary>
         </member>
+        <member name="M:RevoltSharp.UserMessage.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> User message </returns>
+        </member>
         <member name="T:RevoltSharp.Invite">
             <summary>
             Server invite
             </summary>
+        </member>
+        <member name="M:RevoltSharp.Invite.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Channel name invite </returns>
         </member>
         <member name="T:RevoltSharp.Role">
             <summary>
@@ -1254,6 +1306,10 @@
             <remarks>
             Will be <see langword="null" /> if using <see cref="F:RevoltSharp.ClientMode.Http"/>.
             </remarks>
+        </member>
+        <member name="M:RevoltSharp.Role.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Role name </returns>
         </member>
         <member name="P:RevoltSharp.Server.Id">
             <summary>
@@ -1296,6 +1352,10 @@
             This will only show channels the bot has permission for.
             </remarks>
         </member>
+        <member name="M:RevoltSharp.Server.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Server name </returns>
+        </member>
         <member name="P:RevoltSharp.ServerBan.Id">
             <summary>
             Id of the ban.
@@ -1315,6 +1375,10 @@
             <summary>
             Reason for ban creation.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.ServerBan.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Name#0001 ban </returns>
         </member>
         <member name="T:RevoltSharp.ServerMember">
             <summary>
@@ -1361,7 +1425,7 @@
         </member>
         <member name="P:RevoltSharp.ServerMember.CurrentName">
             <summary>
-            Get the current name of this user from the nickname or username.
+            Get the current name of this user from the nickname, display name or username.
             </summary>
         </member>
         <member name="P:RevoltSharp.ServerMember.ServerAvatar">
@@ -1448,6 +1512,10 @@
         <member name="P:RevoltSharp.ServerMember.MutualGroups">
             <inheritdoc cref="P:RevoltSharp.User.MutualGroups"/>
         </member>
+        <member name="M:RevoltSharp.ServerMember.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Nickname, Display name or Username </returns>
+        </member>
         <member name="P:RevoltSharp.MessageUpdatedProperties.Id">
             <summary>
             Id of the message.
@@ -1506,9 +1574,9 @@
             Get the display name of the user.
             </summary>
         </member>
-        <member name="P:RevoltSharp.User.Name">
+        <member name="P:RevoltSharp.User.CurrentName">
             <summary>
-            Get the name of the user which will use username or display name if set.
+            Get the display name or username of the user.
             </summary>
         </member>
         <member name="P:RevoltSharp.User.Tag">
@@ -1613,6 +1681,10 @@
             <remarks>
             This may not be fully accurate.
             </remarks>
+        </member>
+        <member name="M:RevoltSharp.User.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Name#0001 </returns>
         </member>
         <member name="T:RevoltSharp.BotData">
             <summary>
@@ -1832,6 +1904,10 @@
             <summary>
             Who you gonna call? Ghost busters!
             </summary>
+        </member>
+        <member name="M:RevoltSharp.Webhook.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Webhook name </returns>
         </member>
         <member name="T:RevoltSharp.Downloadable`2">
             <summary>

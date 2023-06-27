@@ -46,4 +46,11 @@ public class ServerBan : CreatedEntity
     public string? Reason { get; internal set; }
 
     public Attachment? Avatar { get; }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Name#0001 ban </returns>
+	public override string ToString()
+	{
+		return Username + "#" + Discriminator + " ban";
+	}
 }

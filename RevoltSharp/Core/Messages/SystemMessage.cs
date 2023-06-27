@@ -19,6 +19,13 @@ public class SystemMessage<Type> : Message where Type : SystemType
         Content.BaseTo = model.System.To;
         Content.BaseText = model.System.Content;
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> System message </returns>
+	public override string ToString()
+	{
+		return "System message";
+	}
 }
 public abstract class SystemType
 {

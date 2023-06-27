@@ -5,7 +5,6 @@ using RevoltSharp;
 using RevoltSharp.Commands;
 using RevoltSharp.Rest;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

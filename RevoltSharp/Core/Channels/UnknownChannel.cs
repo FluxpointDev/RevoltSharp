@@ -13,6 +13,13 @@ public class UnknownChannel : Channel
     internal override void Update(PartialChannelJson json)
     {
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Unknown Channel </returns>
+	public override string ToString()
+	{
+		return "Unknown Channel";
+	}
 }
 
 /// <summary>

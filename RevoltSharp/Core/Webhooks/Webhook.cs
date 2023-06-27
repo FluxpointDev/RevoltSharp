@@ -22,4 +22,11 @@ public class Webhook : CreatedEntity
     public ulong Permissions { get; internal set; }
 
 	public string Token { get; internal set; }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Webhook name </returns>
+	public override string ToString()
+	{
+		return Name;
+	}
 }

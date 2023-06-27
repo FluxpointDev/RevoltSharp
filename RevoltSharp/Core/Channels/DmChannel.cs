@@ -40,4 +40,11 @@ public class DMChannel : Channel
         if (json.Active.HasValue)
             Active = json.Active.Value;
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> User#0001 or Unknown User </returns>
+	public override string ToString()
+	{
+		return User != null ? User.Tag : "Unknown User";
+	}
 }
