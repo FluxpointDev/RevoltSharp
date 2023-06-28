@@ -21,11 +21,9 @@ public class Emoji : CreatedEntity
         Name = emoji;
     }
 
-    public Emoji(string emoji) : base(null, emoji)
+    public Emoji(string emoji) : base(null, emoji.StartsWith(':') ? emoji.Substring(1, emoji.Length - 2) : emoji)
     {
-        if (emoji.StartsWith(':'))
-            emoji = emoji.Substring(1, emoji.Length - 2);
-        Name = emoji;
+        Name = Id;
     }
 
     /// <summary>

@@ -17,12 +17,8 @@ public abstract class CreatedEntity : Entity
 {
     internal CreatedEntity(RevoltClient client, string id) : base(client)
     {
-        if (id.StartsWith(':'))
-            Id = id.Substring(1, id.Length - 2);
-        else
-            Id = id;
-
-        if (Ulid.TryParse(Id, out Ulid UID))
+        Id = id;
+        if (Id.Length > 3 && Ulid.TryParse(Id, out Ulid UID))
             CreatedAt = UID.Time;
     }
 

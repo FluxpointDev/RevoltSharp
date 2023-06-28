@@ -1196,6 +1196,10 @@
             <summary> Returns a string that represents the current object.</summary>
             <returns> User/bot/system message </returns>
         </member>
+        <member name="M:RevoltSharp.MessageMasquerade.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Masquerade name </returns>
+        </member>
         <member name="T:RevoltSharp.SystemMessage`1">
             <summary>
             System messages sent by Revolt for information/changes

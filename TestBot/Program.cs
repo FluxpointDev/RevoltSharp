@@ -43,7 +43,6 @@ class Program
         new EventTests(Client);
         //await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));
 
-
         CommandHandler CommandHandler = new CommandHandler(Client);
         _ = CommandHandler.LoadCommands();
         await Task.Delay(-1);

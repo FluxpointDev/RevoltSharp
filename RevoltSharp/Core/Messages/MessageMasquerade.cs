@@ -29,7 +29,7 @@ public class MessageMasquerade
 
     public string? Name { get; }
     public string? AvatarUrl { get; }
-    public RevoltColor? Color { get; }
+    public RevoltColor Color { get; }
 
     internal MessageMasqueradeJson ToJson()
     {
@@ -45,4 +45,11 @@ public class MessageMasquerade
 
         return Json;
     }
+
+	/// <summary> Returns a string that represents the current object.</summary>
+	/// <returns> Masquerade name </returns>
+	public override string ToString()
+	{
+		return Name ?? "Masquerade name";
+	}
 }

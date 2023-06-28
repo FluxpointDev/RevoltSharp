@@ -93,7 +93,7 @@ public abstract class Message : CreatedEntity
     /// </remarks>
     public Channel? Channel { get; internal set; }
 
-    public string ServerId { get; internal set; }
+    public string? ServerId { get; internal set; }
 
     /// <summary>
     /// Server that the Message is from.

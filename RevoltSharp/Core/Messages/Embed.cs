@@ -37,7 +37,7 @@ public class EmbedBuilder
     /// <summary>
     /// Embed color
     /// </summary>
-    public RevoltColor? Color { get; set; }
+    public RevoltColor Color { get; set; }
 
     /// <summary>
     /// Build the embed to use it in messages
@@ -126,7 +126,7 @@ public class MessageEmbed
     /// <summary>
     /// Embed color
     /// </summary>
-    public RevoltColor? Color { get; internal set; }
+    public RevoltColor Color { get; internal set; }
 
     /// <summary>
     /// Embed image attachment
@@ -179,7 +179,7 @@ public class Embed
     /// <summary>
     /// Embed color
     /// </summary>
-    public RevoltColor? Color { get; internal set; }
+    public RevoltColor Color { get; internal set; }
 
 
     internal EmbedJson ToJson()

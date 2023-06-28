@@ -9,7 +9,7 @@ namespace RevoltSharp;
 /// </summary>
 public class UserMessage : Message
 {
-    public string? Nonce { get; internal set; }
+    //public string? Nonce { get; internal set; }
 
     public string? Content { get; internal set; }
 
@@ -31,7 +31,7 @@ public class UserMessage : Message
     internal UserMessage(RevoltClient client, MessageJson model)
         : base(client, model)
     {
-        Nonce = model.Nonce;
+        //Nonce = model.Nonce;
         Content = model.Content;
         Masquerade = MessageMasquerade.Create(model.Masquerade);
         Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => Attachment.Create(client, a)!));
