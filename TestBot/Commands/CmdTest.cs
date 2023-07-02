@@ -15,6 +15,13 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("vc")]
+    public async Task VC()
+    {
+        var VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
+        await ReplyAsync(VCR.Token);
+    }
+
     [Command("webhooks")]
     public async Task Webhooks()
     {
