@@ -68,7 +68,17 @@ public class RevoltClient : ClientEvents
             WebSocket = new RevoltSocketClient(this);
     }
 
-    public ClientMode Mode { get; internal set; }
+    public void SetVoiceClient(IVoiceClient client)
+    {
+        if (client == null)
+            throw new RevoltArgumentException("Voice client can't be empty.");
+
+        VoiceClient = client;
+	}
+
+    internal IVoiceClient VoiceClient = null;
+
+	public ClientMode Mode { get; internal set; }
 
 	private void ConfigSafetyChecks()
     {
