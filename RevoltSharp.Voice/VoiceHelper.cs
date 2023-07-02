@@ -2,9 +2,13 @@
 
 public static class VoiceHelper
 {
-	public static async Task<VoiceRequest> JoinChannelAsync(this VoiceChannel channel)
+	public static async Task<VoiceState> JoinChannelAsync(this VoiceChannel channel)
 	{
 		VoiceRequestJson json = await channel.Client.Rest.PostAsync<VoiceRequestJson>($"/channels/{channel.Id}/join_call");
-		return new VoiceRequest(json);
+		VoiceState State = new VoiceState(channel, new VoiceSocketClient(channel.Client, json.token));
+		await State.ConnectAsync();
+
+
+		return State;
 	}
 }

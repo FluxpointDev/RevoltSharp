@@ -35,4 +35,5 @@ internal class QueryJanuary
 internal class QueryVoso
 {
     public string? url;
+	public string? ws;
 }

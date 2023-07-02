@@ -76,7 +76,7 @@ public class RevoltClient : ClientEvents
         VoiceClient = client;
 	}
 
-    internal IVoiceClient VoiceClient = null;
+    public IVoiceClient VoiceClient { get; internal set; } = null;
 
 	public ClientMode Mode { get; internal set; }
 
@@ -185,6 +185,12 @@ public class RevoltClient : ClientEvents
             if (!Config.Debug.UploadUrl.EndsWith('/'))
                 Config.Debug.UploadUrl += '/';
 
+            Config.Debug.VortextUrl = Query.serverFeatures.voiceServer.url;
+            Config.Debug.VortextWebsocketUrl = Query.serverFeatures.voiceServer.ws;
+
+            if (!Config.Debug.VortextUrl.EndsWith('/'))
+                Config.Debug.VortextUrl += '/';
+
             UserJson? SelfUser = null;
             try
             {
@@ -205,6 +211,9 @@ public class RevoltClient : ClientEvents
             CurrentUser = new SelfUser(this, SelfUser);
             InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Info);
             InvokeStarted(CurrentUser);
+
+            if (VoiceClient != null)
+                _ = VoiceClient.StartAsync();
         }
 
         if (WebSocket != null)

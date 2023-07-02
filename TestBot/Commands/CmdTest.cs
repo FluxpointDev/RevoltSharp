@@ -19,7 +19,7 @@ public class CmdTest : ModuleBase
     public async Task VC()
     {
         var VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
-        await ReplyAsync(VCR.Token);
+        await ReplyAsync(VCR.Channel.Id);
     }
 
     [Command("webhooks")]
