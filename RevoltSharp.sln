@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevoltSharp.Commands", "Rev
 		{F3A02DAA-F061-45C4-B65A-BE43ADB30059} = {F3A02DAA-F061-45C4-B65A-BE43ADB30059}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevoltSharp.Challenge", "RevoltSharp.Challenge\RevoltSharp.Challenge.csproj", "{0C63C42F-C00E-4F40-859B-2F988DD41197}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevoltSharp.Challenge", "RevoltSharp.Challenge\RevoltSharp.Challenge.csproj", "{0C63C42F-C00E-4F40-859B-2F988DD41197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevoltSharp.Voice", "RevoltSharp.Voice\RevoltSharp.Voice.csproj", "{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{0C63C42F-C00E-4F40-859B-2F988DD41197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C63C42F-C00E-4F40-859B-2F988DD41197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C63C42F-C00E-4F40-859B-2F988DD41197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
