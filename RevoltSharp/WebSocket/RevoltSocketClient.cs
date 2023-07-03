@@ -79,7 +79,8 @@ internal class RevoltSocketClient
                     }
                     else
                     {
-                        Console.WriteLine($"--- WebSocket Internal Error {we.ErrorCode} {we.WebSocketErrorCode} ---\n" + $"{we}");
+                        if (we.WebSocketErrorCode != WebSocketError.ConnectionClosedPrematurely)
+                            Console.WriteLine($"--- WebSocket Internal Error {we.ErrorCode} {we.WebSocketErrorCode} ---\n" + $"{we}");
                     }
 
                 }
