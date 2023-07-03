@@ -6,6 +6,8 @@ using RevoltSharp.Commands;
 using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,8 +20,46 @@ public class CmdTest : ModuleBase
     [Command("vc")]
     public async Task VC()
     {
-        var VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
-        await ReplyAsync(VCR.Channel.Id);
+        Console.WriteLine("RUN");
+        try
+        {
+            var VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
+            string File = "C:\\Users\\Brandan\\Downloads\\toads.mp4";
+
+            _ = Task.Run(async () =>
+            {
+                return;
+                using (var ffmpeg = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "ffmpeg",
+                    Arguments = $"-hide_banner -loglevel panic -i \"{File}\" -ac 2 -f s16le -ar 48000 pipe:1",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                }))
+                {
+					//using (var output = ffmpeg.StandardOutput.BaseStream)
+					//using (var discord = client.CreatePCMStream(AudioApplication.Mixed))
+					//{
+					//	try { await output.CopyToAsync(discord); }
+					//	finally { await discord.FlushAsync(); }
+					//}
+				}
+                
+
+			});
+			
+			await ReplyAsync(VCR.Channel.Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    [Command("vcdata")]
+    public async Task VCData()
+    {
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(new InitilizeTransportRequest(), Formatting.Indented));
     }
 
     [Command("webhooks")]

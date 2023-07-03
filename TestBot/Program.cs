@@ -29,7 +29,7 @@ class Program
             {
                 LogRestRequestJson = false,
                 LogRestResponseJson = false,
-                LogRestRequest = true,
+                LogRestRequest = false,
                 LogWebSocketFull = false,
                 LogWebSocketReady = false,
                 LogWebSocketError = false,

@@ -19,12 +19,12 @@ public class VoiceState
 
 	public async Task ConnectAsync()
 	{
-
+		await Connection.InternalConnectAsync();
 	}
 
 	public async Task StopAsync()
 	{
-
+		Connection.StopWebSocket = true;
 	}
 
 }
