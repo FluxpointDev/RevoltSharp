@@ -1,6 +1,8 @@
-﻿namespace RevoltSharp;
-
-internal class RetryRequest
+﻿namespace RevoltSharp
 {
-    public int retry_after;
+
+    internal class RetryRequest
+    {
+        public int retry_after;
+    }
 }

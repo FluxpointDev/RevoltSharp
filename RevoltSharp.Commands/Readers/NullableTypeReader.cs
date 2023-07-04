@@ -3,32 +3,34 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Commands;
-
-internal static class NullableTypeReader
+namespace RevoltSharp.Commands
 {
-    public static TypeReader Create(Type type, TypeReader reader)
-    {
-        ConstructorInfo constructor = typeof(NullableTypeReader<>).MakeGenericType(type).GetTypeInfo().DeclaredConstructors.First();
-        return (TypeReader)constructor.Invoke(new object[] { reader });
-    }
-}
 
-internal class NullableTypeReader<T> : TypeReader
-    where T : struct
-{
-    private readonly TypeReader _baseTypeReader;
-
-    public NullableTypeReader(TypeReader baseTypeReader)
+    internal static class NullableTypeReader
     {
-        _baseTypeReader = baseTypeReader;
+        public static TypeReader Create(Type type, TypeReader reader)
+        {
+            ConstructorInfo constructor = typeof(NullableTypeReader<>).MakeGenericType(type).GetTypeInfo().DeclaredConstructors.First();
+            return (TypeReader)constructor.Invoke(new object[] { reader });
+        }
     }
 
-    /// <inheritdoc />
-    public override async Task<TypeReaderResult> ReadAsync(CommandContext context, string input, IServiceProvider services)
+    internal class NullableTypeReader<T> : TypeReader
+        where T : struct
     {
-        if (string.Equals(input, "null", StringComparison.OrdinalIgnoreCase) || string.Equals(input, "nothing", StringComparison.OrdinalIgnoreCase))
-            return TypeReaderResult.FromSuccess(new T?());
-        return await _baseTypeReader.ReadAsync(context, input, services).ConfigureAwait(false);
+        private readonly TypeReader _baseTypeReader;
+
+        public NullableTypeReader(TypeReader baseTypeReader)
+        {
+            _baseTypeReader = baseTypeReader;
+        }
+
+        /// <inheritdoc />
+        public override async Task<TypeReaderResult> ReadAsync(CommandContext context, string input, IServiceProvider services)
+        {
+            if (string.Equals(input, "null", StringComparison.OrdinalIgnoreCase) || string.Equals(input, "nothing", StringComparison.OrdinalIgnoreCase))
+                return TypeReaderResult.FromSuccess(new T?());
+            return await _baseTypeReader.ReadAsync(context, input, services).ConfigureAwait(false);
+        }
     }
 }

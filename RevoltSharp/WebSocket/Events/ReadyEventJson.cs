@@ -1,21 +1,23 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket.Events;
-
-internal class ReadyEventJson
+namespace RevoltSharp.WebSocket.Events
 {
-    [JsonProperty("users")]
-    public UserJson[]? Users;
 
-    [JsonProperty("servers")]
-    public ServerJson[]? Servers;
+    internal class ReadyEventJson
+    {
+        [JsonProperty("users")]
+        public UserJson[]? Users;
 
-    [JsonProperty("channels")]
-    public ChannelJson[]? Channels;
+        [JsonProperty("servers")]
+        public ServerJson[]? Servers;
 
-    [JsonProperty("members")]
-    public ServerMemberJson[]? Members;
+        [JsonProperty("channels")]
+        public ChannelJson[]? Channels;
 
-    [JsonProperty("emojis")]
-    public EmojiJson[]? Emojis;
+        [JsonProperty("members")]
+        public ServerMemberJson[]? Members;
+
+        [JsonProperty("emojis")]
+        public EmojiJson[]? Emojis;
+    }
 }

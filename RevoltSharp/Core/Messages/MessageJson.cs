@@ -3,86 +3,88 @@ using Optionals;
 using System;
 using System.Collections.Generic;
 
-namespace RevoltSharp;
-
-internal class MessageJson
+namespace RevoltSharp
 {
-    [JsonProperty("_id")]
-    public string MessageId = null!;
 
-    [JsonProperty("type")]
-    public string? MessageType;
+    internal class MessageJson
+    {
+        [JsonProperty("_id")]
+        public string MessageId = null!;
 
-    [JsonProperty("nonce")]
-    public string? Nonce;
+        [JsonProperty("type")]
+        public string? MessageType;
 
-    [JsonProperty("channel")]
-    public string ChannelId = null!;
+        [JsonProperty("nonce")]
+        public string? Nonce;
 
-    [JsonProperty("author")]
-    public string AuthorId = null!;
+        [JsonProperty("channel")]
+        public string ChannelId = null!;
 
-    [JsonProperty("content")]
-    public string? Content;
+        [JsonProperty("author")]
+        public string AuthorId = null!;
 
-    [JsonProperty("attachments")]
-    public AttachmentJson[]? Attachments;
+        [JsonProperty("content")]
+        public string? Content;
 
-    [JsonProperty("mentions")]
-    public string[]? Mentions;
+        [JsonProperty("attachments")]
+        public AttachmentJson[]? Attachments;
 
-    [JsonProperty("replies")]
-    public string[]? Replies;
+        [JsonProperty("mentions")]
+        public string[]? Mentions;
 
-    [JsonProperty("embeds")]
-    public EmbedJson[]? Embeds;
+        [JsonProperty("replies")]
+        public string[]? Replies;
 
-    [JsonProperty("system")]
-    public MessageSystemJson? System;
+        [JsonProperty("embeds")]
+        public EmbedJson[]? Embeds;
 
-    [JsonProperty("webhook")]
-    public MessageWebhookJson? Webhook;
+        [JsonProperty("system")]
+        public MessageSystemJson? System;
 
-    [JsonProperty("edited")]
-    public Optional<DateTime> EditedAt;
+        [JsonProperty("webhook")]
+        public MessageWebhookJson? Webhook;
 
-    [JsonProperty("reactions")]
-    public Optional<Dictionary<string, string[]>> Reactions;
+        [JsonProperty("edited")]
+        public Optional<DateTime> EditedAt;
 
-    [JsonProperty("masquerade")]
-    public MessageMasqueradeJson? Masquerade;
-}
-internal class MessageMasqueradeJson
-{
-    [JsonProperty("name")]
-    public string? Name { get; set; }
+        [JsonProperty("reactions")]
+        public Optional<Dictionary<string, string[]>> Reactions;
 
-    [JsonProperty("avatar")]
-    public string? AvatarUrl { get; set; }
+        [JsonProperty("masquerade")]
+        public MessageMasqueradeJson? Masquerade;
+    }
+    internal class MessageMasqueradeJson
+    {
+        [JsonProperty("name")]
+        public string? Name { get; set; }
 
-    [JsonProperty("colour")]
-    public Optional<string> Color { get; set; }
-}
-internal class MessageSystemJson
-{
-    [JsonProperty("type")]
-    public string? SystemType;
+        [JsonProperty("avatar")]
+        public string? AvatarUrl { get; set; }
 
-    [JsonProperty("id")]
-    public string? Id;
+        [JsonProperty("colour")]
+        public Optional<string> Color { get; set; }
+    }
+    internal class MessageSystemJson
+    {
+        [JsonProperty("type")]
+        public string? SystemType;
 
-    [JsonProperty("by")]
-    public string? By;
+        [JsonProperty("id")]
+        public string? Id;
 
-    [JsonProperty("name")]
-    public string? Name;
+        [JsonProperty("by")]
+        public string? By;
 
-    [JsonProperty("from")]
-    public string? From;
+        [JsonProperty("name")]
+        public string? Name;
 
-    [JsonProperty("to")]
-    public string? To;
+        [JsonProperty("from")]
+        public string? From;
 
-    [JsonProperty("content")]
-    public string? Content;
+        [JsonProperty("to")]
+        public string? To;
+
+        [JsonProperty("content")]
+        public string? Content;
+    }
 }

@@ -4,29 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevoltSharp;
+namespace RevoltSharp
+{
 
-internal class AuthenticateRequest
-{
-	internal AuthenticateRequest(string channelId, string token)
+	internal class AuthenticateRequest
 	{
-		data = new AuthDataRequest
+		internal AuthenticateRequest(string channelId, string token)
 		{
-			roomId = channelId,
-			token = token
-		};
+			data = new AuthDataRequest
+			{
+				roomId = channelId,
+				token = token
+			};
+		}
+		public int id = 3;
+		public string type = "Authenticate";
+		public AuthDataRequest data;
 	}
-	public int id = 3;
-	public string type = "Authenticate";
-	public AuthDataRequest data;
-}
-internal class AuthDataRequest
-{
-	public string roomId;
-	public string token;
-}
-internal class RoomInfoRequest
-{
-	public int id = 13;
-	public string type = "RoomInfo";
+	internal class AuthDataRequest
+	{
+		public string roomId;
+		public string token;
+	}
+	internal class RoomInfoRequest
+	{
+		public int id = 13;
+		public string type = "RoomInfo";
+	}
 }

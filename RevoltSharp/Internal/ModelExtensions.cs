@@ -1,22 +1,24 @@
 ﻿using Optionals;
 
-namespace RevoltSharp;
-
-internal static class ModelExtensions
+namespace RevoltSharp
 {
-    internal static Optional<Attachment?> ToModel(this Optional<AttachmentJson> json, RevoltClient client)
+
+    internal static class ModelExtensions
     {
-        if (!json.HasValue)
-            return Optional.None<Attachment?>();
+        internal static Optional<Attachment?> ToModel(this Optional<AttachmentJson> json, RevoltClient client)
+        {
+            if (!json.HasValue)
+                return Optional.None<Attachment?>();
 
-        return Optional.Some(json.Value.ToModel(client));
-    }
+            return Optional.Some(json.Value.ToModel(client));
+        }
 
-    internal static Attachment? ToModel(this AttachmentJson json, RevoltClient client)
-    {
-        if (json == null)
-            return null;
+        internal static Attachment? ToModel(this AttachmentJson json, RevoltClient client)
+        {
+            if (json == null)
+                return null;
 
-        return Attachment.Create(client, json);
+            return Attachment.Create(client, json);
+        }
     }
 }

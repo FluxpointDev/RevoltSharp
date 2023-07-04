@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 
-namespace RevoltSharp;
-public interface IVoiceClient
+namespace RevoltSharp
 {
-	Task StartAsync();
+	public interface IVoiceClient
+	{
+		Task StartAsync();
 
-	Task StopAsync();
+		Task StopAsync();
+	}
 }

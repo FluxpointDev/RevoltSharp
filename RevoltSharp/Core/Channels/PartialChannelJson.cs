@@ -2,34 +2,36 @@
 using Optionals;
 using System.Collections.Generic;
 
-namespace RevoltSharp;
-
-internal class PartialChannelJson
+namespace RevoltSharp
 {
-    [JsonProperty("active")]
-    public Optional<bool> Active { get; set; }
 
-    [JsonProperty("name")]
-    public Optional<string> Name { get; set; }
+    internal class PartialChannelJson
+    {
+        [JsonProperty("active")]
+        public Optional<bool> Active { get; set; }
 
-    [JsonProperty("icon")]
-    public Optional<AttachmentJson?> Icon { get; set; }
+        [JsonProperty("name")]
+        public Optional<string> Name { get; set; }
 
-    [JsonProperty("description")]
-    public Optional<string> Description { get; set; }
+        [JsonProperty("icon")]
+        public Optional<AttachmentJson?> Icon { get; set; }
 
-    [JsonProperty("deafult_permissions")]
-    public Optional<PermissionsJson> DefaultPermissions { get; set; }
+        [JsonProperty("description")]
+        public Optional<string> Description { get; set; }
 
-    [JsonProperty("permissions")]
-    public Optional<ulong> Permissions { get; set; }
+        [JsonProperty("deafult_permissions")]
+        public Optional<PermissionsJson> DefaultPermissions { get; set; }
 
-    [JsonProperty("role_permissions")]
-    public Optional<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
+        [JsonProperty("permissions")]
+        public Optional<ulong> Permissions { get; set; }
 
-    [JsonProperty("nsfw")]
-    public Optional<bool> IsNsfw { get; set; }
+        [JsonProperty("role_permissions")]
+        public Optional<Dictionary<string, PermissionsJson>> RolePermissions { get; set; }
 
-    [JsonProperty("owner")]
-    public Optional<string> OwnerId { get; set; }
+        [JsonProperty("nsfw")]
+        public Optional<bool> IsNsfw { get; set; }
+
+        [JsonProperty("owner")]
+        public Optional<string> OwnerId { get; set; }
+    }
 }

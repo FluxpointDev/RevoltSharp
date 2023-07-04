@@ -1,33 +1,35 @@
 ﻿using Newtonsoft.Json;
 using System.Numerics;
 
-namespace RevoltSharp;
-
-internal class RoleJson
+namespace RevoltSharp
 {
-    [JsonProperty("id")]
-    public string? Id;
 
-    [JsonProperty("name")]
-    public string Name = null!;
+    internal class RoleJson
+    {
+        [JsonProperty("id")]
+        public string? Id;
 
-    [JsonProperty("permissions")]
-    public PermissionsJson Permissions = null!;
+        [JsonProperty("name")]
+        public string Name = null!;
 
-    [JsonProperty("hoist")]
-    public bool Hoist;
+        [JsonProperty("permissions")]
+        public PermissionsJson Permissions = null!;
 
-    [JsonProperty("rank")]
-    public BigInteger Rank;
+        [JsonProperty("hoist")]
+        public bool Hoist;
 
-    [JsonProperty("colour")]
-    public string? Colour;
-}
-internal class PermissionsJson
-{
-    [JsonProperty("a")]
-    public ulong Allowed;
+        [JsonProperty("rank")]
+        public BigInteger Rank;
 
-    [JsonProperty("d")]
-    public ulong Denied;
+        [JsonProperty("colour")]
+        public string? Colour;
+    }
+    internal class PermissionsJson
+    {
+        [JsonProperty("a")]
+        public ulong Allowed;
+
+        [JsonProperty("d")]
+        public ulong Denied;
+    }
 }

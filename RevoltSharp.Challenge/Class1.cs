@@ -1,5 +1,7 @@
-﻿namespace RevoltSharp.Challenge;
-public class Class1
+﻿namespace RevoltSharp.Challenge
 {
-    /// Todo add cloudflare challenge stuff
+    public class Class1
+    {
+        /// Todo add cloudflare challenge stuff
+    }
 }

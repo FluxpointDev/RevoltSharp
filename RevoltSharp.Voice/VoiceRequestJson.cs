@@ -1,5 +1,7 @@
-﻿namespace RevoltSharp;
-internal class VoiceRequestJson
+﻿namespace RevoltSharp
 {
-	public string token;
+    internal class VoiceRequestJson
+    {
+        public string token;
+    }
 }

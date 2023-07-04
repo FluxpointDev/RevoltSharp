@@ -1,13 +1,15 @@
-﻿namespace RevoltSharp;
-
-/// <summary>
-/// Channel that members can speak in to other members
-/// </summary>
-public class VoiceChannel : ServerChannel
+﻿namespace RevoltSharp
 {
-    internal VoiceChannel(RevoltClient client, ChannelJson model)
-        : base(client, model)
+
+    /// <summary>
+    /// Channel that members can speak in to other members
+    /// </summary>
+    public class VoiceChannel : ServerChannel
     {
-        Type = ChannelType.Voice;
+        internal VoiceChannel(RevoltClient client, ChannelJson model)
+            : base(client, model)
+        {
+            Type = ChannelType.Voice;
+        }
     }
 }

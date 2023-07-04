@@ -3,73 +3,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Commands;
-
-/// <summary>
-///     Provides extension methods for the <see cref="CommandService"/> class.
-/// </summary>
-public static class CommandServiceExtensions
+namespace RevoltSharp.Commands
 {
+
     /// <summary>
-    ///     Returns commands that can be executed under the current context.
+    ///     Provides extension methods for the <see cref="CommandService"/> class.
     /// </summary>
-    /// <param name="commands">The set of commands to be checked against.</param>
-    /// <param name="context">The current command context.</param>
-    /// <param name="provider">The service provider used for dependency injection upon precondition check.</param>
-    /// <returns>
-    ///     A read-only collection of commands that can be executed under the current context.
-    /// </returns>
-    public static async Task<IReadOnlyCollection<CommandInfo>> GetExecutableCommandsAsync(this ICollection<CommandInfo> commands, CommandContext context, IServiceProvider provider)
+    public static class CommandServiceExtensions
     {
-        List<CommandInfo> executableCommands = new List<CommandInfo>();
-
-        var tasks = commands.Select(async c =>
+        /// <summary>
+        ///     Returns commands that can be executed under the current context.
+        /// </summary>
+        /// <param name="commands">The set of commands to be checked against.</param>
+        /// <param name="context">The current command context.</param>
+        /// <param name="provider">The service provider used for dependency injection upon precondition check.</param>
+        /// <returns>
+        ///     A read-only collection of commands that can be executed under the current context.
+        /// </returns>
+        public static async Task<IReadOnlyCollection<CommandInfo>> GetExecutableCommandsAsync(this ICollection<CommandInfo> commands, CommandContext context, IServiceProvider provider)
         {
-            PreconditionResult result = await c.CheckPreconditionsAsync(context, provider).ConfigureAwait(false);
-            return new { Command = c, PreconditionResult = result };
-        });
+            List<CommandInfo> executableCommands = new List<CommandInfo>();
 
-        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+            var tasks = commands.Select(async c =>
+            {
+                PreconditionResult result = await c.CheckPreconditionsAsync(context, provider).ConfigureAwait(false);
+                return new { Command = c, PreconditionResult = result };
+            });
 
-        foreach (var result in results)
-        {
-            if (result.PreconditionResult.IsSuccess)
-                executableCommands.Add(result.Command);
+            var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            foreach (var result in results)
+            {
+                if (result.PreconditionResult.IsSuccess)
+                    executableCommands.Add(result.Command);
+            }
+
+            return executableCommands;
         }
+        /// <summary>
+        ///     Returns commands that can be executed under the current context.
+        /// </summary>
+        /// <param name="commandService">The desired command service class to check against.</param>
+        /// <param name="context">The current command context.</param>
+        /// <param name="provider">The service provider used for dependency injection upon precondition check.</param>
+        /// <returns>
+        ///     A read-only collection of commands that can be executed under the current context.
+        /// </returns>
+        public static Task<IReadOnlyCollection<CommandInfo>> GetExecutableCommandsAsync(this CommandService commandService, CommandContext context, IServiceProvider provider)
+            => GetExecutableCommandsAsync(commandService.Commands.ToArray(), context, provider);
+        /// <summary>
+        ///     Returns commands that can be executed under the current context.
+        /// </summary>
+        /// <param name="module">The module to be checked against.</param>
+        /// <param name="context">The current command context.</param>
+        /// <param name="provider">The service provider used for dependency injection upon precondition check.</param>
+        /// <returns>
+        ///     A read-only collection of commands that can be executed under the current context.
+        /// </returns>
+        public static async Task<IReadOnlyCollection<CommandInfo>> GetExecutableCommandsAsync(this ModuleInfo module, CommandContext context, IServiceProvider provider)
+        {
+            List<CommandInfo> executableCommands = new List<CommandInfo>();
 
-        return executableCommands;
-    }
-    /// <summary>
-    ///     Returns commands that can be executed under the current context.
-    /// </summary>
-    /// <param name="commandService">The desired command service class to check against.</param>
-    /// <param name="context">The current command context.</param>
-    /// <param name="provider">The service provider used for dependency injection upon precondition check.</param>
-    /// <returns>
-    ///     A read-only collection of commands that can be executed under the current context.
-    /// </returns>
-    public static Task<IReadOnlyCollection<CommandInfo>> GetExecutableCommandsAsync(this CommandService commandService, CommandContext context, IServiceProvider provider)
-        => GetExecutableCommandsAsync(commandService.Commands.ToArray(), context, provider);
-    /// <summary>
-    ///     Returns commands that can be executed under the current context.
-    /// </summary>
-    /// <param name="module">The module to be checked against.</param>
-    /// <param name="context">The current command context.</param>
-    /// <param name="provider">The service provider used for dependency injection upon precondition check.</param>
-    /// <returns>
-    ///     A read-only collection of commands that can be executed under the current context.
-    /// </returns>
-    public static async Task<IReadOnlyCollection<CommandInfo>> GetExecutableCommandsAsync(this ModuleInfo module, CommandContext context, IServiceProvider provider)
-    {
-        List<CommandInfo> executableCommands = new List<CommandInfo>();
+            executableCommands.AddRange(await module.Commands.ToArray().GetExecutableCommandsAsync(context, provider).ConfigureAwait(false));
 
-        executableCommands.AddRange(await module.Commands.ToArray().GetExecutableCommandsAsync(context, provider).ConfigureAwait(false));
+            IEnumerable<Task<IReadOnlyCollection<CommandInfo>>> tasks = module.Submodules.Select(async s => await s.GetExecutableCommandsAsync(context, provider).ConfigureAwait(false));
+            IReadOnlyCollection<CommandInfo>[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
-        IEnumerable<Task<IReadOnlyCollection<CommandInfo>>> tasks = module.Submodules.Select(async s => await s.GetExecutableCommandsAsync(context, provider).ConfigureAwait(false));
-        IReadOnlyCollection<CommandInfo>[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
+            executableCommands.AddRange(results.SelectMany(c => c));
 
-        executableCommands.AddRange(results.SelectMany(c => c));
-
-        return executableCommands;
+            return executableCommands;
+        }
     }
 }

@@ -1,39 +1,41 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.Rest.Requests;
-
-internal class QueryRequest
+namespace RevoltSharp.Rest.Requests
 {
-    [JsonProperty("revolt")]
-    public string? revoltVersion;
 
-    [JsonProperty("features")]
-    public QueryFeatures? serverFeatures;
+    internal class QueryRequest
+    {
+        [JsonProperty("revolt")]
+        public string? revoltVersion;
 
-    [JsonProperty("ws")]
-    public string? websocketUrl;
-}
-internal class QueryFeatures
-{
-    [JsonProperty("autumn")]
-    public QueryAutumn? imageServer;
+        [JsonProperty("features")]
+        public QueryFeatures? serverFeatures;
 
-    [JsonProperty("january")]
-    public QueryJanuary? otherServer;
+        [JsonProperty("ws")]
+        public string? websocketUrl;
+    }
+    internal class QueryFeatures
+    {
+        [JsonProperty("autumn")]
+        public QueryAutumn? imageServer;
 
-    [JsonProperty("voso")]
-    public QueryVoso? voiceServer;
-}
-internal class QueryAutumn
-{
-    public string? url;
-}
-internal class QueryJanuary
-{
-    public string? url;
-}
-internal class QueryVoso
-{
-    public string? url;
-	public string? ws;
+        [JsonProperty("january")]
+        public QueryJanuary? otherServer;
+
+        [JsonProperty("voso")]
+        public QueryVoso? voiceServer;
+    }
+    internal class QueryAutumn
+    {
+        public string? url;
+    }
+    internal class QueryJanuary
+    {
+        public string? url;
+    }
+    internal class QueryVoso
+    {
+        public string? url;
+        public string? ws;
+    }
 }

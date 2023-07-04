@@ -1,29 +1,31 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp;
-
-internal class EmojiJson
+namespace RevoltSharp
 {
-    [JsonProperty("_id")]
-    public string Id = null!;
 
-    [JsonProperty("name")]
-    public string Name = null!;
+    internal class EmojiJson
+    {
+        [JsonProperty("_id")]
+        public string Id = null!;
 
-    [JsonProperty("parent")]
-    public EmojiParentJson Parent = null!;
+        [JsonProperty("name")]
+        public string Name = null!;
 
-    [JsonProperty("creator_id")]
-    public string CreatorId = null!;
+        [JsonProperty("parent")]
+        public EmojiParentJson Parent = null!;
 
-    [JsonProperty("animated")]
-    public bool Animated;
+        [JsonProperty("creator_id")]
+        public string CreatorId = null!;
 
-    [JsonProperty("nsfw")]
-    public bool Nsfw;
-}
-internal class EmojiParentJson
-{
-    [JsonProperty("id")]
-    public string ServerId = null!;
+        [JsonProperty("animated")]
+        public bool Animated;
+
+        [JsonProperty("nsfw")]
+        public bool Nsfw;
+    }
+    internal class EmojiParentJson
+    {
+        [JsonProperty("id")]
+        public string ServerId = null!;
+    }
 }

@@ -1,28 +1,30 @@
 ﻿using Optionals;
 
-namespace RevoltSharp;
-
-public class ServerSystemMessages : Entity
+namespace RevoltSharp
 {
-    internal ServerSystemMessages(RevoltClient client, ServerSystemMessagesJson json) : base(client)
+
+    public class ServerSystemMessages : Entity
     {
-        if (json == null)
-            return;
+        internal ServerSystemMessages(RevoltClient client, ServerSystemMessagesJson json) : base(client)
+        {
+            if (json == null)
+                return;
 
-        UserJoinedChannelId = json.UserJoined;
-        UserLeftChannelId = json.UserLeft;
-        UserKickedChannelId = json.UserKicked;
-        UserBannedChannelId = json.UserBanned;
+            UserJoinedChannelId = json.UserJoined;
+            UserLeftChannelId = json.UserLeft;
+            UserKickedChannelId = json.UserKicked;
+            UserBannedChannelId = json.UserBanned;
 
+        }
+
+        public Optional<string> UserJoinedChannelId { get; set; }
+
+        public TextChannel? UserJoinedChannel => Client.GetTextChannel(UserJoinedChannelId);
+        public Optional<string> UserLeftChannelId { get; set; }
+        public TextChannel? UserLeftChannel => Client.GetTextChannel(UserLeftChannelId);
+        public Optional<string> UserKickedChannelId { get; set; }
+        public TextChannel? UserKickedChannel => Client.GetTextChannel(UserKickedChannelId);
+        public Optional<string> UserBannedChannelId { get; set; }
+        public TextChannel? UserBannedChannel => Client.GetTextChannel(UserBannedChannelId);
     }
-
-    public Optional<string> UserJoinedChannelId { get; set; }
-
-    public TextChannel? UserJoinedChannel => Client.GetTextChannel(UserJoinedChannelId);
-    public Optional<string> UserLeftChannelId { get; set; }
-    public TextChannel? UserLeftChannel => Client.GetTextChannel(UserLeftChannelId);
-    public Optional<string> UserKickedChannelId { get; set; }
-    public TextChannel? UserKickedChannel => Client.GetTextChannel(UserKickedChannelId);
-    public Optional<string> UserBannedChannelId { get; set; }
-    public TextChannel? UserBannedChannel => Client.GetTextChannel(UserBannedChannelId);
 }

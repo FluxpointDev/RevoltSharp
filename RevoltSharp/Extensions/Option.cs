@@ -1,10 +1,12 @@
-﻿namespace RevoltSharp;
-
-public class Option<TValue>
+﻿namespace RevoltSharp
 {
-    public Option(TValue value)
+
+    public class Option<TValue>
     {
-        Value = value;
+        public Option(TValue value)
+        {
+            Value = value;
+        }
+        public readonly TValue Value;
     }
-    public readonly TValue Value;
 }

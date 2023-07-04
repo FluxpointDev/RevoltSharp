@@ -1,15 +1,17 @@
-﻿namespace RevoltSharp;
-public class MessageWebhook : CreatedEntity
+﻿namespace RevoltSharp
 {
-    internal MessageWebhook(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
+    public class MessageWebhook : CreatedEntity
     {
-        Name = model.Name;
-        Avatar = Attachment.Create(client, model.Avatar);
+        internal MessageWebhook(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
+        {
+            Name = model.Name;
+            Avatar = Attachment.Create(client, model.Avatar);
+        }
+
+        public string Id;
+
+        public string Name;
+
+        public Attachment? Avatar;
     }
-
-    public string Id;
-
-    public string Name;
-
-    public Attachment? Avatar;
 }

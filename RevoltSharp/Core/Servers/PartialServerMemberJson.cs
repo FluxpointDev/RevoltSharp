@@ -2,21 +2,23 @@
 using Optionals;
 using System;
 
-namespace RevoltSharp;
-
-internal class PartialServerMemberJson
+namespace RevoltSharp
 {
-    [JsonProperty("nickname")]
-    public Optional<string> Nickname;
 
-    [JsonProperty("avatar")]
-    public Optional<AttachmentJson> Avatar;
+    internal class PartialServerMemberJson
+    {
+        [JsonProperty("nickname")]
+        public Optional<string> Nickname;
 
-    [JsonProperty("roles")]
-    public Optional<string[]> Roles;
+        [JsonProperty("avatar")]
+        public Optional<AttachmentJson> Avatar;
 
-    [JsonProperty("timeout")]
-    public Optional<DateTime> Timeout;
+        [JsonProperty("roles")]
+        public Optional<string[]> Roles;
 
-    public bool ClearTimeout;
+        [JsonProperty("timeout")]
+        public Optional<DateTime> Timeout;
+
+        public bool ClearTimeout;
+    }
 }

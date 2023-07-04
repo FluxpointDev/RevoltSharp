@@ -1,24 +1,26 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp;
-
-internal class WebhookJson
+namespace RevoltSharp
 {
-    [JsonProperty("id")]
-    public string? Id;
 
-    [JsonProperty("name")]
-    public string? Name;
+    internal class WebhookJson
+    {
+        [JsonProperty("id")]
+        public string? Id;
 
-    [JsonProperty("avatar")]
-    public AttachmentJson? Avatar;
+        [JsonProperty("name")]
+        public string? Name;
 
-    [JsonProperty("channel")]
-    public string? ChannelId;
+        [JsonProperty("avatar")]
+        public AttachmentJson? Avatar;
 
-    [JsonProperty("permissions")]
-    public ulong? Permissions;
+        [JsonProperty("channel")]
+        public string? ChannelId;
 
-    [JsonProperty("token")]
-    public string? Token;
+        [JsonProperty("permissions")]
+        public ulong? Permissions;
+
+        [JsonProperty("token")]
+        public string? Token;
+    }
 }

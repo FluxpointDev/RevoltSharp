@@ -1,38 +1,40 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 
-namespace RevoltSharp;
-
-internal class PartialUserJson
+namespace RevoltSharp
 {
 
-    [JsonProperty("username")]
-    public Optional<string> Username;
+    internal class PartialUserJson
+    {
 
-    [JsonProperty("discriminator")]
-    public Optional<string> Discriminator;
+        [JsonProperty("username")]
+        public Optional<string> Username;
 
-    [JsonProperty("display_name")]
-    public Optional<string> DisplayName;
+        [JsonProperty("discriminator")]
+        public Optional<string> Discriminator;
 
-    [JsonProperty("profile")]
-    public Optional<ProfileJson> Profile;
+        [JsonProperty("display_name")]
+        public Optional<string> DisplayName;
 
-    [JsonProperty("status")]
-    public Optional<UserStatusJson> Status;
+        [JsonProperty("profile")]
+        public Optional<ProfileJson> Profile;
 
-    [JsonProperty("avatar")]
-    public Optional<AttachmentJson> Avatar;
+        [JsonProperty("status")]
+        public Optional<UserStatusJson> Status;
 
-    [JsonProperty("online")]
-    public Optional<bool> Online;
+        [JsonProperty("avatar")]
+        public Optional<AttachmentJson> Avatar;
 
-    [JsonProperty("privileged")]
-    public Optional<bool> Privileged;
+        [JsonProperty("online")]
+        public Optional<bool> Online;
 
-    [JsonProperty("badges")]
-    public Optional<ulong> Badges;
+        [JsonProperty("privileged")]
+        public Optional<bool> Privileged;
 
-    [JsonProperty("flags")]
-    public Optional<ulong> Flags;
+        [JsonProperty("badges")]
+        public Optional<ulong> Badges;
+
+        [JsonProperty("flags")]
+        public Optional<ulong> Flags;
+    }
 }

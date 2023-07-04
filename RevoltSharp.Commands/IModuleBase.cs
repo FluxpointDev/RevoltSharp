@@ -1,14 +1,16 @@
 using RevoltSharp.Commands.Builders;
 
-namespace RevoltSharp.Commands;
-
-internal interface IModuleBase
+namespace RevoltSharp.Commands
 {
-    void SetContext(CommandContext context);
 
-    void BeforeExecute(CommandInfo command);
+    internal interface IModuleBase
+    {
+        void SetContext(CommandContext context);
 
-    void AfterExecute(CommandInfo command);
+        void BeforeExecute(CommandInfo command);
 
-    void OnModuleBuilding(CommandService commandService, ModuleBuilder builder);
+        void AfterExecute(CommandInfo command);
+
+        void OnModuleBuilding(CommandService commandService, ModuleBuilder builder);
+    }
 }

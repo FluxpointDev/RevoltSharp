@@ -1,20 +1,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace RevoltSharp.Commands;
-
-public static class IEnumerableExtensions
+namespace RevoltSharp.Commands
 {
-    public static IEnumerable<TResult> Permutate<TFirst, TSecond, TResult>(
-        this IEnumerable<TFirst> set,
-        IEnumerable<TSecond> others,
-        Func<TFirst, TSecond, TResult> func)
+
+    public static class IEnumerableExtensions
     {
-        foreach (TFirst elem in set)
+        public static IEnumerable<TResult> Permutate<TFirst, TSecond, TResult>(
+            this IEnumerable<TFirst> set,
+            IEnumerable<TSecond> others,
+            Func<TFirst, TSecond, TResult> func)
         {
-            foreach (TSecond elem2 in others)
+            foreach (TFirst elem in set)
             {
-                yield return func(elem, elem2);
+                foreach (TSecond elem2 in others)
+                {
+                    yield return func(elem, elem2);
+                }
             }
         }
     }

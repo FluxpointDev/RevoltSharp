@@ -1,37 +1,39 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 
-namespace RevoltSharp;
-
-internal class PartialServerJson
+namespace RevoltSharp
 {
-    [JsonProperty("name")]
-    public Optional<string> Name { get; set; }
 
-    [JsonProperty("icon")]
-    public Optional<AttachmentJson> Icon { get; set; }
+    internal class PartialServerJson
+    {
+        [JsonProperty("name")]
+        public Optional<string> Name { get; set; }
 
-    [JsonProperty("banner")]
-    public Optional<AttachmentJson> Banner { get; set; }
+        [JsonProperty("icon")]
+        public Optional<AttachmentJson> Icon { get; set; }
 
-    [JsonProperty("description")]
-    public Optional<string> Description { get; set; }
+        [JsonProperty("banner")]
+        public Optional<AttachmentJson> Banner { get; set; }
 
-    [JsonProperty("default_permissions")]
-    public Optional<ulong> DefaultPermissions { get; set; }
+        [JsonProperty("description")]
+        public Optional<string> Description { get; set; }
 
-    [JsonProperty("analytics")]
-    public Optional<bool> Analytics;
+        [JsonProperty("default_permissions")]
+        public Optional<ulong> DefaultPermissions { get; set; }
 
-    [JsonProperty("discoverable")]
-    public Optional<bool> Discoverable;
+        [JsonProperty("analytics")]
+        public Optional<bool> Analytics;
 
-    [JsonProperty("nsfw")]
-    public Optional<bool> Nsfw;
+        [JsonProperty("discoverable")]
+        public Optional<bool> Discoverable;
 
-    [JsonProperty("owner")]
-    public Optional<string> Owner;
+        [JsonProperty("nsfw")]
+        public Optional<bool> Nsfw;
 
-    [JsonProperty("system_messages")]
-    public Optional<ServerSystemMessagesJson> SystemMessages;
+        [JsonProperty("owner")]
+        public Optional<string> Owner;
+
+        [JsonProperty("system_messages")]
+        public Optional<ServerSystemMessagesJson> SystemMessages;
+    }
 }

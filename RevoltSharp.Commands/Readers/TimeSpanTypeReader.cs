@@ -2,11 +2,12 @@ using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Commands;
-
-internal class TimeSpanTypeReader : TypeReader
+namespace RevoltSharp.Commands
 {
-    private static readonly string[] Formats = {
+
+    internal class TimeSpanTypeReader : TypeReader
+    {
+        private static readonly string[] Formats = {
         "%d'd'%h'h'%m'm'%s's'", //4d3h2m1s
         "%d'd'%h'h'%m'm'",      //4d3h2m
         "%d'd'%h'h'%s's'",      //4d3h  1s
@@ -24,27 +25,28 @@ internal class TimeSpanTypeReader : TypeReader
         "%s's'",                //      1s
     };
 
-    /// <inheritdoc />
-    public override Task<TypeReaderResult> ReadAsync(CommandContext context, string input, IServiceProvider services)
-    {
-        if (string.IsNullOrEmpty(input))
-            throw new ArgumentException(message: $"{nameof(input)} must not be null or empty.", paramName: nameof(input));
+        /// <inheritdoc />
+        public override Task<TypeReaderResult> ReadAsync(CommandContext context, string input, IServiceProvider services)
+        {
+            if (string.IsNullOrEmpty(input))
+                throw new ArgumentException(message: $"{nameof(input)} must not be null or empty.", paramName: nameof(input));
 
-        bool isNegative = input[0] == '-'; // Char for CultureInfo.InvariantCulture.NumberFormat.NegativeSign
-        if (isNegative)
-        {
-            input = input.Substring(1);
-        }
+            bool isNegative = input[0] == '-'; // Char for CultureInfo.InvariantCulture.NumberFormat.NegativeSign
+            if (isNegative)
+            {
+                input = input.Substring(1);
+            }
 
-        if (TimeSpan.TryParseExact(input.ToLowerInvariant(), Formats, CultureInfo.InvariantCulture, out TimeSpan timeSpan))
-        {
-            return isNegative
-                ? Task.FromResult(TypeReaderResult.FromSuccess(-timeSpan))
-                : Task.FromResult(TypeReaderResult.FromSuccess(timeSpan));
-        }
-        else
-        {
-            return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Failed to parse TimeSpan"));
+            if (TimeSpan.TryParseExact(input.ToLowerInvariant(), Formats, CultureInfo.InvariantCulture, out TimeSpan timeSpan))
+            {
+                return isNegative
+                    ? Task.FromResult(TypeReaderResult.FromSuccess(-timeSpan))
+                    : Task.FromResult(TypeReaderResult.FromSuccess(timeSpan));
+            }
+            else
+            {
+                return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Failed to parse TimeSpan"));
+            }
         }
     }
 }

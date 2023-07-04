@@ -1,58 +1,60 @@
 ﻿using System.Text;
 
-namespace RevoltSharp;
-public class QueryBuilder
+namespace RevoltSharp
 {
-	private StringBuilder sb = new StringBuilder();
-
-
-	public QueryBuilder Add(string key, string value)
-		=> AddIf(true, key, value);
-
-	public QueryBuilder AddIf(bool match, string key, string value)
+	public class QueryBuilder
 	{
-		if (match)
+		private StringBuilder sb = new StringBuilder();
+
+
+		public QueryBuilder Add(string key, string value)
+			=> AddIf(true, key, value);
+
+		public QueryBuilder AddIf(bool match, string key, string value)
 		{
-			if (sb.Length == 0)
-				sb.Append($"?{key}={value}");
-			else
-				sb.Append($"&{key}={value}");
+			if (match)
+			{
+				if (sb.Length == 0)
+					sb.Append($"?{key}={value}");
+				else
+					sb.Append($"&{key}={value}");
+			}
+			return this;
 		}
-		return this;
-	}
 
-	public QueryBuilder Add(string key, int value)
-		=> AddIf(true, key, value);
+		public QueryBuilder Add(string key, int value)
+			=> AddIf(true, key, value);
 
-	public QueryBuilder AddIf(bool match, string key, int value)
-	{
-		if (match)
+		public QueryBuilder AddIf(bool match, string key, int value)
 		{
-			if (sb.Length == 0)
-				sb.Append($"?{key}={value}");
-			else
-				sb.Append($"&{key}={value}");
+			if (match)
+			{
+				if (sb.Length == 0)
+					sb.Append($"?{key}={value}");
+				else
+					sb.Append($"&{key}={value}");
+			}
+			return this;
 		}
-		return this;
-	}
 
-	public QueryBuilder Add(string key, bool value)
-		=> AddIf(true, key, value);
+		public QueryBuilder Add(string key, bool value)
+			=> AddIf(true, key, value);
 
-	public QueryBuilder AddIf(bool match, string key, bool value)
-	{
-		if (match)
+		public QueryBuilder AddIf(bool match, string key, bool value)
 		{
-			if (sb.Length == 0)
-				sb.Append($"?{key}={value}");
-			else
-				sb.Append($"&{key}={value}");
+			if (match)
+			{
+				if (sb.Length == 0)
+					sb.Append($"?{key}={value}");
+				else
+					sb.Append($"&{key}={value}");
+			}
+			return this;
 		}
-		return this;
-	}
 
-	public string GetQuery()
-	{
-		return sb.ToString();
+		public string GetQuery()
+		{
+			return sb.ToString();
+		}
 	}
 }

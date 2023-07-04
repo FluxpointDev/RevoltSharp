@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket;
-
-internal class ServerEmojiCreatedEventJson : EmojiJson
+namespace RevoltSharp.WebSocket
 {
 
-}
-internal class ServerEmojiDeleteEventJson
-{
-	[JsonProperty("id")]
-	public string? EmojiId;
+	internal class ServerEmojiCreatedEventJson : EmojiJson
+	{
+
+	}
+	internal class ServerEmojiDeleteEventJson
+	{
+		[JsonProperty("id")]
+		public string? EmojiId;
+	}
 }

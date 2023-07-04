@@ -2,25 +2,27 @@
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
-namespace RevoltSharp;
-
-/// <summary>
-/// Type of channel that is <see cref="TextChannel" />, <see cref="VoiceChannel" />, <see cref="GroupChannel" />, <see cref="UnknownServerChannel" /> or <see cref="UnknownChannel" />
-/// </summary>
-[JsonConverter(typeof(StringEnumConverter))]
-public enum ChannelType
+namespace RevoltSharp
 {
-    Unknown,
-    [EnumMember(Value = "TextChannel")]
-    Text,
 
-    [EnumMember(Value = "VoiceChannel")]
-    Voice,
+    /// <summary>
+    /// Type of channel that is <see cref="TextChannel" />, <see cref="VoiceChannel" />, <see cref="GroupChannel" />, <see cref="UnknownServerChannel" /> or <see cref="UnknownChannel" />
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum ChannelType
+    {
+        Unknown,
+        [EnumMember(Value = "TextChannel")]
+        Text,
 
-    SavedMessages,
+        [EnumMember(Value = "VoiceChannel")]
+        Voice,
 
-    Group,
+        SavedMessages,
 
-    [EnumMember(Value = "DirectMessage")]
-    DM
+        Group,
+
+        [EnumMember(Value = "DirectMessage")]
+        DM
+    }
 }

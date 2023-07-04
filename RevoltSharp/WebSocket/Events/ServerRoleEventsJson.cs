@@ -1,23 +1,25 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket;
-
-internal class ServerRoleEventsJson
+namespace RevoltSharp.WebSocket
 {
-    [JsonProperty("id")]
-    public string? Id;
 
-    [JsonProperty("role_id")]
-    public string? RoleId;
-}
-internal class ServerRoleUpdateEventJson
-{
-	[JsonProperty("id")]
-	public string? ServerId;
+	internal class ServerRoleEventsJson
+	{
+		[JsonProperty("id")]
+		public string? Id;
 
-	[JsonProperty("role_id")]
-	public string? RoleId;
+		[JsonProperty("role_id")]
+		public string? RoleId;
+	}
+	internal class ServerRoleUpdateEventJson
+	{
+		[JsonProperty("id")]
+		public string? ServerId;
 
-	[JsonProperty("data")]
-	public PartialRoleJson? Data;
+		[JsonProperty("role_id")]
+		public string? RoleId;
+
+		[JsonProperty("data")]
+		public PartialRoleJson? Data;
+	}
 }
