@@ -2,66 +2,65 @@
 using Optionals;
 using System.Collections.Generic;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+
+internal class ServerJson
 {
+    [JsonProperty("_id")]
+    public string Id = null!;
 
-    internal class ServerJson
-    {
-        [JsonProperty("_id")]
-        public string Id = null!;
+    [JsonProperty("owner")]
+    public string Owner = null!;
 
-        [JsonProperty("owner")]
-        public string Owner = null!;
+    [JsonProperty("name")]
+    public string Name = null!;
 
-        [JsonProperty("name")]
-        public string Name = null!;
+    [JsonProperty("description")]
+    public string? Description;
 
-        [JsonProperty("description")]
-        public string? Description;
+    [JsonProperty("channels")]
+    public string[] Channels = null!;
 
-        [JsonProperty("channels")]
-        public string[] Channels = null!;
+    [JsonProperty("categories")]
+    public CategoryJson[]? Categories;
 
-        [JsonProperty("categories")]
-        public CategoryJson[]? Categories;
+    [JsonProperty("system_messages")]
+    public ServerSystemMessagesJson? SystemMessages;
 
-        [JsonProperty("system_messages")]
-        public ServerSystemMessagesJson? SystemMessages;
+    [JsonProperty("roles")]
+    public Dictionary<string, RoleJson>? Roles;
 
-        [JsonProperty("roles")]
-        public Dictionary<string, RoleJson>? Roles;
+    [JsonProperty("default_permissions")]
+    public ulong DefaultPermissions;
 
-        [JsonProperty("default_permissions")]
-        public ulong DefaultPermissions;
+    [JsonProperty("icon")]
+    public AttachmentJson? Icon;
 
-        [JsonProperty("icon")]
-        public AttachmentJson? Icon;
+    [JsonProperty("banner")]
+    public AttachmentJson? Banner;
 
-        [JsonProperty("banner")]
-        public AttachmentJson? Banner;
+    [JsonProperty("analytics")]
+    public bool Analytics;
 
-        [JsonProperty("analytics")]
-        public bool Analytics;
+    [JsonProperty("discoverable")]
+    public bool Discoverable;
 
-        [JsonProperty("discoverable")]
-        public bool Discoverable;
+    [JsonProperty("nsfw")]
+    public bool Nsfw;
+}
 
-        [JsonProperty("nsfw")]
-        public bool Nsfw;
-    }
+internal class ServerSystemMessagesJson
+{
+    [JsonProperty("user_joined")]
+    public Optional<string> UserJoined;
 
-    internal class ServerSystemMessagesJson
-    {
-        [JsonProperty("user_joined")]
-        public Optional<string> UserJoined;
+    [JsonProperty("user_left")]
+    public Optional<string> UserLeft;
 
-        [JsonProperty("user_left")]
-        public Optional<string> UserLeft;
+    [JsonProperty("user_kicked")]
+    public Optional<string> UserKicked;
 
-        [JsonProperty("user_kicked")]
-        public Optional<string> UserKicked;
-
-        [JsonProperty("user_banned")]
-        public Optional<string> UserBanned;
-    }
+    [JsonProperty("user_banned")]
+    public Optional<string> UserBanned;
 }

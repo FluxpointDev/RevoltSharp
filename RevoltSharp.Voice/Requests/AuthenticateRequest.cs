@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 
 	internal class AuthenticateRequest
 	{
@@ -31,4 +31,3 @@ namespace RevoltSharp
 		public int id = 13;
 		public string type = "RoomInfo";
 	}
-}

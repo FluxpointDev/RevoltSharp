@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 	public class QueryBuilder
 	{
 		private StringBuilder sb = new StringBuilder();
@@ -57,4 +57,3 @@ namespace RevoltSharp
 			return sb.ToString();
 		}
 	}
-}

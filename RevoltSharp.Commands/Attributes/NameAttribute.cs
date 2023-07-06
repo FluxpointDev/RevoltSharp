@@ -1,27 +1,26 @@
 using System;
 
-namespace RevoltSharp.Commands
+namespace RevoltSharp.Commands;
+
+
+// Override public name of command/module
+/// <summary>
+///     Marks the public name of a command, module, or parameter.
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+public class NameAttribute : Attribute
 {
-
-    // Override public name of command/module
     /// <summary>
-    ///     Marks the public name of a command, module, or parameter.
+    ///     Gets the name of the command.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class NameAttribute : Attribute
-    {
-        /// <summary>
-        ///     Gets the name of the command.
-        /// </summary>
-        public string Text { get; }
+    public string Text { get; }
 
-        /// <summary>
-        ///     Marks the public name of a command, module, or parameter with the provided name.
-        /// </summary>
-        /// <param name="text">The public name of the object.</param>
-        public NameAttribute(string text)
-        {
-            Text = text;
-        }
+    /// <summary>
+    ///     Marks the public name of a command, module, or parameter with the provided name.
+    /// </summary>
+    /// <param name="text">The public name of the object.</param>
+    public NameAttribute(string text)
+    {
+        Text = text;
     }
 }

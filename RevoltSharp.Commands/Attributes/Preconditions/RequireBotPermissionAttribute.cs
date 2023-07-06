@@ -1,35 +1,34 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace RevoltSharp.Commands
+namespace RevoltSharp.Commands;
+
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+public class RequireBotPermissionAttribute : PreconditionAttribute
 {
+    /// <inheritdoc />
+    public override string? ErrorMessage { get; set; }
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class RequireBotPermissionAttribute : PreconditionAttribute
+    /// <summary>
+    /// Permission to check for.
+    /// </summary>
+    private ServerPermission Perm;
+
+    public RequireBotPermissionAttribute(ServerPermission perm)
     {
-        /// <inheritdoc />
-        public override string? ErrorMessage { get; set; }
+        Perm = perm;
+    }
 
-        /// <summary>
-        /// Permission to check for.
-        /// </summary>
-        private ServerPermission Perm;
+    /// <inheritdoc />
+    public override Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)
+    {
+        if (context.Server == null)
+            return Task.FromResult(PreconditionResult.FromError("You need to run this command in a Revolt server."));
 
-        public RequireBotPermissionAttribute(ServerPermission perm)
-        {
-            Perm = perm;
-        }
+        if (!context.Server.CurrentUser.Permissions.Has(Perm))
+            return Task.FromResult(PreconditionResult.FromError($"Current user/bot account needs server permission for **{Perm.ToString()}** to use this command."));
 
-        /// <inheritdoc />
-        public override Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)
-        {
-            if (context.Server == null)
-                return Task.FromResult(PreconditionResult.FromError("You need to run this command in a Revolt server."));
-
-            if (!context.Server.CurrentUser.Permissions.Has(Perm))
-                return Task.FromResult(PreconditionResult.FromError($"Current user/bot account needs server permission for **{Perm.ToString()}** to use this command."));
-
-            return Task.FromResult(PreconditionResult.FromSuccess());
-        }
+        return Task.FromResult(PreconditionResult.FromSuccess());
     }
 }

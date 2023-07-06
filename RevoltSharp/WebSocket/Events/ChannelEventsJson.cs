@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 
-namespace RevoltSharp.WebSocket
-{
+namespace RevoltSharp.WebSocket;
+
 
 	internal class ChannelEventJson : ChannelJson
 	{
@@ -23,4 +23,3 @@ namespace RevoltSharp.WebSocket
 		[JsonProperty("clear")]
 		public Optional<string[]> Clear;
 	}
-}

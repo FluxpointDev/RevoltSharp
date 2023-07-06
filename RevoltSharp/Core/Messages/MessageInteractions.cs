@@ -1,25 +1,24 @@
 ﻿using System.Linq;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+
+public class MessageInteractions
 {
-
-    public class MessageInteractions
+    public MessageInteractions(Emoji[] reactions, bool restricted = false)
     {
-        public MessageInteractions(Emoji[] reactions, bool restricted = false)
-        {
-            Reactions = reactions;
-            RestrictReactions = restricted;
-        }
-        public Emoji[] Reactions { get; }
-        public bool RestrictReactions { get; }
+        Reactions = reactions;
+        RestrictReactions = restricted;
+    }
+    public Emoji[] Reactions { get; }
+    public bool RestrictReactions { get; }
 
-        internal MessageInteractionsJson ToJson()
+    internal MessageInteractionsJson ToJson()
+    {
+        return new MessageInteractionsJson
         {
-            return new MessageInteractionsJson
-            {
-                reactions = Reactions.Select(x => x.Name).ToArray(),
-                restrict_reactions = RestrictReactions
-            };
-        }
+            reactions = Reactions.Select(x => x.Name).ToArray(),
+            restrict_reactions = RestrictReactions
+        };
     }
 }

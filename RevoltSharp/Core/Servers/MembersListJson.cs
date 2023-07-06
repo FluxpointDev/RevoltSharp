@@ -1,14 +1,13 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+
+internal class MembersListJson
 {
+    [JsonProperty("members")]
+    public ServerMemberJson[]? Members;
 
-    internal class MembersListJson
-    {
-        [JsonProperty("members")]
-        public ServerMemberJson[]? Members;
-
-        [JsonProperty("users")]
-        public UserJson[]? Users;
-    }
+    [JsonProperty("users")]
+    public UserJson[]? Users;
 }

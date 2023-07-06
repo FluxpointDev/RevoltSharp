@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 
 	public class RevoltLogger
 	{
@@ -139,4 +139,3 @@ namespace RevoltSharp
 		/// </summary>
 		None
 	}
-}

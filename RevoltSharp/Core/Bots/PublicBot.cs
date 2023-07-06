@@ -1,5 +1,5 @@
-﻿namespace RevoltSharp
-{
+﻿namespace RevoltSharp;
+
 
 	public class PublicBot : CreatedEntity
 	{
@@ -23,4 +23,3 @@
 			return Username;
 		}
 	}
-}

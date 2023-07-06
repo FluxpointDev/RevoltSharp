@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using RevoltSharp.Rest.Requests;
 using Optionals;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 	public static class WebhookHelper
 	{
 		public static Task<IReadOnlyCollection<Webhook>> GetWebhooksAsync(this TextChannel channel)
@@ -43,4 +43,3 @@ namespace RevoltSharp
 			return new Webhook(rest.Client, Data);
 		}
 	}
-}

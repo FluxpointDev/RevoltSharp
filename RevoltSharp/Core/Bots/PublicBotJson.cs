@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 
 	internal class PublicBotJson
 	{
@@ -17,4 +17,3 @@ namespace RevoltSharp
 		[JsonProperty("description")]
 		public string Description { get; set; }
 	}
-}

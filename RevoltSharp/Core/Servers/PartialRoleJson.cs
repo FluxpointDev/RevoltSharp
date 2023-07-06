@@ -2,24 +2,23 @@
 using Optionals;
 using System.Numerics;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+
+internal class PartialRoleJson
 {
+    [JsonProperty("name")]
+    public Optional<string> Name;
 
-    internal class PartialRoleJson
-    {
-        [JsonProperty("name")]
-        public Optional<string> Name;
+    [JsonProperty("permissions")]
+    public Optional<PermissionsJson> Permissions;
 
-        [JsonProperty("permissions")]
-        public Optional<PermissionsJson> Permissions;
+    [JsonProperty("hoist")]
+    public Optional<bool> Hoist;
 
-        [JsonProperty("hoist")]
-        public Optional<bool> Hoist;
+    [JsonProperty("rank")]
+    public Optional<BigInteger> Rank;
 
-        [JsonProperty("rank")]
-        public Optional<BigInteger> Rank;
-
-        [JsonProperty("colour")]
-        public Optional<string> Colour;
-    }
+    [JsonProperty("colour")]
+    public Optional<string> Colour;
 }

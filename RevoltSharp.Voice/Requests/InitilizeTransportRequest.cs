@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 	public class InitilizeTransportRequest
 	{
 		public int id = 29;
@@ -99,4 +99,3 @@ namespace RevoltSharp
 		public bool prefferedEncrypt = false;
 		public string direction;
 	}
-}

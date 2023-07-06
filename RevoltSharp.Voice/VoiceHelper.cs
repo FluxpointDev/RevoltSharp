@@ -1,5 +1,7 @@
-﻿namespace RevoltSharp
-{
+﻿using System.Threading.Tasks;
+
+namespace RevoltSharp;
+
 
 	public static class VoiceHelper
 	{
@@ -13,4 +15,3 @@
 			return State;
 		}
 	}
-}

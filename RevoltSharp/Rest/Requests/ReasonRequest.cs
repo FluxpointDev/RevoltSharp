@@ -1,11 +1,10 @@
 ﻿using Optionals;
 
-namespace RevoltSharp.Rest.Requests
+namespace RevoltSharp.Rest.Requests;
+
+
+internal class ReasonRequest : IRevoltRequest
 {
+    public Optional<string> reason { get; set; }
 
-    internal class ReasonRequest : IRevoltRequest
-    {
-        public Optional<string> reason { get; set; }
-
-    }
 }

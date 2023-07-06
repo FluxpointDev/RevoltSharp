@@ -1,5 +1,5 @@
-﻿namespace RevoltSharp
-{
+﻿namespace RevoltSharp;
+
 	public static class Const
 	{
 		public const int All_MaxIdLength = 128;
@@ -23,4 +23,3 @@
 
 		public const int Message_ReactionsMaxCount = 20;
 	}
-}

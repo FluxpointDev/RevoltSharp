@@ -1,10 +1,9 @@
-﻿namespace RevoltSharp
-{
+﻿namespace RevoltSharp;
 
-    internal class CategoryJson
-    {
-        public string? id;
-        public string? title;
-        public string[]? channels;
-    }
+
+internal class CategoryJson
+{
+    public string? id;
+    public string? title;
+    public string[]? channels;
 }

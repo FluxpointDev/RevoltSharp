@@ -1,8 +1,8 @@
 ﻿using RevoltSharp.Rest;
 using System.Linq;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 
 	internal static class Conditions
 	{
@@ -360,4 +360,3 @@ namespace RevoltSharp
 
 		#endregion
 	}
-}

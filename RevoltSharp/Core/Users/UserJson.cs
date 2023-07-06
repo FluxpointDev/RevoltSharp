@@ -1,68 +1,67 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+
+internal class UserJson
 {
+    [JsonProperty("_id")]
+    public string Id = null!;
 
-    internal class UserJson
-    {
-        [JsonProperty("_id")]
-        public string Id = null!;
+    [JsonProperty("username")]
+    public string Username = null!;
 
-        [JsonProperty("username")]
-        public string Username = null!;
+    [JsonProperty("display_name")]
+    public string? DisplayName;
 
-        [JsonProperty("display_name")]
-        public string? DisplayName;
+    [JsonProperty("discriminator")]
+    public string Discriminator = null!;
 
-        [JsonProperty("discriminator")]
-        public string Discriminator = null!;
+    [JsonProperty("avatar")]
+    public AttachmentJson? Avatar;
 
-        [JsonProperty("avatar")]
-        public AttachmentJson? Avatar;
+    [JsonProperty("badges")]
+    public ulong Badges;
 
-        [JsonProperty("badges")]
-        public ulong Badges;
+    [JsonProperty("status")]
+    public UserStatusJson? Status;
 
-        [JsonProperty("status")]
-        public UserStatusJson? Status;
+    [JsonProperty("profile")]
+    public UserProfileJson? Profile;
 
-        [JsonProperty("profile")]
-        public UserProfileJson? Profile;
+    [JsonProperty("bot")]
+    public UserBotJson? Bot;
 
-        [JsonProperty("bot")]
-        public UserBotJson? Bot;
+    [JsonProperty("relationship")]
+    public string? Relationship;
 
-        [JsonProperty("relationship")]
-        public string? Relationship;
+    [JsonProperty("online")]
+    public bool Online;
 
-        [JsonProperty("online")]
-        public bool Online;
+    [JsonProperty("privileged")]
+    public bool Privileged;
 
-        [JsonProperty("privileged")]
-        public bool Privileged;
+    [JsonProperty("flags")]
+    public ulong Flags;
+}
+internal class UserStatusJson
+{
+    [JsonProperty("text")]
+    public string? Text;
 
-        [JsonProperty("flags")]
-        public ulong Flags;
-    }
-    internal class UserStatusJson
-    {
-        [JsonProperty("text")]
-        public string? Text;
+    [JsonProperty("presence")]
+    public string? Presence;
+}
+internal class UserBotJson
+{
+    [JsonProperty("owner")]
+    public string Owner = null!;
+}
+internal class UserProfileJson
+{
+    [JsonProperty("content")]
+    public string? Content;
 
-        [JsonProperty("presence")]
-        public string? Presence;
-    }
-    internal class UserBotJson
-    {
-        [JsonProperty("owner")]
-        public string Owner = null!;
-    }
-    internal class UserProfileJson
-    {
-        [JsonProperty("content")]
-        public string? Content;
-
-        [JsonProperty("background")]
-        public AttachmentJson? Background;
-    }
+    [JsonProperty("background")]
+    public AttachmentJson? Background;
 }

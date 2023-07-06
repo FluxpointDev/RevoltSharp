@@ -2,8 +2,8 @@
 using Optionals;
 using System;
 
-namespace RevoltSharp.WebSocket
-{
+namespace RevoltSharp.WebSocket;
+
 
 	internal class MessageEventJson : MessageJson
 	{
@@ -42,4 +42,3 @@ namespace RevoltSharp.WebSocket
 		[JsonProperty("edited")]
 		public DateTime EditedAt;
 	}
-}

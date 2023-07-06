@@ -1,34 +1,33 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket
+namespace RevoltSharp.WebSocket;
+
+
+internal class ReactionAddedEventJson
 {
+    [JsonProperty("id")]
+    public string? MessageId;
 
-    internal class ReactionAddedEventJson
-    {
-        [JsonProperty("id")]
-        public string? MessageId;
+    [JsonProperty("channel_id")]
+    public string? ChannelId;
 
-        [JsonProperty("channel_id")]
-        public string? ChannelId;
+    [JsonProperty("user_id")]
+    public string? UserId;
 
-        [JsonProperty("user_id")]
-        public string? UserId;
+    [JsonProperty("emoji_id")]
+    public string? EmojiId;
+}
+internal class ReactionRemovedEventJson
+{
+    [JsonProperty("id")]
+    public string? MessageId;
 
-        [JsonProperty("emoji_id")]
-        public string? EmojiId;
-    }
-    internal class ReactionRemovedEventJson
-    {
-        [JsonProperty("id")]
-        public string? MessageId;
+    [JsonProperty("channel_id")]
+    public string? ChannelId;
 
-        [JsonProperty("channel_id")]
-        public string? ChannelId;
+    [JsonProperty("user_id")]
+    public string? UserId;
 
-        [JsonProperty("user_id")]
-        public string? UserId;
-
-        [JsonProperty("emoji_id")]
-        public string? EmojiId;
-    }
+    [JsonProperty("emoji_id")]
+    public string? EmojiId;
 }

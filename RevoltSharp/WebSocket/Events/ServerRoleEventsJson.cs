@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.WebSocket
-{
+namespace RevoltSharp.WebSocket;
+
 
 	internal class ServerRoleEventsJson
 	{
@@ -22,4 +22,3 @@ namespace RevoltSharp.WebSocket
 		[JsonProperty("data")]
 		public PartialRoleJson? Data;
 	}
-}

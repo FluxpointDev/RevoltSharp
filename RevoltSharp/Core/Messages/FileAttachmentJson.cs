@@ -1,9 +1,7 @@
-﻿namespace RevoltSharp
+﻿namespace RevoltSharp;
+
+
+internal class FileAttachmentJson
 {
-
-    internal class FileAttachmentJson
-    {
-        public string? id;
-    }
-
+    public string? id;
 }

@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 
-namespace RevoltSharp.WebSocket
-{
+namespace RevoltSharp.WebSocket;
+
 
 	internal class UserUpdateEventJson
 	{
@@ -31,4 +31,3 @@ namespace RevoltSharp.WebSocket
 		[JsonProperty("user_id")]
 		internal string UserId = null!;
 	}
-}

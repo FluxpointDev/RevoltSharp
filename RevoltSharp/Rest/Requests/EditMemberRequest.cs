@@ -2,23 +2,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace RevoltSharp.Rest.Requests
+namespace RevoltSharp.Rest.Requests;
+
+
+internal class EditMemberRequest : IRevoltRequest
 {
+    public Optional<string[]> roles { get; set; }
+    public Optional<string> nickname { get; set; }
+    public Optional<AttachmentJson> avatar { get; set; }
+    public Optional<DateTime> timeout { get; set; }
+    public Optional<List<string>> remove { get; set; }
 
-    internal class EditMemberRequest : IRevoltRequest
+    public void RemoveValue(string value)
     {
-        public Optional<string[]> roles { get; set; }
-        public Optional<string> nickname { get; set; }
-        public Optional<AttachmentJson> avatar { get; set; }
-        public Optional<DateTime> timeout { get; set; }
-        public Optional<List<string>> remove { get; set; }
+        if (!remove.HasValue)
+            remove = Optional.Some(new List<string>());
 
-        public void RemoveValue(string value)
-        {
-            if (!remove.HasValue)
-                remove = Optional.Some(new List<string>());
-
-            remove.Value.Add(value);
-        }
+        remove.Value.Add(value);
     }
 }

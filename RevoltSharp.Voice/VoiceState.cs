@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 
 	public class VoiceState
 	{
@@ -28,4 +28,3 @@ namespace RevoltSharp
 			Connection.StopWebSocket = true;
 		}
 	}
-}

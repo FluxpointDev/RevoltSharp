@@ -1,7 +1,8 @@
 ﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
-namespace RevoltSharp
-{
+namespace RevoltSharp;
+
 
 	public class RevoltVoiceClient : IVoiceClient
 	{
@@ -39,4 +40,3 @@ namespace RevoltSharp
 			}
 		}
 	}
-}

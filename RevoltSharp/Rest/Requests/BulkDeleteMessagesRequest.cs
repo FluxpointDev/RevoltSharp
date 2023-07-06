@@ -1,8 +1,7 @@
-﻿namespace RevoltSharp.Rest.Requests
-{
+﻿namespace RevoltSharp.Rest.Requests;
 
-    internal class BulkDeleteMessagesRequest : IRevoltRequest
-    {
-        public string[]? ids { get; set; }
-    }
+
+internal class BulkDeleteMessagesRequest : IRevoltRequest
+{
+    public string[]? ids { get; set; }
 }

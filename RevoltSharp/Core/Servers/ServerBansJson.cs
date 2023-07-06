@@ -1,42 +1,41 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp
+namespace RevoltSharp;
+
+
+internal class ServerBansJson
 {
+    [JsonProperty("users")]
+    public ServerBanUserJson[] Users = null!;
 
-    internal class ServerBansJson
-    {
-        [JsonProperty("users")]
-        public ServerBanUserJson[] Users = null!;
+    [JsonProperty("bans")]
+    public ServerBanInfoJson[] Bans = null!;
+}
+internal class ServerBanUserJson
+{
+    [JsonProperty("id")]
+    public string Id = null!;
 
-        [JsonProperty("bans")]
-        public ServerBanInfoJson[] Bans = null!;
-    }
-    internal class ServerBanUserJson
-    {
-        [JsonProperty("id")]
-        public string Id = null!;
+    [JsonProperty("username")]
+    public string Username = null!;
 
-        [JsonProperty("username")]
-        public string Username = null!;
+    [JsonProperty("avatar")]
+    public AttachmentJson? Avatar;
 
-        [JsonProperty("avatar")]
-        public AttachmentJson? Avatar;
+    [JsonProperty("discriminator")]
+    public string Discriminator;
+}
 
-        [JsonProperty("discriminator")]
-        public string Discriminator;
-    }
+internal class ServerBanInfoJson
+{
+    [JsonProperty("reason")]
+    public string? Reason;
 
-    internal class ServerBanInfoJson
-    {
-        [JsonProperty("reason")]
-        public string? Reason;
-
-        [JsonProperty("_id")]
-        public ServerBanIdJson Id = null!;
-    }
-    internal class ServerBanIdJson
-    {
-        [JsonProperty("user")]
-        public string? UserId;
-    }
+    [JsonProperty("_id")]
+    public ServerBanIdJson Id = null!;
+}
+internal class ServerBanIdJson
+{
+    [JsonProperty("user")]
+    public string? UserId;
 }
