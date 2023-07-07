@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
-public static class AdminHelper
+public class SafetyUserStrike
 {
-
 }

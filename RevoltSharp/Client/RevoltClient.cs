@@ -64,6 +64,7 @@ public class RevoltClient : ClientEvents
         Deserializer.Converters.Add(Converter);
 
         Rest = new RevoltRestClient(this);
+        Admin = new AdminClient(this);
         Mode = mode;
         if (Mode == ClientMode.WebSocket)
             WebSocket = new RevoltSocketClient(this);
@@ -129,6 +130,8 @@ public class RevoltClient : ClientEvents
     public RevoltRestClient Rest { get; internal set; }
 
     internal RevoltSocketClient? WebSocket;
+
+    public AdminClient Admin { get; internal set; }
 
     internal RevoltLogger Logger;
 

@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevoltSharp.Commands", "Rev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevoltSharp.Challenge", "RevoltSharp.Challenge\RevoltSharp.Challenge.csproj", "{0C63C42F-C00E-4F40-859B-2F988DD41197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevoltSharp.Voice", "RevoltSharp.Voice\RevoltSharp.Voice.csproj", "{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevoltSharp.Voice", "RevoltSharp.Voice\RevoltSharp.Voice.csproj", "{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevoltSharp.InstanceAdmin", "RevoltSharp.InstanceAdmin\RevoltSharp.InstanceAdmin.csproj", "{DBA2A185-5524-4F46-9C08-C3596357CE18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C10E3BCC-1D56-4504-8DBD-7C4D923A825C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBA2A185-5524-4F46-9C08-C3596357CE18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA2A185-5524-4F46-9C08-C3596357CE18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA2A185-5524-4F46-9C08-C3596357CE18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA2A185-5524-4F46-9C08-C3596357CE18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
