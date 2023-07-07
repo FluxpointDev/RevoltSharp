@@ -28,7 +28,7 @@ public class User : CreatedEntity
         else
             Relationship = UserRelationship.None;
 
-        Privileged = model.Privileged;
+        IsPrivileged = model.Privileged;
     }
 
     internal User(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
@@ -141,7 +141,7 @@ public class User : CreatedEntity
     /// <summary>
     /// Is the user a Revolt instance administrator.
     /// </summary>
-    public bool Privileged { get; internal set; }
+    public bool IsPrivileged { get; internal set; }
 
     /// <summary>
     /// The relationship type of the user compared to the current user/bot account.
@@ -217,7 +217,7 @@ public class User : CreatedEntity
         }
 
         if (data.Privileged.HasValue)
-            Privileged = data.Privileged.Value;
+            IsPrivileged = data.Privileged.Value;
 
         if (data.Username.HasValue)
             Username = data.Username.Value;

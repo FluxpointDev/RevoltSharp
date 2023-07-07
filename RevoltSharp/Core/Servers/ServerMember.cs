@@ -147,9 +147,9 @@ public class ServerMember : Entity
     [JsonIgnore]
     public bool IsOnline => User.IsOnline;
 
-    /// <inheritdoc cref="User.Privileged"/>
+    /// <inheritdoc cref="User.IsPrivileged"/>
     [JsonIgnore]
-    public bool Privileged => User.Privileged;
+    public bool IsPrivileged => User.IsPrivileged;
 
     /// <inheritdoc cref="User.Relationship"/>
     [JsonIgnore]
