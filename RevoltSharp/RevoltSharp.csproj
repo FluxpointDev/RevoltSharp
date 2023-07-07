@@ -34,4 +34,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\Admin\" />
+  </ItemGroup>
+
 </Project>
