@@ -11,6 +11,7 @@ public static class AdminHelper
 {
     public static async Task<IReadOnlyCollection<UserMessage>> GetMessagesAsync(this AdminClient admin, string channelId = null, string userId = null, string query = null, int messageCount = 100, bool includeAuthor = false, string nearbyMessageId = null, string beforeMessageId = null, string afterMessageId = null)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(GetMessagesAsync));
         Conditions.ChannelIdLength(channelId, nameof(GetMessagesAsync));
         Conditions.MessageSearchCount(messageCount, nameof(GetMessagesAsync));
 

@@ -11,6 +11,7 @@ public static class SafetyHelper
 {
     public static async Task<SafetyReport?> GetReportAsync(this AdminClient admin, string reportId)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(GetReportAsync));
         AdminConditions.ReportIdLength(reportId, nameof(GetReportAsync));
 
         SafetyReportJson? Json = await admin.Client.Rest.GetAsync<SafetyReportJson>("safety/report/" + reportId);
@@ -23,6 +24,9 @@ public static class SafetyHelper
     public static Task<IReadOnlyCollection<SafetyReport>> GetReportsMadeAsync(this User user, Option<SafetyReportType> type = null)
         => GetReportsAsync(user.Client.Admin, authorId: user.Id, type: type);
 
+    public static Task<IReadOnlyCollection<SafetyReport>> GetReportsMadeAsync(this AdminClient admin, string userId, Option<SafetyReportType> type = null)
+        => GetReportsAsync(admin, authorId: userId, type: type);
+
     public static Task<IReadOnlyCollection<SafetyReport>> GetReportsAsync(this User user, Option<SafetyReportType> type = null)
         => GetReportsAsync(user.Client.Admin, user.Id, type: type);
 
@@ -34,6 +38,8 @@ public static class SafetyHelper
 
     public static async Task<IReadOnlyCollection<SafetyReport>> GetReportsAsync(this AdminClient admin, string contentId = null, string authorId = null, Option<SafetyReportType> type = null)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(GetReportsAsync));
+
         QueryBuilder Query = new QueryBuilder()
             .AddIf(!string.IsNullOrEmpty(contentId), "content_id", contentId)
             .AddIf(!string.IsNullOrEmpty(authorId), "author_id", authorId)
@@ -125,7 +131,10 @@ public static class SafetyHelper
 
     internal static async Task<SafetyReport> InternalModifyReportAsync(this AdminClient admin, string reportId, string Obj, AdminReportModifyRequest req)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, Obj);
         AdminConditions.ReportIdLength(reportId, Obj);
+        if (req.status.rejection_reason.HasValue)
+            AdminConditions.ReportReasonLength(req.status.rejection_reason.Value, Obj);
 
         SafetyReportJson Data = await admin.Client.Rest.PatchAsync< SafetyReportJson>("safety/reports/" + reportId, req);
 
@@ -138,6 +147,7 @@ public static class SafetyHelper
 
     public static async Task<IReadOnlyCollection<SafetyUserStrike>> GetStrikesAsync(this AdminClient admin, string userId)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(GetStrikesAsync));
         Conditions.UserIdLength(userId, nameof(GetStrikesAsync));
 
         SafetyUserStrikeJson[] Json = await admin.Client.Rest.GetAsync<SafetyUserStrikeJson[]>("safety/strikes/" + userId);
@@ -152,6 +162,7 @@ public static class SafetyHelper
 
     public static async Task<SafetyUserStrike> CreateStrikeAsync(this AdminClient admin, string userId, string reason)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(CreateStrikeAsync));
         Conditions.UserIdLength(userId, nameof(CreateStrikeAsync));
         AdminConditions.StrikeReasonLength(reason, nameof(CreateStrikeAsync));
 
@@ -170,8 +181,10 @@ public static class SafetyHelper
 
     public static async Task ModifyStrikeAsync(this AdminClient admin, string strikeId, string reason)
     {
-        AdminConditions.StrikeIdLength(strikeId, nameof(DeleteStrikeAsync));
-        AdminConditions.StrikeReasonLength(reason, nameof(DeleteStrikeAsync));
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(ModifyStrikeAsync));
+        AdminConditions.StrikeIdLength(strikeId, nameof(ModifyStrikeAsync));
+        AdminConditions.StrikeReasonLength(reason, nameof(ModifyStrikeAsync));
+
         await admin.Client.Rest.PostAsync<dynamic>("safety/strikes/" + strikeId, new AdminStrikeModifyRequest
         {
             reason = reason
@@ -183,6 +196,7 @@ public static class SafetyHelper
 
     public static async Task DeleteStrikeAsync(this AdminClient admin, string strikeId)
     {
+        AdminConditions.CheckIsPrivileged(admin.Client, nameof(DeleteStrikeAsync));
         AdminConditions.StrikeIdLength(strikeId, nameof(DeleteStrikeAsync));
         await admin.Client.Rest.DeleteAsync("safety/strikes/" + strikeId);
     }
