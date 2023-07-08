@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
 
-	public class VoiceState
+public class VoiceState
 	{
 		internal VoiceState(VoiceChannel channel, VoiceSocketClient con)
 		{

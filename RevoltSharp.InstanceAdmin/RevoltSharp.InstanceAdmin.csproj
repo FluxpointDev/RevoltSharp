@@ -9,4 +9,8 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RevoltSharp\RevoltSharp.csproj" />
+  </ItemGroup>
+
 </Project>

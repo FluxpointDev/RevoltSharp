@@ -1,5 +1,4 @@
 ﻿using Optionals;
-using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

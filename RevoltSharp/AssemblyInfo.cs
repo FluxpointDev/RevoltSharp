@@ -4,3 +4,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("RevoltSharp.Websocket")]
 [assembly: InternalsVisibleTo("RevoltSharp.Commands")]
 [assembly: InternalsVisibleTo("RevoltSharp.Voice")]
+[assembly: InternalsVisibleTo("RevoltSharp.InstanceAdmin")]

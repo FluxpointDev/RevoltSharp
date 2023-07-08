@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
-	public class InitilizeTransportRequest
+public class InitilizeTransportRequest
 	{
 		public int id = 29;
 		public string type = "InitializeTransports";
