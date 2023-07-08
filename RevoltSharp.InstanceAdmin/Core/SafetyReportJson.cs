@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Optionals;
 using System;
 
 namespace RevoltSharp;
@@ -21,7 +22,7 @@ internal class SafetyReportJson
     public string AdditionalContext;
 
     [JsonProperty("notes")]
-    public string Notes;
+    public string Note;
 
     [JsonProperty("rejection_reason")]
     public string RejectionReason;
@@ -32,14 +33,14 @@ internal class SafetyReportJson
 internal class SafetyReportedContentJson
 {
     [JsonProperty("type")]
-    public string Type;
+    public string Type { get; set; }
 
     [JsonProperty("id")]
-    public string Id;
+    public string Id { get; set; }
 
     [JsonProperty("message_id")]
-    public string MessageId;
+    public Optional<string> MessageId { get; set; }
 
     [JsonProperty("report_reason")]
-    public string Reason;
+    public string Reason { get; set; }
 }

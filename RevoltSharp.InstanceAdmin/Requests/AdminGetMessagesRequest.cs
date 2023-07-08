@@ -1,7 +1,7 @@
 ﻿using Optionals;
 using RevoltSharp.Rest;
 
-namespace RevoltSharp;
+namespace RevoltSharp.Requests;
 internal class AdminGetMessagesRequest : IRevoltRequest
 {
     public Optional<string> nearby { get; set; }

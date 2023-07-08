@@ -1498,8 +1498,8 @@
         <member name="P:RevoltSharp.ServerMember.IsOnline">
             <inheritdoc cref="P:RevoltSharp.User.IsOnline"/>
         </member>
-        <member name="P:RevoltSharp.ServerMember.Privileged">
-            <inheritdoc cref="P:RevoltSharp.User.Privileged"/>
+        <member name="P:RevoltSharp.ServerMember.IsPrivileged">
+            <inheritdoc cref="P:RevoltSharp.User.IsPrivileged"/>
         </member>
         <member name="P:RevoltSharp.ServerMember.Relationship">
             <inheritdoc cref="P:RevoltSharp.User.Relationship"/>
@@ -1635,7 +1635,7 @@
             Will be <see langword="false" /> if status is also <see cref="F:RevoltSharp.UserStatusType.Invisible"/>
             </remarks>
         </member>
-        <member name="P:RevoltSharp.User.Privileged">
+        <member name="P:RevoltSharp.User.IsPrivileged">
             <summary>
             Is the user a Revolt instance administrator.
             </summary>

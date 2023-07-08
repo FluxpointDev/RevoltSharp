@@ -19,36 +19,33 @@ public class SafetyReportedServer : CreatedEntity, ISafetyReportContent
 {
     internal SafetyReportedServer(RevoltClient client, SafetyReportedContentJson model) : base(client, model.Id)
     {
-        ServerId = model.Id;
         Reason = model.Reason.ToEnum<SafetyReportServerReason>();
     }
 
-    public string ServerId { get; internal set; }
+    public string ServerId => Id;
     public SafetyReportServerReason Reason { get; internal set; }
 }
 public class SafetyReportedUser : CreatedEntity, ISafetyReportContent
 {
     internal SafetyReportedUser(RevoltClient client, SafetyReportedContentJson model) : base(client, model.Id)
     {
-        UserId = model.Id;
-        MessageId = model.MessageId;
+        MessageId = model.MessageId.HasValue ? model.MessageId.Value : string.Empty;
         Reason = model.Reason.ToEnum<SafetyReportUserReason>();
     }
 
-    public string UserId { get; internal set; }
+    public string UserId => Id;
 
     public string? MessageId { get; internal set; }
     public SafetyReportUserReason Reason { get; internal set; }
 }
 public class SafetyReportedMessage : CreatedEntity, ISafetyReportContent
 {
-    internal SafetyReportedMessage(RevoltClient client, SafetyReportedContentJson model) : base(client, model.MessageId)
+    internal SafetyReportedMessage(RevoltClient client, SafetyReportedContentJson model) : base(client, model.MessageId.Value)
     {
-        MessageId = model.MessageId;
         Reason = model.Reason.ToEnum<SafetyReportMessageReason>();
     }
 
-    public string MessageId { get; internal set; }
+    public string MessageId => Id;
 
     public SafetyReportMessageReason Reason { get; internal set; }
 }

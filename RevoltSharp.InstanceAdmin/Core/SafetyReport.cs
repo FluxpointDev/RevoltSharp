@@ -6,7 +6,7 @@ public class SafetyReport : CreatedEntity
         Status = model.Status.ToEnum<SafetyReportStatus>();
         AuthorId = model.AuthorId;
         AdditionalContext = model.AdditionalContext;
-        Notes = model.Notes;
+        Note = model.Note;
         Type = model.Content.Type.ToEnum<SafetyReportType>();
         ReportedContent = ISafetyReportContent.Create(client, Type, model.Content);
     }
@@ -17,7 +17,7 @@ public class SafetyReport : CreatedEntity
     
     public string AdditionalContext { get; internal set; }
 
-    public string Notes { get; internal set; }
+    public string Note { get; internal set; }
 
     public SafetyReportType Type { get; internal set; }
 
