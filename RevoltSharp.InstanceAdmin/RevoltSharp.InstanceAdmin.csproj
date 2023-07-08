@@ -6,11 +6,31 @@
     <Nullable>enable</Nullable>
     <RootNamespace>RevoltSharp</RootNamespace>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+	  <Version>1.0.0</Version>
+	  <Authors>Builderb (Fluxpoint Development)</Authors>
+	  <Company>Fluxpoint Development</Company>
+	  <Product>RevoltSharp.InstanceAdmin</Product>
+	  <Description>Methods and extensions for managing your own self-hosted Revolt instance.</Description>
+	  <PackageProjectUrl>https://docs.fluxpoint.dev/revoltsharp</PackageProjectUrl>
+	  <PackageIcon>PackageIcon.png</PackageIcon>
+	  <RepositoryUrl>https://github.com/FluxpointDev/RevoltSharp</RepositoryUrl>
+	  <PackageTags>revolt, revolt bot, bot, revoltsharp, revolt c#</PackageTags>
+	  <PackageReleaseNotes>See changelog https://docs.fluxpoint.dev/revoltsharp/changelog</PackageReleaseNotes>
+	  
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<DocumentationFile>RevoltSharp.InstanceAdmin.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RevoltSharp\RevoltSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PackageIcon.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
 </Project>
