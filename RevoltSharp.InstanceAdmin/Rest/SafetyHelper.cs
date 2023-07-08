@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -17,6 +18,18 @@ public static class SafetyHelper
 
         return new SafetyReport(admin.Client, Json);
     }
+
+    public static Task<IReadOnlyCollection<SafetyReport>> GetReportsMadeAsync(this User user, Option<SafetyReportType> type = null)
+        => GetReportsAsync(user.Client.Admin, authorId: user.Id, type: type);
+
+    public static Task<IReadOnlyCollection<SafetyReport>> GetReportsAsync(this User user, Option<SafetyReportType> type = null)
+        => GetReportsAsync(user.Client.Admin, user.Id, type: type);
+
+    public static Task<IReadOnlyCollection<SafetyReport>> GetReportsAsync(this Server server, Option<SafetyReportType> type = null)
+        => GetReportsAsync(server.Client.Admin, server.Id, type: type);
+
+    public static Task<IReadOnlyCollection<SafetyReport>> GetReportsAsync(this UserMessage message, Option<SafetyReportType> type = null)
+        => GetReportsAsync(message.Client.Admin, message.Id, type: type);
 
     public static async Task<IReadOnlyCollection<SafetyReport>> GetReportsAsync(this AdminClient admin, string contentId = null, string authorId = null, Option<SafetyReportType> type = null)
     {
