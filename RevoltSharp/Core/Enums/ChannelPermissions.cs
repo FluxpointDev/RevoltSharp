@@ -35,9 +35,6 @@ public class ChannelPermissions
         if ((RawDenied & Flag) == Flag)
             return false;
 
-        if (Server != null && Server.DefaultPermissions.Has(permission))
-            return true;
-
         return ((RawAllowed & Flag) == Flag);
     }
 

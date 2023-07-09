@@ -208,6 +208,14 @@ public class Server : CreatedEntity
         {
             SystemMessages = new ServerSystemMessages(Client, json.SystemMessages.Value);
         }
+
+        _ = Task.Run(() =>
+        {
+            foreach(var sm in CachedMembers)
+            {
+                sm.Permissions = new ServerPermissions(this, sm);
+            }
+        });
     }
 
     internal Server Clone()

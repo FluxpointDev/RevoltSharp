@@ -466,6 +466,7 @@ internal class RevoltSocketClient
                         }
 
                         Channel clone = chan.Clone();
+
                         chan.Update(@event.Data);
                         Client.InvokeChannelUpdated(clone, chan, new ChannelUpdatedProperties(chan, @event.Data));
 

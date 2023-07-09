@@ -8,7 +8,7 @@ public class MessageWebhook : CreatedEntity
         Avatar = Attachment.Create(client, model.Avatar);
     }
 
-    public string Id;
+    public new string Id => base.Id;
 
     public string Name;
 

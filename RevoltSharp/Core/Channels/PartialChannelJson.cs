@@ -19,7 +19,7 @@ internal class PartialChannelJson
     [JsonProperty("description")]
     public Optional<string> Description { get; set; }
 
-    [JsonProperty("deafult_permissions")]
+    [JsonProperty("default_permissions")]
     public Optional<PermissionsJson> DefaultPermissions { get; set; }
 
     [JsonProperty("permissions")]

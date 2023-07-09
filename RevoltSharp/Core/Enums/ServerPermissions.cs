@@ -29,7 +29,7 @@ public class ServerPermissions
         }
         else
         {
-            ulong resolvedServer = 0;
+            ulong resolvedServer = server.DefaultPermissions.RawServer;
             foreach (Role r in member.InternalRoles.Values)
             {
                 resolvedServer |= r.Permissions.RawServer;

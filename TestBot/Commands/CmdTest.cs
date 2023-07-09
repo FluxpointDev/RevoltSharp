@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS1998
 
+using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
@@ -7,6 +8,7 @@ using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +24,43 @@ public class CmdTest : ModuleBase
     {
         int Count = Context.Server.TextChannels.Count();
     }
+
+    [Command("permtest")]
+    public async Task PermTest(string user)
+    {
+        var User = Context.Server.CurrentUser;
+        var Perms = User.Permissions;
+        var Channel = User.GetPermissions(Context.Channel as TextChannel);
+        await ReplyAsync("Global: " + Perms.EmbedLinks + "\n" +
+            "Channel: " + Channel.EmbedLinks);
+
+        await Context.Channel.SendMessageAsync("", embeds: new Embed[]
+        {
+            new EmbedBuilder
+            {
+                Description = "Test"
+            }.Build()
+        });
+    }
+
+    [Command("myroles")]
+    public async Task MyRoles()
+    {
+        HashSet<string> Roles = new HashSet<string>();
+
+        foreach(var rr in Context.Server.CurrentUser.Roles.OrderByDescending(x => x.Rank))
+        {
+            Roles.Add("Role: " + rr.Name);
+        }
+
+        if (!Roles.Any())
+        {
+            await ReplyAsync("No roles");
+            return;
+        }
+        await ReplyAsync(string.Join("\n", Roles));
+    }
+
     [Command("vc")]
     public async Task VC()
     {
@@ -29,7 +68,7 @@ public class CmdTest : ModuleBase
         try
         {
             var VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
-            string File = "C:\\Users\\Brandan\\Downloads\\toads.mp4";
+            string File = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads") + "/toads.mp4";
 
             _ = Task.Run(async () =>
             {
@@ -93,11 +132,6 @@ public class CmdTest : ModuleBase
 
     }
 
-    [Command("permtest")]
-    public async Task PermTest()
-    {
-        await ReplyAsync(Context.Member.Permissions.Has(ServerPermission.BanMembers).ToString());
-    }
 
     [Command("tag")]
     public async Task Tag()

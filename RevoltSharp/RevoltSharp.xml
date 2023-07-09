@@ -633,7 +633,7 @@
         </member>
         <member name="T:RevoltSharp.RevoltLogSeverity">
             <summary>
-            The severity of a log message raised by <see cref="!:ClientEvents.OnLog"/>.
+            The severity of a log message raised by <see cref="E:RevoltSharp.RevoltClient.OnLog"/>.
             </summary>
         </member>
         <member name="F:RevoltSharp.RevoltLogSeverity.Verbose">
