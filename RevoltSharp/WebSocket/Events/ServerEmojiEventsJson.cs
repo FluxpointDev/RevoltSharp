@@ -3,12 +3,12 @@
 namespace RevoltSharp.WebSocket;
 
 
-	internal class ServerEmojiCreatedEventJson : EmojiJson
-	{
+internal class ServerEmojiCreatedEventJson : EmojiJson
+{
 
-	}
-	internal class ServerEmojiDeleteEventJson
-	{
-		[JsonProperty("id")]
-		public string? EmojiId;
-	}
+}
+internal class ServerEmojiDeleteEventJson
+{
+    [JsonProperty("id")]
+    public string? EmojiId;
+}

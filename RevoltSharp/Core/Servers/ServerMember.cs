@@ -124,9 +124,9 @@ public class ServerMember : Entity
             return new ChannelPermissions(channel.Server, ulong.MaxValue, 0);
 
         ulong resolvedPermissions = channel.Server.DefaultPermissions.RawServer;
-       
+
         resolvedPermissions = (resolvedPermissions & ~channel.DefaultPermissions.RawDenied) | channel.DefaultPermissions.RawAllowed;
-        
+
         foreach (Role r in InternalRoles.Values.OrderByDescending(x => x.Rank))
         {
             if (channel.InternalRolePermissions.TryGetValue(r.Id, out ChannelPermissions cperm))

@@ -2,9 +2,9 @@
 
 namespace RevoltSharp;
 
-	public interface IVoiceClient
-	{
-		Task StartAsync();
+public interface IVoiceClient
+{
+    Task StartAsync();
 
-		Task StopAsync();
-	}
+    Task StopAsync();
+}

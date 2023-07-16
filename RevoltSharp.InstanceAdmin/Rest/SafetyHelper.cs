@@ -136,7 +136,7 @@ public static class SafetyHelper
         if (req.status.rejection_reason.HasValue)
             AdminConditions.ReportReasonLength(req.status.rejection_reason.Value, Obj);
 
-        SafetyReportJson Data = await admin.Client.Rest.PatchAsync< SafetyReportJson>("safety/reports/" + reportId, req);
+        SafetyReportJson Data = await admin.Client.Rest.PatchAsync<SafetyReportJson>("safety/reports/" + reportId, req);
 
         return new SafetyReport(admin.Client, Data);
     }

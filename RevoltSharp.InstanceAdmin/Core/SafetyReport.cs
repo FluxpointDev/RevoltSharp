@@ -14,7 +14,7 @@ public class SafetyReport : CreatedEntity
     public SafetyReportStatus Status { get; internal set; }
 
     public string AuthorId { get; internal set; }
-    
+
     public string AdditionalContext { get; internal set; }
 
     public string Note { get; internal set; }

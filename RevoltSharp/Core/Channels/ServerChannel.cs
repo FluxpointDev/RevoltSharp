@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -105,7 +104,7 @@ public class ServerChannel : Channel
 
         if (json.DefaultPermissions.HasValue)
             DefaultPermissions = new ChannelPermissions(Server, json.DefaultPermissions.Value);
-        
+
 
         if (json.Description.HasValue)
             Description = json.Description.Value;

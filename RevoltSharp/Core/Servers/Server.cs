@@ -211,7 +211,7 @@ public class Server : CreatedEntity
 
         _ = Task.Run(() =>
         {
-            foreach(var sm in CachedMembers)
+            foreach (var sm in CachedMembers)
             {
                 sm.Permissions = new ServerPermissions(this, sm);
             }

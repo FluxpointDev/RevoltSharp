@@ -1,6 +1,6 @@
-﻿using System;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Optionals;
+using System;
 
 namespace RevoltSharp;
 

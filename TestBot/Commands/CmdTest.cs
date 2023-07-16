@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CS1998
 
-using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
@@ -48,7 +47,7 @@ public class CmdTest : ModuleBase
     {
         HashSet<string> Roles = new HashSet<string>();
 
-        foreach(var rr in Context.Server.CurrentUser.Roles.OrderByDescending(x => x.Rank))
+        foreach (var rr in Context.Server.CurrentUser.Roles.OrderByDescending(x => x.Rank))
         {
             Roles.Add("Role: " + rr.Name);
         }

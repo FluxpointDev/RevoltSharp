@@ -4,70 +4,70 @@ namespace RevoltSharp;
 
 public class QueryBuilder
 {
-	private readonly StringBuilder sb = new StringBuilder();
+    private readonly StringBuilder sb = new StringBuilder();
 
-	public QueryBuilder Add(string key, string value)
-	{
+    public QueryBuilder Add(string key, string value)
+    {
         if (sb.Length == 0)
             sb.Append($"?{key}={value}");
         else
             sb.Append($"&{key}={value}");
 
-		return this;
+        return this;
     }
 
-	public QueryBuilder AddIf(bool match, string key, string value)
-	{
-		if (match)
-			Add(key, value);
-		
-		return this;
-	}
+    public QueryBuilder AddIf(bool match, string key, string value)
+    {
+        if (match)
+            Add(key, value);
 
-	public QueryBuilder Add(string key, int value)
-	{
+        return this;
+    }
+
+    public QueryBuilder Add(string key, int value)
+    {
         if (sb.Length == 0)
             sb.Append($"?{key}={value}");
         else
             sb.Append($"&{key}={value}");
 
-		return this;
+        return this;
     }
 
-	public QueryBuilder AddIf(bool match, string key, int value)
-	{
-		if (match)
-			Add(key, value);
+    public QueryBuilder AddIf(bool match, string key, int value)
+    {
+        if (match)
+            Add(key, value);
 
-		return this;
-	}
+        return this;
+    }
 
-	public QueryBuilder Add(string key, bool value)
-	{
+    public QueryBuilder Add(string key, bool value)
+    {
         if (sb.Length == 0)
             sb.Append($"?{key}={value}");
         else
             sb.Append($"&{key}={value}");
 
-		return this;
+        return this;
     }
 
-	public QueryBuilder AddIf(bool match, string key, bool value)
-	{
-		if (match)
-			Add(key, value);
+    public QueryBuilder AddIf(bool match, string key, bool value)
+    {
+        if (match)
+            Add(key, value);
 
-		return this;
-	}
+        return this;
+    }
 
-	public string GetQuery()
-	{
-		if (sb.Length == 0)
-			return string.Empty;
+    public string GetQuery()
+    {
+        if (sb.Length == 0)
+            return string.Empty;
 
-		return sb.ToString();
-	}
+        return sb.ToString();
+    }
 
-	public override string ToString()
-		=> GetQuery();
+    public override string ToString()
+        => GetQuery();
 }

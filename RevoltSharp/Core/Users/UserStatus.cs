@@ -1,5 +1,5 @@
-﻿using System;
-using Optionals;
+﻿using Optionals;
+using System;
 
 namespace RevoltSharp;
 

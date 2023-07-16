@@ -4,23 +4,23 @@ namespace RevoltSharp;
 
 
 public class VoiceState
-	{
-		internal VoiceState(VoiceChannel channel, VoiceSocketClient con)
-		{
-			Connection = con;
-			Channel = channel;
-		}
+{
+    internal VoiceState(VoiceChannel channel, VoiceSocketClient con)
+    {
+        Connection = con;
+        Channel = channel;
+    }
 
-		internal VoiceSocketClient Connection;
-		public VoiceChannel Channel { get; internal set; }
+    internal VoiceSocketClient Connection;
+    public VoiceChannel Channel { get; internal set; }
 
-		public async Task ConnectAsync()
-		{
-			await Connection.InternalConnectAsync();
-		}
+    public async Task ConnectAsync()
+    {
+        await Connection.InternalConnectAsync();
+    }
 
-		public async Task StopAsync()
-		{
-			Connection.StopWebSocket = true;
-		}
-	}
+    public async Task StopAsync()
+    {
+        Connection.StopWebSocket = true;
+    }
+}
