@@ -661,6 +661,14 @@
             Do not log anything.
             </summary>
         </member>
+        <member name="M:RevoltSharp.PublicBot.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+            <summary>
+            Gets the bot's avatar.
+            </summary>
+            <param name="which">Which avatar to return.</param>
+            <param name="size"></param>
+            <returns>URL of the image</returns>
+        </member>
         <member name="M:RevoltSharp.PublicBot.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Bot username </returns>
@@ -1373,6 +1381,11 @@
         <member name="P:RevoltSharp.ServerBan.Username">
             <summary>
             Username of the banned user.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerBan.Discriminator">
+            <summary>
+            Unique identity number of the banned user.
             </summary>
         </member>
         <member name="P:RevoltSharp.ServerBan.Reason">
@@ -2813,6 +2826,12 @@
             Revolt http/rest methods for text channels.
             </summary>
         </member>
+        <member name="M:RevoltSharp.TextChannelHelper.DeleteAsync(RevoltSharp.TextChannel)">
+            <summary>
+            Delete this text channel.
+            </summary>
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.DeleteChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
         <member name="M:RevoltSharp.TextChannelHelper.GetTextChannelAsync(RevoltSharp.Server,System.String)">
             <inheritdoc cref="M:RevoltSharp.TextChannelHelper.GetTextChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
@@ -2856,6 +2875,12 @@
             <summary>
             Revolt http/rest methods for voice channel.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.VoiceChannelHelper.DeleteAsync(RevoltSharp.VoiceChannel)">
+            <summary>
+            Delete this voice channel.
+            </summary>
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.DeleteChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
         <member name="M:RevoltSharp.VoiceChannelHelper.GetVoiceChannelAsync(RevoltSharp.Server,System.String)">
             <inheritdoc cref="M:RevoltSharp.VoiceChannelHelper.GetVoiceChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />

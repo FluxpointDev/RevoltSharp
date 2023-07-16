@@ -1,7 +1,6 @@
 ﻿using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
-using System.Numerics;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
