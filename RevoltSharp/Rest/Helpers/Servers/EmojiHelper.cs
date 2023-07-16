@@ -77,6 +77,7 @@ public static class EmojiHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentId, string name, bool nsfw = false)
     {
+        Conditions.NotAllowedForBots(rest, nameof(CreateEmojiAsync));
         Conditions.ServerIdLength(serverId, nameof(CreateEmojiAsync));
         Conditions.AttachmentIdLength(attachmentId, nameof(CreateEmojiAsync));
         Conditions.EmojiNameLength(name, nameof(CreateEmojiAsync));
