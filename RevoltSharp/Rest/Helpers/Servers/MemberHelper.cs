@@ -187,7 +187,7 @@ public static class MemberHelper
 
     /// <inheritdoc cref="GetMemberAsync(RevoltRestClient, string, string)" />
     public static Task<IReadOnlyCollection<ServerMember>> GetMembersAsync(this Server server, bool onlineOnly = false)
-       => GetMembersAsync(server.Client.Rest, server.Id);
+       => GetMembersAsync(server.Client.Rest, server.Id, onlineOnly);
 
     /// <summary>
     /// Get all members from a server.

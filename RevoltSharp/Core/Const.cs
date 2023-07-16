@@ -12,6 +12,7 @@ public static class Const
 
     public const int User_MinNameLength = 2;
     public const int User_MaxStatusTextLength = 128;
+    public const int User_ProfileBioLength = 2000;
 
     public const int Group_MaxUserIdsListCount = 49;
 

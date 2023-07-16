@@ -27,6 +27,7 @@ public static class WebhookHelper
 
     public static async Task<Webhook> CreateWebhookAsync(this RevoltRestClient rest, string channelId, string webhookName, string webhookAvatarId = null)
     {
+        Conditions.ChannelIdLength(channelId, nameof(CreateWebhookAsync));
         Conditions.WebhookNameLength(channelId, nameof(CreateWebhookAsync));
 
         CreateWebhookRequest Req = new CreateWebhookRequest

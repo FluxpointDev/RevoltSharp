@@ -309,6 +309,12 @@ internal static class Conditions
             throw new RevoltArgumentException($"User status text length can't be more than {Const.User_MaxStatusTextLength} characters for the {request} request.");
     }
 
+    internal static void UserProfileBioLength(string text, string request)
+    {
+        if (!string.IsNullOrEmpty(text) && text.Length > Const.User_ProfileBioLength)
+            throw new RevoltArgumentException($"User bio text length can't be more than {Const.User_ProfileBioLength} characters for the {request} request.");
+    }
+
     internal static void BackgroundIdLength(string id, string request)
     {
         if (string.IsNullOrEmpty(id) || id.Length < 1)
