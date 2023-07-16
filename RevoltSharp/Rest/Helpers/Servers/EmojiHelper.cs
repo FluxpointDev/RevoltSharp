@@ -90,7 +90,7 @@ public static class EmojiHelper
         Conditions.EmojiNameLength(emojiName, nameof(CreateEmojiAsync));
         Conditions.AttachmentIdLength(attachmentIdOrFile, nameof(CreateEmojiAsync), true);
 
-        if (!string.IsNullOrEmpty(attachmentIdOrFile) && (attachmentIdOrFile.Contains("/") || attachmentIdOrFile.Contains("\\")))
+        if (!string.IsNullOrEmpty(attachmentIdOrFile) && (attachmentIdOrFile.Contains('/') || attachmentIdOrFile.Contains('\\')))
         {
             FileAttachment File = await rest.UploadFileAsync(attachmentIdOrFile, UploadFileType.Emoji);
             attachmentIdOrFile = File.Id;

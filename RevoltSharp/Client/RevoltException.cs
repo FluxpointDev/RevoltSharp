@@ -43,7 +43,7 @@ public class RevoltRestException : RevoltException
 public class RevoltPermissionException : RevoltRestException
 {
     internal RevoltPermissionException(string permission, int code, bool userPerm) : base(
-        userPerm ? $"Request failed due to other user missing permission {permission}" : $"Request failed due to missing permission {permission}", 
+        userPerm ? $"Request failed due to other user missing permission {permission}" : $"Request failed due to missing permission {permission}",
         code, userPerm ? RevoltErrorType.MissingUserPermission : RevoltErrorType.MissingPermission)
     {
         base.Permission = permission;
