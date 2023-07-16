@@ -1,6 +1,7 @@
 ﻿using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -12,8 +13,16 @@ namespace RevoltSharp;
 public static class RoleHelper
 {
     /// <inheritdoc cref="CreateRoleAsync(RevoltRestClient, string, string, Option{int})" />
+    public static Task<Role> CreateRoleAsync(this Server server, string name, Option<BigInteger> rank = null)
+        => CreateRoleAsync(server.Client.Rest, server.Id, name, rank);
+
+    /// <inheritdoc cref="CreateRoleAsync(RevoltRestClient, string, string, Option{int})" />
     public static Task<Role> CreateRoleAsync(this Server server, string name, Option<int> rank = null)
         => CreateRoleAsync(server.Client.Rest, server.Id, name, rank);
+
+    /// <inheritdoc cref="CreateRoleAsync(RevoltRestClient, string, string, Option{int})" />
+    public static Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string name, Option<BigInteger> rank = null)
+        => CreateRoleAsync(rest, serverId, name, (rank != null ? new Option<int>(rank.Value.ToInt()) : null));
 
     /// <summary>
     /// Create a server role.
