@@ -3,5 +3,5 @@
 namespace RevoltSharp.Requests;
 internal class AdminStrikeModifyRequest : IRevoltRequest
 {
-    public string reason;
+    public string? reason;
 }

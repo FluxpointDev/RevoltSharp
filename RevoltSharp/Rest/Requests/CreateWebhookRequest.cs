@@ -1,9 +1,13 @@
-﻿using Optionals;
+﻿using Newtonsoft.Json;
+using Optionals;
 
 namespace RevoltSharp.Rest.Requests;
 
 internal class CreateWebhookRequest : IRevoltRequest
 {
-    public string name { get; set; }
-    public Optional<string> avatar { get; set; }
+    [JsonProperty("name")]
+    public string Name { get; set; } = null!;
+
+    [JsonProperty("avatar")]
+    public Optional<string> Avatar { get; set; }
 }

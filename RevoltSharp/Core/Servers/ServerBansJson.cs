@@ -23,7 +23,7 @@ internal class ServerBanUserJson
     public AttachmentJson? Avatar;
 
     [JsonProperty("discriminator")]
-    public string Discriminator;
+    public string Discriminator = null!;
 }
 
 internal class ServerBanInfoJson
@@ -37,5 +37,5 @@ internal class ServerBanInfoJson
 internal class ServerBanIdJson
 {
     [JsonProperty("user")]
-    public string? UserId;
+    public string UserId = null!;
 }

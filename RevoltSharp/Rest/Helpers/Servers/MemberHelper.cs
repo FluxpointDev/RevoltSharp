@@ -326,7 +326,7 @@ public static class MemberHelper
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this Server server, ServerMember member, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
+    public static Task ModifyMemberAsync(this Server _, ServerMember member, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
         => ModifyAsync(member, nickname, avatar, timeout);
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />

@@ -118,8 +118,7 @@ public class ModuleBuilder
     private ModuleInfo BuildImpl(CommandService service, IServiceProvider services, ModuleInfo parent = null)
     {
         //Default name to first alias
-        if (Name == null)
-            Name = _aliases[0];
+        Name ??= _aliases[0];
 
         if (TypeInfo != null && !TypeInfo.IsAbstract)
         {

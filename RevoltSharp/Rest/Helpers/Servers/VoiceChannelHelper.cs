@@ -11,6 +11,13 @@ namespace RevoltSharp;
 /// </summary>
 public static class VoiceChannelHelper
 {
+    /// <summary>
+    /// Delete this voice channel.
+    /// </summary>
+    /// <inheritdoc cref="ChannelHelper.DeleteChannelAsync(RevoltRestClient, string)" />
+    public static Task DeleteAsync(this VoiceChannel channel)
+        => ChannelHelper.DeleteChannelAsync(channel.Client.Rest, channel.Id);
+
     /// <inheritdoc cref="GetVoiceChannelAsync(RevoltRestClient, string)" />
     public static Task<VoiceChannel?> GetVoiceChannelAsync(this Server server, string channelId)
         => ChannelHelper.InternalGetChannelAsync<VoiceChannel>(server.Client.Rest, channelId);

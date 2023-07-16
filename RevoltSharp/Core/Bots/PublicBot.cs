@@ -5,7 +5,7 @@ public class PublicBot : CreatedEntity
 {
     internal PublicBot(RevoltClient client, PublicBotJson model) : base(client, model.Id)
     {
-        Username = model.Username;
+        Username = model.Username!;
         AvatarId = model.AvatarId;
         Description = model.Description;
     }

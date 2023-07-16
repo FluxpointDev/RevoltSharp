@@ -3,6 +3,6 @@
 namespace RevoltSharp.Requests;
 internal class AdminStrikeCreateRequest : IRevoltRequest
 {
-    public string user_id;
-    public string reason;
+    public string? user_id;
+    public string? reason;
 }

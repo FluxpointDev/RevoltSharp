@@ -2,18 +2,17 @@
 
 namespace RevoltSharp;
 
-
 internal class PublicBotJson
 {
     [JsonProperty("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonProperty("username")]
-    public string Username { get; set; }
+    public string? Username { get; set; }
 
     [JsonProperty("avatar")]
-    public string AvatarId { get; set; }
+    public string? AvatarId { get; set; }
 
     [JsonProperty("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }

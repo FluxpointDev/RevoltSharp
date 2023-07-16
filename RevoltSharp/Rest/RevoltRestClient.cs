@@ -134,6 +134,8 @@ public class RevoltRestClient
                 return HttpMethod.Patch;
             case RequestType.Put:
                 return HttpMethod.Put;
+            case RequestType.Get:
+                break;
         }
         return HttpMethod.Get;
     }
@@ -237,6 +239,8 @@ public class RevoltRestClient
                 return "banners";
             case UploadFileType.Icon:
                 return "icons";
+            case UploadFileType.Attachment:
+                break;
         }
         return "attachments";
     }

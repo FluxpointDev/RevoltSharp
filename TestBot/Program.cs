@@ -83,8 +83,7 @@ public class CommandHandler
 
     private void Client_OnMessageRecieved(Message msg)
     {
-        UserMessage Message = msg as UserMessage;
-        if (Message == null || Message.Type != MessageType.User)
+        if (msg is not UserMessage Message || Message.Type != MessageType.User)
             return;
         int argPos = 0;
         if (!(Message.HasStringPrefix(Prefix, ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))

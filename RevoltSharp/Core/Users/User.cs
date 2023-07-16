@@ -33,7 +33,7 @@ public class User : CreatedEntity
 
     internal User(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
     {
-        Username = model.Name;
+        Username = model.Name!;
         Discriminator = "0000";
         Status = new UserStatus(null) { Type = UserStatusType.Online };
         Avatar = Attachment.Create(client, model.Avatar);

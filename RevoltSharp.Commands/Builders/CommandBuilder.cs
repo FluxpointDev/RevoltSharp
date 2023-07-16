@@ -117,8 +117,7 @@ public class CommandBuilder
     internal CommandInfo Build(ModuleInfo info, CommandService service)
     {
         //Default name to primary alias
-        if (Name == null)
-            Name = PrimaryAlias;
+        Name ??= PrimaryAlias;
 
         if (_parameters.Count > 0)
         {

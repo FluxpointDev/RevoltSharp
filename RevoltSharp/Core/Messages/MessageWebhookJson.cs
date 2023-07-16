@@ -6,10 +6,10 @@ namespace RevoltSharp;
 internal class MessageWebhookJson
 {
     [JsonProperty("id")]
-    public string Id;
+    public string Id = null!;
 
     [JsonProperty("name")]
-    public string Name;
+    public string Name = null!;
 
     [JsonProperty("avatar")]
     public AttachmentJson? Avatar;

@@ -72,21 +72,21 @@ public class CmdTest : ModuleBase
             _ = Task.Run(async () =>
             {
                 return;
-                using (var ffmpeg = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "ffmpeg",
-                    Arguments = $"-hide_banner -loglevel panic -i \"{File}\" -ac 2 -f s16le -ar 48000 pipe:1",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                }))
-                {
-                    //using (var output = ffmpeg.StandardOutput.BaseStream)
-                    //using (var discord = client.CreatePCMStream(AudioApplication.Mixed))
-                    //{
-                    //	try { await output.CopyToAsync(discord); }
-                    //	finally { await discord.FlushAsync(); }
-                    //}
-                }
+                //using (var ffmpeg = Process.Start(new ProcessStartInfo
+                //{
+                //    FileName = "ffmpeg",
+                //    Arguments = $"-hide_banner -loglevel panic -i \"{File}\" -ac 2 -f s16le -ar 48000 pipe:1",
+                //    UseShellExecute = false,
+                //    RedirectStandardOutput = true,
+                //}))
+                //{
+                //    //using (var output = ffmpeg.StandardOutput.BaseStream)
+                //    //using (var discord = client.CreatePCMStream(AudioApplication.Mixed))
+                //    //{
+                //    //	try { await output.CopyToAsync(discord); }
+                //    //	finally { await discord.FlushAsync(); }
+                //    //}
+                //}
 
 
             });

@@ -2,5 +2,5 @@
 
 internal class VoiceRequestJson
 {
-    public string token;
+    public string? token;
 }

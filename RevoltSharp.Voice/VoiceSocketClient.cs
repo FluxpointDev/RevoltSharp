@@ -124,7 +124,9 @@ public class VoiceSocketClient
         }
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     private async Task WebSocketMessage(string json)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         JToken payload = JsonConvert.DeserializeObject<JToken>(json);
         Console.WriteLine("--- Voice Socket Response Json ---\n" + FormatJsonPretty(json));

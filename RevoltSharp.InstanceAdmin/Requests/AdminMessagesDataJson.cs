@@ -4,8 +4,8 @@ namespace RevoltSharp.Requests;
 internal class AdminMessagesDataJson
 {
     [JsonProperty("messages")]
-    public MessageJson[] Messages;
+    public MessageJson[]? Messages;
 
     [JsonProperty("users")]
-    public UserJson[] Users;
+    public UserJson[]? Users;
 }

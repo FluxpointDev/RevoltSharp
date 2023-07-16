@@ -454,8 +454,7 @@ internal class RevoltSocketClient
 
                         if (@event.Clear.HasValue)
                         {
-                            if (@event.Data == null)
-                                @event.Data = new PartialChannelJson();
+                            @event.Data ??= new PartialChannelJson();
 
                             if (@event.Clear.Value.Contains("Icon"))
                                 @event.Data.Icon = Optional.Some<AttachmentJson?>(null);
@@ -560,8 +559,7 @@ internal class RevoltSocketClient
 
                         foreach (ChannelJson c in @event.ChannelsJson)
                         {
-                            TextChannel Chan = Channel.Create(Client, c) as TextChannel;
-                            if (Chan == null)
+                            if (Channel.Create(Client, c) is not TextChannel Chan)
                                 continue;
 
                             ChannelCache.TryAdd(c.Id, Chan);
@@ -577,8 +575,7 @@ internal class RevoltSocketClient
 
                         if (@event.Clear.HasValue)
                         {
-                            if (@event.Data == null)
-                                @event.Data = new PartialServerJson();
+                            @event.Data ??= new PartialServerJson();
 
                             if (@event.Clear.Value.Contains("Icon"))
                                 @event.Data.Icon = Optional.Some<AttachmentJson>(null);
@@ -631,8 +628,7 @@ internal class RevoltSocketClient
 
                         if (@event.Clear.HasValue)
                         {
-                            if (@event.Data == null)
-                                @event.Data = new PartialServerMemberJson();
+                            @event.Data ??= new PartialServerMemberJson();
 
                             foreach (string s in @event.Clear.Value)
                             {
@@ -730,8 +726,7 @@ internal class RevoltSocketClient
 
 
                             Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
-                            if (Member == null)
-                                Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, user);
+                            Member ??= new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, user);
 
                             if (user == null)
                             {
@@ -750,8 +745,7 @@ internal class RevoltSocketClient
                         if (!ServerCache.TryGetValue(@event.ServerId, out Server server))
                             return;
 
-                        if (@event.Data == null)
-                            @event.Data = new PartialRoleJson();
+                        @event.Data ??= new PartialRoleJson();
 
                         if (server.InternalRoles.TryGetValue(@event.RoleId, out Role role))
                         {
@@ -817,7 +811,7 @@ internal class RevoltSocketClient
                             if (@event.Data.Profile.HasValue)
                             {
                                 if (clr.Contains("ProfileContent"))
-                                    @event.Data.Profile.Value.Content = Optional.Some<string>(null);
+                                    @event.Data.Profile.Value.Content = Optional.Some<string?>(null);
 
                                 if (clr.Contains("ProfileBackground"))
                                     @event.Data.Profile.Value.Background = Optional.Some<AttachmentJson?>(null);

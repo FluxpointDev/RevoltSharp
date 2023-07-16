@@ -17,8 +17,8 @@ internal class AuthenticateRequest
 }
 internal class AuthDataRequest
 {
-    public string roomId;
-    public string token;
+    public string roomId = null!;
+    public string token = null!;
 }
 internal class RoomInfoRequest
 {

@@ -96,8 +96,7 @@ internal static class CommandParser
                     return ParseResult.FromError(CommandError.ParseFailed, "There must be at least one character of whitespace between arguments.");
                 else
                 {
-                    if (curParam == null)
-                        curParam = command.Parameters.Count > argList.Count ? command.Parameters[argList.Count] : null;
+                    curParam ??= command.Parameters.Count > argList.Count ? command.Parameters[argList.Count] : null;
 
                     if (curParam != null && curParam.IsRemainder)
                     {

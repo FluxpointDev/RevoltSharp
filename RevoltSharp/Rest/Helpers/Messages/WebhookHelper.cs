@@ -32,12 +32,12 @@ public static class WebhookHelper
 
         CreateWebhookRequest Req = new CreateWebhookRequest
         {
-            name = webhookName
+            Name = webhookName
         };
         if (!string.IsNullOrEmpty(webhookAvatarId))
         {
             Conditions.WebhookAvatarIdLength(webhookAvatarId, nameof(CreateWebhookAsync));
-            Req.avatar = Optional.Some(webhookAvatarId);
+            Req.Avatar = Optional.Some(webhookAvatarId);
         }
 
         WebhookJson Data = await rest.PostAsync<WebhookJson>($"channels/{channelId}/webhooks", Req);

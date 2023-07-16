@@ -12,7 +12,7 @@ public class ServerBanInfo : CreatedEntity
     }
 
     public string UserId { get; internal set; }
-    public string Reason { get; internal set; }
+    public string? Reason { get; internal set; }
 }
 public class ServerBan : CreatedEntity
 {
@@ -39,6 +39,9 @@ public class ServerBan : CreatedEntity
     /// </summary>
     public string Username { get; }
 
+    /// <summary>
+    /// Unique identity number of the banned user.
+    /// </summary>
     private string Discriminator { get; set; }
 
     /// <summary>

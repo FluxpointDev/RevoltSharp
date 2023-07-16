@@ -7,25 +7,25 @@ namespace RevoltSharp;
 internal class SafetyReportJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("status")]
-    public string Status;
+    public string? Status;
 
     [JsonProperty("author_id")]
-    public string AuthorId;
+    public string? AuthorId;
 
     [JsonProperty("content")]
-    public SafetyReportedContentJson Content;
+    public SafetyReportedContentJson? Content;
 
     [JsonProperty("additional_context")]
-    public string AdditionalContext;
+    public string? AdditionalContext;
 
     [JsonProperty("notes")]
-    public string Note;
+    public string? Note;
 
     [JsonProperty("rejection_reason")]
-    public string RejectionReason;
+    public string? RejectionReason;
 
     [JsonProperty("closed_at")]
     public DateTime ClosedAt;
@@ -33,14 +33,14 @@ internal class SafetyReportJson
 internal class SafetyReportedContentJson
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     [JsonProperty("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonProperty("message_id")]
     public Optional<string> MessageId { get; set; }
 
     [JsonProperty("report_reason")]
-    public string Reason { get; set; }
+    public string? Reason { get; set; }
 }

@@ -132,8 +132,7 @@ internal static class ModuleClassBuilder
         //Check for unspecified info
         if (builder.Aliases.Count == 0)
             builder.AddAliases("");
-        if (builder.Name == null)
-            builder.Name = typeInfo.Name;
+        builder.Name ??= typeInfo.Name;
 
         // Get all methods (including from inherited members), that are valid commands
         IEnumerable<MethodInfo> validCommands = typeInfo.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(IsValidCommandDefinition);
@@ -184,8 +183,7 @@ internal static class ModuleClassBuilder
             }
         }
 
-        if (builder.Name == null)
-            builder.Name = method.Name;
+        builder.Name ??= method.Name;
 
         System.Reflection.ParameterInfo[] parameters = method.GetParameters();
         int pos = 0, count = parameters.Length;
@@ -273,11 +271,8 @@ internal static class ModuleClassBuilder
 
         builder.ParameterType = paramType;
 
-        if (builder.TypeReader == null)
-        {
-            builder.TypeReader = service.GetDefaultTypeReader(paramType)
+        builder.TypeReader ??= service.GetDefaultTypeReader(paramType)
                 ?? service.GetTypeReaders(paramType)?.FirstOrDefault().Value;
-        }
     }
 
     internal static TypeReader GetTypeReader(CommandService service, Type paramType, Type typeReaderType, IServiceProvider services)

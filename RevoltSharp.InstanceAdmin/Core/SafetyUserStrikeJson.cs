@@ -5,11 +5,11 @@ namespace RevoltSharp;
 internal class SafetyUserStrikeJson
 {
     [JsonProperty("_id")]
-    public string Id;
+    public string? Id;
 
     [JsonProperty("user_id")]
-    public string UserId;
+    public string? UserId;
 
     [JsonProperty("reason")]
-    public string Reason;
+    public string? Reason;
 }

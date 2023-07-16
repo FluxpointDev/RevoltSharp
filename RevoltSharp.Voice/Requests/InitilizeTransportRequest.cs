@@ -89,9 +89,9 @@ public class IntTransportCodecsParamsRequest
 }
 public class IntTransportHeaderRequest
 {
-    public string kind;
-    public string uri;
+    public string kind = null!;
+    public string uri = null!;
     public int prefferedId;
     public bool prefferedEncrypt = false;
-    public string direction;
+    public string direction = null!;
 }
