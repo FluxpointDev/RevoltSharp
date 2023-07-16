@@ -40,6 +40,18 @@ public class RevoltRestException : RevoltException
     public string? Permission { get; internal set; }
 }
 
+public class RevoltPermissionException : RevoltRestException
+{
+    internal RevoltPermissionException(string permission, int code, bool userPerm) : base(
+        userPerm ? $"Request failed due to other user missing permission {permission}" : $"Request failed due to missing permission {permission}", 
+        code, userPerm ? RevoltErrorType.MissingUserPermission : RevoltErrorType.MissingPermission)
+    {
+        base.Permission = permission;
+    }
+
+    public new string Permission => base.Permission!;
+}
+
 /// <summary>
 /// Custom exception for the Revolt client when user enters a missing or wrong argument.
 /// </summary>

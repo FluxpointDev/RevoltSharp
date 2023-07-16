@@ -61,6 +61,7 @@ public static class EmojiHelper
         => CreateEmojiAsync(server.Client.Rest, server.Id, attachmentId, name, nsfw);
 
 
+
     /// <summary>
     /// Create a server <see cref="Emoji" />
     /// </summary>
@@ -75,14 +76,18 @@ public static class EmojiHelper
     /// <returns><see cref="Emoji" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentId, string name, bool nsfw = false)
+    public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentOrFile, string name, bool nsfw = false)
     {
         Conditions.NotAllowedForBots(rest, nameof(CreateEmojiAsync));
         Conditions.ServerIdLength(serverId, nameof(CreateEmojiAsync));
-        Conditions.AttachmentIdLength(attachmentId, nameof(CreateEmojiAsync));
+
+        if (attachmentOrFile.Contains("/") )
+
+
+        Conditions.AttachmentIdLength(attachmentOrFile, nameof(CreateEmojiAsync));
         Conditions.EmojiNameLength(name, nameof(CreateEmojiAsync));
 
-        EmojiJson Emoji = await rest.PutAsync<EmojiJson>($"/custom/emoji/{attachmentId}", new CreateEmojiRequest
+        EmojiJson Emoji = await rest.PutAsync<EmojiJson>($"/custom/emoji/{attachmentOrFile}", new CreateEmojiRequest
         {
             name = name,
             nsfw = nsfw,

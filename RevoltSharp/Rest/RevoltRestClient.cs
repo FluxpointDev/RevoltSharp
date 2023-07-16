@@ -212,7 +212,10 @@ public class RevoltRestClient
             }
             if (Error != null)
             {
-                throw new RevoltRestException($"Request failed due to {Error.Type}", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+                if (string.IsNullOrEmpty(Error.Permission))
+                    throw new RevoltRestException($"Request failed due to {Error.Type} ({(int)Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+                else
+                    throw new RevoltPermissionException(Error.Permission, (int)Req.StatusCode, Error.Type == RevoltErrorType.MissingUserPermission);
             }
             else
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
@@ -239,7 +242,7 @@ public class RevoltRestClient
                 return "banners";
             case UploadFileType.Icon:
                 return "icons";
-            case UploadFileType.Emojis:
+            case UploadFileType.Emoji:
                 return "emojis";
             case UploadFileType.Attachment:
                 break;
@@ -309,7 +312,10 @@ public class RevoltRestClient
             }
             if (Error != null)
             {
-                throw new RevoltRestException($"Request failed due to {Error.Type}", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+                if (string.IsNullOrEmpty(Error.Permission))
+                    throw new RevoltRestException($"Request failed due to {Error.Type} ({(int)Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+                else
+                    throw new RevoltPermissionException(Error.Permission, (int)Req.StatusCode, Error.Type == RevoltErrorType.MissingUserPermission);
             }
             else
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
@@ -398,7 +404,12 @@ public class RevoltRestClient
             }
             Client.Logger.LogRestMessage(Client, Req, method, endpoint);
             if (Error != null)
-                throw new RevoltRestException($"Request failed due to {Error.Type} ({Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+            {
+                if (string.IsNullOrEmpty(Error.Permission))
+                    throw new RevoltRestException($"Request failed due to {Error.Type} ({(int)Req.StatusCode})", (int)Req.StatusCode, Error.Type) { Permission = Error.Permission };
+                else
+                    throw new RevoltPermissionException(Error.Permission, (int)Req.StatusCode, Error.Type == RevoltErrorType.MissingUserPermission);
+            }
             else
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
         }
@@ -475,7 +486,7 @@ public enum UploadFileType
     /// <summary>
     /// Create a server emoji with this image.
     /// </summary>
-    Emojis
+    Emoji
 }
 
 /// <summary>
