@@ -57,10 +57,17 @@ public static class EmojiHelper
     }
 
     /// <inheritdoc cref="CreateEmojiAsync(RevoltRestClient, string, string, string, bool)" />
-    public static Task<Emoji> CreateEmojiAsync(this Server server, string attachmentId, string name, bool nsfw = false)
-        => CreateEmojiAsync(server.Client.Rest, server.Id, attachmentId, name, nsfw);
+    public static Task<Emoji> CreateEmojiAsync(this Server server, string attachmentIdOrFile, string emojiName, bool nsfw = false)
+        => CreateEmojiAsync(server.Client.Rest, server.Id, attachmentIdOrFile, emojiName, nsfw);
 
+    public static Task<Emoji> CreateEmojiAsync(this Server server, byte[] bytes, string fileName, string emojiName, bool nsfw = false)
+        => CreateEmojiAsync(server.Client.Rest, server.Id, bytes, fileName, emojiName, nsfw);
 
+    public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, byte[] bytes, string fileName, string emojiName, bool nsfw = false)
+    {
+        FileAttachment File = await rest.UploadFileAsync(bytes, fileName, UploadFileType.Emoji);
+        return await CreateEmojiAsync(rest, serverId, File.Id, emojiName, nsfw);
+    }
 
     /// <summary>
     /// Create a server <see cref="Emoji" />
@@ -69,27 +76,31 @@ public static class EmojiHelper
     /// You need <see cref="ServerPermission.ManageCustomisation" /> and has a max count of 100 per-server.
     /// </remarks>
     /// <param name="rest"></param>
-    /// <param name="attachmentId">Uploaded file attachment from rest UploadFileAsync</param>
+    /// <param name="attachmentIdOrFile">Uploaded file attachment from rest UploadFileAsync</param>
     /// <param name="serverId">Server id</param>
     /// <param name="name">Name of emoji</param>
     /// <param name="nsfw">Is the emoji nsfw</param>
     /// <returns><see cref="Emoji" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentOrFile, string name, bool nsfw = false)
+    public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, string attachmentIdOrFile, string emojiName, bool nsfw = false)
     {
         Conditions.NotAllowedForBots(rest, nameof(CreateEmojiAsync));
         Conditions.ServerIdLength(serverId, nameof(CreateEmojiAsync));
+        Conditions.EmojiNameLength(emojiName, nameof(CreateEmojiAsync));
+        Conditions.AttachmentIdLength(attachmentIdOrFile, nameof(CreateEmojiAsync), true);
 
-        if (attachmentOrFile.Contains("/") )
-
-
-        Conditions.AttachmentIdLength(attachmentOrFile, nameof(CreateEmojiAsync));
-        Conditions.EmojiNameLength(name, nameof(CreateEmojiAsync));
-
-        EmojiJson Emoji = await rest.PutAsync<EmojiJson>($"/custom/emoji/{attachmentOrFile}", new CreateEmojiRequest
+        if (!string.IsNullOrEmpty(attachmentIdOrFile) && (attachmentIdOrFile.Contains("/") || attachmentIdOrFile.Contains("\\")))
         {
-            name = name,
+            FileAttachment File = await rest.UploadFileAsync(attachmentIdOrFile, UploadFileType.Emoji);
+            attachmentIdOrFile = File.Id;
+        }
+
+        Conditions.AttachmentIdLength(attachmentIdOrFile, nameof(CreateEmojiAsync));
+
+        EmojiJson Emoji = await rest.PutAsync<EmojiJson>($"/custom/emoji/{attachmentIdOrFile}", new CreateEmojiRequest
+        {
+            name = emojiName,
             nsfw = nsfw,
             parent = new CreateEmojiParent
             {

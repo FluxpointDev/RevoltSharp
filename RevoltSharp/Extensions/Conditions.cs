@@ -125,12 +125,12 @@ public static class Conditions
             throw new RevoltArgumentException($"Message id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
     }
 
-    public static void AttachmentIdLength(string id, string request)
+    public static void AttachmentIdLength(string id, string request, bool skipLength = false)
     {
         if (string.IsNullOrEmpty(id) || id.Length < 1)
-            throw new RevoltArgumentException($"Attachment id can't be empty for the {request} request.");
+            throw new RevoltArgumentException($"Attachment id/file can't be empty for the {request} request.");
 
-        if (id.Length > Const.All_MaxIdLength)
+        if (!skipLength && id.Length > Const.All_MaxIdLength)
             throw new RevoltArgumentException($"Attachment id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
     }
 
