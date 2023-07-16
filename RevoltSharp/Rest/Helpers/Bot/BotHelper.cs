@@ -32,6 +32,9 @@ public static class BotHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<SavedMessagesChannel?> GetOrCreateSavedMessageChannelAsync(this RevoltRestClient rest)
     {
+        if (rest.Client.SavedMessagesChannel != null)
+            return rest.Client.SavedMessagesChannel;
+
         ChannelJson SC = await rest.GetAsync<ChannelJson>("/users/" + rest.Client.CurrentUser.Id + "/dm");
         if (SC == null)
             return null;
@@ -40,6 +43,8 @@ public static class BotHelper
 
     public static async Task<PublicBot?> GetPublicBotAsync(this RevoltRestClient rest, string id)
     {
+        Conditions.UserIdLength(id, nameof(GetPublicBotAsync));
+
         PublicBotJson? Bot = await rest.GetAsync<PublicBotJson>($"/bots/{id}/invite");
         if (Bot == null)
             return null;
