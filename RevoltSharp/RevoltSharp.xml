@@ -2464,7 +2464,7 @@
             You need <see cref="F:RevoltSharp.ServerPermission.ManageCustomisation" /> and has a max count of 100 per-server.
             </remarks>
             <param name="rest"></param>
-            <param name="attachmentId">Uploaded file attachment from rest UploadFileAsync</param>
+            <param name="attachmentIdOrFile">Uploaded file attachment from rest UploadFileAsync</param>
             <param name="serverId">Server id</param>
             <param name="name">Name of emoji</param>
             <param name="nsfw">Is the emoji nsfw</param>
@@ -3002,7 +3002,7 @@
             Set the bot's profile background with this image.
             </summary>
         </member>
-        <member name="F:RevoltSharp.Rest.UploadFileType.Emojis">
+        <member name="F:RevoltSharp.Rest.UploadFileType.Emoji">
             <summary>
             Create a server emoji with this image.
             </summary>
