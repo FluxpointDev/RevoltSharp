@@ -626,6 +626,14 @@
             The permission require for the error <see cref="F:RevoltSharp.RevoltErrorType.MissingPermission"/> or <see cref="F:RevoltSharp.RevoltErrorType.MissingUserPermission"/>
             </summary>
         </member>
+        <member name="T:RevoltSharp.RevoltPermissionException">
+            <summary>
+            Custom exception for the Revolt rest client for permission issues.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltPermissionException.Permission">
+            <inheritdoc cref="P:RevoltSharp.RevoltRestException.Permission"/>
+        </member>
         <member name="T:RevoltSharp.RevoltArgumentException">
             <summary>
             Custom exception for the Revolt client when user enters a missing or wrong argument.
@@ -1992,6 +2000,33 @@
             Spec: https://github.com/ulid/spec
             </summary>
         </member>
+        <member name="P:RevoltSharp.Ulid.Time">
+            <summary>
+            Date and time of the created object.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.Ulid.Parse(System.String)">
+            <summary>
+            Parse a Revolt id to Ulid class.
+            </summary>
+            <param name="base32"></param>
+            <returns><see cref="T:RevoltSharp.Ulid"/></returns>
+        </member>
+        <member name="M:RevoltSharp.Ulid.TryCheck(System.String)">
+            <summary>
+            Check if the Revolt id is valid.
+            </summary>
+            <param name="base32"></param>
+            <returns><see langword="bool"/></returns>
+        </member>
+        <member name="M:RevoltSharp.Ulid.TryParse(System.String,RevoltSharp.Ulid@)">
+            <summary>
+            Try parse a Revolt id to Ulid class.
+            </summary>
+            <param name="base32"></param>
+            <param name="ulid"></param>
+            <returns><see langword="bool"/></returns>
+        </member>
         <member name="M:RevoltSharp.DisableConsoleQuickEdit.Go">
             <summary>
             Fix the console from freezing the bot due to checking for readinput in the console
@@ -2295,6 +2330,9 @@
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
         <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Channel,System.Int32,System.Boolean,System.String,System.String)">
+            <inheritdoc cref="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,System.Boolean,System.String,System.String,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,System.Boolean,System.String,System.String,System.String)">
             <summary>
             Get a list of messages from the channel up to 100.
             </summary>
@@ -2425,6 +2463,38 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
+        <member name="T:RevoltSharp.WebhookHelper">
+            <summary>
+            Revolt http/rest methods for webhooks.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.WebhookHelper.GetWebhooksAsync(RevoltSharp.GroupChannel)">
+            <inheritdoc cref="M:RevoltSharp.WebhookHelper.GetWebhooksAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.WebhookHelper.GetWebhooksAsync(RevoltSharp.TextChannel)">
+            <inheritdoc cref="M:RevoltSharp.WebhookHelper.GetWebhooksAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.WebhookHelper.GetWebhooksAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
+            <summary>
+            Get all webhooks for this channel.
+            </summary>
+            <returns>List of <see cref="T:RevoltSharp.Webhook"/></returns>
+        </member>
+        <member name="M:RevoltSharp.WebhookHelper.CreateWebhookAsync(RevoltSharp.GroupChannel,System.String,System.String)">
+            <inheritdoc cref="M:RevoltSharp.WebhookHelper.CreateWebhookAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.WebhookHelper.CreateWebhookAsync(RevoltSharp.TextChannel,System.String,System.String)">
+            <inheritdoc cref="M:RevoltSharp.WebhookHelper.CreateWebhookAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.WebhookHelper.CreateWebhookAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String)">
+            <summary>
+            Create a webhook for the channel.
+            </summary>
+            <returns><see cref="T:RevoltSharp.Webhook"/></returns>
+            <exception cref="T:RevoltSharp.RevoltArgumentException" />
+            <exception cref="T:RevoltSharp.RevoltRestException" />
+            <exception cref="T:RevoltSharp.RevoltPermissionException" />
+        </member>
         <member name="T:RevoltSharp.EmojiHelper">
             <summary>
             Revolt http/rest methods for emojis.
@@ -2456,6 +2526,12 @@
         <member name="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Server,System.String,System.String,System.Boolean)">
             <inheritdoc cref="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String,System.Boolean)" />
         </member>
+        <member name="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Server,System.Byte[],System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String,System.Boolean)" />
+        </member>
         <member name="M:RevoltSharp.EmojiHelper.CreateEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String,System.Boolean)">
             <summary>
             Create a server <see cref="T:RevoltSharp.Emoji" />
@@ -2466,7 +2542,7 @@
             <param name="rest"></param>
             <param name="attachmentIdOrFile">Uploaded file attachment from rest UploadFileAsync</param>
             <param name="serverId">Server id</param>
-            <param name="name">Name of emoji</param>
+            <param name="emojiName">Name of emoji</param>
             <param name="nsfw">Is the emoji nsfw</param>
             <returns><see cref="T:RevoltSharp.Emoji" /></returns>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>

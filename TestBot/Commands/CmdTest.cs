@@ -3,7 +3,6 @@
 using Newtonsoft.Json;
 using RevoltSharp;
 using RevoltSharp.Commands;
-using RevoltSharp.Rest;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,14 +16,8 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
-    [Command("text")]
-    public async Task Text()
-    {
-        int Count = Context.Server.TextChannels.Count();
-    }
-
     [Command("permtest")]
-    public async Task PermTest(string user)
+    public async Task PermTest()
     {
         var User = Context.Server.CurrentUser;
         var Perms = User.Permissions;
@@ -96,12 +89,6 @@ public class CmdTest : ModuleBase
         {
             Console.WriteLine(ex);
         }
-    }
-
-    [Command("vcdata")]
-    public async Task VCData()
-    {
-        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(new InitilizeTransportRequest(), Formatting.Indented));
     }
 
     [Command("webhooks")]
@@ -405,12 +392,6 @@ public class CmdTest : ModuleBase
     }
 
 
-    [Command("upload")]
-    public async Task Upload()
-    {
-        FileAttachment Attach = await Context.Client.Rest.UploadFileAsync("/Downloads/blob-b61714e8-fc2e-49db-8ca1-d6366784ef64.png", UploadFileType.Attachment);
-
-    }
 
     [Command("chan")]
     public async Task Channel()
@@ -562,7 +543,7 @@ public class CmdTest : ModuleBase
     public async Task FullTestServer()
     {
 
-        Server Server = Context.Client.GetServer("01G2RNRDXXEZP3WEHQZEY4GE79");
+        //Server Server = Context.Client.GetServer("01G2RNRDXXEZP3WEHQZEY4GE79");
         UserMessage MSG = await Context.Channel.SendMessageAsync("Hi", new Embed[]
         {
         new EmbedBuilder

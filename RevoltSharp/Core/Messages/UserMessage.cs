@@ -12,20 +12,44 @@ public class UserMessage : Message
 {
     //public string? Nonce { get; internal set; }
 
+    /// <summary>
+    /// Content of the message.
+    /// </summary>
     public string? Content { get; internal set; }
 
+    /// <summary>
+    /// File attachments for the message.
+    /// </summary>
     public IReadOnlyList<Attachment> Attachments { get; internal set; }
 
+    /// <summary>
+    /// Mentions in this message.
+    /// </summary>
     public IReadOnlyList<string> Mentions { get; internal set; }
 
+    /// <summary>
+    /// Replies in this message.
+    /// </summary>
     public IReadOnlyList<string> Replies { get; internal set; }
 
+    /// <summary>
+    /// The date of the edited message or <see langword="null" />
+    /// </summary>
     public DateTimeOffset? EditedAt { get; internal set; }
 
+    /// <summary>
+    /// Embeds in this message.
+    /// </summary>
     public IReadOnlyList<MessageEmbed> Embeds { get; internal set; }
 
+    /// <summary>
+    /// Reactions on this message.
+    /// </summary>
     public IReadOnlyDictionary<Emoji, User[]> Reactions { get; internal set; }
 
+    /// <summary>
+    /// Masquerade options for this message.
+    /// </summary>
     public MessageMasquerade? Masquerade { get; internal set; }
 
     //public MessageWebhook? Webhook { get; internal set; }
@@ -67,6 +91,6 @@ public class UserMessage : Message
     /// <returns> User message </returns>
     public override string ToString()
     {
-        return "User message";
+        return Content ?? "";
     }
 }

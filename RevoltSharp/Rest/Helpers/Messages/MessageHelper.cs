@@ -136,6 +136,10 @@ public static class MessageHelper
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies).ConfigureAwait(false);
     }
 
+    /// <inheritdoc cref="GetMessagesAsync(RevoltRestClient, string, int, bool, string, string, string)" />
+    public static Task<IReadOnlyCollection<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
+        => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
+
     /// <summary>
     /// Get a list of messages from the channel up to 100.
     /// </summary>
@@ -144,9 +148,6 @@ public static class MessageHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<IReadOnlyCollection<Message>> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
-        => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
-
     public static async Task<IReadOnlyCollection<Message>> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
     {
         Conditions.ChannelIdLength(channelId, nameof(GetMessagesAsync));

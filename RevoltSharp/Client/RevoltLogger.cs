@@ -3,8 +3,7 @@ using System.Net.Http;
 
 namespace RevoltSharp;
 
-
-public class RevoltLogger
+internal class RevoltLogger
 {
     private static readonly string Reset = "\u001b[39m";
 

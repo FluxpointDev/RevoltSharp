@@ -2,11 +2,14 @@
 
 
 /// <summary>
-/// System messages sent by Revolt for information/changes
+/// System messages sent by Revolt for information/changes.
 /// </summary>
 /// <typeparam name="Type"></typeparam>
 public class SystemMessage<Type> : Message where Type : SystemType
 {
+    /// <summary>
+    /// The content data of this system message.
+    /// </summary>
     public Type Content { get; internal set; }
     internal SystemMessage(RevoltClient client, MessageJson model, Type type)
         : base(client, model)

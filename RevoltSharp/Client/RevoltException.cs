@@ -40,6 +40,9 @@ public class RevoltRestException : RevoltException
     public string? Permission { get; internal set; }
 }
 
+/// <summary>
+/// Custom exception for the Revolt rest client for permission issues.
+/// </summary>
 public class RevoltPermissionException : RevoltRestException
 {
     internal RevoltPermissionException(string permission, int code, bool userPerm) : base(
@@ -49,6 +52,7 @@ public class RevoltPermissionException : RevoltRestException
         base.Permission = permission;
     }
 
+    /// <inheritdoc cref="RevoltRestException.Permission"/>
     public new string Permission => base.Permission!;
 }
 

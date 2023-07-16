@@ -123,7 +123,7 @@ public class ServerMember : Entity
         if (channel.Server.OwnerId == Id)
             return new ChannelPermissions(channel.Server, ulong.MaxValue, 0);
 
-        ulong resolvedPermissions = channel.Server.DefaultPermissions.RawServer;
+        ulong resolvedPermissions = channel.Server.DefaultPermissions.Raw;
 
         resolvedPermissions = (resolvedPermissions & ~channel.DefaultPermissions.RawDenied) | channel.DefaultPermissions.RawAllowed;
 

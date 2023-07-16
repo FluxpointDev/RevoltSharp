@@ -60,9 +60,11 @@ public static class EmojiHelper
     public static Task<Emoji> CreateEmojiAsync(this Server server, string attachmentIdOrFile, string emojiName, bool nsfw = false)
         => CreateEmojiAsync(server.Client.Rest, server.Id, attachmentIdOrFile, emojiName, nsfw);
 
+    /// <inheritdoc cref="CreateEmojiAsync(RevoltRestClient, string, string, string, bool)" />
     public static Task<Emoji> CreateEmojiAsync(this Server server, byte[] bytes, string fileName, string emojiName, bool nsfw = false)
         => CreateEmojiAsync(server.Client.Rest, server.Id, bytes, fileName, emojiName, nsfw);
 
+    /// <inheritdoc cref="CreateEmojiAsync(RevoltRestClient, string, string, string, bool)" />
     public static async Task<Emoji> CreateEmojiAsync(this RevoltRestClient rest, string serverId, byte[] bytes, string fileName, string emojiName, bool nsfw = false)
     {
         FileAttachment File = await rest.UploadFileAsync(bytes, fileName, UploadFileType.Emoji);
@@ -78,7 +80,7 @@ public static class EmojiHelper
     /// <param name="rest"></param>
     /// <param name="attachmentIdOrFile">Uploaded file attachment from rest UploadFileAsync</param>
     /// <param name="serverId">Server id</param>
-    /// <param name="name">Name of emoji</param>
+    /// <param name="emojiName">Name of emoji</param>
     /// <param name="nsfw">Is the emoji nsfw</param>
     /// <returns><see cref="Emoji" /></returns>
     /// <exception cref="RevoltArgumentException"></exception>

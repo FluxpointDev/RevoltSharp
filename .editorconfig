@@ -156,4 +156,4 @@ dotnet_style_qualification_for_event = false:silent
 dotnet_diagnostic.CA1024.severity = suggestion
 
 # Disable xml comments warning
-dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CS1591.severity = warning

@@ -10,7 +10,7 @@ namespace TestBot;
 
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
         Start().GetAwaiter().GetResult();
     }
@@ -41,7 +41,7 @@ class Program
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.StartAsync();
-        new EventTests(Client);
+        _ = new EventTests(Client);
         //await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));
 
         CommandHandler CommandHandler = new CommandHandler(Client);

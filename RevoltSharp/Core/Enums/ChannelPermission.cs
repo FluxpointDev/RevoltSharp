@@ -4,7 +4,7 @@ namespace RevoltSharp;
 
 
 /// <summary>
-/// List of channel permissions
+/// List of channel permissions.
 /// </summary>
 [Flags]
 public enum ChannelPermission : ulong

@@ -10,7 +10,7 @@ namespace RevoltSharp;
 /// Spec: https://github.com/ulid/spec
 /// </summary>
 [StructLayout(LayoutKind.Explicit, Size = 16)]
-public partial struct Ulid
+public readonly partial struct Ulid
 {
     // https://en.wikipedia.org/wiki/Base32
     static readonly byte[] CharToBase32 = new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255, 255, 255, 255, 255, 255, 255, 10, 11, 12, 13, 14, 15, 16, 17, 255, 18, 19, 255, 20, 21, 255, 22, 23, 24, 25, 26, 255, 27, 28, 29, 30, 31, 255, 255, 255, 255, 255, 255, 10, 11, 12, 13, 14, 15, 16, 17, 255, 18, 19, 255, 20, 21, 255, 22, 23, 24, 25, 26, 255, 27, 28, 29, 30, 31 };
@@ -25,6 +25,9 @@ public partial struct Ulid
     [FieldOffset(4)] readonly byte timestamp4;
     [FieldOffset(5)] readonly byte timestamp5;
 
+    /// <summary>
+    /// Date and time of the created object.
+    /// </summary>
     public DateTimeOffset Time
     {
         get
@@ -55,20 +58,39 @@ public partial struct Ulid
 
     }
 
-
-    // Factory
+    /// <summary>
+    /// Parse a Revolt id to Ulid class.
+    /// </summary>
+    /// <param name="base32"></param>
+    /// <returns><see cref="Ulid"/></returns>
     public static Ulid Parse(string base32)
     {
         return Parse(base32.AsSpan());
     }
 
-    public static Ulid Parse(ReadOnlySpan<char> base32)
+    internal static Ulid Parse(ReadOnlySpan<char> base32)
     {
         if (base32.Length != 26)
             throw new ArgumentException("invalid base32 length, length:" + base32.Length);
         return new Ulid(base32);
     }
 
+    /// <summary>
+    /// Check if the Revolt id is valid.
+    /// </summary>
+    /// <param name="base32"></param>
+    /// <returns><see langword="bool"/></returns>
+    public static bool TryCheck(string base32)
+    {
+        return Ulid.TryParse(base32, out _);
+    }
+
+    /// <summary>
+    /// Try parse a Revolt id to Ulid class.
+    /// </summary>
+    /// <param name="base32"></param>
+    /// <param name="ulid"></param>
+    /// <returns><see langword="bool"/></returns>
     public static bool TryParse(string base32, out Ulid ulid)
     {
         return TryParse(base32.AsSpan(), out ulid);
