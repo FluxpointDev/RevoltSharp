@@ -187,7 +187,7 @@ public class RevoltRestClient
             Client.Logger.LogRestMessage(Client, Req, HttpMethod.Post, "upload: " + GetUploadType(type));
 
             if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.DeserializerSettings));
         }
 
         if (!Req.IsSuccessStatusCode)
@@ -279,7 +279,7 @@ public class RevoltRestClient
             Client.Logger.LogRestMessage(Client, Req, method, endpoint);
 
             if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.DeserializerSettings));
         }
 
 
@@ -362,7 +362,7 @@ public class RevoltRestClient
             Client.Logger.LogRestMessage(Client, Req, method, endpoint);
 
             if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.SerializerSettings));
+                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.DeserializerSettings));
         }
 
 
@@ -417,7 +417,7 @@ public class RevoltRestClient
             }
 
             if (Response != null && Client.Config.Debug.LogRestResponseJson)
-                Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.SerializerSettings));
+                Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.DeserializerSettings));
         }
 #pragma warning disable CS8603 // Possible null reference return.
         return Response;

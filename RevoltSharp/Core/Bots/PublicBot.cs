@@ -12,9 +12,9 @@ public class PublicBot : CreatedEntity
 
     public string Username { get; internal set; }
 
-    public string AvatarId { get; internal set; }
+    public string? AvatarId { get; internal set; }
 
-    public string Description { get; internal set; }
+    public string? Description { get; internal set; }
 
     /// <summary> Returns a string that represents the current object.</summary>
     /// <returns> Bot username </returns>
