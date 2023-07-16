@@ -239,6 +239,8 @@ public class RevoltRestClient
                 return "banners";
             case UploadFileType.Icon:
                 return "icons";
+            case UploadFileType.Emojis:
+                return "emojis";
             case UploadFileType.Attachment:
                 break;
         }
@@ -469,7 +471,11 @@ public enum UploadFileType
     /// <summary>
     /// Set the bot's profile background with this image.
     /// </summary>
-    Background
+    Background,
+    /// <summary>
+    /// Create a server emoji with this image.
+    /// </summary>
+    Emojis
 }
 
 /// <summary>

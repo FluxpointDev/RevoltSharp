@@ -3002,6 +3002,11 @@
             Set the bot's profile background with this image.
             </summary>
         </member>
+        <member name="F:RevoltSharp.Rest.UploadFileType.Emojis">
+            <summary>
+            Create a server emoji with this image.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.Rest.RequestType">
             <summary>
             The request method type to use for sending requests to the Revolt instance API.
