@@ -129,6 +129,5 @@ public class RevoltColor
             }
             catch { }
         }
-        else throw new ArgumentException("Value cannot be null or empty.", nameof(hex));
     }
 }

@@ -926,12 +926,123 @@
         </member>
         <member name="T:RevoltSharp.ChannelPermission">
             <summary>
-            List of channel permissions
+            List of channel permissions.
             </summary>
         </member>
         <member name="T:RevoltSharp.ChannelPermissions">
             <summary>
-            Permissions for the channel that members can or can't use
+            Permissions for the channel that the role can or can't use
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermissions.AllChannelPermissions">
+            <summary>
+            Get all channel permissions which can be given.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.Server">
+            <summary>
+            The server that these permissions are from.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.RawAllowed">
+            <summary>
+            Raw permissions number that has been allowed for the role.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.RawDenied">
+            <summary>
+            Raw permissions number that has been denied for the role.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.ChannelPermissions.Has(RevoltSharp.ChannelPermission)">
+            <summary>
+            Check if the channel role override has a specific channel permission. 
+            </summary>
+            <returns><see langword="bool" /></returns>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.ManageChannel">
+            <summary>
+            User can modify and delete this server channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.ManagePermissions">
+            <summary>
+            User can modify this channel's permissions.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.ViewChanel">
+            <summary>
+            User can view this channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.SendMessages">
+            <summary>
+            User can send messages in this channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.ManageMessages">
+            <summary>
+            User can delete messages in this channel from other users.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.ManageWebhooks">
+            <summary>
+            User can create, delete and modify this channel's webhooks.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.CreateInvites">
+            <summary>
+            User can create invites for this channel to invite other users to the server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.EmbedLinks">
+            <summary>
+            User can embed links in this channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.UploadFiles">
+            <summary>
+            User can upload files in this channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.Masquerade">
+            <summary>
+            User can send masquerade messages with a custom name and avatar in this channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.AddReactions">
+            <summary>
+            User can add reactions to messages in this channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.VoiceConnect">
+            <summary>
+            User can connect to this voice channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.VoiceSpeak">
+            <summary>
+            User can speak in this voice channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.VoiceVideo">
+            <summary>
+            User can use video in this voice channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.VoiceMuteMembers">
+            <summary>
+            User can mute other users in this voice channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.VoiceDeafenMembers">
+            <summary>
+            User can deafen other users in this voice channel.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ChannelPermissions.VoiceMoveMembers">
+            <summary>
+            User can move other users to this voice channel.
             </summary>
         </member>
         <member name="T:RevoltSharp.ChannelType">
@@ -946,8 +1057,175 @@
         </member>
         <member name="T:RevoltSharp.ServerPermissions">
             <summary>
-            Permissions for the server that members can or can't use
+            Permissions for the server that members can or can't use.
             </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermissions.AllServerPermissions">
+            <summary>
+            Get all server permissions which can be given.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.Server">
+            <summary>
+            The server that these permissions are from.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.Raw">
+            <summary>
+            Raw permissions number for the server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageChannels">
+            <summary>
+            User can modify and delete server channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageServer">
+            <summary>
+            User can modify server settings and invite bots.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManagePermissions">
+            <summary>
+            User can modify role permissions and channel permissions.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageRoles">
+            <summary>
+            User can create, delete and modify roles.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageCustomisation">
+            <summary>
+            User can create, delete and modify emojis.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.KickMembers">
+            <summary>
+            User can kick users from the server
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.BanMembers">
+            <summary>
+            User can ban users from the server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.TimeoutMembers">
+            <summary>
+            User can mute/timeout a user from chatting in the server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.AssignRoles">
+            <summary>
+            User can give other users a role.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ChangeNickname">
+            <summary>
+            User can change their server nickname.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageNicknames">
+            <summary>
+            User can modify other user's server nickname.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ChangeAvatar">
+            <summary>
+            User can change their server avatar.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageAvatars">
+            <summary>
+            User can reset another user's avatar.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ViewChannels">
+            <summary>
+            User can view channels in the server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.SendMessages">
+            <summary>
+            User can send messages in channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageMessages">
+            <summary>
+            User can delete messages in channels from other users.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.ManageWebhooks">
+            <summary>
+            User can create, delete and modify channel webhooks.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.CreateInvites">
+            <summary>
+            User can create invites that other people can use to join the server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.EmbedLinks">
+            <summary>
+            User can embed links in channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.UploadFiles">
+            <summary>
+            User can upload files in channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.Masquerade">
+            <summary>
+            User can send masquerade messages with a custom name and avatar.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.AddReactions">
+            <summary>
+            User can add reactions to messages in channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.VoiceConnect">
+            <summary>
+            User can connect to voice channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.VoiceSpeak">
+            <summary>
+            User can speak in voice channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.VoiceVideo">
+            <summary>
+            User can use video in voice channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.VoiceMuteMembers">
+            <summary>
+            User can mute other users in voice channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.VoiceDeafenMembers">
+            <summary>
+            User can deafen other users in voice channels.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.ServerPermissions.VoiceMoveMembers">
+            <summary>
+            User can move other users to different voice channels.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.ServerPermissions.Has(RevoltSharp.ServerPermission)">
+            <summary>
+            Check if the server role override has a specific server permission. 
+            </summary>
+            <returns><see langword="bool" /></returns>
+        </member>
+        <member name="M:RevoltSharp.ServerPermissions.Has(RevoltSharp.ChannelPermission)">
+            <summary>
+            Check if the server role override has a specific channel permission. 
+            </summary>
+            <returns><see langword="bool" /></returns>
         </member>
         <member name="T:RevoltSharp.Attachment">
             <summary>
@@ -1218,9 +1496,14 @@
         </member>
         <member name="T:RevoltSharp.SystemMessage`1">
             <summary>
-            System messages sent by Revolt for information/changes
+            System messages sent by Revolt for information/changes.
             </summary>
             <typeparam name="Type"></typeparam>
+        </member>
+        <member name="P:RevoltSharp.SystemMessage`1.Content">
+            <summary>
+            The content data of this system message.
+            </summary>
         </member>
         <member name="M:RevoltSharp.SystemMessage`1.ToString">
             <summary> Returns a string that represents the current object.</summary>
@@ -1291,9 +1574,149 @@
             User messages sent with text, author, attachments, embeds, replies, mentions and optional parent server.
             </summary>
         </member>
+        <member name="P:RevoltSharp.UserMessage.Content">
+            <summary>
+            Content of the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.Attachments">
+            <summary>
+            File attachments for the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.Mentions">
+            <summary>
+            Mentions in this message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.Replies">
+            <summary>
+            Replies in this message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.EditedAt">
+            <summary>
+            The date of the edited message or <see langword="null" />
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.Embeds">
+            <summary>
+            Embeds in this message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.Reactions">
+            <summary>
+            Reactions on this message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.Masquerade">
+            <summary>
+            Masquerade options for this message.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.UserMessage.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> User message </returns>
+        </member>
+        <member name="T:RevoltSharp.RevoltColor">
+            <summary>
+            Represents a color in Revolt, with Hex and RGB values accepted.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Red">
+            <summary>
+            Represents the color red, or #FF0000.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.DarkRed">
+            <summary>
+            Represents a darker shade of red, or #8B0000.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Orange">
+            <summary>
+            Represents the color orange, or #FFA500.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Yellow">
+            <summary>
+            Represents the color yellow, or #FFFF00.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Green">
+            <summary>
+            Represents the color green, or #00FF00.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.DarkGreen">
+            <summary>
+            Represents a darker shade of green, or #006400.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Cyan">
+            <summary>
+            Represents the color cyan, or #00FFFF.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Blue">
+            <summary>
+            Represents the color blue, or #0000FF.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.DarkBlue">
+            <summary>
+            Represents a darker shade of blue, or #00008B.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Purple">
+            <summary>
+            Represents the color purple, or #800080.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Pink">
+            <summary>
+            Represents the color pink, or #FFC0CB.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Black">
+            <summary>
+            Represents the color black, or #000000.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.White">
+            <summary>
+            Represents the color white, or #FFFFFF.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.Gray">
+            <summary>
+            Represents the color gray, or #808080.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltColor.NotQuiteBlack">
+            <summary>
+            Represents a color that's not quite black, or #36393F.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.RevoltColor.#ctor(System.Drawing.Color)">
+            <summary>
+            Creates a new RevoltColor from a <see cref="T:System.Drawing.Color"/>.
+            </summary>
+            <param name="color">The color to use</param>
+        </member>
+        <member name="M:RevoltSharp.RevoltColor.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a new RevoltColor from RGB values.
+            </summary>
+            <param name="r">The value of red (cannot be lower than 0 or higher than 255)</param>
+            <param name="g">The value of green (cannot be lower than 0 or higher than 255)</param>
+            <param name="b">The value of blue (cannot be lower than 0 or higher than 255)</param>
+        </member>
+        <member name="M:RevoltSharp.RevoltColor.#ctor(System.String)">
+            <summary>
+            Creates a new RevoltColor from a hex string.
+            </summary>
+            <param name="hex">The hex code to use</param>
         </member>
         <member name="T:RevoltSharp.Invite">
             <summary>
@@ -1559,6 +1982,86 @@
         <member name="P:RevoltSharp.RoleUpdatedProperties.CreatedAt">
             <summary>
             Date of when the role was created.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.UserUpdatedProperties">
+            <summary>
+            Properties that have been updated for the user.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.StatusText">
+            <summary>
+            Status text that has been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Avatar">
+            <summary>
+            Avatar that has been updated or <see langword="null" /> if removed.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Online">
+            <summary>
+            User online status has been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Privileged">
+            <summary>
+            User instance privileged has been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Username">
+            <summary>
+            Username that has been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Discriminator">
+            <summary>
+            Discriminator that has been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.DisplayName">
+            <summary>
+            Display name that has been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Badges">
+            <summary>
+            Badges that have been updated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserUpdatedProperties.Flags">
+            <summary>
+            User flags that have been updated.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AvatarSources.Default">
+            <summary>
+            Default Revolt avatar given to the user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AvatarSources.User">
+            <summary>
+            The user's own avatar set.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AvatarSources.Server">
+            <summary>
+            The user's own server avatar set.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AvatarSources.UserOrDefault">
+            <summary>
+            The user's own avatar or fallback to default avatar.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AvatarSources.ServerOrUser">
+            <summary>
+            The user's own server avatar or fallback to user avatar.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AvatarSources.Any">
+            <summary>
+            Use any of the server avatar, user avatar or default avatar.
             </summary>
         </member>
         <member name="P:RevoltSharp.SelfUser.Owner">
@@ -1930,9 +2433,108 @@
             Who you gonna call? Ghost busters!
             </summary>
         </member>
+        <member name="T:RevoltSharp.Webhook">
+            <summary>
+            Revolt channel webhook to use with 3rd party services and APIs.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Webhook.Name">
+            <summary>
+            Name of the webhook.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Webhook.Avatar">
+            <summary>
+            Avatar attachment of the webhook.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Webhook.ChannelId">
+            <summary>
+            Channel id of the webhook.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Webhook.Channel">
+            <summary>
+            Channel of the webhook.
+            </summary>
+            <remarks>
+            Will be <see langword="null" /> if using <see cref="F:RevoltSharp.ClientMode.Http"/>.
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.Webhook.Permissions">
+            <summary>
+            Permissions the webhook can use.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Webhook.Token">
+            <summary>
+            The token used when sending messages as the webhook.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.Webhook.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Webhook name </returns>
+        </member>
+        <member name="T:RevoltSharp.WebhookPermission">
+            <summary>
+            List of webhook permissions.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.WebhookPermission.SendMessages">
+            <summary>
+            Send messages permission.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.WebhookPermission.SendEmbeds">
+            <summary>
+            Send embeds permission.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.WebhookPermission.Masquerade">
+            <summary>
+            Masquerade messages permission.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.WebhookPermission.AddReactions">
+            <summary>
+            Add reactions to messages permission.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.WebhookPermissions">
+            <summary>
+            Permissions for the webhook that can be used.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.WebhookPermissions.Raw">
+            <summary>
+            Raw permissions number for the webhook.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.WebhookPermissions.SendMessages">
+            <summary>
+            The webhook can send messages.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.WebhookPermissions.SendEmbeds">
+            <summary>
+            The webhook can send embeds.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.WebhookPermissions.Masquerade">
+            <summary>
+            The webhook can modify the message author and avatar sending the message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.WebhookPermissions.AddReactions">
+            <summary>
+            The webhook can add reactions to its own messages.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.WebhookPermissions.Has(RevoltSharp.WebhookPermission)">
+            <summary>
+            Check if the webhook has a specific permission.
+            </summary>
+            <returns><see langword="bool" /></returns>
         </member>
         <member name="T:RevoltSharp.Downloadable`2">
             <summary>
