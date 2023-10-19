@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace RevoltSharp;
 
@@ -47,6 +48,8 @@ public class UserMessage : Message
     /// </summary>
     public IReadOnlyDictionary<Emoji, User[]> Reactions { get; internal set; }
 
+    public IReadOnlyDictionary<string, string[]> ReactionsRaw { get; internal set; }
+
     /// <summary>
     /// Masquerade options for this message.
     /// </summary>
@@ -70,20 +73,28 @@ public class UserMessage : Message
         if (!model.Reactions.HasValue)
         {
             Reactions = new Dictionary<Emoji, User[]>();
+            ReactionsRaw = new Dictionary<string, string[]>();
         }
         else
         {
             // GetUser usually shouldn't return null here. If it can, change this from User[] to User?[].
             Dictionary<Emoji, User[]> react = new Dictionary<Emoji, User[]>();
+            Dictionary<string, string[]> react_count = new Dictionary<string, string[]>();
             foreach (KeyValuePair<string, string[]> r in model.Reactions.Value)
             {
+                react_count.Add(r.Key.Trim(), r.Value);
+                var Emoji = Client.GetEmoji(r.Key);
+                if (Emoji == null)
+                    continue;
+
                 try
                 {
-                    react.Add(Client.GetEmoji(r.Key), r.Value.Select(x => Client.GetUser(x)).ToArray()!);
+                    react.Add(Emoji, r.Value.Select(x => Client.GetUser(x)).ToArray()!);
                 }
                 catch { }
             }
             Reactions = react;
+            ReactionsRaw = react_count;
         }
     }
 

@@ -16,6 +16,14 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("reactions")]
+    public async Task Reactions()
+    {
+        await Context.Server.GetEmojisAsync();
+        UserMessage Message = await Context.Channel.GetMessageAsync("01HD4XNFAFQDSXZHY69T408QHG") as UserMessage;
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Message.ReactionsRaw, Formatting.Indented));
+    }
+
     [Command("permtest")]
     public async Task PermTest()
     {

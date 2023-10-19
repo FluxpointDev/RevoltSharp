@@ -71,7 +71,12 @@ public class EventTests
         {
             Console.WriteLine("--- EVENT: Reaction added ---");
             Console.WriteLine("Message: " + message_cache.Id);
+
+
             var message = await message_cache.GetOrDownloadAsync();
+            UserMessage um = message as UserMessage;
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(message, Newtonsoft.Json.Formatting.Indented));
+
             Console.WriteLine($"MSG: " + message.Author.Tag);
 
             Console.WriteLine($"{emoji.Name} - {channel.Id}");
