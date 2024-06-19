@@ -20,7 +20,7 @@ class Program
     public static async Task Start()
     {
         // Yes ik i can use json file blah blah :p
-        string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
+        string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/ConfigW.txt");
 
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
@@ -29,9 +29,9 @@ class Program
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = false,
-                LogRestResponseJson = true,
+                LogRestResponseJson = false,
                 LogRestRequest = false,
-                LogWebSocketFull = false,
+                LogWebSocketFull = true,
                 LogWebSocketReady = false,
                 LogWebSocketError = false,
                 LogWebSocketUnknownEvent = false

@@ -415,7 +415,10 @@ internal class RevoltSocketClient
                                     }
 
                                     server.ChannelIds.Add(chan.Id);
-                                    Client.InvokeChannelCreated((ServerChannel)chan);
+                                    if (chan.Type == ChannelType.Text)
+                                        Client.InvokeChannelCreated((TextChannel)chan);
+                                    else
+                                        Client.InvokeChannelCreated((VoiceChannel)chan);
                                 }
                                 break;
                             case ChannelType.Group:

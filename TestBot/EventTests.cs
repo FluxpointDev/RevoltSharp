@@ -165,11 +165,13 @@ public class EventTests
         Console.WriteLine(message.Content.Value);
     }
 
-    private void Client_OnMessageRecieved(Message value)
+    private async void Client_OnMessageRecieved(Message value)
     {
         Console.WriteLine("--- EVENT: Message Recieved ---");
         if (value is UserMessage um)
-            Console.WriteLine(um.Content);
+        {
+            Console.WriteLine($"{um.Author.Username}: {um.Content}");
+        }
         else
             Console.WriteLine(value.Id);
     }

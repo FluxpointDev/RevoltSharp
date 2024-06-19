@@ -16,6 +16,12 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("leaveserver")]
+    public async Task LeaveServer()
+    {
+        Context.Client.GetServer("01GW2HFHF97JPTWEFWMX90QY6J").LeaveAsync();
+    }
+
     [Command("reactions")]
     public async Task Reactions()
     {
