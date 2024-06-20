@@ -138,9 +138,29 @@ public class ServerMember : Entity
     }
 
     #region UserProperties
+    /// <inheritdoc cref="User.CreatedAt"/>
+    [JsonIgnore]
+    public DateTimeOffset CreatedAt => User.CreatedAt;
+
     /// <inheritdoc cref="User.Username"/>
     [JsonIgnore]
     public string Username => User.Username;
+
+    /// <inheritdoc cref="User.Discriminator"/>
+    [JsonIgnore]
+    public string Discriminator => User.Discriminator;
+
+    /// <inheritdoc cref="User.DisplayName"/>
+    [JsonIgnore]
+    public string? DisplayName => User.DisplayName;
+
+    /// <inheritdoc cref="User.Tag"/>
+    [JsonIgnore]
+    public string Tag => User.Tag;
+
+    /// <inheritdoc cref="User.Mention"/>
+    [JsonIgnore]
+    public string Mention => User.Mention;
 
     /// <inheritdoc cref="User.Status"/>
     [JsonIgnore]
@@ -182,6 +202,10 @@ public class ServerMember : Entity
     [JsonIgnore]
     public bool IsBlocked => User.IsBlocked;
 
+    /// <inheritdoc cref="User.MutualDMs"/>
+    [JsonIgnore]
+    public IReadOnlyCollection<DMChannel> MutualDMs => User.MutualDMs;
+
     /// <inheritdoc cref="User.MutualServers"/>
     [JsonIgnore]
     public IReadOnlyCollection<Server> MutualServers => User.MutualServers;
@@ -189,6 +213,7 @@ public class ServerMember : Entity
     /// <inheritdoc cref="User.MutualGroups"/>
     [JsonIgnore]
     public IReadOnlyCollection<GroupChannel> MutualGroups => User.MutualGroups;
+
     #endregion
 
 

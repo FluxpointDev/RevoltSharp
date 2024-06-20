@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 using RevoltSharp.Rest;
-using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -147,6 +146,14 @@ public class RevoltClient : ClientEvents
     public SelfUser? CurrentUser { get; internal set; }
 
     /// <summary>
+    /// The current query info of the connected Revolt instance.
+    /// </summary>
+    /// <remarks>
+    /// This will be <see langword="null" /> of you do not use <see cref="StartAsync" />.
+    /// </remarks>
+    public Query? CurrentQuery { get; internal set; }
+
+    /// <summary>
     /// The current user/bot account's private notes message channel.
     /// </summary>
     /// <remarks>
@@ -169,31 +176,24 @@ public class RevoltClient : ClientEvents
             InvokeLog("Starting...", RevoltLogSeverity.Verbose);
 
             FirstConnection = false;
-            QueryRequest? Query = null;
             try
             {
-                Query = await Rest.GetAsync<QueryRequest>("/", null, true);
+                CurrentQuery = await Rest.GetQueryAsync(true);
             }
             catch (Exception ex)
             {
                 InvokeLogAndThrowException($"Client failed to connect to the Revolt API at {Config.ApiUrl}. {ex.Message}");
             }
 
-            if (!Uri.IsWellFormedUriString(Query.serverFeatures.imageServer.url, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(CurrentQuery.ImageServerUrl, UriKind.Absolute))
                 InvokeLogAndThrowException("Image server url is an invalid format.");
 
-            RevoltVersion = Query.revoltVersion;
-            Config.Debug.WebsocketUrl = Query.websocketUrl;
-            Config.Debug.UploadUrl = Query.serverFeatures.imageServer.url;
+            RevoltVersion = CurrentQuery.RevoltVersion;
+            Config.Debug.WebsocketUrl = CurrentQuery.WebsocketUrl;
+            Config.Debug.UploadUrl = CurrentQuery.ImageServerUrl;
 
-            if (!Config.Debug.UploadUrl.EndsWith('/'))
-                Config.Debug.UploadUrl += '/';
-
-            Config.Debug.VortextUrl = Query.serverFeatures.voiceServer.url;
-            Config.Debug.VortextWebsocketUrl = Query.serverFeatures.voiceServer.ws;
-
-            if (!Config.Debug.VortextUrl.EndsWith('/'))
-                Config.Debug.VortextUrl += '/';
+            Config.Debug.VoiceServerUrl = CurrentQuery.VoiceApiUrl;
+            Config.Debug.VoiceWebsocketUrl = CurrentQuery.VoiceWebsocketUrl;
 
             UserJson? SelfUser = null;
             try

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
-
 public class RevoltVoiceClient : IVoiceClient
 {
     public RevoltVoiceClient(RevoltClient client)
@@ -19,7 +18,7 @@ public class RevoltVoiceClient : IVoiceClient
     {
         Client.Logger.LogMessage(Client, "Connecting to Voice Server", RevoltLogSeverity.Info);
 
-        var Req = await Client.Rest.SendRequestAsync(Rest.RequestType.Get, Client.Config.Debug.VortextUrl);
+        var Req = await Client.Rest.SendRequestAsync(Rest.RequestType.Get, Client.Config.Debug.VoiceServerUrl);
         if (Req.IsSuccessStatusCode)
             Client.Logger.LogMessage(Client, "Connected to Voice Server!", RevoltLogSeverity.Info);
         else

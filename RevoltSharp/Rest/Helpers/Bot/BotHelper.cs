@@ -41,6 +41,13 @@ public static class BotHelper
         return Channel.Create(rest.Client, SC) as SavedMessagesChannel;
     }
 
+    /// <summary>
+    /// Get information about a public bot account.
+    /// </summary>
+    /// <returns>
+    /// <see cref="PublicBot"/> or <see langword="null" />
+    /// </returns>
+    /// <exception cref="RevoltRestException"></exception>
     public static async Task<PublicBot?> GetPublicBotAsync(this RevoltRestClient rest, string id)
     {
         Conditions.UserIdLength(id, nameof(GetPublicBotAsync));
@@ -50,5 +57,19 @@ public static class BotHelper
             return null;
 
         return new PublicBot(rest.Client, Bot);
+    }
+
+    /// <summary>
+    /// Get the current query info of the connected Revolt instance.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Query"/> or <see langword="null" />
+    /// </returns>
+    /// <exception cref="RevoltRestException"></exception>
+    public static async Task<Query?> GetQueryAsync(this RevoltRestClient rest, bool throwRequest = false)
+    {
+        QueryJson? Query = await rest.GetAsync<QueryJson>("/", null, throwRequest);
+
+        return new Query(Query);
     }
 }

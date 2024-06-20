@@ -428,6 +428,14 @@
             This will be <see langword="null" /> of you do not use <see cref="M:RevoltSharp.RevoltClient.StartAsync" />.
             </remarks>
         </member>
+        <member name="P:RevoltSharp.RevoltClient.CurrentQuery">
+            <summary>
+            The current query info of the connected Revolt instance.
+            </summary>
+            <remarks>
+            This will be <see langword="null" /> of you do not use <see cref="M:RevoltSharp.RevoltClient.StartAsync" />.
+            </remarks>
+        </member>
         <member name="P:RevoltSharp.RevoltClient.SavedMessagesChannel">
             <summary>
             The current user/bot account's private notes message channel.
@@ -1921,8 +1929,23 @@
             The member has these permissions in the server.
             </summary>
         </member>
+        <member name="P:RevoltSharp.ServerMember.CreatedAt">
+            <inheritdoc cref="P:RevoltSharp.User.CreatedAt"/>
+        </member>
         <member name="P:RevoltSharp.ServerMember.Username">
             <inheritdoc cref="P:RevoltSharp.User.Username"/>
+        </member>
+        <member name="P:RevoltSharp.ServerMember.Discriminator">
+            <inheritdoc cref="P:RevoltSharp.User.Discriminator"/>
+        </member>
+        <member name="P:RevoltSharp.ServerMember.DisplayName">
+            <inheritdoc cref="P:RevoltSharp.User.DisplayName"/>
+        </member>
+        <member name="P:RevoltSharp.ServerMember.Tag">
+            <inheritdoc cref="P:RevoltSharp.User.Tag"/>
+        </member>
+        <member name="P:RevoltSharp.ServerMember.Mention">
+            <inheritdoc cref="P:RevoltSharp.User.Mention"/>
         </member>
         <member name="P:RevoltSharp.ServerMember.Status">
             <inheritdoc cref="P:RevoltSharp.User.Status"/>
@@ -1953,6 +1976,9 @@
         </member>
         <member name="P:RevoltSharp.ServerMember.IsBlocked">
             <inheritdoc cref="P:RevoltSharp.User.IsBlocked"/>
+        </member>
+        <member name="P:RevoltSharp.ServerMember.MutualDMs">
+            <inheritdoc cref="P:RevoltSharp.User.MutualDMs"/>
         </member>
         <member name="P:RevoltSharp.ServerMember.MutualServers">
             <inheritdoc cref="P:RevoltSharp.User.MutualServers"/>
@@ -2110,6 +2136,11 @@
         <member name="P:RevoltSharp.User.Tag">
             <summary>
             Get the username and discriminator of the user.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.User.Mention">
+            <summary>
+            Get the mention format of the user.
             </summary>
         </member>
         <member name="P:RevoltSharp.User.Status">
@@ -2657,6 +2688,24 @@
             </returns>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
+        <member name="M:RevoltSharp.BotHelper.GetPublicBotAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
+            <summary>
+            Get information about a public bot account.
+            </summary>
+            <returns>
+            <see cref="T:RevoltSharp.PublicBot"/> or <see langword="null" />
+            </returns>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
+        <member name="M:RevoltSharp.BotHelper.GetQueryAsync(RevoltSharp.Rest.RevoltRestClient,System.Boolean)">
+            <summary>
+            Get the current query info of the connected Revolt instance.
+            </summary>
+            <returns>
+            <see cref="T:RevoltSharp.Query"/> or <see langword="null" />
+            </returns>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
         <member name="T:RevoltSharp.SelfUserHelper">
             <summary>
             Revolt http/rest methods for current user/bot account.
@@ -2671,6 +2720,18 @@
             </summary>
             <returns>
             Modified <see cref="T:RevoltSharp.SelfUser"/>
+            </returns>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
+        <member name="M:RevoltSharp.SelfUserHelper.GetPrivateChannelsAsync(RevoltSharp.SelfUser)">
+            <inheritdoc cref="M:RevoltSharp.SelfUserHelper.GetPrivateChannelsAsync(RevoltSharp.Rest.RevoltRestClient)"/>
+        </member>
+        <member name="M:RevoltSharp.SelfUserHelper.GetPrivateChannelsAsync(RevoltSharp.Rest.RevoltRestClient)">
+            <summary>
+            Get all private DM and Group channels the current user/bot account is in.
+            </summary>
+            <returns>
+            List of <see cref="T:RevoltSharp.Channel"/> that can be cast to <see cref="T:RevoltSharp.DMChannel"/> or <see cref="T:RevoltSharp.GroupChannel"/>
             </returns>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
@@ -2743,6 +2804,19 @@
             </summary>
             <returns>
             <see cref="T:RevoltSharp.User" />
+            </returns>
+            <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
+        <member name="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.User)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
+            <summary>
+            Get a list of mutual servers for the user or mutual friend users if using a user account.
+            </summary>
+            <returns>
+            <see cref="T:RevoltSharp.UserMutuals" /> or <see langword="null" />
             </returns>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>

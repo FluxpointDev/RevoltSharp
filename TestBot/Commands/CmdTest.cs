@@ -570,4 +570,12 @@ public class CmdTest : ModuleBase
         await MSG.RemoveReactionAsync(new Emoji("01GZYQS64JEW1KTX7K8PPGMVA5"), Context.Client.CurrentUser);
         await MSG.EditMessageAsync(new Option<string>("Content here"), new Option<Embed[]>(null));
     }
+
+    [Command("ping")]
+    public async Task Ping()
+    {
+        var Members = await Context.Server.GetMembersAsync();
+        var List = Members.Where(x => x.RolesIds.Any(x => x == "01GZYQ9GCE14824E1HM10E49FP")).Select(x => $"<@{x.Id}>");
+        await Context.Channel.SendMessageAsync($"**RevoltSharp Notice**\n{string.Join(" | ", List)}");
+    }
 }

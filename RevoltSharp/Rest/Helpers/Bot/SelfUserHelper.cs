@@ -1,4 +1,8 @@
 ﻿using RevoltSharp.Rest;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -36,5 +40,25 @@ public static class SelfUserHelper
 
         UserJson Json = await rest.SendRequestAsync<UserJson>(RequestType.Patch, $"users/@me", ModifySelfRequest.Create(avatar, statusText, statusType, profileBio, profileBackground));
         return new SelfUser(rest.Client, Json);
+    }
+
+    /// <inheritdoc cref="GetPrivateChannelsAsync(RevoltRestClient)"/>
+    public static Task<IReadOnlyCollection<Channel>?> GetPrivateChannelsAsync(SelfUser user)
+        => GetPrivateChannelsAsync(user.Client.Rest);
+
+    /// <summary>
+    /// Get all private DM and Group channels the current user/bot account is in.
+    /// </summary>
+    /// <returns>
+    /// List of <see cref="Channel"/> that can be cast to <see cref="DMChannel"/> or <see cref="GroupChannel"/>
+    /// </returns>
+    /// <exception cref="RevoltRestException"></exception>
+    public static async Task<IReadOnlyCollection<Channel>> GetPrivateChannelsAsync(this RevoltRestClient rest)
+    {
+        HashSet<ChannelJson>? Channels = await rest.GetAsync<HashSet<ChannelJson>>("users/dms");
+        if (Channels == null)
+            return Array.Empty<Channel>();
+
+        return Channels.Select(x => Channel.Create(rest.Client, x)).ToImmutableArray();
     }
 }

@@ -80,6 +80,12 @@ public class User : CreatedEntity
         => $"{Username}#{Discriminator}";
 
     /// <summary>
+    /// Get the mention format of the user.
+    /// </summary>
+    public string Mention
+        => $"<@{Id}>";
+
+    /// <summary>
     /// Status mode and text for the user.
     /// </summary>
     public UserStatus Status { get; internal set; }

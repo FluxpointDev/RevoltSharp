@@ -36,7 +36,7 @@ public class VoiceSocketClient
                 Console.WriteLine("RUN VOICE");
                 try
                 {
-                    Uri uri = new Uri($"{RevoltClient.Config.Debug.VortextWebsocketUrl}");
+                    Uri uri = new Uri($"{RevoltClient.Config.Debug.VoiceWebsocketUrl}");
 
                     if (!string.IsNullOrEmpty(RevoltClient.Config.CfClearance))
                     {

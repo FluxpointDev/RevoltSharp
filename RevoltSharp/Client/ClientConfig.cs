@@ -75,8 +75,8 @@ public class ClientDebugConfig
     /// </remarks>
     public string WebsocketUrl { get; internal set; } = "wss://revolt.chat";
 
-    public string VortextUrl { get; internal set; } = "https://vortex.revolt.chat/";
-    public string VortextWebsocketUrl { get; internal set; } = "wss://vortex.revolt.chat";
+    public string VoiceServerUrl { get; internal set; } = "https://vortex.revolt.chat/";
+    public string VoiceWebsocketUrl { get; internal set; } = "wss://vortex.revolt.chat";
 
     /// <summary>
     /// Log all websocket events that you get from Revolt.

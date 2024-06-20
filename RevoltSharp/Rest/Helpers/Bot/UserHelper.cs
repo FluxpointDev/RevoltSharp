@@ -128,4 +128,28 @@ public static class UserHelper
         UserJson Data = await rest.DeleteAsync<UserJson>($"users/{userId}/block");
         return new User(rest.Client, Data);
     }
+
+    /// <inheritdoc cref="GetMutualsAsync(RevoltRestClient, string)" />
+    public static Task<UserMutuals?> GetMutualsAsync(this User user)
+        => GetMutualsAsync(user.Client.Rest, user.Id);
+
+    /// <summary>
+    /// Get a list of mutual servers for the user or mutual friend users if using a user account.
+    /// </summary>
+    /// <returns>
+    /// <see cref="UserMutuals" /> or <see langword="null" />
+    /// </returns>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
+    public static async Task<UserMutuals?> GetMutualsAsync(this RevoltRestClient rest, string userId)
+    {
+        Conditions.UserIdLength(userId, nameof(GetMutualsAsync));
+        Conditions.NotSelf(rest, userId, nameof(GetMutualsAsync));
+
+        UserMutualsJson? Mutuals = await rest.GetAsync<UserMutualsJson>($"users/{userId}/mutual");
+        if (Mutuals == null)
+            return null;
+
+        return new UserMutuals(Mutuals);
+    }
 }
