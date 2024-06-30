@@ -223,9 +223,7 @@ public class ServerMember : Entity
         if (user == null && uModel != null)
             User = new User(Client, uModel);
 
-        MemberId = sModel.Id.User;
-        if (Ulid.TryParse(MemberId, out Ulid UID))
-            JoinedAt = UID.Time;
+       JoinedAt = sModel.JoinedAt;
 
         ServerId = sModel.Id.Server;
         Nickname = sModel.Nickname;

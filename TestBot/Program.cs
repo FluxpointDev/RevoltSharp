@@ -31,10 +31,10 @@ class Program
                 LogRestRequestJson = false,
                 LogRestResponseJson = false,
                 LogRestRequest = false,
-                LogWebSocketFull = true,
+                LogWebSocketFull = false,
                 LogWebSocketReady = false,
-                LogWebSocketError = false,
-                LogWebSocketUnknownEvent = false
+                LogWebSocketError = true,
+                LogWebSocketUnknownEvent = true
             },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });

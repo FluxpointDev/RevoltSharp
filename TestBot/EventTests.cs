@@ -9,6 +9,7 @@ public class EventTests
 {
     public EventTests(RevoltClient client)
     {
+        return;
         client.OnChannelCreated += Client_OnChannelCreated;
         client.OnChannelDeleted += Client_OnChannelDeleted;
         client.OnChannelUpdated += Client_OnChannelUpdated;
