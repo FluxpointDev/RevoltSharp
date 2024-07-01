@@ -29,7 +29,7 @@ class Program
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = false,
-                LogRestResponseJson = false,
+                LogRestResponseJson = true,
                 LogRestRequest = false,
                 LogWebSocketFull = false,
                 LogWebSocketReady = false,
@@ -50,7 +50,7 @@ class Program
     }
 
 
-    private static void Client_OnReady(SelfUser value)
+    public static void Client_OnReady(SelfUser value)
     {
         Console.WriteLine("Ready: " + value.Username);
     }

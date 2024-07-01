@@ -86,6 +86,12 @@ public class ClientEvents
     public delegate void UserPlatformRemovedEvent(string user_id, User user);
 
     /// <inheritdoc cref="RevoltEvent" />
+    public delegate void WebhookEvent(Webhook webhook);
+
+    /// <inheritdoc cref="RevoltEvent" />
+    public delegate void UserRelationshipUpdated(User user, UserRelationship relationship);
+
+    /// <inheritdoc cref="RevoltEvent" />
     public delegate void LogEvent(string message, RevoltLogSeverity severity);
 
     #region WebSocket Events
@@ -384,6 +390,33 @@ public class ClientEvents
     }
 
     #endregion
+
+    /// <summary>
+    /// A <see cref="Webhook" /> has been created in a channel.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="Webhook.Token" /> will always be empty.
+    /// </remarks>
+    public event WebhookEvent? OnWebhookCreated;
+
+    internal void InvokeWebhookCreated(Webhook webhook)
+    {
+        OnWebhookCreated?.Invoke(webhook);
+    }
+
+    public event RevoltEvent? OnClientLogout;
+
+    internal void InvokeLogout()
+    {
+        OnClientLogout?.Invoke();
+    }
+
+    public event UserRelationshipUpdated? OnUserRelationshipUpdated;
+
+    internal void InvokeUserRelationshipUpdated(User user, UserRelationship relationship)
+    {
+        OnUserRelationshipUpdated?.Invoke(user, relationship);
+    }
 
     #region Reaction Events
 

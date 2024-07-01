@@ -8,17 +8,17 @@ namespace RevoltSharp;
 internal class PartialRoleJson
 {
     [JsonProperty("name")]
-    public Optional<string> Name;
+    public Optional<string> Name { get; set; }
 
     [JsonProperty("permissions")]
-    public Optional<PermissionsJson> Permissions;
+    public Optional<PermissionsJson> Permissions { get; set; }
 
     [JsonProperty("hoist")]
-    public Optional<bool> Hoist;
+    public Optional<bool> Hoist { get; set; }
 
     [JsonProperty("rank")]
-    public Optional<BigInteger> Rank;
+    public Optional<BigInteger> Rank { get; set; }
 
     [JsonProperty("colour")]
-    public Optional<string> Colour;
+    public Optional<string> Colour { get; set; }
 }

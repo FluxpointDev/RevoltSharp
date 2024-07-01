@@ -6,8 +6,8 @@ namespace RevoltSharp;
 internal class MembersListJson
 {
     [JsonProperty("members")]
-    public ServerMemberJson[]? Members;
+    public ServerMemberJson[]? Members { get; set; }
 
     [JsonProperty("users")]
-    public UserJson[]? Users;
+    public UserJson[]? Users { get; set; }
 }

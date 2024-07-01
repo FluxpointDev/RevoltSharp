@@ -6,37 +6,37 @@ namespace RevoltSharp;
 internal class CreateInviteJson
 {
     [JsonProperty("_id")]
-    public string Code = null!;
+    public string Code { get; set; } = null!;
 
     [JsonProperty("creator")]
-    public string CreatorId = null!;
+    public string CreatorId { get; set; } = null!;
 
     [JsonProperty("channel")]
-    public string ChannelId = null!;
+    public string ChannelId { get; set; } = null!;
 
     [JsonProperty("type")]
-    public string ChannelType = null!;
+    public string ChannelType { get; set; } = null!;
 }
 internal class InviteJson
 {
     [JsonProperty("code")]
-    public string Code = null!;
+    public string Code { get; set; } = null!;
 
     [JsonProperty("channel_id")]
-    public string ChannelId = null!;
+    public string ChannelId { get; set; } = null!;
 
     [JsonProperty("channel_name")]
-    public string ChannelName = null!;
+    public string ChannelName { get; set; } = null!;
 
     [JsonProperty("channel_description")]
-    public string? ChannelDescription;
+    public string? ChannelDescription { get; set; }
 
     [JsonProperty("user_name")]
-    public string CreatorName = null!;
+    public string CreatorName { get; set; } = null!;
 
     [JsonProperty("user_avatar")]
-    public AttachmentJson? CreatorAvatar;
+    public AttachmentJson? CreatorAvatar { get; set; }
 
     [JsonProperty("type")]
-    public string? ChannelType;
+    public string? ChannelType { get; set; }
 }

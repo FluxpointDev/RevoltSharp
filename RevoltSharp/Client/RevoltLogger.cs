@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using RevoltSharp.Rest;
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -23,22 +25,25 @@ public class RevoltLogger
                 {
                     Console.WriteLine($"[{Title}] {LightMagenta}{msg.Message}\n" +
                         $"--- --- ---\n" +
-                        $"{FormatJsonPretty(str)}\n" +
+                        $"{FormatJsonPretty(str, AllowOptionals)}\n" +
                         $"--- --- ---{Reset}");
                 }
                 else
                 {
                     Console.WriteLine($"[{Title}] {LightMagenta}{msg.Message}\n" +
                         $"--- --- ---\n" +
-                        $"{FormatJsonPretty(msg.Data)}\n" +
+                        $"{FormatJsonPretty(msg.Data, AllowOptionals)}\n" +
                         $"--- --- ---{Reset}");
                 }
+
             }
 
         }, TaskCreationOptions.LongRunning);
     }
 
     private string Title { get; set; }
+
+    public bool AllowOptionals { get; set; }
 
     private RevoltLogSeverity LogMode { get; set; }
 
@@ -66,14 +71,30 @@ public class RevoltLogger
     #pragma warning restore IDE0051 // Remove unused private members
 
 
-    private static string FormatJsonPretty(string json)
+    private static string FormatJsonPretty(string json, bool allowOptionals)
     {
-        dynamic parsedJson = JsonConvert.DeserializeObject(json);
-        return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+        if (allowOptionals)
+        {
+            using (StringReader text = new StringReader(json))
+            using (JsonReader reader = new JsonTextReader(text))
+            {
+                dynamic parsedJson = RevoltClient.Deserializer.Deserialize<dynamic>(reader);
+                return RevoltRestClient.SerializeJsonPretty(parsedJson);
+            }
+        }
+        else
+        {
+            dynamic parsedJson = JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+        }
+        
     }
 
-    private static string FormatJsonPretty(object json)
+    private static string FormatJsonPretty(object json, bool allowOptionals)
     {
+        if (allowOptionals)
+            return RevoltRestClient.SerializeJsonPretty(json);
+
         return JsonConvert.SerializeObject(json, Formatting.Indented);
     }
 

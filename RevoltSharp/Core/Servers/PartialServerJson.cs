@@ -22,17 +22,17 @@ internal class PartialServerJson
     public Optional<ulong> DefaultPermissions { get; set; }
 
     [JsonProperty("analytics")]
-    public Optional<bool> Analytics;
+    public Optional<bool> Analytics { get; set; }
 
     [JsonProperty("discoverable")]
-    public Optional<bool> Discoverable;
+    public Optional<bool> Discoverable { get; set; }
 
     [JsonProperty("nsfw")]
-    public Optional<bool> Nsfw;
+    public Optional<bool> Nsfw { get; set; }
 
     [JsonProperty("owner")]
-    public Optional<string> Owner;
+    public Optional<string> Owner { get; set; }
 
     [JsonProperty("system_messages")]
-    public Optional<ServerSystemMessagesJson> SystemMessages;
+    public Optional<ServerSystemMessagesJson> SystemMessages { get; set; }
 }

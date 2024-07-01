@@ -8,16 +8,16 @@ namespace RevoltSharp;
 internal class PartialServerMemberJson
 {
     [JsonProperty("nickname")]
-    public Optional<string> Nickname;
+    public Optional<string> Nickname { get; set; }
 
     [JsonProperty("avatar")]
-    public Optional<AttachmentJson> Avatar;
+    public Optional<AttachmentJson> Avatar { get; set; }
 
     [JsonProperty("roles")]
-    public Optional<string[]> Roles;
+    public Optional<string[]> Roles { get; set; }
 
     [JsonProperty("timeout")]
-    public Optional<DateTime> Timeout;
+    public Optional<DateTime> Timeout { get; set; }
 
-    public bool ClearTimeout;
+    public bool ClearTimeout { get; set; }
 }

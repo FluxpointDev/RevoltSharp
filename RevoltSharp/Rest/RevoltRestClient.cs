@@ -464,20 +464,29 @@ public class RevoltRestClient
 #pragma warning restore CS8603 // Possible null reference return.
     }
 
-    internal string SerializeJson(object value)
+    internal static string SerializeJson(object value)
     {
         StringBuilder sb = new StringBuilder(256);
         using (TextWriter text = new StringWriter(sb, CultureInfo.InvariantCulture))
         using (JsonWriter writer = new JsonTextWriter(text))
-            Client.Serializer.Serialize(writer, value);
+            RevoltClient.Serializer.Serialize(writer, value);
         return sb.ToString();
     }
 
-    internal T? DeserializeJson<T>(MemoryStream jsonStream)
+    internal static string SerializeJsonPretty(object value)
+    {
+        StringBuilder sb = new StringBuilder(256);
+        using (TextWriter text = new StringWriter(sb, CultureInfo.InvariantCulture))
+        using (JsonWriter writer = new JsonTextWriter(text))
+            RevoltClient.SerializerPretty.Serialize(writer, value);
+        return sb.ToString();
+    }
+
+    internal static T? DeserializeJson<T>(MemoryStream jsonStream)
     {
         using (TextReader text = new StreamReader(jsonStream))
         using (JsonReader reader = new JsonTextReader(text))
-            return Client.Deserializer.Deserialize<T>(reader);
+            return RevoltClient.Deserializer.Deserialize<T>(reader);
     }
 }
 

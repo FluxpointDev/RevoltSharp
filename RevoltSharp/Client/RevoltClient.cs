@@ -47,6 +47,7 @@ public class RevoltClient : ClientEvents
         }
 
         Logger = new RevoltLogger("RevoltSharp", config.LogMode);
+        Logger.AllowOptionals = true;
 
         if (string.IsNullOrEmpty(token))
         {
@@ -55,19 +56,7 @@ public class RevoltClient : ClientEvents
         }
 
         Token = token;
-        
         UserBot = Config.UserBot;
-        Serializer = new JsonSerializer();
-        SerializerSettings = new JsonSerializerSettings { ContractResolver = new RevoltContractResolver() };
-        Serializer.ContractResolver = SerializerSettings.ContractResolver;
-
-        Deserializer = new JsonSerializer();
-        DeserializerSettings = new JsonSerializerSettings();
-
-        OptionalDeserializerConverter Converter = new OptionalDeserializerConverter();
-        DeserializerSettings.Converters.Add(Converter);
-        Deserializer.Converters.Add(Converter);
-
         Rest = new RevoltRestClient(this);
         Admin = new AdminClient(this);
         Mode = mode;
@@ -122,10 +111,25 @@ public class RevoltClient : ClientEvents
 
     internal bool UserBot { get; set; }
 
-    public JsonSerializer Serializer { get; internal set; }
-    public JsonSerializerSettings SerializerSettings { get; internal set; }
-    public JsonSerializer Deserializer { get; internal set; }
-    public JsonSerializerSettings DeserializerSettings { get; internal set; }
+    public static JsonSerializer Serializer { get; internal set; } = new JsonSerializer
+    {
+        ContractResolver = new RevoltContractResolver()
+    };
+
+    public static JsonSerializer SerializerPretty { get; internal set; } = new JsonSerializer
+    {
+        ContractResolver = new RevoltContractResolver(),
+        Formatting = Formatting.Indented
+    };
+
+    public static JsonSerializer Deserializer { get; internal set; } = CreateDes();
+
+    internal static JsonSerializer CreateDes()
+    {
+        JsonSerializer des = new JsonSerializer();
+        des.Converters.Add(new OptionalDeserializerConverter());
+        return des;
+    }
 
     /// <summary>
     /// Client config options for user-agent and debug options including self-host support.

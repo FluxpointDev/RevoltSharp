@@ -9,49 +9,49 @@ namespace RevoltSharp;
 internal class MessageJson
 {
     [JsonProperty("_id")]
-    public string MessageId = null!;
+    public string MessageId { get; set; } = null!;
 
     [JsonProperty("type")]
-    public string? MessageType;
+    public string? MessageType { get; set; }
 
     [JsonProperty("nonce")]
-    public string? Nonce;
+    public string? Nonce { get; set; }
 
     [JsonProperty("channel")]
-    public string ChannelId = null!;
+    public string ChannelId { get; set; } = null!;
 
     [JsonProperty("author")]
-    public string AuthorId = null!;
+    public string AuthorId { get; set; } = null!;
 
     [JsonProperty("content")]
-    public string? Content;
+    public string? Content { get; set; }
 
     [JsonProperty("attachments")]
-    public AttachmentJson[]? Attachments;
+    public AttachmentJson[]? Attachments { get; set; }
 
     [JsonProperty("mentions")]
-    public string[]? Mentions;
+    public string[]? Mentions { get; set; }
 
     [JsonProperty("replies")]
-    public string[]? Replies;
+    public string[]? Replies { get; set; }
 
     [JsonProperty("embeds")]
-    public EmbedJson[]? Embeds;
+    public EmbedJson[]? Embeds { get; set; }
 
     [JsonProperty("system")]
-    public MessageSystemJson? System;
+    public MessageSystemJson? System { get; set; }
 
     [JsonProperty("webhook")]
-    public MessageWebhookJson? Webhook;
+    public MessageWebhookJson? Webhook { get; set; }
 
     [JsonProperty("edited")]
-    public Optional<DateTime> EditedAt;
+    public Optional<DateTime> EditedAt { get; set; }
 
     [JsonProperty("reactions")]
-    public Optional<Dictionary<string, string[]>> Reactions;
+    public Optional<Dictionary<string, string[]>> Reactions { get; set; }
 
     [JsonProperty("masquerade")]
-    public MessageMasqueradeJson? Masquerade;
+    public MessageMasqueradeJson? Masquerade { get; set; }
 }
 internal class MessageMasqueradeJson
 {
@@ -67,23 +67,23 @@ internal class MessageMasqueradeJson
 internal class MessageSystemJson
 {
     [JsonProperty("type")]
-    public string? SystemType;
+    public string? SystemType { get; set; }
 
     [JsonProperty("id")]
-    public string? Id;
+    public string? Id { get; set; }
 
     [JsonProperty("by")]
-    public string? By;
+    public string? By { get; set; }
 
     [JsonProperty("name")]
-    public string? Name;
+    public string? Name { get; set; }
 
     [JsonProperty("from")]
-    public string? From;
+    public string? From { get; set; }
 
     [JsonProperty("to")]
-    public string? To;
+    public string? To { get; set; }
 
     [JsonProperty("content")]
-    public string? Content;
+    public string? Content { get; set; }
 }

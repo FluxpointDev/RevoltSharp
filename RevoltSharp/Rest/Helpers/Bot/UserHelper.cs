@@ -1,4 +1,5 @@
 ﻿using RevoltSharp.Rest;
+using System;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -85,7 +86,7 @@ public static class UserHelper
     }
 
     /// <inheritdoc cref="BlockUserAsync(RevoltRestClient, string)" />
-    public static Task<User> BlockAsync(this User user)
+    public static Task<User?> BlockAsync(this User user)
         => BlockUserAsync(user.Client.Rest, user.Id);
 
     /// <summary>
@@ -99,17 +100,22 @@ public static class UserHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<User> BlockUserAsync(this RevoltRestClient rest, string userId)
+    /// /// <returns>
+    /// <see cref="User" /> or <see langword="null" /> if the user is already blocked.
+    /// </returns>
+    public static async Task<User?> BlockUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdLength(userId, nameof(BlockUserAsync));
         Conditions.NotSelf(rest, userId, nameof(BlockUserAsync));
 
         UserJson Data = await rest.PutAsync<UserJson>($"users/{userId}/block");
+        if (string.IsNullOrEmpty(Data.Id))
+            return null;
         return new User(rest.Client, Data);
     }
 
     /// <inheritdoc cref="UnBlockUserAsync(RevoltRestClient, string)" />
-    public static Task UnBlockAsync(this User user)
+    public static Task<User?> UnBlockAsync(this User user)
         => UnBlockUserAsync(user.Client.Rest, user.Id);
 
     /// <summary>
@@ -120,12 +126,14 @@ public static class UserHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<User> UnBlockUserAsync(this RevoltRestClient rest, string userId)
+    public static async Task<User?> UnBlockUserAsync(this RevoltRestClient rest, string userId)
     {
         Conditions.UserIdLength(userId, nameof(UnBlockUserAsync));
         Conditions.NotSelf(rest, userId, nameof(UnBlockUserAsync));
 
         UserJson Data = await rest.DeleteAsync<UserJson>($"users/{userId}/block");
+        if (string.IsNullOrEmpty(Data.Id))
+            return null;
         return new User(rest.Client, Data);
     }
 

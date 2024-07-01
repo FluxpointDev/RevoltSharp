@@ -6,62 +6,62 @@ namespace RevoltSharp;
 internal class UserJson
 {
     [JsonProperty("_id")]
-    public string Id = null!;
+    public string Id { get; set; } = null!;
 
     [JsonProperty("username")]
-    public string Username = null!;
+    public string Username { get; set; } = null!;
 
     [JsonProperty("display_name")]
-    public string? DisplayName;
+    public string? DisplayName { get; set; }
 
     [JsonProperty("discriminator")]
-    public string Discriminator = null!;
+    public string Discriminator { get; set; } = null!;
 
     [JsonProperty("avatar")]
-    public AttachmentJson? Avatar;
+    public AttachmentJson? Avatar { get; set; }
 
     [JsonProperty("badges")]
-    public ulong Badges;
+    public ulong Badges { get; set; }
 
     [JsonProperty("status")]
-    public UserStatusJson? Status;
+    public UserStatusJson? Status { get; set; }
 
     [JsonProperty("profile")]
-    public UserProfileJson? Profile;
+    public UserProfileJson? Profile { get; set; }
 
     [JsonProperty("bot")]
-    public UserBotJson? Bot;
+    public UserBotJson? Bot { get; set; }
 
     [JsonProperty("relationship")]
-    public string? Relationship;
+    public string? Relationship { get; set; }
 
     [JsonProperty("online")]
-    public bool Online;
+    public bool Online { get; set; }
 
     [JsonProperty("privileged")]
-    public bool Privileged;
+    public bool Privileged { get; set; }
 
     [JsonProperty("flags")]
-    public ulong Flags;
+    public ulong Flags { get; set; }
 }
 internal class UserStatusJson
 {
     [JsonProperty("text")]
-    public string? Text;
+    public string? Text { get; set; }
 
     [JsonProperty("presence")]
-    public string? Presence;
+    public string? Presence { get; set; }
 }
 internal class UserBotJson
 {
     [JsonProperty("owner")]
-    public string Owner = null!;
+    public string Owner { get; set; } = null!;
 }
 internal class UserProfileJson
 {
     [JsonProperty("content")]
-    public string? Content;
+    public string? Content { get; set; }
 
     [JsonProperty("background")]
-    public AttachmentJson? Background;
+    public AttachmentJson? Background { get; set; }
 }

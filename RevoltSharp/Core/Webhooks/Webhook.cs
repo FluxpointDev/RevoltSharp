@@ -11,7 +11,7 @@ public class Webhook : CreatedEntity
         Avatar = Attachment.Create(Client, model.Avatar);
         ChannelId = model.ChannelId!;
         Permissions = new WebhookPermissions(model.Permissions ?? 0);
-        Token = model.Token!;
+        Token = model.Token;
     }
 
     /// <summary>
@@ -45,7 +45,12 @@ public class Webhook : CreatedEntity
     /// <summary>
     /// The token used when sending messages as the webhook.
     /// </summary>
-    public string Token { get; internal set; }
+    public string? Token { get; internal set; }
+
+    /// <summary>
+    /// If the webhook object is authorized to use the token for requests.
+    /// </summary>
+    public bool HasToken => !string.IsNullOrEmpty(Token);
 
     /// <summary> Returns a string that represents the current object.</summary>
     /// <returns> Webhook name </returns>

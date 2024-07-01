@@ -3,7 +3,7 @@
 
 internal class CategoryJson
 {
-    public string? id;
-    public string? title;
-    public string[]? channels;
+    public string? id { get; set; }
+    public string? title { get; set; }
+    public string[]? channels { get; set; }
 }

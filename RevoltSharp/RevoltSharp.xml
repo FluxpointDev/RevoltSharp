@@ -192,6 +192,12 @@
         <member name="T:RevoltSharp.ClientEvents.UserPlatformRemovedEvent">
             <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
         </member>
+        <member name="T:RevoltSharp.ClientEvents.WebhookEvent">
+            <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
+        </member>
+        <member name="T:RevoltSharp.ClientEvents.UserRelationshipUpdated">
+            <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
+        </member>
         <member name="T:RevoltSharp.ClientEvents.LogEvent">
             <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
         </member>
@@ -344,6 +350,14 @@
             </summary>
             <remarks>
             <see cref="T:RevoltSharp.User" /> may be null if not cached.
+            </remarks>
+        </member>
+        <member name="E:RevoltSharp.ClientEvents.OnWebhookCreated">
+            <summary>
+            A <see cref="T:RevoltSharp.Webhook" /> has been created in a channel.
+            </summary>
+            <remarks>
+            <see cref="P:RevoltSharp.Webhook.Token" /> will always be empty.
             </remarks>
         </member>
         <member name="E:RevoltSharp.ClientEvents.OnReactionAdded">
@@ -2526,6 +2540,11 @@
             The token used when sending messages as the webhook.
             </summary>
         </member>
+        <member name="P:RevoltSharp.Webhook.HasToken">
+            <summary>
+            If the webhook object is authorized to use the token for requests.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.Webhook.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Webhook name </returns>
@@ -2818,6 +2837,9 @@
             </returns>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+            /// <returns>
+            <see cref="T:RevoltSharp.User" /> or <see langword="null" /> if the user is already blocked.
+            </returns>
         </member>
         <member name="M:RevoltSharp.UserHelper.UnBlockAsync(RevoltSharp.User)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.UnBlockUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />

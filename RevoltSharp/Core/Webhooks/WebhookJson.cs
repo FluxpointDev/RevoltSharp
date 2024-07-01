@@ -6,20 +6,20 @@ namespace RevoltSharp;
 internal class WebhookJson
 {
     [JsonProperty("id")]
-    public string? Id;
+    public string? Id { get; set; }
 
     [JsonProperty("name")]
-    public string? Name;
+    public string? Name { get; set; }
 
     [JsonProperty("avatar")]
-    public AttachmentJson? Avatar;
+    public AttachmentJson? Avatar { get; set; }
 
-    [JsonProperty("channel")]
-    public string? ChannelId;
+    [JsonProperty("channel_id")]
+    public string? ChannelId { get; set; }
 
     [JsonProperty("permissions")]
-    public ulong? Permissions;
+    public ulong? Permissions { get; set; }
 
     [JsonProperty("token")]
-    public string? Token;
+    public string? Token { get; set; }
 }
