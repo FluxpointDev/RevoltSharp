@@ -16,13 +16,13 @@ public class RevoltVoiceClient : IVoiceClient
 
     public async Task StartAsync()
     {
-        Client.Logger.LogMessage(Client, "Connecting to Voice Server", RevoltLogSeverity.Info);
+        Client.Logger.LogMessage("Connecting to Voice Server", RevoltLogSeverity.Info);
 
         var Req = await Client.Rest.SendRequestAsync(Rest.RequestType.Get, Client.Config.Debug.VoiceServerUrl);
         if (Req.IsSuccessStatusCode)
-            Client.Logger.LogMessage(Client, "Connected to Voice Server!", RevoltLogSeverity.Info);
+            Client.Logger.LogMessage("Connected to Voice Server!", RevoltLogSeverity.Info);
         else
-            Client.Logger.LogMessage(Client, "Failed to connect to Voice Server", RevoltLogSeverity.Warn);
+            Client.Logger.LogMessage("Failed to connect to Voice Server", RevoltLogSeverity.Warn);
 
 
 
@@ -30,7 +30,7 @@ public class RevoltVoiceClient : IVoiceClient
 
     public async Task StopAsync()
     {
-        Client.Logger.LogMessage(Client, "Disconnecting from Voice Server", RevoltLogSeverity.Info);
+        Client.Logger.LogMessage("Disconnecting from Voice Server", RevoltLogSeverity.Info);
 
         foreach (VoiceState s in Channels.Values)
         {

@@ -44,10 +44,14 @@ internal class RevoltSocketClient
     internal async Task SetupWebsocket()
     {
         StopWebSocket = false;
+        
         while (!CancellationToken.IsCancellationRequested && !StopWebSocket)
         {
             using (WebSocket = new ClientWebSocket())
             {
+                if (Client.Config.WebSocketProxy != null)
+                    WebSocket.Options.Proxy = Client.Config.WebSocketProxy;
+
                 try
                 {
                     Uri uri = new Uri($"{Client.Config.Debug.WebsocketUrl}?format=json&version=1");
@@ -165,7 +169,7 @@ internal class RevoltSocketClient
                     case "ChannelStopTyping":
                         break;
                     default:
-                        Console.WriteLine("--- WebSocket Response Json ---\n" + FormatJsonPretty(json));
+                        Client.Logger.LogJson("WebSocket Response Json", json);
                         break;
                 }
 
@@ -178,22 +182,29 @@ internal class RevoltSocketClient
                     if (_firstConnected)
                     {
                         Client.InvokeConnected();
-                        Client.InvokeLog("WebSocket Connected!", RevoltLogSeverity.Verbose);
+                        Client.InvokeLog("WebSocket Connected!", RevoltLogSeverity.Debug);
                     }
                     else
-                        Client.InvokeLog("WebSocket Reconnected!", RevoltLogSeverity.Verbose);
+                        Client.InvokeLog("WebSocket Reconnected!", RevoltLogSeverity.Debug);
 
                     _firstConnected = false;
                     await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
 
-                    _ = Task.Run(async () =>
+                    //_ = Task.Run(async () =>
+                    //{
+                    //    while (!CancellationToken.IsCancellationRequested)
+                    //    {
+                    //        await Task.Delay(50000, CancellationToken);
+                    //        await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
+                    //    }
+                    //}, CancellationToken);
+                    break;
+                case "MessageAppend":
+                case "Ping":
                     {
-                        while (!CancellationToken.IsCancellationRequested)
-                        {
-                            await Task.Delay(50000, CancellationToken);
-                            await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
-                        }
-                    }, CancellationToken);
+                        HeartbeatRequest @event = JsonConvert.DeserializeObject<HeartbeatRequest>(json);
+                        await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest() { Data = @event.Data }), CancellationToken);
+                    }
                     break;
                 case "Pong":
                     {
@@ -212,8 +223,9 @@ internal class RevoltSocketClient
                 case "Error":
                     {
                         ErrorEventJson @event = JsonConvert.DeserializeObject<ErrorEventJson>(json);
+
                         if (Client.Config.Debug.LogWebSocketError)
-                            Console.WriteLine("--- WebSocket Error ---\n" + json);
+                            Client.Logger.LogJson("WebSocket Error", json);
 
                         if (@event.Error == RevoltErrorType.InvalidSession)
                         {
@@ -234,7 +246,7 @@ internal class RevoltSocketClient
                         {
                             ReadyEventJson @event = payload.ToObject<ReadyEventJson>(Client.Deserializer);
                             if (Client.Config.Debug.LogWebSocketReady)
-                                Console.WriteLine("--- WebSocket Ready ---\n" + FormatJsonPretty(json));
+                                Client.Logger.LogJson("WebSocket Ready", json);
 
                             UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
 
@@ -246,7 +258,8 @@ internal class RevoltSocketClient
 
                             if (SocketSelfUser == null)
                             {
-                                Client.InvokeLog("Fatal error, could not load bot user.\nWebSocket connection has been stopped.", RevoltLogSeverity.Error);
+                                Client.InvokeLog("Fatal error, could not load bot user.\n" +
+                                    "WebSocket connection has been stopped.", RevoltLogSeverity.Error);
                                 await Client.StopAsync();
                             }
 
@@ -283,7 +296,7 @@ internal class RevoltSocketClient
                                 if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
                                     s.InternalEmojis.TryAdd(m.Id, Emote);
                             }
-                            Client.InvokeLog("WebSocket Ready!", RevoltLogSeverity.Verbose);
+                            Client.InvokeLog("WebSocket Ready!", RevoltLogSeverity.Debug);
 
                             Client.InvokeReady(CurrentUser);
 
@@ -303,7 +316,8 @@ internal class RevoltSocketClient
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
-                            Client.InvokeWebSocketError(Client, new SocketError() { Message = "Fatal error, could not parse ready event.\nWebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
+                            Client.InvokeWebSocketError(Client, new SocketError() { Message = "Fatal error, could not parse ready event.\n" +
+                                "WebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
                             await Client.StopAsync();
                         }
                     }
@@ -311,8 +325,6 @@ internal class RevoltSocketClient
                 case "Message":
                     {
                         MessageEventJson @event = payload.ToObject<MessageEventJson>(Client.Deserializer);
-
-
 
                         if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
                         {
@@ -525,7 +537,7 @@ internal class RevoltSocketClient
 
                         if (@event.UserId == CurrentUser.Id)
                         {
-                            Client.InvokeLog("Left Group: " + GC.Name, RevoltLogSeverity.Verbose);
+                            Client.InvokeLog("Left Group: " + GC.Name, RevoltLogSeverity.Debug);
                             ChannelCache.TryRemove(@event.ChannelId, out Channel chan);
                             _ = Task.Run(() =>
                             {
@@ -665,7 +677,7 @@ internal class RevoltSocketClient
                             if (server == null)
                                 return;
 
-                            Client.InvokeLog("Joined Server: " + server.Name, RevoltLogSeverity.Verbose);
+                            Client.InvokeLog("Joined Server: " + server.Name, RevoltLogSeverity.Debug);
 
                             ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, CurrentUser);
                             server.AddMember(Member);
@@ -701,7 +713,7 @@ internal class RevoltSocketClient
                                 return;
                             }
 
-                            Client.InvokeLog("Left Server: " + server.Name, RevoltLogSeverity.Verbose);
+                            Client.InvokeLog("Left Server: " + server.Name, RevoltLogSeverity.Debug);
                             _ = Task.Run(() =>
                             {
                                 foreach (ServerMember m in server.InternalMembers.Values)
@@ -1038,7 +1050,7 @@ internal class RevoltSocketClient
                 default:
                     {
                         if (Client.Config.Debug.LogWebSocketUnknownEvent)
-                            Console.WriteLine("--- WebSocket Unknown Event ---\n" + FormatJsonPretty(json));
+                            Client.Logger.LogJson("WebSocket Unknown Event", json);
                     }
                     break;
             }
@@ -1049,10 +1061,6 @@ internal class RevoltSocketClient
         }
     }
 
-    private static string FormatJsonPretty(string json)
-    {
-        dynamic parsedJson = JsonConvert.DeserializeObject(json);
-        return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-    }
+    
 
 }

@@ -206,7 +206,7 @@ public static class MessageHelper
 
         if (msg.Type == MessageType.User && rest.Client.Mode == ClientMode.Http)
         {
-            rest.Client.InvokeLog("Http mode fetching ", RevoltLogSeverity.Verbose);
+            rest.Client.InvokeLog("Http mode fetching ", RevoltLogSeverity.Debug);
             msg.Author = await rest.GetUserAsync(msg.AuthorId);
         }
         else

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,31 +23,51 @@ public class RevoltRestClient
         Client = client;
 
         if (string.IsNullOrEmpty(Client.Config.ApiUrl))
+        {
+            Client.Logger.LogMessage("Client config ApiUrl can not be empty.", RevoltLogSeverity.Error);
             throw new RevoltException("Client config ApiUrl can not be empty.");
+        }
+            
 
         if (!Uri.IsWellFormedUriString(client.Config.ApiUrl, UriKind.Absolute))
+        {
+            Client.Logger.LogMessage("Client config ApiUrl is an invalid format.", RevoltLogSeverity.Error);
             throw new RevoltException("Client config ApiUrl is an invalid format.");
+        }
 
         if (!Client.Config.ApiUrl.EndsWith('/'))
             Client.Config.ApiUrl = Client.Config.ApiUrl + "/";
 
         if (string.IsNullOrEmpty(Client.Config.Debug.UploadUrl))
+        {
+            Client.Logger.LogMessage("Client config UploadUrl can not be empty.", RevoltLogSeverity.Error);
             throw new RevoltException("Client config UploadUrl can not be empty.");
+        }
+            
 
         if (!Uri.IsWellFormedUriString(client.Config.Debug.UploadUrl, UriKind.Absolute))
+        {
+            Client.Logger.LogMessage("Client config UploadUrl is an invalid format.", RevoltLogSeverity.Error);
             throw new RevoltException("Client config UploadUrl is an invalid format.");
+        }
 
         if (!Client.Config.Debug.UploadUrl.EndsWith('/'))
             Client.Config.Debug.UploadUrl = Client.Config.Debug.UploadUrl + "/";
 
-        HttpClient = new HttpClient()
+        var ClientHandler = new HttpClientHandler() { UseProxy = Client.Config.RestProxy != null };
+        ClientHandler.Proxy = Client.Config.RestProxy;
+
+        Http = new HttpClient(ClientHandler)
         {
             BaseAddress = new Uri(Client.Config.ApiUrl)
         };
-        HttpClient.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
-        HttpClient.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
-        HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        FileHttpClient = new HttpClient()
+        Http.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
+        Http.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
+        Http.DefaultRequestHeaders.Add("Accept", "application/json");
+
+        var FileHandler = new HttpClientHandler() { UseProxy = Client.Config.RestProxy != null };
+        FileHandler.Proxy = Client.Config.RestProxy;
+        FileHttpClient = new HttpClient(FileHandler)
         {
             BaseAddress = new Uri(Client.Config.Debug.UploadUrl)
         };
@@ -55,13 +76,13 @@ public class RevoltRestClient
         if (!string.IsNullOrEmpty(Client.Config.CfClearance))
         {
             string cookie = $"cf_clearance={Client.Config.CfClearance}";
-            HttpClient.DefaultRequestHeaders.Add("Cookie", cookie);
+            Http.DefaultRequestHeaders.Add("Cookie", cookie);
             FileHttpClient.DefaultRequestHeaders.Add("Cookie", cookie);
         }
     }
 
     internal RevoltClient Client { get; private set; }
-    internal HttpClient HttpClient;
+    internal HttpClient Http;
     internal HttpClient FileHttpClient;
 
     private static readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
@@ -180,16 +201,16 @@ public class RevoltRestClient
                 {
                     Content = MP
                 };
-                Req = await HttpClient.SendAsync(MesRetry);
+                Req = await Http.SendAsync(MesRetry);
             }
         }
 
         if (Client.Config.Debug.LogRestRequest)
         {
-            Client.Logger.LogRestMessage(Client, Req, HttpMethod.Post, "upload: " + GetUploadType(type));
+            Client.Logger.LogRestMessage(Req, HttpMethod.Post, "upload: " + GetUploadType(type));
 
-            if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.DeserializerSettings));
+            if (Client.Config.LogMode == RevoltLogSeverity.Debug)
+                Client.Logger.LogJson("Rest Send", Req);
         }
 
         if (!Req.IsSuccessStatusCode)
@@ -260,9 +281,9 @@ public class RevoltRestClient
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
             if (Client.Config.Debug.LogRestRequestJson)
-                Console.WriteLine("--- Rest Request Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, Client.SerializerSettings));
+                Client.Logger.LogJson("Rest Request", request);
         }
-        HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
+        HttpResponseMessage Req = await Http.SendAsync(Mes);
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
             RetryRequest Retry = null;
@@ -279,16 +300,16 @@ public class RevoltRestClient
                 HttpRequestMessage MesRetry = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
                 if (request != null)
                     MesRetry.Content = Mes.Content;
-                Req = await HttpClient.SendAsync(MesRetry);
+                Req = await Http.SendAsync(MesRetry);
             }
         }
 
         if (Client.Config.Debug.LogRestRequest)
         {
-            Client.Logger.LogRestMessage(Client, Req, method, endpoint);
+            Client.Logger.LogRestMessage(Req, method, endpoint);
 
-            if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.DeserializerSettings));
+            if (Client.Config.LogMode == RevoltLogSeverity.Debug)
+                Client.Logger.LogJson("Rest Send", Req);
         }
 
 
@@ -324,7 +345,7 @@ public class RevoltRestClient
         if (Req.IsSuccessStatusCode && Client.Config.Debug.LogRestResponseJson)
         {
             string Content = await Req.Content.ReadAsStringAsync();
-            Console.WriteLine("--- Rest Response ---\n" + Content);
+            Client.Logger.LogJson("Rest Request", Content);
         }
         return Req;
     }
@@ -341,9 +362,9 @@ public class RevoltRestClient
         {
             Mes.Content = new StringContent(SerializeJson(request), Encoding.UTF8, "application/json");
             if (Client.Config.Debug.LogRestRequestJson)
-                Console.WriteLine("--- Rest REQ Json ---\n" + JsonConvert.SerializeObject(request, Formatting.Indented, Client.SerializerSettings));
+                Client.Logger.LogJson("Rest Request", request);
         }
-        HttpResponseMessage Req = await HttpClient.SendAsync(Mes);
+        HttpResponseMessage Req = await Http.SendAsync(Mes);
 
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
@@ -364,17 +385,17 @@ public class RevoltRestClient
                 HttpRequestMessage MesRetry = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
                 if (request != null)
                     MesRetry.Content = Mes.Content;
-                Req = await HttpClient.SendAsync(MesRetry);
+                Req = await Http.SendAsync(MesRetry);
             }
 
         }
 
         if (Client.Config.Debug.LogRestRequest)
         {
-            Client.Logger.LogRestMessage(Client, Req, method, endpoint);
+            Client.Logger.LogRestMessage(Req, method, endpoint);
 
-            if (Client.Config.LogMode == RevoltLogSeverity.Verbose)
-                Console.WriteLine(JsonConvert.SerializeObject("--- Rest Request ---\n" + Req, Formatting.Indented, Client.DeserializerSettings));
+            if (Client.Config.LogMode == RevoltLogSeverity.Debug)
+                Client.Logger.LogJson("Rest Send", Req);
         }
 
 
@@ -402,7 +423,9 @@ public class RevoltRestClient
                 }
                 catch { }
             }
-            Client.Logger.LogRestMessage(Client, Req, method, endpoint);
+            if (Client.Config.Debug.LogRestRequest)
+                Client.Logger.LogRestMessage(Req, method, endpoint);
+
             if (Error != null)
             {
                 if (string.IsNullOrEmpty(Error.Permission))
@@ -434,7 +457,7 @@ public class RevoltRestClient
             }
 
             if (Response != null && Client.Config.Debug.LogRestResponseJson)
-                Console.WriteLine("--- Rest RS Json ---\n" + JsonConvert.SerializeObject(Response, Formatting.Indented, Client.DeserializerSettings));
+                Client.Logger.LogJson("Rest Response", Response);
         }
 #pragma warning disable CS8603 // Possible null reference return.
         return Response;

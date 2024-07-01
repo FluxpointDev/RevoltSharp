@@ -9,13 +9,10 @@
             Config options for the RevoltSharp lib.
             </summary>
         </member>
-        <member name="F:RevoltSharp.ClientConfig.UserAgent">
+        <member name="F:RevoltSharp.ClientConfig.ClientName">
             <summary>
-            The user agent used for REST requests and websockets.
+            Set your own custom client name to show in the user agent.
             </summary>
-            <remarks>
-            If null, a default user agent is used instead.
-            </remarks>
         </member>
         <member name="F:RevoltSharp.ClientConfig.ApiUrl">
             <summary>
@@ -393,6 +390,7 @@
             <param name="token">Bot token to connect with.</param>
             <param name="mode">Use http for http requests only with no websocket.</param>
             <param name="config">Optional config stuff for the bot and lib.</param>
+            <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
         </member>
         <member name="P:RevoltSharp.RevoltClient.Token">
             <summary>
@@ -647,14 +645,40 @@
             Custom exception for the Revolt client when user enters a missing or wrong argument.
             </summary>
         </member>
+        <member name="T:RevoltSharp.RevoltLogger">
+            <summary>
+            Special logger class with custom title and console colors.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.RevoltLogger.LogJson(System.String,System.Object)">
+            <summary>
+            Special json log message with json data that can be a json string or class/object
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.RevoltLogger.LogMessage(System.String,RevoltSharp.RevoltLogSeverity)">
+            <summary>
+            Log a message to the console with the severity color
+            <para>Info: White</para>
+            <para>Warn: Yellow</para>
+            <para>Error: Red</para>
+            <para>Debug: Grey</para>
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.RevoltLogger.LogRestMessage(System.Net.Http.HttpResponseMessage,System.Net.Http.HttpMethod,System.String)">
+            <summary>
+            Log a rest response to the console with the color
+            <para>Success: Green</para>
+            <para>Fail: Light Red</para>
+            </summary>
+        </member>
         <member name="T:RevoltSharp.RevoltLogSeverity">
             <summary>
             The severity of a log message raised by <see cref="E:RevoltSharp.RevoltClient.OnLog"/>.
             </summary>
         </member>
-        <member name="F:RevoltSharp.RevoltLogSeverity.Verbose">
+        <member name="F:RevoltSharp.RevoltLogSeverity.Debug">
             <summary>
-            Debug info message.
+            All messages including debug ones.
             </summary>
         </member>
         <member name="F:RevoltSharp.RevoltLogSeverity.Error">

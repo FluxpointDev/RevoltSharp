@@ -20,11 +20,11 @@ class Program
     public static async Task Start()
     {
         // Yes ik i can use json file blah blah :p
-        string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/ConfigW.txt");
+        string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
 
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
-            LogMode = RevoltLogSeverity.Warn,
+            LogMode = RevoltLogSeverity.Debug,
             //ApiUrl = "http://local.revolt.chat/api/",
             Debug = new ClientDebugConfig
             {

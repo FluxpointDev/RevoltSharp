@@ -31,14 +31,9 @@ public class RevoltClient : ClientEvents
     /// <param name="token">Bot token to connect with.</param>
     /// <param name="mode">Use http for http requests only with no websocket.</param>
     /// <param name="config">Optional config stuff for the bot and lib.</param>
+    /// <exception cref="RevoltArgumentException"></exception>
     public RevoltClient(string token, ClientMode mode, ClientConfig? config = null)
     {
-        Logger = new RevoltLogger();
-
-        if (string.IsNullOrEmpty(token))
-            throw new RevoltArgumentException("Client token is missing!");
-
-        Token = token;
         Config = config ?? new ClientConfig();
         ConfigSafetyChecks();
 
@@ -50,6 +45,17 @@ public class RevoltClient : ClientEvents
             }
             catch { }
         }
+
+        Logger = new RevoltLogger("RevoltSharp", config.LogMode);
+
+        if (string.IsNullOrEmpty(token))
+        {
+            Logger.LogMessage("Client token is missing!", RevoltLogSeverity.Error);
+            throw new RevoltArgumentException("Client token is missing!");
+        }
+
+        Token = token;
+        
         UserBot = Config.UserBot;
         Serializer = new JsonSerializer();
         SerializerSettings = new JsonSerializerSettings { ContractResolver = new RevoltContractResolver() };
@@ -72,7 +78,10 @@ public class RevoltClient : ClientEvents
     public void SetVoiceClient(IVoiceClient client)
     {
         if (client == null)
+        {
+            Logger.LogMessage("Voice client can't be empty.", RevoltLogSeverity.Error);
             throw new RevoltArgumentException("Voice client can't be empty.");
+        }
 
         VoiceClient = client;
     }
@@ -84,12 +93,15 @@ public class RevoltClient : ClientEvents
     private void ConfigSafetyChecks()
     {
         if (string.IsNullOrEmpty(Config.ApiUrl))
-            throw new RevoltException("Config API Url is missing");
+        {
+            Logger.LogMessage("Config API Url is missing.", RevoltLogSeverity.Error);
+            throw new RevoltArgumentException("Config API Url is missing");
+        }
 
         if (!Config.ApiUrl.EndsWith('/'))
             Config.ApiUrl += "/";
 
-        Config.UserAgent ??= $"Revolt Bot ({Assembly.GetExecutingAssembly().GetName().Name}) v{Version}{(UserBot ? " user" : null)}";
+        Config.UserAgent ??= $"RevoltSharp Bot ({Config.ClientName}) v{Version}{(UserBot ? " user" : null)}";
         Config.Owners ??= Array.Empty<string>();
         Config.Debug ??= new ClientDebugConfig();
     }
@@ -173,7 +185,7 @@ public class RevoltClient : ClientEvents
     {
         if (FirstConnection)
         {
-            InvokeLog("Starting...", RevoltLogSeverity.Verbose);
+            InvokeLog("Starting...", RevoltLogSeverity.Debug);
 
             FirstConnection = false;
             try
@@ -314,7 +326,7 @@ public class RevoltClient : ClientEvents
     public void InvokeLog(string message, RevoltLogSeverity severity)
     {
         if (Config.LogMode != RevoltLogSeverity.None)
-            Logger.LogMessage(this, message, severity);
+            Logger.LogMessage(message, severity);
 
         OnLog?.Invoke(message, severity);
     }

@@ -1,4 +1,5 @@
 ﻿using RevoltSharp.Rest;
+using System.Net;
 
 namespace RevoltSharp;
 
@@ -8,12 +9,14 @@ namespace RevoltSharp;
 public class ClientConfig
 {
     /// <summary>
-    /// The user agent used for REST requests and websockets.
+    /// Set your own custom client name to show in the user agent.
     /// </summary>
-    /// <remarks>
-    /// If null, a default user agent is used instead.
-    /// </remarks>
-    public string? UserAgent = null;
+    public string? ClientName = "Default";
+
+    public IWebProxy? RestProxy = null;
+    public IWebProxy? WebSocketProxy = null;
+
+    internal string UserAgent { get; set; }
 
     /// <summary>
     /// Do not change this unless you know what you're doing.
@@ -44,9 +47,7 @@ public class ClientConfig
     /// </remarks>
     public string? CfClearance = null;
 
-    public RevoltLogSeverity LogMode = RevoltLogSeverity.Warn;
-
-    public bool LogReducedColors;
+    public RevoltLogSeverity LogMode = RevoltLogSeverity.Error;
 }
 
 /// <summary>

@@ -115,14 +115,6 @@ public class CmdTest : ModuleBase
         }
     }
 
-    [Command("testlog")]
-    public async Task TestLog()
-    {
-        Context.Client.InvokeLog("Info", RevoltLogSeverity.Info);
-        Context.Client.InvokeLog("Warn", RevoltLogSeverity.Warn);
-        Context.Client.InvokeLog("Error", RevoltLogSeverity.Error);
-        Context.Client.InvokeLog("Debug", RevoltLogSeverity.Verbose);
-    }
 
     [Command("bans")]
     public async Task Messages()

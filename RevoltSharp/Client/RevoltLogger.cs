@@ -1,13 +1,52 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Concurrent;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace RevoltSharp;
 
-internal class RevoltLogger
+/// <summary>
+/// Special logger class with custom title and console colors.
+/// </summary>
+public class RevoltLogger
 {
+    public RevoltLogger(string title, RevoltLogSeverity logMode)
+    {
+        Title = title;
+        LogMode = logMode;
+        _ = Task.Factory.StartNew(async () =>
+        {
+            foreach (RevoltLogJsonMessage msg in MessageQueue.GetConsumingEnumerable())
+            {
+                if (msg.Data is string str)
+                {
+                    Console.WriteLine($"[{Title}] {LightMagenta}{msg.Message}\n" +
+                        $"--- --- ---\n" +
+                        $"{FormatJsonPretty(str)}\n" +
+                        $"--- --- ---{Reset}");
+                }
+                else
+                {
+                    Console.WriteLine($"[{Title}] {LightMagenta}{msg.Message}\n" +
+                        $"--- --- ---\n" +
+                        $"{FormatJsonPretty(msg.Data)}\n" +
+                        $"--- --- ---{Reset}");
+                }
+            }
+
+        }, TaskCreationOptions.LongRunning);
+    }
+
+    private string Title { get; set; }
+
+    private RevoltLogSeverity LogMode { get; set; }
+
+    private BlockingCollection<RevoltLogJsonMessage> MessageQueue = new BlockingCollection<RevoltLogJsonMessage>();
+
     private static readonly string Reset = "\u001b[39m";
 
-#pragma warning disable IDE0051 // Remove unused private members
+    #pragma warning disable IDE0051 // Remove unused private members
 
     private static readonly string Red = "\u001b[31m";
     private static readonly string LightRed = "\u001b[91m";
@@ -24,29 +63,39 @@ internal class RevoltLogger
     private static readonly string Grey = "\u001b[90m";
     private static readonly string LightGrey = "\u001b[37m";
 
-#pragma warning restore IDE0051 // Remove unused private members
+    #pragma warning restore IDE0051 // Remove unused private members
 
-    //public void TestColors()
-    //{
-    //	Console.WriteLine($"{Red}Red{Reset}\n" +
-    //		$"{LightRed}Light Red{Reset}\n" +
-    //		$"{Green}Green{Reset}\n" +
-    //		$"{LightGreen}Light Green{Reset}\n" +
-    //		$"{Yellow}Yellow{Reset}\n" +
-    //		$"{LightYellow}Light Yellow{Reset}\n" +
-    //		$"{Blue}Blue{Reset}\n" +
-    //		$"{LightBlue}Light Blue{Reset}\n" +
-    //		$"{Magenta}Magenta{Reset}\n" +
-    //		$"{LightMagenta}Light Magenta{Reset}\n" +
-    //		$"{Cyan}Cyan{Reset}\n" +
-    //		$"{LightCyan}Light Cyan{Reset}\n" +
-    //		$"{Grey}Grey{Reset}\n" +
-    //		$"{LightGrey}Light Grey{Reset}\n");
-    //}
 
-    public void LogMessage(RevoltClient client, string message, RevoltLogSeverity severity)
+    private static string FormatJsonPretty(string json)
     {
-        if (severity < client.Config.LogMode)
+        dynamic parsedJson = JsonConvert.DeserializeObject(json);
+        return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+    }
+
+    private static string FormatJsonPretty(object json)
+    {
+        return JsonConvert.SerializeObject(json, Formatting.Indented);
+    }
+
+    /// <summary>
+    /// Special json log message with json data that can be a json string or class/object
+    /// </summary>
+    public void LogJson(string message, object data)
+    {
+        MessageQueue.Add(new RevoltLogJsonMessage { Message = message, Data = data });
+    }
+
+
+    /// <summary>
+    /// Log a message to the console with the severity color
+    /// <para>Info: White</para>
+    /// <para>Warn: Yellow</para>
+    /// <para>Error: Red</para>
+    /// <para>Debug: Grey</para>
+    /// </summary>
+    public void LogMessage(string message, RevoltLogSeverity severity = RevoltLogSeverity.Debug)
+    {
+        if (severity < LogMode)
             return;
 
         switch (severity)
@@ -54,62 +103,52 @@ internal class RevoltLogger
             // White
             case RevoltLogSeverity.Info:
                 {
-                    if (!client.Config.LogReducedColors)
-                        Console.WriteLine($"[RevoltSharp] {message}");
-                    else
-                        Console.WriteLine($"[RevoltSharp] Info : {message}");
+                    Console.WriteLine($"[{Title}] {message}");
                 }
                 break;
             // Yellow
             case RevoltLogSeverity.Warn:
                 {
-                    if (!client.Config.LogReducedColors)
-                        Console.WriteLine($"[RevoltSharp] {Yellow}{message}{Reset}");
-                    else
-                        Console.WriteLine($"[RevoltSharp] {Yellow}Warn{Reset} : {message}");
+                    Console.WriteLine($"[{Title}] {Yellow}{message}{Reset}");
                 }
                 break;
             // Red
             case RevoltLogSeverity.Error:
                 {
-                    if (!client.Config.LogReducedColors)
-                        Console.WriteLine($"[RevoltSharp] {Red}{message}{Reset}");
-                    else
-                        Console.WriteLine($"[RevoltSharp] {Red}Error{Reset}: {message}");
+                    Console.WriteLine($"[{Title}] {Red}{message}{Reset}");
                 }
                 break;
             // Grey
-            case RevoltLogSeverity.Verbose:
+            case RevoltLogSeverity.Debug:
                 {
-                    if (!client.Config.LogReducedColors)
-                        Console.WriteLine($"[RevoltSharp] {Grey}{message}{Reset}");
-                    else
-                        Console.WriteLine($"[RevoltSharp] {Grey}Debug{Reset}: {message}");
+                    Console.WriteLine($"[{Title}] {Grey}{message}{Reset}");
                 }
                 break;
         }
     }
 
-    public void LogRestMessage(RevoltClient client, HttpResponseMessage res, HttpMethod method, string message)
+    /// <summary>
+    /// Log a rest response to the console with the color
+    /// <para>Success: Green</para>
+    /// <para>Fail: Light Red</para>
+    /// </summary>
+    public void LogRestMessage(HttpResponseMessage res, HttpMethod method, string message)
     {
-        if (!client.Config.Debug.LogRestRequest)
-            return;
-
         if (res.IsSuccessStatusCode)
         {
-            if (!client.Config.LogReducedColors)
-                Console.WriteLine($"[RevoltSharp] {Green}({method.Method.ToUpper()}) {message}{Reset}");
-            else
-                Console.WriteLine($"[RevoltSharp] {Green}Ok{Reset}   : ({method.Method.ToUpper()}) {message}");
+            Console.WriteLine($"[{Title}] {Green}({method.Method.ToUpper()}) {message}{Reset}");
         }
         else
         {
-            if (!client.Config.LogReducedColors)
-                Console.WriteLine($"[RevoltSharp] {Cyan}({method.Method.ToUpper()}) {message}{Reset}");
-            else
-                Console.WriteLine($"[RevoltSharp] {Cyan}Fail{Reset} : ({method.Method.ToUpper()}) {message}");
+            Console.WriteLine($"[{Title}] {LightRed}({method.Method.ToUpper()}) {message}{Reset}");
         }
     }
+}
+
+internal class RevoltLogJsonMessage
+{
+    public string Message;
+    public object Data;
 }
 
 /// <summary>
@@ -118,9 +157,9 @@ internal class RevoltLogger
 public enum RevoltLogSeverity
 {
     /// <summary>
-    /// Debug info message.
+    /// All messages including debug ones.
     /// </summary>
-    Verbose,
+    Debug,
 
     /// <summary>
     /// Error message info.
