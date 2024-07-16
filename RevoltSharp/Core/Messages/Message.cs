@@ -12,7 +12,6 @@ public abstract class Message : CreatedEntity
         : base(client, model.MessageId)
     {
         ChannelId = model.ChannelId;
-        ServerId = null!;
         if (model.Webhook != null)
         {
             Type = MessageType.Webhook;
@@ -30,7 +29,11 @@ public abstract class Message : CreatedEntity
         Channel = client.GetChannel(model.ChannelId);
 
         if (Channel != null && Channel is ServerChannel SC)
+        {
             ServerId = SC.ServerId;
+            if (client.WebSocket != null)
+                Member = Server.InternalMembers[model.AuthorId];
+        }
     }
 
     internal static Message Create(RevoltClient client, MessageJson model)
@@ -113,14 +116,24 @@ public abstract class Message : CreatedEntity
     /// User who posted the message
     /// </summary>
     /// <remarks>
-    /// Will be <see langword="null" /> for system/webhook messages.
+    /// Will be <see langword="null" /> if client is rest mode or system/webhook messages.
     /// </remarks>
     public User? Author { get; internal set; }
+
+    /// <summary>
+    /// Member who posted the message
+    /// </summary>
+    /// <remarks>
+    /// Will be <see langword="null" /> if client is rest mode or system/webhook messages.
+    /// </remarks>
+    public ServerMember Member { get; internal set; }
 
     /// <summary>
     /// Get the type of message this is.
     /// </summary>
     public MessageType Type { get; internal set; } = MessageType.User;
+
+    public MessageFlag Flags { get; internal set; }
 
     /// <summary> Returns a string that represents the current object.</summary>
     /// <returns> User/bot/system message </returns>

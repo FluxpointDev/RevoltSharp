@@ -270,6 +270,7 @@ public class RevoltClient : ClientEvents
         {
             WebSocket.StopWebSocket = true;
             await WebSocket.WebSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", WebSocket.CancellationToken);
+            WebSocket.ClearAllCache();
 
         }
     }

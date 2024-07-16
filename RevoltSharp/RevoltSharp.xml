@@ -832,6 +832,11 @@
             <summary> Returns a string that represents the current object.</summary>
             <returns> Group channel name </returns>
         </member>
+        <member name="P:RevoltSharp.SavedMessagesChannel.LastMessageId">
+            <summary>
+            The last message id sent in this DM channel.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.SavedMessagesChannel.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> CurrentUser#0001 </returns>
@@ -1094,6 +1099,11 @@
         <member name="T:RevoltSharp.ChannelType">
             <summary>
             Type of channel that is <see cref="T:RevoltSharp.TextChannel" />, <see cref="T:RevoltSharp.VoiceChannel" />, <see cref="T:RevoltSharp.GroupChannel" />, <see cref="T:RevoltSharp.UnknownServerChannel" /> or <see cref="T:RevoltSharp.UnknownChannel" />
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.MessageFlag">
+            <summary>
+            List of message flags.
             </summary>
         </member>
         <member name="T:RevoltSharp.ServerPermission">
@@ -1524,7 +1534,15 @@
             User who posted the message
             </summary>
             <remarks>
-            Will be <see langword="null" /> for system/webhook messages.
+            Will be <see langword="null" /> if client is rest mode or system/webhook messages.
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.Message.Member">
+            <summary>
+            Member who posted the message
+            </summary>
+            <remarks>
+            Will be <see langword="null" /> if client is rest mode or system/webhook messages.
             </remarks>
         </member>
         <member name="P:RevoltSharp.Message.Type">
@@ -3019,10 +3037,10 @@
             Revolt http/rest methods for messages.
             </summary>
         </member>
-        <member name="M:RevoltSharp.MessageHelper.SendMessageAsync(RevoltSharp.Channel,System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
-            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendMessageAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])" />
+        <member name="M:RevoltSharp.MessageHelper.SendMessageAsync(RevoltSharp.Channel,System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
+            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendMessageAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)" />
         </member>
-        <member name="M:RevoltSharp.MessageHelper.SendMessageAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
+        <member name="M:RevoltSharp.MessageHelper.SendMessageAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
             <summary>
             Send a message to the channel.
             </summary>
@@ -3032,16 +3050,16 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
-        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Channel,System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
-            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])" />
+        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Channel,System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
+            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)" />
         </member>
-        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Channel,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
-            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])" />
+        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Channel,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
+            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)" />
         </member>
-        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
-            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])" />
+        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
+            <inheritdoc cref="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)" />
         </member>
-        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
+        <member name="M:RevoltSharp.MessageHelper.SendFileAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Byte[],System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
             <summary>
             Upload a file and send a message to the channel.
             </summary>

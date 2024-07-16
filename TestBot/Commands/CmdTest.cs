@@ -63,7 +63,8 @@ public class CmdTest : ModuleBase
             await ReplyAsync("No roles");
             return;
         }
-        await ReplyAsync(string.Join("\n", Roles));
+        await Task.Delay(new TimeSpan(0, 0, 3));
+        await ReplyAsync(string.Join("\n", Roles), flags: MessageFlag.SupressNotifications);
     }
 
     [Command("vc")]

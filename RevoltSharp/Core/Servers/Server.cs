@@ -243,10 +243,9 @@ public class Server : CreatedEntity
     internal void RemoveMember(RevoltClient client, string userId)
     {
         InternalMembers.TryRemove(userId, out _);
-
-        if (userId != client.CurrentUser.Id)
+        if (client.WebSocket.UserCache.TryGetValue(userId, out User User))
         {
-            client.WebSocket.UserCache.TryRemove(userId, out _);
+            RemoveMember(User);
         }
     }
 

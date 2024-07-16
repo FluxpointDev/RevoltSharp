@@ -7,7 +7,11 @@ namespace RevoltSharp.WebSocket;
 
 internal class MessageEventJson : MessageJson
 {
+    [JsonProperty("user")]
+    public UserJson? User { get; set; }
 
+    [JsonProperty("member")]
+    public ServerMemberJson? Member { get; set; }
 }
 internal class MessageDeleteEventJson
 {

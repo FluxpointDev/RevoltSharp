@@ -29,9 +29,9 @@ class Program
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = false,
-                LogRestResponseJson = true,
+                LogRestResponseJson = false,
                 LogRestRequest = false,
-                LogWebSocketFull = false,
+                LogWebSocketFull = true,
                 LogWebSocketReady = false,
                 LogWebSocketError = true,
                 LogWebSocketUnknownEvent = true
@@ -88,6 +88,7 @@ public class CommandHandler
         int argPos = 0;
         if (!(Message.HasStringPrefix(Prefix, ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
             return;
+
         CommandContext context = new CommandContext(Client, Message);
 
         _ = Service.ExecuteAsync(context, argPos, null);

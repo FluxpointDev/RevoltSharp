@@ -6,7 +6,13 @@ public class SavedMessagesChannel : Channel
     internal SavedMessagesChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Type = ChannelType.SavedMessages;
+        LastMessageId = model.LastMessageId;
     }
+
+    /// <summary>
+    /// The last message id sent in this DM channel.
+    /// </summary>
+    public string? LastMessageId { get; internal set; }
 
     internal override void Update(PartialChannelJson json)
     {

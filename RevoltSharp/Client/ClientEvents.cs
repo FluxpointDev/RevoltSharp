@@ -83,7 +83,7 @@ public class ClientEvents
     public delegate void ReactionBulkRemovedEvent(Emoji emoji, Channel channel, Downloadable<string, Message> message_cache);
 
     /// <inheritdoc cref="RevoltEvent" />
-    public delegate void UserPlatformRemovedEvent(string user_id, User user);
+    public delegate void UserPlatformRemovedEvent(string user_id, User user, UserFlags flags);
 
     /// <inheritdoc cref="RevoltEvent" />
     public delegate void WebhookEvent(Webhook webhook);
@@ -384,9 +384,9 @@ public class ClientEvents
     /// </remarks>
     public event UserPlatformRemovedEvent? OnUserPlatformRemoved;
 
-    internal void InvokeUserPlatformRemoved(string userid, User? user)
+    internal void InvokeUserPlatformRemoved(string userid, User? user, UserFlags flags)
     {
-        OnUserPlatformRemoved?.Invoke(userid, user);
+        OnUserPlatformRemoved?.Invoke(userid, user, flags);
     }
 
     #endregion

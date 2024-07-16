@@ -976,7 +976,7 @@
                 The underlying context of the command.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Commands.ModuleBase.ReplyAsync(System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
+        <member name="M:RevoltSharp.Commands.ModuleBase.ReplyAsync(System.String,RevoltSharp.Embed[],System.String[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
             <summary>
                 Sends a message to the source channel.
             </summary>
@@ -989,7 +989,7 @@
             <param name="interactions"></param>
             <param name="replies"></param>
         </member>
-        <member name="M:RevoltSharp.Commands.ModuleBase.ReplyFileAsync(System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[])">
+        <member name="M:RevoltSharp.Commands.ModuleBase.ReplyFileAsync(System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
             <summary>
                 Sends a file to this message channel with an optional caption.
             </summary>

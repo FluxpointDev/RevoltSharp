@@ -52,6 +52,9 @@ internal class MessageJson
 
     [JsonProperty("masquerade")]
     public MessageMasqueradeJson? Masquerade { get; set; }
+
+    [JsonProperty("flags")]
+    public MessageFlag Flags { get; set; }
 }
 internal class MessageMasqueradeJson
 {

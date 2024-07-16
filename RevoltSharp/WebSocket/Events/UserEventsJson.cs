@@ -29,5 +29,8 @@ internal class UserRelationshipEventJson
 internal class UserPlatformWipedEventJson
 {
     [JsonProperty("user_id")]
-    internal string UserId = null!;
+    public string UserId = null!;
+
+    [JsonProperty("flags")]
+    public ulong Flags;
 }

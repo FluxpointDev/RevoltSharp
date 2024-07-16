@@ -12,4 +12,5 @@ internal class SendMessageRequest : IRevoltRequest
     public Optional<MessageMasqueradeJson> masquerade { get; set; }
     public Optional<MessageInteractionsJson> interactions { get; set; }
     public Optional<MessageReplyJson[]> replies { get; set; }
+    public Optional<MessageFlag> flags { get; set; }
 }

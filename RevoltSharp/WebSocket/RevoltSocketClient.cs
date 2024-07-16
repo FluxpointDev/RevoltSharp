@@ -252,6 +252,8 @@ internal class RevoltSocketClient
                             if (Client.Config.Debug.LogWebSocketReady)
                                 Client.Logger.LogJson("WebSocket Ready", json);
 
+                            ClearAllCache();
+
                             UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
 
                             SelfUser SocketSelfUser = null;
@@ -279,8 +281,7 @@ internal class RevoltSocketClient
                             {
                                 if (ServerCache.TryGetValue(m.Id.Server, out Server s))
                                 {
-                                    s.InternalMembers.TryAdd(m.Id.User, new ServerMember(Client, m, null, UserCache[m.Id.User]));
-                                    UserCache[m.Id.User].InternalMutualServers.TryAdd(s.Id, s);
+                                    s.AddMember(new ServerMember(Client, m, null, UserCache[m.Id.User]));
                                 }
                             }
 
@@ -330,11 +331,11 @@ internal class RevoltSocketClient
                     {
                         MessageEventJson @event = payload.ToObject<MessageEventJson>(RevoltClient.Deserializer);
 
+                        User? User = null;
                         if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
                         {
-                            User user = await Client.Rest.GetUserAsync(@event.AuthorId);
-                            if (user == null)
-                                return;
+                            User = new User(Client, @event.User);
+                            UserCache.TryAdd(@event.AuthorId, User);
                         }
 
                         if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel channel))
@@ -353,12 +354,18 @@ internal class RevoltSocketClient
                                     (channel as TextChannel).LastMessageId = @event.MessageId;
                                     if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && channel is TextChannel TC)
                                     {
-                                        await TC.Server.GetMemberAsync(@event.AuthorId);
+                                        if (!TC.Server.InternalMembers.ContainsKey(@event.AuthorId))
+                                        {
+                                            TC.Server.AddMember(new ServerMember(Client, @event.Member, @event.User, User));
+                                        }
                                     }
                                 }
                                 break;
                             case ChannelType.DM:
                                 (channel as DMChannel).LastMessageId = @event.MessageId;
+                                break;
+                            case ChannelType.SavedMessages:
+                                (channel as SavedMessagesChannel).LastMessageId = @event.MessageId;
                                 break;
                         }
 
@@ -384,7 +391,6 @@ internal class RevoltSocketClient
                 case "MessageDelete":
                     {
                         MessageDeleteEventJson @event = payload.ToObject<MessageDeleteEventJson>(RevoltClient.Deserializer);
-
 
                         if (!ChannelCache.TryGetValue(@event.ChannelId, out Channel channel))
                         {
@@ -1036,7 +1042,11 @@ internal class RevoltSocketClient
                     {
                         UserPlatformWipedEventJson @event = payload.ToObject<UserPlatformWipedEventJson>(RevoltClient.Deserializer);
                         if (!UserCache.Remove(@event.UserId, out User User))
-                            return;
+                        {
+                            User = await Client.Rest.GetUserAsync(@event.UserId);
+                            UserCache.TryRemove(@event.UserId, out _);
+                        }
+
                         _ = Task.Run(() =>
                         {
                             foreach (Channel c in ChannelCache.Values)
@@ -1067,7 +1077,7 @@ internal class RevoltSocketClient
                             }
                         });
 
-                        Client.InvokeUserPlatformRemoved(@event.UserId, User);
+                        Client.InvokeUserPlatformRemoved(@event.UserId, User, new UserFlags(@event.Flags));
                     }
                     break;
                 case "WebhookCreate":
@@ -1099,11 +1109,17 @@ internal class RevoltSocketClient
         }
         catch (Exception ex)
         {
-            Client.InvokeLog($"WebSocket Events Error", RevoltLogSeverity.Error);
+            Client.InvokeLog($"WebSocket Event {payload["type"].ToString()} Error ", RevoltLogSeverity.Error);
             Console.WriteLine(ex);
         }
     }
 
-    
+    internal void ClearAllCache()
+    {
+        ChannelCache.Clear();
+        EmojiCache.Clear();
+        ServerCache.Clear();
+        UserCache.Clear();
+    }
 
 }
