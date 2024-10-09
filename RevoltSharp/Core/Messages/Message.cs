@@ -31,14 +31,14 @@ public abstract class Message : CreatedEntity
         if (Channel != null && Channel is ServerChannel SC)
         {
             ServerId = SC.ServerId;
-            if (client.WebSocket != null)
+            if (client.WebSocket != null && model.AuthorId != User.SystemUserId)
                 Member = Server.InternalMembers[model.AuthorId];
         }
     }
 
     internal static Message Create(RevoltClient client, MessageJson model)
     {
-        if (model.AuthorId == "00000000000000000000000000")
+        if (model.AuthorId == User.SystemUserId)
         {
             if (model.System != null)
             {

@@ -64,6 +64,11 @@ public class RevoltClient : ClientEvents
             WebSocket = new RevoltSocketClient(this);
     }
 
+    /// <summary>
+    /// Set the voice client to use for the lib.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <exception cref="RevoltArgumentException"></exception>
     public void SetVoiceClient(IVoiceClient client)
     {
         if (client == null)
@@ -75,8 +80,14 @@ public class RevoltClient : ClientEvents
         VoiceClient = client;
     }
 
+    /// <summary>
+    /// The current voice client in use with RevoltSharp.
+    /// </summary>
     public IVoiceClient VoiceClient { get; internal set; } = null;
 
+    /// <summary>
+    /// The current client mode that RevoltSharp is using either Http or WebSocket
+    /// </summary>
     public ClientMode Mode { get; internal set; }
 
     private void ConfigSafetyChecks()
@@ -111,17 +122,26 @@ public class RevoltClient : ClientEvents
 
     internal bool UserBot { get; set; }
 
+    /// <summary>
+    /// The json serializer that is used with RevoltSharp.
+    /// </summary>
     public static JsonSerializer Serializer { get; internal set; } = new JsonSerializer
     {
         ContractResolver = new RevoltContractResolver()
     };
 
+    /// <summary>
+    /// The json serializer that is used with RevoltSharp with pretty print formatting.
+    /// </summary>
     public static JsonSerializer SerializerPretty { get; internal set; } = new JsonSerializer
     {
         ContractResolver = new RevoltContractResolver(),
         Formatting = Formatting.Indented
     };
 
+    /// <summary>
+    /// The json serializer that is used with RevoltSharp.
+    /// </summary>
     public static JsonSerializer Deserializer { get; internal set; } = CreateDes();
 
     internal static JsonSerializer CreateDes()
@@ -146,6 +166,9 @@ public class RevoltClient : ClientEvents
 
     internal RevoltSocketClient? WebSocket;
 
+    /// <summary>
+    /// This is for self-hosted revolt instances that have global admin access.
+    /// </summary>
     public AdminClient Admin { get; internal set; }
 
     internal RevoltLogger Logger;
@@ -173,7 +196,7 @@ public class RevoltClient : ClientEvents
     /// The current user/bot account's private notes message channel.
     /// </summary>
     /// <remarks>
-    /// This will be <see langword="null" /> if you have not created the channel from <see cref="BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltRestClient)" /> once.
+    /// This will be <see langword="null" /> if you have not created the channel from <see cref="BotHelper.GetSavedMessagesChannelAsync(RevoltRestClient)" /> once.
     /// </remarks>
     public SavedMessagesChannel? SavedMessagesChannel { get; internal set; }
 
@@ -221,7 +244,7 @@ public class RevoltClient : ClientEvents
                 if (re.Code == 401)
                     throw new RevoltRestException("The token is invalid.", re.Code, re.Type);
 
-                throw re;
+                throw;
             }
             catch (Exception ex)
             {
@@ -329,7 +352,7 @@ public class RevoltClient : ClientEvents
     /// </remarks>
     public event LogEvent? OnLog;
 
-    public void InvokeLog(string message, RevoltLogSeverity severity)
+    internal void InvokeLog(string message, RevoltLogSeverity severity)
     {
         if (Config.LogMode != RevoltLogSeverity.None)
             Logger.LogMessage(message, severity);

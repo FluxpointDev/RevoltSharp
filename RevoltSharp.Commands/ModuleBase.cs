@@ -27,7 +27,8 @@ public abstract class ModuleBase : IModuleBase
     /// <param name="masquerade"></param>
     /// <param name="interactions"></param>
     /// <param name="replies"></param>
-    protected virtual async Task<UserMessage> ReplyAsync(string message, Embed[] embeds = null, string[] attachments = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null, MessageFlag flags = MessageFlag.None)
+    /// <param name="flags"></param>
+    protected virtual async Task<UserMessage> ReplyAsync(string message, Embed[]? embeds = null, string[]? attachments = null, MessageMasquerade? masquerade = null, MessageInteractions? interactions = null, MessageReply[]? replies = null, MessageFlag flags = MessageFlag.None)
     {
         return await Context.Channel.SendMessageAsync(message, embeds, attachments, masquerade, interactions, replies, flags).ConfigureAwait(false);
     }
@@ -42,7 +43,8 @@ public abstract class ModuleBase : IModuleBase
     /// <param name="masquerade"></param>
     /// <param name="interactions"></param>
     /// <param name="replies"></param>
-    protected virtual async Task<UserMessage> ReplyFileAsync(string filePath, string text = null, Embed[] embeds = null, MessageMasquerade masquerade = null, MessageInteractions interactions = null, MessageReply[] replies = null, MessageFlag flags = MessageFlag.None)
+    /// <param name="flags"></param>
+    protected virtual async Task<UserMessage> ReplyFileAsync(string filePath, string? text = null, Embed[]? embeds = null, MessageMasquerade? masquerade = null, MessageInteractions? interactions = null, MessageReply[]? replies = null, MessageFlag flags = MessageFlag.None)
     {
         if (string.IsNullOrEmpty(filePath))
             throw new RevoltArgumentException("File path cannot be empty when uploading files.");

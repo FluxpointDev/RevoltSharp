@@ -3,7 +3,9 @@ using System;
 
 namespace RevoltSharp;
 
-
+/// <summary>
+/// A Revolt object entity that has the client attached.
+/// </summary>
 public abstract class Entity
 {
     [JsonIgnore]
@@ -14,6 +16,10 @@ public abstract class Entity
         Client = client;
     }
 }
+
+/// <summary>
+/// A Revolt object entity that has an ID, Created date and Client.
+/// </summary>
 public abstract class CreatedEntity : Entity
 {
     internal CreatedEntity(RevoltClient client, string id) : base(client)

@@ -5,7 +5,10 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace RevoltSharp;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
+
 
 
 /// <summary>
@@ -13,6 +16,15 @@ namespace RevoltSharp;
 /// </summary>
 public static class EmojiHelper
 {
+    /// <summary>
+    /// The user that created this emoji.
+    /// </summary>
+    /// <remarks>
+    /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/> or you can't access the user.
+    /// </remarks>
+    public static Task GetCreatorAsync(this Emoji emoji)
+        => UserHelper.GetUserAsync(emoji.Client.Rest, emoji.CreatorId);
+
     /// <inheritdoc cref="GetEmojiAsync(RevoltRestClient, string)" />
     public static async Task<Emoji?> GetEmojiAsync(this Server server, string emojiId)
     {

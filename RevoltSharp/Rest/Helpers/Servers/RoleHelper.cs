@@ -3,7 +3,9 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Threading.Tasks;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace RevoltSharp;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 
 /// <summary>
@@ -12,7 +14,7 @@ namespace RevoltSharp;
 public static class RoleHelper
 {
     /// <inheritdoc cref="CreateRoleAsync(RevoltRestClient, string, string, Option{int})" />
-    public static Task<Role> CreateRoleAsync(this Server server, string name, Option<int> rank = null)
+    public static Task<Role> CreateRoleAsync(this Server server, string name, Option<int>? rank = null)
         => CreateRoleAsync(server.Client.Rest, server.Id, name, rank);
 
     /// <summary>
@@ -23,7 +25,7 @@ public static class RoleHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string name, Option<int> rank = null)
+    public static async Task<Role> CreateRoleAsync(this RevoltRestClient rest, string serverId, string name, Option<int>? rank = null)
     {
         Conditions.ServerIdLength(serverId, nameof(CreateRoleAsync));
         Conditions.RoleNameLength(name, nameof(CreateRoleAsync));
@@ -39,15 +41,15 @@ public static class RoleHelper
     }
 
     /// <inheritdoc cref="ModifyRoleAsync(RevoltRestClient, string, string, Option{string}, Option{string}, Option{bool}, Option{int})" />
-    public static Task<Role> ModifyAsync(this Role role, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
+    public static Task<Role> ModifyAsync(this Role role, Option<string?>? name = null, Option<string?>? color = null, Option<bool>? hoist = null, Option<int>? rank = null)
         => ModifyRoleAsync(role.Client.Rest, role.ServerId, role.Id, name, color, hoist, rank);
 
     /// <inheritdoc cref="ModifyRoleAsync(RevoltRestClient, string, string, Option{string}, Option{string}, Option{bool}, Option{int})" />
-    public static Task<Role> ModifyRoleAsync(this Server server, Role role, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
+    public static Task<Role> ModifyRoleAsync(this Server server, Role role, Option<string?>? name = null, Option<string?>? color = null, Option<bool>? hoist = null, Option<int>? rank = null)
         => ModifyRoleAsync(server.Client.Rest, server.Id, role.Id, name, color, hoist, rank);
 
     /// <inheritdoc cref="ModifyRoleAsync(RevoltRestClient, string, string, Option{string}, Option{string}, Option{bool}, Option{int})" />
-    public static Task<Role> ModifyRoleAsync(this Server server, string roleId, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
+    public static Task<Role> ModifyRoleAsync(this Server server, string roleId, Option<string?>? name = null, Option<string?>? color = null, Option<bool>? hoist = null, Option<int>? rank = null)
         => ModifyRoleAsync(server.Client.Rest, server.Id, roleId, name, color, hoist, rank);
 
 
@@ -59,7 +61,7 @@ public static class RoleHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Option<string> name = null, Option<string> color = null, Option<bool> hoist = null, Option<int> rank = null)
+    public static async Task<Role> ModifyRoleAsync(this RevoltRestClient rest, string serverId, string roleId, Option<string?>? name = null, Option<string?>? color = null, Option<bool>? hoist = null, Option<int>? rank = null)
     {
         Conditions.ServerIdLength(serverId, nameof(ModifyRoleAsync));
         Conditions.RoleIdLength(roleId, nameof(ModifyRoleAsync));

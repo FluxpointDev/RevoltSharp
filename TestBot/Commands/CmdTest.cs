@@ -120,7 +120,7 @@ public class CmdTest : ModuleBase
     [Command("bans")]
     public async Task Messages()
     {
-        var Messages = await Context.Server.GetBansAsync();
+        await Context.Server.GetBansAsync();
 
     }
 
@@ -140,7 +140,7 @@ public class CmdTest : ModuleBase
     public async Task MyPerm()
     {
 
-        await ReplyAsync($"F: {Context.Member.Permissions.AddReactions} H: {Context.Member.Permissions.Has(ChannelPermission.AddReactions)}\n\n" +
+        UserMessage um = await ReplyAsync($"F: {Context.Member.Permissions.AddReactions} H: {Context.Member.Permissions.Has(ChannelPermission.AddReactions)}\n\n" +
             $"Roles:\n{string.Join("\n", Context.Member.Roles.Select(x => x.Name))}");
     }
 
@@ -191,24 +191,7 @@ public class CmdTest : ModuleBase
         Console.WriteLine(JsonConvert.SerializeObject(role, Formatting.Indented));
     }
 
-    [Command("emojimsg")]
-    public async Task EmojiMsg()
-    {
-        UserMessage Msg = await Context.Channel.SendMessageAsync("Emoji test",
-            interactions: new MessageInteractions(new Emoji[] { new Emoji(":01GBP83S4WT512ET704ACPVPQW:") }, true));
-        Console.WriteLine(Context.Server.GetCachedMember(Context.Client.CurrentUser.Id).Permissions.ManageMessages.ToString());
-        MessageId = Msg.Id;
 
-    }
-
-    [Command("removeemoji")]
-    public async Task EmojiRemove(string id)
-    {
-        Console.WriteLine(MessageId);
-        await Context.Client.Rest.RemoveMessageReactionAsync(Context.Channel.Id, MessageId, "01GBP83S4WT512ET704ACPVPQW", id);
-    }
-
-    public static string MessageId;
 
     [Command("members")]
     public async Task RoleAll()
@@ -326,7 +309,7 @@ public class CmdTest : ModuleBase
         Console.WriteLine("--- --- ---");
     }
 
-    public static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
+    private readonly static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
     [Command("test")]
     public async Task Test()

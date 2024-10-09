@@ -332,7 +332,7 @@ internal class RevoltSocketClient
                     {
                         MessageEventJson @event = payload.ToObject<MessageEventJson>(RevoltClient.Deserializer);
                         User? User = null;
-                        if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
+                        if (@event.AuthorId != User.SystemUserId && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
                         {
                             User = new User(Client, @event.User);
                             UserCache.TryAdd(@event.AuthorId, User);
@@ -352,7 +352,7 @@ internal class RevoltSocketClient
                             case ChannelType.Text:
                                 {
                                     (channel as TextChannel).LastMessageId = @event.MessageId;
-                                    if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && channel is TextChannel TC)
+                                    if (@event.AuthorId != User.SystemUserId && @event.Webhook == null && channel is TextChannel TC)
                                     {
                                         if (!TC.Server.InternalMembers.ContainsKey(@event.AuthorId))
                                         {

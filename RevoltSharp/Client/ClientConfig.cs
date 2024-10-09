@@ -13,10 +13,17 @@ public class ClientConfig
     /// </summary>
     public string? ClientName = "Default";
 
+    /// <summary>
+    /// Set a proxy for http rest calls.
+    /// </summary>
     public IWebProxy? RestProxy = null;
+
+    /// <summary>
+    /// Set a proxy for the websocket itself.
+    /// </summary>
     public IWebProxy? WebSocketProxy = null;
 
-    internal string UserAgent { get; set; }
+    internal string? UserAgent { get; set; }
 
     /// <summary>
     /// Do not change this unless you know what you're doing.
@@ -47,6 +54,9 @@ public class ClientConfig
     /// </remarks>
     public string? CfClearance = null;
 
+    /// <summary>
+    /// Set the default logging mode on what to show in the console.
+    /// </summary>
     public RevoltLogSeverity LogMode = RevoltLogSeverity.Error;
 }
 
@@ -76,7 +86,20 @@ public class ClientDebugConfig
     /// </remarks>
     public string WebsocketUrl { get; internal set; } = "wss://revolt.chat";
 
+    /// <summary>
+    /// This will be changed once you run Client.StartAsync()
+    /// </summary>
+    /// <remarks>
+    /// Defaults to https://vortex.revolt.chat
+    /// </remarks>
     public string VoiceServerUrl { get; internal set; } = "https://vortex.revolt.chat/";
+
+    /// <summary>
+    /// This will be changed once you run Client.StartAsync()
+    /// </summary>
+    /// <remarks>
+    /// Defaults to wss://vortex.revolt.chat
+    /// </remarks>
     public string VoiceWebsocketUrl { get; internal set; } = "wss://vortex.revolt.chat";
 
     /// <summary>

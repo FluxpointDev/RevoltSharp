@@ -12,6 +12,7 @@ namespace RevoltSharp;
 /// </summary>
 public class User : CreatedEntity
 {
+    internal static string SystemUserId = "00000000000000000000000000";
     internal User(RevoltClient client, UserJson model) : base(client, model.Id)
     {
         Username = model.Username;

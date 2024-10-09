@@ -404,6 +404,9 @@ public class ClientEvents
         OnWebhookCreated?.Invoke(webhook);
     }
 
+    /// <summary>
+    /// The current client has logged out.
+    /// </summary>
     public event RevoltEvent? OnClientLogout;
 
     internal void InvokeLogout()
@@ -411,6 +414,9 @@ public class ClientEvents
         OnClientLogout?.Invoke();
     }
 
+    /// <summary>
+    /// A relationship for the current client has changed such as Blocked.
+    /// </summary>
     public event UserRelationshipUpdated? OnUserRelationshipUpdated;
 
     internal void InvokeUserRelationshipUpdated(User user, UserRelationship relationship)

@@ -3,7 +3,9 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Threading.Tasks;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace RevoltSharp;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 
 /// <summary>
@@ -34,13 +36,14 @@ public static class VoiceChannelHelper
         => ChannelHelper.InternalGetChannelAsync<VoiceChannel>(rest, channelId);
 
     /// <inheritdoc cref="CreateVoiceChannelAsync(RevoltRestClient, string, string, string)" />
-    public static Task<VoiceChannel> CreateVoiceChannelAsync(this Server server, string name, string description = null)
-        => InternalCreateVoiceChannelAsync(server.Client.Rest, server.Id, name, description);
+    public static Task<VoiceChannel> CreateVoiceChannelAsync(this Server server, string name, string? description = null)
+        => CreateVoiceChannelAsync(server.Client.Rest, server.Id, name, description);
 
     /// <inheritdoc cref="CreateVoiceChannelAsync(RevoltRestClient, string, string, string)" />
-    public static Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, Server server, string name, string description = null)
-        => InternalCreateVoiceChannelAsync(rest, server.Id, name, description);
+    public static Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, Server server, string name, string? description = null)
+        => CreateVoiceChannelAsync(rest, server.Id, name, description);
 
+    
     /// <summary>
     /// Create a server voice channel with properties.
     /// </summary>
@@ -49,10 +52,7 @@ public static class VoiceChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null)
-        => InternalCreateVoiceChannelAsync(rest, serverId, name, description);
-
-    internal static async Task<VoiceChannel> InternalCreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null)
+    public static async Task<VoiceChannel> CreateVoiceChannelAsync(this RevoltRestClient rest, string serverId, string name, string? description = null)
     {
         Conditions.ServerIdLength(serverId, nameof(CreateVoiceChannelAsync));
         Conditions.ChannelNameLength(name, nameof(CreateVoiceChannelAsync));
@@ -80,7 +80,7 @@ public static class VoiceChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<VoiceChannel> ModifyAsync(this VoiceChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
+    public static Task<VoiceChannel> ModifyAsync(this VoiceChannel channel, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null)
         => ChannelHelper.InternalModifyChannelAsync<VoiceChannel>(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
 
 

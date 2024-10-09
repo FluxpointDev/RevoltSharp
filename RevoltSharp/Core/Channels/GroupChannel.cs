@@ -41,6 +41,9 @@ public class GroupChannel : Channel
     /// </summary>
     public ChannelPermissions Permissions { get; internal set; }
 
+    /// <summary>
+    /// The user IDs in the group channel.
+    /// </summary>
     public string[] Recipents { get; internal set; }
 
     internal ConcurrentDictionary<string, User> CachedUsers { get; set; } = new ConcurrentDictionary<string, User>();
@@ -59,10 +62,16 @@ public class GroupChannel : Channel
     public string? LastMessageId { get; internal set; }
 
     /// <summary>
-    /// Owner of the channel
+    /// Owner of the group channel.
     /// </summary>
     public string OwnerId { get; internal set; }
 
+    /// <summary>
+    /// The owner of the group channel.
+    /// </summary>
+    /// <remarks>
+    /// Will be <see langword="null" /> if using <see cref="ClientMode.Http"/>.
+    /// </remarks>
     public User? Owner => Client.GetUser(OwnerId);
 
     /// <summary>

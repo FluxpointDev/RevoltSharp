@@ -14,6 +14,16 @@
             Set your own custom client name to show in the user agent.
             </summary>
         </member>
+        <member name="F:RevoltSharp.ClientConfig.RestProxy">
+            <summary>
+            Set a proxy for http rest calls.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ClientConfig.WebSocketProxy">
+            <summary>
+            Set a proxy for the websocket itself.
+            </summary>
+        </member>
         <member name="F:RevoltSharp.ClientConfig.ApiUrl">
             <summary>
             Do not change this unless you know what you're doing.
@@ -43,6 +53,11 @@
             Please ensure that the user agent and IP used to generate the clearance cookie will be identical to the ones used by your RevoltSharp client, or else CloudFlare will not accept the clearance.
             </remarks>
         </member>
+        <member name="F:RevoltSharp.ClientConfig.LogMode">
+            <summary>
+            Set the default logging mode on what to show in the console.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.ClientDebugConfig">
             <summary>
             Debug settings for the RevoltSharp lib.
@@ -67,6 +82,22 @@
             </summary>
             <remarks>
             Defaults to wss://ws.revolt.chat
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.VoiceServerUrl">
+            <summary>
+            This will be changed once you run Client.StartAsync()
+            </summary>
+            <remarks>
+            Defaults to https://vortex.revolt.chat
+            </remarks>
+        </member>
+        <member name="P:RevoltSharp.ClientDebugConfig.VoiceWebsocketUrl">
+            <summary>
+            This will be changed once you run Client.StartAsync()
+            </summary>
+            <remarks>
+            Defaults to wss://vortex.revolt.chat
             </remarks>
         </member>
         <member name="P:RevoltSharp.ClientDebugConfig.LogWebSocketFull">
@@ -360,6 +391,16 @@
             <see cref="P:RevoltSharp.Webhook.Token" /> will always be empty.
             </remarks>
         </member>
+        <member name="E:RevoltSharp.ClientEvents.OnClientLogout">
+            <summary>
+            The current client has logged out.
+            </summary>
+        </member>
+        <member name="E:RevoltSharp.ClientEvents.OnUserRelationshipUpdated">
+            <summary>
+            A relationship for the current client has changed such as Blocked.
+            </summary>
+        </member>
         <member name="E:RevoltSharp.ClientEvents.OnReactionAdded">
             <summary>
             A <see cref="T:RevoltSharp.Emoji" /> reaction has been added to a <see cref="T:RevoltSharp.Message" />.
@@ -406,6 +447,23 @@
             <param name="config">Optional config stuff for the bot and lib.</param>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
         </member>
+        <member name="M:RevoltSharp.RevoltClient.SetVoiceClient(RevoltSharp.IVoiceClient)">
+            <summary>
+            Set the voice client to use for the lib.
+            </summary>
+            <param name="client"></param>
+            <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.VoiceClient">
+            <summary>
+            The current voice client in use with RevoltSharp.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.Mode">
+            <summary>
+            The current client mode that RevoltSharp is using either Http or WebSocket
+            </summary>
+        </member>
         <member name="P:RevoltSharp.RevoltClient.Token">
             <summary>
             Revolt bot token used for http requests and websocket.
@@ -419,6 +477,21 @@
             This will be empty of you do not use <see cref="M:RevoltSharp.RevoltClient.StartAsync" />.
             </remarks>
         </member>
+        <member name="P:RevoltSharp.RevoltClient.Serializer">
+            <summary>
+            The json serializer that is used with RevoltSharp.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.SerializerPretty">
+            <summary>
+            The json serializer that is used with RevoltSharp with pretty print formatting.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.Deserializer">
+            <summary>
+            The json serializer that is used with RevoltSharp.
+            </summary>
+        </member>
         <member name="P:RevoltSharp.RevoltClient.Config">
             <summary>
             Client config options for user-agent and debug options including self-host support.
@@ -431,6 +504,11 @@
             <remarks>
             You can also make custom requests with <see cref="M:RevoltSharp.Rest.RevoltRestClient.SendRequestAsync(RevoltSharp.Rest.RequestType,System.String,RevoltSharp.Rest.IRevoltRequest)"/> and json class based on <see cref="T:RevoltSharp.Rest.IRevoltRequest"/>
             </remarks>
+        </member>
+        <member name="P:RevoltSharp.RevoltClient.Admin">
+            <summary>
+            This is for self-hosted revolt instances that have global admin access.
+            </summary>
         </member>
         <member name="P:RevoltSharp.RevoltClient.CurrentUser">
             <summary>
@@ -453,7 +531,7 @@
             The current user/bot account's private notes message channel.
             </summary>
             <remarks>
-            This will be <see langword="null" /> if you have not created the channel from <see cref="!:BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltRestClient)" /> once.
+            This will be <see langword="null" /> if you have not created the channel from <see cref="M:RevoltSharp.BotHelper.GetSavedMessagesChannelAsync(RevoltSharp.Rest.RevoltRestClient)" /> once.
             </remarks>
         </member>
         <member name="M:RevoltSharp.RevoltClient.StartAsync">
@@ -664,6 +742,58 @@
             Special logger class with custom title and console colors.
             </summary>
         </member>
+        <member name="M:RevoltSharp.RevoltLogger.#ctor(System.String,RevoltSharp.RevoltLogSeverity)">
+            <summary>
+            Initialize your own logging system with a custom title and log mode.
+            </summary>
+            <param name="title"></param>
+            <param name="logMode"></param>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Reset">
+            <summary> Reset console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Red">
+            <summary> Red console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightRed">
+            <summary> Light Red console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Green">
+            <summary> Green console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightGreen">
+            <summary> Light Green console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Yellow">
+            <summary> Yellow console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightYellow">
+            <summary> Light Yellow console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Blue">
+            <summary> Blue console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightBlue">
+            <summary> Light Blue console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Magenta">
+            <summary> Magenta console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightMagenta">
+            <summary> Light Magenta console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Cyan">
+            <summary> Cyan console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightCyan">
+            <summary> Light Cyan console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.Grey">
+            <summary> Grey console color </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltLogger.LightGrey">
+            <summary> Light Grey console color </summary>
+        </member>
         <member name="M:RevoltSharp.RevoltLogger.LogJson(System.String,System.Object)">
             <summary>
             Special json log message with json data that can be a json string or class/object
@@ -715,6 +845,21 @@
             Do not log anything.
             </summary>
         </member>
+        <member name="T:RevoltSharp.PublicBot">
+            <summary>
+            Info about a public bot on Revolt.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.PublicBot.Username">
+            <summary>
+            The username of the bot.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.PublicBot.AvatarId">
+            <summary>
+            The avatar id of the bot.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.PublicBot.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
             <summary>
             Gets the bot's avatar.
@@ -722,6 +867,11 @@
             <param name="which">Which avatar to return.</param>
             <param name="size"></param>
             <returns>URL of the image</returns>
+        </member>
+        <member name="P:RevoltSharp.PublicBot.Description">
+            <summary>
+            The description of the bot.
+            </summary>
         </member>
         <member name="M:RevoltSharp.PublicBot.ToString">
             <summary> Returns a string that represents the current object.</summary>
@@ -790,6 +940,11 @@
             Default permissions for all users
             </summary>
         </member>
+        <member name="P:RevoltSharp.GroupChannel.Recipents">
+            <summary>
+            The user IDs in the group channel.
+            </summary>
+        </member>
         <member name="P:RevoltSharp.GroupChannel.Users">
             <summary>
             List of users in the channel
@@ -802,8 +957,16 @@
         </member>
         <member name="P:RevoltSharp.GroupChannel.OwnerId">
             <summary>
-            Owner of the channel
+            Owner of the group channel.
             </summary>
+        </member>
+        <member name="P:RevoltSharp.GroupChannel.Owner">
+            <summary>
+            The owner of the group channel.
+            </summary>
+            <remarks>
+            Will be <see langword="null" /> if using <see cref="F:RevoltSharp.ClientMode.Http"/>.
+            </remarks>
         </member>
         <member name="P:RevoltSharp.GroupChannel.Name">
             <summary>
@@ -831,6 +994,11 @@
         <member name="M:RevoltSharp.GroupChannel.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Group channel name </returns>
+        </member>
+        <member name="T:RevoltSharp.SavedMessagesChannel">
+            <summary>
+            A private notes channel for the current user.
+            </summary>
         </member>
         <member name="P:RevoltSharp.SavedMessagesChannel.LastMessageId">
             <summary>
@@ -938,10 +1106,21 @@
             Channel that members can speak in to other members
             </summary>
         </member>
+        <member name="T:RevoltSharp.Query">
+            <summary>
+            Query information about the connected Revolt instance.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.Emoji">
             <summary>
             Server or default emoji
             </summary>
+        </member>
+        <member name="M:RevoltSharp.Emoji.#ctor(System.String)">
+            <summary>
+            Parse the emoji format or id to use for reactions.
+            </summary>
+            <param name="emoji"></param>
         </member>
         <member name="P:RevoltSharp.Emoji.Id">
             <summary>
@@ -953,6 +1132,21 @@
             Date of when the emoji was created.
             </summary>
         </member>
+        <member name="P:RevoltSharp.Emoji.Name">
+            <summary>
+            The name of the emoji.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Emoji.IsServerEmoji">
+            <summary>
+            Is this emoji from a server.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Emoji.ServerId">
+            <summary>
+            The server id of where the emoji is from.
+            </summary>
+        </member>
         <member name="P:RevoltSharp.Emoji.Server">
             <summary>
             Server that the Emoji is from.
@@ -961,9 +1155,39 @@
             Will be <see langword="null" /> if using <see cref="F:RevoltSharp.ClientMode.Http"/>.
             </remarks>
         </member>
+        <member name="P:RevoltSharp.Emoji.CreatorId">
+            <summary>
+            The user id that created this emoji.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Emoji.IsAnimated">
+            <summary>
+            Is the emoji animated.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Emoji.IsNsfw">
+            <summary>
+            Is the emoji not safe for work (+18).
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.Emoji.ImageUrl">
+            <summary>
+            The image url of the emoji or empty if unicode.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.Emoji.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Emoji name or unicode </returns>
+        </member>
+        <member name="T:RevoltSharp.Entity">
+            <summary>
+            A Revolt object entity that has the client attached.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.CreatedEntity">
+            <summary>
+            A Revolt object entity that has an ID, Created date and Client.
+            </summary>
         </member>
         <member name="P:RevoltSharp.CreatedEntity.Id">
             <summary>
@@ -978,6 +1202,91 @@
         <member name="T:RevoltSharp.ChannelPermission">
             <summary>
             List of channel permissions.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.ManageChannel">
+            <summary>
+            Can edit the channel info, icon, description or delete the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.ManagePermissions">
+            <summary>
+            Can change the permissions of the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.ViewChannel">
+            <summary>
+            Can view the channel and messages.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.SendMessages">
+            <summary>
+            Can send messages in the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.ManageMessages">
+            <summary>
+            Can moderate messages in the channel by deleting them or removing reactions.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.ManageWebhooks">
+            <summary>
+            Can create, edit and delete external webhooks.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.CreateInvites">
+            <summary>
+            Can create server invites for the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.SendEmbeds">
+            <summary>
+            Can send embed messages in the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.UploadFiles">
+            <summary>
+            Can upload files and images in the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.Masquerade">
+            <summary>
+            Can send fake author messages in the channel for use with bridged chats from other platforms.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.AddReactions">
+            <summary>
+            Can add reactions to messages in the channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.VoiceConnect">
+            <summary>
+            Can connect to the voice channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.VoiceSpeak">
+            <summary>
+            Can speak in the voice channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.VoiceVideo">
+            <summary>
+            Can use video in the voice channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.VoiceMuteMembers">
+            <summary>
+            Can mute other members in the voice channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.VoiceDeafenMembers">
+            <summary>
+            Can deafen other members in the voice channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelPermission.VoiceMoveMembers">
+            <summary>
+            Can move other members in the voice channel to other voice channels.
             </summary>
         </member>
         <member name="T:RevoltSharp.ChannelPermissions">
@@ -1101,14 +1410,459 @@
             Type of channel that is <see cref="T:RevoltSharp.TextChannel" />, <see cref="T:RevoltSharp.VoiceChannel" />, <see cref="T:RevoltSharp.GroupChannel" />, <see cref="T:RevoltSharp.UnknownServerChannel" /> or <see cref="T:RevoltSharp.UnknownChannel" />
             </summary>
         </member>
+        <member name="F:RevoltSharp.ChannelType.Unknown">
+            <summary>
+            Unknown channel type that could not be parsed.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelType.Text">
+            <summary>
+            A Text channel that can send and recieve messages.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelType.Voice">
+            <summary>
+            A Voice channel that can be used to talk or show video calls with others.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelType.SavedMessages">
+            <summary>
+            A private notes channels for the current user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelType.Group">
+            <summary>
+            A private group of users.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ChannelType.DM">
+            <summary>
+            A private channel between another user.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.MessageFlag">
             <summary>
             List of message flags.
             </summary>
         </member>
+        <member name="F:RevoltSharp.MessageFlag.None">
+            <summary>
+            Message has no flags.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.MessageFlag.SupressNotifications">
+            <summary>
+            Message has supressed notifications for other users.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.RevoltErrorType">
+            <summary>
+            The error type for this request/function
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.Unknown">
+            <summary>
+            Unknown error type.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.AlreadyOnboarded">
+            <summary>
+            User is already onboarded
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.UsernameTaken">
+            <summary>
+            Username is already taken.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InvalidUsername">
+            <summary>
+            Invalid username that can't be used.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.UnknownUser">
+            <summary>
+            Unknown user or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.AlreadyFriends">
+            <summary>
+            You are already friends with this user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.AlreadySentRequest">
+            <summary>
+            You already send a friend request to this user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.Blocked">
+            <summary>
+            You have blocked this user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.BlockedByOther">
+            <summary>
+            This user has you blocked.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotFriends">
+            <summary>
+            You are not friends with this user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.UnknownChannel">
+            <summary>
+            Unknown channel or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.UnknownAttachment">
+            <summary>
+            Unknown attachment or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.UnknownMessage">
+            <summary>
+            Unknown message or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.CannotEditMessage">
+            <summary>
+            You can't edit other user's messages.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.CannotJoinCall">
+            <summary>
+            You can't join this voice channel.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.TooManyAttachments">
+            <summary>
+            Too many attachments for the sent message.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.TooManyReplies">
+            <summary>
+            Too many replies for the sent message.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.EmptyMessage">
+            <summary>
+            Message is empty or has no data.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.PayloadTooLarge">
+            <summary>
+            Request payload is too large.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.CannotRemoveYourself">
+            <summary>
+            You cannot remove yourself from the server?
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.GroupTooLarge">
+            <summary>
+            Group has hit the max limit of users.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.AlreadyInGroup">
+            <summary>
+            You are already in this group.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotInGroup">
+            <summary>
+            You or a user is not in the group?
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.UnknownServer">
+            <summary>
+            Unknown server or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InvalidRole">
+            <summary>
+            Unknown role or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.Banned">
+            <summary>
+            You are banned from this server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.TooManyServers">
+            <summary>
+            You have hit the max server limit for your account.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.TooManyEmoji">
+            <summary>
+            This server has hit the max emojis limit.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.ReachedMaximumBots">
+            <summary>
+            You have hit the max bots created for your account.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotAllowedForBots">
+            <summary>
+            This request/function is not allowed for bot accounts.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotAllowedForUsers">
+            <summary>
+            This request/function is not allowed for normal user accounts.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.BotIsPrivate">
+            <summary>
+            You can't invite this bot because it's private.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.CannotReportYourself">
+            <summary>
+            You can't report your own messages.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.MissingPermission">
+            <summary>
+            You are missing permissions for this request/function to use.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.MissingUserPermission">
+            <summary>
+            You are missing permissions for this request/function to use.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotElevated">
+            <summary>
+            You need to have global instance admin for this request/function to use.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotPrivileged">
+            <summary>
+            You need to have global instance admin for this request/function to use.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.CannotGiveMissingPermissions">
+            <summary>
+            You can't modify permissions that you don't have.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotOwner">
+            <summary>
+            You are not the owner of this group/server
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.RevoltDatabaseError">
+            <summary>
+            A Revolt instance database issue has occured.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InternalServerError">
+            <summary>
+            A Revolt instance internal issue has occured.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InvalidOperation">
+            <summary>
+            You can't use thie request/function
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InvalidCredentials">
+            <summary>
+            You are not logged in or authorized correctly.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InvalidProperty">
+            <summary>
+            Invalid object property for the Revolt instance.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.InvalidSession">
+            <summary>
+            You are not logged in correctly.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.DuplicateNonce">
+            <summary>
+            Duplicate message nonce/unique message.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.VosoUnavailable">
+            <summary>
+            Voice server is unavailable.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NotFound">
+            <summary>
+            This object is missing or not found.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.NoEffect">
+            <summary>
+            This request/function has no effect.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.FailedValidation">
+            <summary>
+            Failed validation for the request/function
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.OnboardingNotFinished">
+            <summary>
+            You have not finished onboarding for the current user.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.RevoltErrorType.AlreadyAuthenticated">
+            <summary>
+            You are already authenticated.
+            </summary>
+        </member>
         <member name="T:RevoltSharp.ServerPermission">
             <summary>
             List of server permissions
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageChannels">
+            <summary>
+            Can create/delete channels and edit channel info for all channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageServer">
+            <summary>
+            Can edit the server info such as name and icon.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManagePermissions">
+            <summary>
+            Can modify the permissions for all roles in the server below their current role rank.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageRoles">
+            <summary>
+            Can create, edit and delete all roles in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageCustomisation">
+            <summary>
+            Can create and delete emojis in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.KickMembers">
+            <summary>
+            Can kick members from the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.BanMembers">
+            <summary>
+            Can ban members from the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.TimeoutMembers">
+            <summary>
+            Can mute members in the server from chatting.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.AssignRoles">
+            <summary>
+            Can give other members's a role that is below their current role rank.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ChangeNickname">
+            <summary>
+            Can change their own nickname in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageNicknames">
+            <summary>
+            Can change the nickname of other members in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ChangeAvatar">
+            <summary>
+            Can change their own avatar in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageAvatars">
+            <summary>
+            Can reset other member's avatars in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ViewChannels">
+            <summary>
+            Can view all channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.SendMessages">
+            <summary>
+            Can send messages to all channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageMessages">
+            <summary>
+            Can moderate messages in all channels by deleting them or removing reactions.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.ManageWebhooks">
+            <summary>
+            Can create, edit and delete external webhooks in all channels.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.CreateInvites">
+            <summary>
+            Can create server invites to all channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.SendEmbeds">
+            <summary>
+            Can send embed messages to all channels in the server
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.UploadFiles">
+            <summary>
+            Can upload files and images to all channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.Masquerade">
+            <summary>
+            Can send fake author messages in the channel for use with bridged chats from other platforms to all channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.AddReactions">
+            <summary>
+            Can add reactions to all channels with messages in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.VoiceConnect">
+            <summary>
+            Can connect to all voice channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.VoiceSpeak">
+            <summary>
+            Can speak in all voice channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.VoiceVideo">
+            <summary>
+            Can use video in all voice channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.VoiceMuteMembers">
+            <summary>
+            Can mute other members in all voice channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.VoiceDeafenMembers">
+            <summary>
+            Can deafen other members in all voice channels in the server.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.ServerPermission.VoiceMoveMembers">
+            <summary>
+            Can move other members in all voice channels to other voice channels in the server.
             </summary>
         </member>
         <member name="T:RevoltSharp.ServerPermissions">
@@ -1418,6 +2172,11 @@
             </summary>
             <returns><see cref="T:RevoltSharp.Embed" /></returns>
         </member>
+        <member name="T:RevoltSharp.MessageEmbed">
+            <summary>
+            A message embed with content and images.
+            </summary>
+        </member>
         <member name="P:RevoltSharp.MessageEmbed.Type">
             <summary>
             Type of embed
@@ -1456,6 +2215,11 @@
         <member name="P:RevoltSharp.MessageEmbed.Image">
             <summary>
             Embed image attachment
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.MessageEmbed.Media">
+            <summary>
+            The attachment object for the image?
             </summary>
         </member>
         <member name="P:RevoltSharp.MessageEmbed.Video">
@@ -3272,6 +4036,14 @@
             <summary>
             Revolt http/rest methods for emojis.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.EmojiHelper.GetCreatorAsync(RevoltSharp.Emoji)">
+            <summary>
+            The user that created this emoji.
+            </summary>
+            <remarks>
+            Will be <see langword="null" /> if using <see cref="F:RevoltSharp.ClientMode.Http"/> or you can't access the user.
+            </remarks>
         </member>
         <member name="M:RevoltSharp.EmojiHelper.GetEmojiAsync(RevoltSharp.Server,System.String)">
             <inheritdoc cref="M:RevoltSharp.EmojiHelper.GetEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />

@@ -1,7 +1,13 @@
 ﻿namespace RevoltSharp;
+
+/// <summary>
+/// Query information about the connected Revolt instance.
+/// </summary>
 public class Query
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     internal Query(QueryJson json)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
         RevoltVersion = json.RevoltVersion;
         AppUrl = json.AppUrl;
@@ -24,6 +30,8 @@ public class Query
         VoiceWebsocketUrl = json.ServerFeatures.VoiceServer.ws;
     }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
     public string RevoltVersion { get; internal set; }
 
     public string AppUrl { get; internal set; }
@@ -43,4 +51,6 @@ public class Query
     public string VoiceApiUrl { get; internal set; }
 
     public string VoiceWebsocketUrl { get; internal set; }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

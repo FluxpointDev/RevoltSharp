@@ -988,6 +988,7 @@
             <param name="masquerade"></param>
             <param name="interactions"></param>
             <param name="replies"></param>
+            <param name="flags"></param>
         </member>
         <member name="M:RevoltSharp.Commands.ModuleBase.ReplyFileAsync(System.String,System.String,RevoltSharp.Embed[],RevoltSharp.MessageMasquerade,RevoltSharp.MessageInteractions,RevoltSharp.MessageReply[],RevoltSharp.MessageFlag)">
             <summary>
@@ -999,6 +1000,7 @@
             <param name="masquerade"></param>
             <param name="interactions"></param>
             <param name="replies"></param>
+            <param name="flags"></param>
         </member>
         <member name="M:RevoltSharp.Commands.ModuleBase.BeforeExecute(RevoltSharp.Commands.CommandInfo)">
             <summary>

@@ -8,7 +8,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace RevoltSharp;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 
 /// <summary>
@@ -258,19 +260,19 @@ public static class MemberHelper
     }
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBanInfo> BanMemberAsync(this Server server, string userId, string reason = "")
+    public static Task<ServerBanInfo> BanMemberAsync(this Server server, string userId, string? reason = null)
         => BanMemberAsync(server.Client.Rest, server.Id, userId, reason);
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBanInfo> BanMemberAsync(this Server server, ServerMember member, string reason = "")
+    public static Task<ServerBanInfo> BanMemberAsync(this Server server, ServerMember member, string? reason = null)
         => BanMemberAsync(server.Client.Rest, server.Id, member.Id, reason);
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBanInfo> BanMemberAsync(this Server server, User user, string reason = "")
+    public static Task<ServerBanInfo> BanMemberAsync(this Server server, User user, string? reason = null)
         => BanMemberAsync(server.Client.Rest, server.Id, user.Id, reason);
 
     /// <inheritdoc cref="BanMemberAsync(RevoltRestClient, string, string, string)" />
-    public static Task<ServerBanInfo> BanAsync(this ServerMember member, string reason = "")
+    public static Task<ServerBanInfo> BanAsync(this ServerMember member, string? reason = null)
         => BanMemberAsync(member.Client.Rest, member.ServerId, member.Id, reason);
 
     /// <summary>
@@ -281,7 +283,7 @@ public static class MemberHelper
     /// </remarks>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<ServerBanInfo> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string reason = "")
+    public static async Task<ServerBanInfo> BanMemberAsync(this RevoltRestClient rest, string serverId, string userId, string? reason = null)
     {
         Conditions.ServerIdLength(serverId, nameof(BanMemberAsync));
         Conditions.UserIdLength(userId, nameof(BanMemberAsync));
@@ -319,25 +321,25 @@ public static class MemberHelper
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyAsync(this ServerMember member, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
+    public static Task ModifyAsync(this ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         Conditions.OwnerModifyCheck(member, nameof(ModifyAsync));
         return ModifyMemberAsync(member.Client.Rest, member.ServerId, member.Id, nickname, avatar, timeout);
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this Server _, ServerMember member, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
+    public static Task ModifyMemberAsync(this Server _, ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
         => ModifyAsync(member, nickname, avatar, timeout);
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this Server server, string memberId, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
+    public static Task ModifyMemberAsync(this Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         Conditions.OwnerModifyCheck(server, memberId, nameof(ModifyMemberAsync));
         return ModifyMemberAsync(server.Client.Rest, server.Id, memberId, nickname, avatar, timeout);
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this RevoltRestClient rest, Server server, string memberId, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
+    public static Task ModifyMemberAsync(this RevoltRestClient rest, Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         Conditions.OwnerModifyCheck(server, memberId, nameof(ModifyMemberAsync));
         return ModifyMemberAsync(rest, server.Id, memberId, nickname, avatar, timeout);
@@ -348,11 +350,10 @@ public static class MemberHelper
     /// </summary>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string> nickname = null, Option<Attachment> avatar = null, Option<DateTime?> timeout = null)
+    public static async Task ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         Conditions.ServerIdLength(serverId, nameof(ModifyMemberAsync));
         Conditions.MemberIdLength(memberId, nameof(ModifyMemberAsync));
-
         EditMemberRequest Req = new EditMemberRequest();
         if (nickname != null)
         {

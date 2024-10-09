@@ -1,6 +1,8 @@
 ﻿namespace RevoltSharp;
 
-
+/// <summary>
+/// A private notes channel for the current user.
+/// </summary>
 public class SavedMessagesChannel : Channel
 {
     internal SavedMessagesChannel(RevoltClient client, ChannelJson model) : base(client, model)

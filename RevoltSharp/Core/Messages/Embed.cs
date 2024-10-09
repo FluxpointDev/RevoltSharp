@@ -58,6 +58,9 @@ public class EmbedBuilder
     }
 }
 
+/// <summary>
+/// A message embed with content and images.
+/// </summary>
 public class MessageEmbed
 {
     private MessageEmbed(RevoltClient client, EmbedJson model)
@@ -134,6 +137,9 @@ public class MessageEmbed
     /// </summary>
     public EmbedMedia? Image { get; internal set; }
 
+    /// <summary>
+    /// The attachment object for the image?
+    /// </summary>
     public Attachment? Media { get; internal set; }
 
     /// <summary>

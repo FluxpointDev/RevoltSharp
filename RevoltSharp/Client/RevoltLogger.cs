@@ -13,11 +13,16 @@ namespace RevoltSharp;
 /// </summary>
 public class RevoltLogger
 {
+    /// <summary>
+    /// Initialize your own logging system with a custom title and log mode.
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="logMode"></param>
     public RevoltLogger(string title, RevoltLogSeverity logMode)
     {
         Title = title;
         LogMode = logMode;
-        _ = Task.Factory.StartNew(async () =>
+        LoggerTask = Task.Factory.StartNew(async () =>
         {
             foreach (RevoltLogJsonMessage msg in MessageQueue.GetConsumingEnumerable())
             {
@@ -45,28 +50,44 @@ public class RevoltLogger
 
     public bool AllowOptionals { get; set; }
 
+    private Task LoggerTask { get; set; }
+
     private RevoltLogSeverity LogMode { get; set; }
 
     private BlockingCollection<RevoltLogJsonMessage> MessageQueue = new BlockingCollection<RevoltLogJsonMessage>();
 
-    private static readonly string Reset = "\u001b[39m";
-
     #pragma warning disable IDE0051 // Remove unused private members
 
-    private static readonly string Red = "\u001b[31m";
-    private static readonly string LightRed = "\u001b[91m";
-    private static readonly string Green = "\u001b[32m";
-    private static readonly string LightGreen = "\u001b[92m";
-    private static readonly string Yellow = "\u001b[33m";
-    private static readonly string LightYellow = "\u001b[93m";
-    private static readonly string Blue = "\u001b[34m";
-    private static readonly string LightBlue = "\u001b[94m";
-    private static readonly string Magenta = "\u001b[35m";
-    private static readonly string LightMagenta = "\u001b[95m";
-    private static readonly string Cyan = "\u001b[36m";
-    private static readonly string LightCyan = "\u001b[96m";
-    private static readonly string Grey = "\u001b[90m";
-    private static readonly string LightGrey = "\u001b[37m";
+    /// <summary> Reset console color </summary>
+    public static readonly string Reset = "\u001b[39m";
+    /// <summary> Red console color </summary>
+    public static readonly string Red = "\u001b[31m";
+    /// <summary> Light Red console color </summary>
+    public static readonly string LightRed = "\u001b[91m";
+    /// <summary> Green console color </summary>
+    public static readonly string Green = "\u001b[32m";
+    /// <summary> Light Green console color </summary>
+    public static readonly string LightGreen = "\u001b[92m";
+    /// <summary> Yellow console color </summary>
+    public static readonly string Yellow = "\u001b[33m";
+    /// <summary> Light Yellow console color </summary>
+    public static readonly string LightYellow = "\u001b[93m";
+    /// <summary> Blue console color </summary>
+    public static readonly string Blue = "\u001b[34m";
+    /// <summary> Light Blue console color </summary>
+    public static readonly string LightBlue = "\u001b[94m";
+    /// <summary> Magenta console color </summary>
+    public static readonly string Magenta = "\u001b[35m";
+    /// <summary> Light Magenta console color </summary>
+    public static readonly string LightMagenta = "\u001b[95m";
+    /// <summary> Cyan console color </summary>
+    public static readonly string Cyan = "\u001b[36m";
+    /// <summary> Light Cyan console color </summary>
+    public static readonly string LightCyan = "\u001b[96m";
+    /// <summary> Grey console color </summary>
+    public static readonly string Grey = "\u001b[90m";
+    /// <summary> Light Grey console color </summary>
+    public static readonly string LightGrey = "\u001b[37m";
 
     #pragma warning restore IDE0051 // Remove unused private members
 

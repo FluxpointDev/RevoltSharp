@@ -3,7 +3,9 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Threading.Tasks;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace RevoltSharp;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 
 /// <summary>
@@ -47,11 +49,11 @@ public static class ChannelHelper
 
 
     /// <inheritdoc cref="ModifyChannelAsync(RevoltRestClient, string, Option{string}, Option{string}, Option{string}, Option{bool}, Option{string})" />
-    public static Task<Channel> ModifyChannelAsync(this Server server, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
+    public static Task<Channel> ModifyChannelAsync(this Server server, string channelId, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null)
         => InternalModifyChannelAsync<Channel>(server.Client.Rest, channelId, name, desc, iconId, nsfw, null);
 
     /// <inheritdoc cref="ModifyChannelAsync(RevoltRestClient, string, Option{string}, Option{string}, Option{string}, Option{bool}, Option{string})" />
-    public static Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, Channel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
+    public static Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, Channel channel, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null, Option<string>? owner = null)
         => InternalModifyChannelAsync<Channel>(rest, channel.Id, name, desc, iconId, nsfw, owner);
 
     /// <summary>
@@ -62,10 +64,10 @@ public static class ChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
+    public static Task<Channel> ModifyChannelAsync(this RevoltRestClient rest, string channelId, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null, Option<string>? owner = null)
         => InternalModifyChannelAsync<Channel>(rest, channelId, name, desc, iconId, nsfw, owner);
 
-    internal static async Task<TChannel> InternalModifyChannelAsync<TChannel>(this RevoltRestClient rest, string channelId, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null) where TChannel : Channel
+    internal static async Task<TChannel> InternalModifyChannelAsync<TChannel>(this RevoltRestClient rest, string channelId, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null, Option<string>? owner = null) where TChannel : Channel
     {
         Conditions.ChannelIdLength(channelId, nameof(ModifyChannelAsync));
 

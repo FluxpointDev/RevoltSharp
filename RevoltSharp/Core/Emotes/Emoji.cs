@@ -22,6 +22,10 @@ public class Emoji : CreatedEntity
         Name = emoji;
     }
 
+    /// <summary>
+    /// Parse the emoji format or id to use for reactions.
+    /// </summary>
+    /// <param name="emoji"></param>
     public Emoji(string emoji) : base(null, emoji.StartsWith(':') ? emoji.Substring(1, emoji.Length - 2) : emoji)
     {
         Name = Id;
@@ -37,11 +41,20 @@ public class Emoji : CreatedEntity
     /// </summary>
     public new DateTimeOffset? CreatedAt => base.CreatedAt;
 
+    /// <summary>
+    /// The name of the emoji.
+    /// </summary>
     public string Name { get; internal set; }
 
+    /// <summary>
+    /// Is this emoji from a server.
+    /// </summary>
     public bool IsServerEmoji
         => !string.IsNullOrEmpty(ServerId);
 
+    /// <summary>
+    /// The server id of where the emoji is from.
+    /// </summary>
     public string? ServerId { get; internal set; }
 
     /// <summary>
@@ -52,14 +65,24 @@ public class Emoji : CreatedEntity
     /// </remarks>
     public Server? Server => Client.GetServer(ServerId);
 
+    /// <summary>
+    /// The user id that created this emoji.
+    /// </summary>
     public string? CreatorId { get; internal set; }
 
-    public User? Creator => Client.GetUser(CreatorId);
-
+    /// <summary>
+    /// Is the emoji animated.
+    /// </summary>
     public bool IsAnimated { get; internal set; }
 
+    /// <summary>
+    /// Is the emoji not safe for work (+18).
+    /// </summary>
     public bool IsNsfw { get; internal set; }
 
+    /// <summary>
+    /// The image url of the emoji or empty if unicode.
+    /// </summary>
     public string ImageUrl
         => IsServerEmoji ? Client.Config.Debug.UploadUrl + "/emojis/" + Id : string.Empty;
 

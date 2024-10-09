@@ -1,6 +1,8 @@
 ﻿namespace RevoltSharp;
 
-
+/// <summary>
+/// Info about a public bot on Revolt.
+/// </summary>
 public class PublicBot : CreatedEntity
 {
     internal PublicBot(RevoltClient client, PublicBotJson model) : base(client, model.Id)
@@ -10,8 +12,14 @@ public class PublicBot : CreatedEntity
         Description = model.Description;
     }
 
+    /// <summary>
+    /// The username of the bot.
+    /// </summary>
     public string Username { get; internal set; }
 
+    /// <summary>
+    /// The avatar id of the bot.
+    /// </summary>
     public string? AvatarId { get; internal set; }
 
     /// <summary>
@@ -37,6 +45,9 @@ public class PublicBot : CreatedEntity
         return null;
     }
 
+    /// <summary>
+    /// The description of the bot.
+    /// </summary>
     public string? Description { get; internal set; }
 
     /// <summary> Returns a string that represents the current object.</summary>
