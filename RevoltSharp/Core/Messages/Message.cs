@@ -31,8 +31,8 @@ public abstract class Message : CreatedEntity
         if (Channel != null && Channel is ServerChannel SC)
         {
             ServerId = SC.ServerId;
-            if (client.WebSocket != null && model.AuthorId != User.SystemUserId)
-                Member = Server.InternalMembers[model.AuthorId];
+            if (client.WebSocket != null && model.AuthorId != User.SystemUserId && Server.InternalMembers.TryGetValue(model.AuthorId, out var member))
+                Member = member;
         }
     }
 
@@ -126,7 +126,7 @@ public abstract class Message : CreatedEntity
     /// <remarks>
     /// Will be <see langword="null" /> if client is rest mode or system/webhook messages.
     /// </remarks>
-    public ServerMember Member { get; internal set; }
+    public ServerMember? Member { get; internal set; }
 
     /// <summary>
     /// Get the type of message this is.

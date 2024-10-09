@@ -12,10 +12,19 @@ using System.Threading.Tasks;
 
 namespace TestBot.Commands;
 
-
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("beforemsg")]
+    public async Task BeforeMsg(string msgId)
+    {
+        var Messages = await Context.Channel.GetMessagesAsync(10, beforeMessageId: msgId);
+        foreach (var m in Messages)
+        {
+            Console.WriteLine($"{m.Author?.ToString()}: {m.Type} - {(m as UserMessage)?.Content}");
+        }
+    }
+
     [Command("leaveserver")]
     public async Task LeaveServer()
     {
@@ -118,7 +127,7 @@ public class CmdTest : ModuleBase
 
 
     [Command("bans")]
-    public async Task Messages()
+    public async Task Ban()
     {
         await Context.Server.GetBansAsync();
 
@@ -128,8 +137,17 @@ public class CmdTest : ModuleBase
     [Command("tag")]
     public async Task Tag()
     {
+        foreach(var command in CommandHandler.Service.Commands)
+        {
+            PreconditionResult result = await command.CheckPreconditionsAsync(Context);
+            if (command.Name == "bans")
+                Console.WriteLine("Check: " + result.IsSuccess);
+            
+        }
+        
         await ReplyAsync($"Hi {Context.User.Tag}");
     }
+
     [Command("owner")]
     public async Task Owner()
     {

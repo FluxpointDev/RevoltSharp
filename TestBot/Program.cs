@@ -1,4 +1,5 @@
-﻿using Optionals;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Optionals;
 using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
@@ -20,7 +21,7 @@ class Program
     public static async Task Start()
     {
         // Yes ik i can use json file blah blah :p
-        string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/ConfigW.txt");
+        string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
 
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
@@ -70,14 +71,16 @@ public class CommandHandler
         Service.OnCommandExecuted += Service_OnCommandExecuted;
     }
     private RevoltClient Client;
-    private CommandService Service = new CommandService();
+    public static CommandService Service = new CommandService();
 
     // Change this prefix
     public const string Prefix = "!";
 
     public async Task LoadCommands()
     {
-        await Service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+        var Services = new ServiceCollection().AddSingleton(Service).BuildServiceProvider();
+
+        await Service.AddModulesAsync(Assembly.GetEntryAssembly(), Services);
     }
 
 
