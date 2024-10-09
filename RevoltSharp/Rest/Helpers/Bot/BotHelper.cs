@@ -19,9 +19,9 @@ public static class BotHelper
     public static Task<FileAttachment> UploadFileAsync(this Channel channel, string path, UploadFileType type)
         => channel.Client.Rest.UploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
 
-    /// <inheritdoc cref="GetOrCreateSavedMessageChannelAsync(RevoltRestClient)" />
-    public static Task<SavedMessagesChannel?> GetOrCreateSavedMessageChannelAsync(this SelfUser user)
-        => GetOrCreateSavedMessageChannelAsync(user.Client.Rest);
+    /// <inheritdoc cref="GetSavedMessagesChannelAsync(RevoltRestClient)" />
+    public static Task<SavedMessagesChannel?> GetSavedMessagesChannelAsync(this SelfUser user)
+        => GetSavedMessagesChannelAsync(user.Client.Rest);
 
     /// <summary>
     /// Get or create the current user/bot's saved messages channel that is private.
@@ -30,7 +30,7 @@ public static class BotHelper
     /// <see cref="SavedMessagesChannel" /> or <see langword="null" />
     /// </returns>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<SavedMessagesChannel?> GetOrCreateSavedMessageChannelAsync(this RevoltRestClient rest)
+    public static async Task<SavedMessagesChannel?> GetSavedMessagesChannelAsync(this RevoltRestClient rest)
     {
         if (rest.Client.SavedMessagesChannel != null)
             return rest.Client.SavedMessagesChannel;

@@ -24,13 +24,13 @@ public class PublicBot : CreatedEntity
     {
         if (!string.IsNullOrEmpty(AvatarId) && (which | AvatarSources.User) != 0)
         {
-            Conditions.ImageSizeLength(size, nameof(GetAvatarUrl));
+            Conditions.GetImageSizeLength(size, nameof(GetAvatarUrl));
             return $"{Client.Config.Debug.UploadUrl}avatars/{Id}/{AvatarId}{(size != null ? $"?size={size}" : null)}";
         }
 
         if ((which | AvatarSources.Default) != 0)
         {
-            Conditions.ImageSizeLength(size, nameof(GetAvatarUrl));
+            Conditions.GetImageSizeLength(size, nameof(GetAvatarUrl));
             return $"{Client.Config.ApiUrl}users/{Id}/default_avatar{(size != null ? $"?size={size}" : null)}";
         }
 

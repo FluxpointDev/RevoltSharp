@@ -294,13 +294,14 @@ internal class RevoltSocketClient
                                     user.InternalMutualDMs.TryAdd(c.Id, DM);
                             }
 
-                            foreach (EmojiJson m in @event.Emojis)
-                            {
-                                Emoji Emote = new Emoji(Client, m);
-                                EmojiCache.TryAdd(m.Id, Emote);
-                                if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
-                                    s.InternalEmojis.TryAdd(m.Id, Emote);
-                            }
+                                foreach (EmojiJson m in @event.Emojis)
+                                {
+                                    Emoji Emote = new Emoji(Client, m);
+                                    EmojiCache.TryAdd(m.Id, Emote);
+                                    if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
+                                        s.InternalEmojis.TryAdd(m.Id, Emote);
+                                }
+                            
                             Client.InvokeLog("WebSocket Ready!", RevoltLogSeverity.Debug);
 
                             Client.InvokeReady(CurrentUser);
@@ -311,7 +312,7 @@ internal class RevoltSocketClient
                                 foreach (Channel channel in ChannelCache.Values.Where(x => x is GroupChannel))
                                 {
                                     GroupChannel c = channel as GroupChannel;
-                                    if (c.Recipents.Count == 1)
+                                    if (c.Recipents.Length == 1)
                                     {
                                         await c.LeaveAsync();
                                     }
@@ -330,7 +331,6 @@ internal class RevoltSocketClient
                 case "Message":
                     {
                         MessageEventJson @event = payload.ToObject<MessageEventJson>(RevoltClient.Deserializer);
-
                         User? User = null;
                         if (@event.AuthorId != "00000000000000000000000000" && @event.Webhook == null && !UserCache.ContainsKey(@event.AuthorId))
                         {
@@ -929,6 +929,7 @@ internal class RevoltSocketClient
                     break;
                 case "MessageReact":
                     {
+
                         ReactionAddedEventJson @event = payload.ToObject<ReactionAddedEventJson>(RevoltClient.Deserializer);
 
                         ChannelCache.TryGetValue(@event.ChannelId, out Channel channel);

@@ -273,6 +273,7 @@ public class RevoltClient : ClientEvents
             WebSocket.ClearAllCache();
 
         }
+        Dictionary<string, string> test = new Dictionary<string, string>();
     }
 
     /// <summary>

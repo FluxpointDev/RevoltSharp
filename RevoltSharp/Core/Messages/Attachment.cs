@@ -12,8 +12,11 @@ public class Attachment : CreatedEntity
     {
         Tag = model.Tag;
         Filename = model.Filename;
-        Size = model.Size;
-        Type = model.Metadata.Type;
+        FileSize = model.FileSize;
+        if (model.Metadata != null && !string.IsNullOrEmpty(model.Metadata.Type) && Enum.TryParse(model.Metadata.Type, ignoreCase: true, out AttachmentType AT))
+            Type = AT;
+        else
+            Type = AttachmentType.File;
         Width = model.Metadata.Width;
         Height = model.Metadata.Height;
         Deleted = model.Deleted ?? false;
@@ -43,12 +46,12 @@ public class Attachment : CreatedEntity
     /// <summary>
     /// The file mime type of the attachment.
     /// </summary>
-    public string Type { get; }
+    public AttachmentType Type { get; }
 
     /// <summary>
     /// The size of the file attachment.
     /// </summary>
-    public int Size { get; }
+    public int FileSize { get; }
 
     /// <summary>
     /// The width of the image if the file is an image type.
@@ -75,7 +78,7 @@ public class Attachment : CreatedEntity
     /// </summary>
     public string GetUrl(int? size = null)
     {
-        Conditions.ImageSizeLength(size, nameof(GetUrl));
+        Conditions.GetImageSizeLength(size, nameof(GetUrl));
         return $"{Client.Config.Debug.UploadUrl}{Tag}/{Id}/{Filename}{(size != null ? $"?size={size}" : null)}";
     }
 
@@ -99,8 +102,8 @@ public class Attachment : CreatedEntity
                 Height = Height,
                 Width = Width
             },
-            ContentType = Type,
-            Size = Size
+            ContentType = Type.ToString(),
+            FileSize = FileSize
         };
     }
 
@@ -110,4 +113,30 @@ public class Attachment : CreatedEntity
     {
         return Filename;
     }
+}
+/// <summary>
+/// The type of attachment this is.
+/// </summary>
+public enum AttachmentType
+{
+    /// <summary>
+    /// Generic file type with no category.
+    /// </summary>
+    File,
+    /// <summary>
+    /// File contains text.
+    /// </summary>
+    Text,
+    /// <summary>
+    /// File is an image such as png, jpg, webp
+    /// </summary>
+    Image,
+    /// <summary>
+    /// File is a video such as mp4, mkv
+    /// </summary>
+    Video,
+    /// <summary>
+    /// File is an audio such as mp3, wav
+    /// </summary>
+    Audio
 }

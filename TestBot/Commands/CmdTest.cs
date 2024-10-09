@@ -441,7 +441,7 @@ public class CmdTest : ModuleBase
     public async Task RemoveRole()
     {
         ServerMember Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
-        await Context.Client.Rest.RemoveRoleAsync(Member, Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
+        await Member.RemoveRoleAsync(Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
     }
 
     [Command("testreaction")]
@@ -531,14 +531,14 @@ public class CmdTest : ModuleBase
         UserMessage GCM = await GC.SendMessageAsync("Hi");
         await GCM.DeleteAsync();
 
-        //var GCMembers = await GC.GetMembersAsync();
-        //if (!GCMembers.Any())
-        //    throw new Exception("Failed to get Group members");
+        var GCMembers = await GC.GetUsersAsync();
+        if (!GCMembers.Any())
+            throw new Exception("Failed to get Group users");
 
         await GC.ModifyAsync(new Option<string>("Tags Test"), new Option<string>("Desc here"));
 
         Console.WriteLine("Running saved message tests");
-        SavedMessagesChannel Saved = await Context.Client.Rest.GetOrCreateSavedMessageChannelAsync();
+        SavedMessagesChannel Saved = await Context.Client.Rest.GetSavedMessagesChannelAsync();
         if (Saved == null)
             throw new Exception("Failed to get saved message channel");
 
@@ -570,5 +570,17 @@ public class CmdTest : ModuleBase
         var Members = await Context.Server.GetMembersAsync();
         var List = Members.Where(x => x.RolesIds.Any(x => x == "01GZYQ9GCE14824E1HM10E49FP")).Select(x => $"<@{x.Id}>");
         await Context.Channel.SendMessageAsync($"**RevoltSharp Notice**\n{string.Join(" | ", List)}");
+    }
+
+    [Command("blockme")]
+    public async Task BlockMe()
+    {
+        await Context.User.BlockAsync();
+    }
+
+    [Command("unblockme")]
+    public async Task UnBlockMe()
+    {
+        await Context.User.UnBlockAsync();
     }
 }

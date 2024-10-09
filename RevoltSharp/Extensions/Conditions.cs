@@ -239,10 +239,10 @@ public static class Conditions
             throw new RevoltArgumentException($"Message before id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
     }
 
-    public static void ImageSizeLength(int? size, string request)
+    public static void GetImageSizeLength(int? size, string request)
     {
         if (size != null && size <= 0)
-            throw new RevoltArgumentException($"Image size cannot be zero for the {request} request.");
+            throw new RevoltArgumentException($"Image size cannot be zero or less than for the {request} GetUrl function.");
     }
 
     public static void ReplyListCount(MessageReply[] list, string request)

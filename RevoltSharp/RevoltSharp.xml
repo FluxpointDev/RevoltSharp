@@ -453,7 +453,7 @@
             The current user/bot account's private notes message channel.
             </summary>
             <remarks>
-            This will be <see langword="null" /> if you have not created the channel from <see cref="M:RevoltSharp.BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltSharp.Rest.RevoltRestClient)" /> once.
+            This will be <see langword="null" /> if you have not created the channel from <see cref="!:BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltRestClient)" /> once.
             </remarks>
         </member>
         <member name="M:RevoltSharp.RevoltClient.StartAsync">
@@ -1313,7 +1313,7 @@
             The file mime type of the attachment.
             </summary>
         </member>
-        <member name="P:RevoltSharp.Attachment.Size">
+        <member name="P:RevoltSharp.Attachment.FileSize">
             <summary>
             The size of the file attachment.
             </summary>
@@ -1346,6 +1346,36 @@
         <member name="M:RevoltSharp.Attachment.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> File.png </returns>
+        </member>
+        <member name="T:RevoltSharp.AttachmentType">
+            <summary>
+            The type of attachment this is.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AttachmentType.File">
+            <summary>
+            Generic file type with no category.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AttachmentType.Text">
+            <summary>
+            File contains text.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AttachmentType.Image">
+            <summary>
+            File is an image such as png, jpg, webp
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AttachmentType.Video">
+            <summary>
+            File is a video such as mp4, mkv
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.AttachmentType.Audio">
+            <summary>
+            File is an audio such as mp3, wav
+            </summary>
         </member>
         <member name="T:RevoltSharp.EmbedBuilder">
             <summary>
@@ -2737,10 +2767,10 @@
         <member name="M:RevoltSharp.BotHelper.UploadFileAsync(RevoltSharp.Channel,System.String,RevoltSharp.Rest.UploadFileType)">
             <inheritdoc cref="M:RevoltSharp.Rest.RevoltRestClient.UploadFileAsync(System.Byte[],System.String,RevoltSharp.Rest.UploadFileType)" />
         </member>
-        <member name="M:RevoltSharp.BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltSharp.SelfUser)">
-            <inheritdoc cref="M:RevoltSharp.BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltSharp.Rest.RevoltRestClient)" />
+        <member name="M:RevoltSharp.BotHelper.GetSavedMessagesChannelAsync(RevoltSharp.SelfUser)">
+            <inheritdoc cref="M:RevoltSharp.BotHelper.GetSavedMessagesChannelAsync(RevoltSharp.Rest.RevoltRestClient)" />
         </member>
-        <member name="M:RevoltSharp.BotHelper.GetOrCreateSavedMessageChannelAsync(RevoltSharp.Rest.RevoltRestClient)">
+        <member name="M:RevoltSharp.BotHelper.GetSavedMessagesChannelAsync(RevoltSharp.Rest.RevoltRestClient)">
             <summary>
             Get or create the current user/bot's saved messages channel that is private.
             </summary>
@@ -2802,6 +2832,9 @@
             </summary>
         </member>
         <member name="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Server,System.String)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.DMChannel)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
         <member name="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
@@ -3240,6 +3273,9 @@
             Revolt http/rest methods for emojis.
             </summary>
         </member>
+        <member name="M:RevoltSharp.EmojiHelper.GetEmojiAsync(RevoltSharp.Server,System.String)">
+            <inheritdoc cref="M:RevoltSharp.EmojiHelper.GetEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
         <member name="M:RevoltSharp.EmojiHelper.GetEmojiAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
             <summary>
             Get an emoji.
@@ -3614,6 +3650,9 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
+        <member name="M:RevoltSharp.ServerHelper.GetBansAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server)">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.GetBansAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
         <member name="M:RevoltSharp.ServerHelper.GetBansAsync(RevoltSharp.Server)">
             <inheritdoc cref="M:RevoltSharp.ServerHelper.GetBansAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
@@ -3630,9 +3669,25 @@
         <member name="M:RevoltSharp.ServerHelper.LeaveAsync(RevoltSharp.Server)">
             <inheritdoc cref="M:RevoltSharp.ServerHelper.LeaveServerAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
+        <member name="M:RevoltSharp.ServerHelper.LeaveAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server)">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.LeaveServerAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
         <member name="M:RevoltSharp.ServerHelper.LeaveServerAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
             <summary>
             Leave server or delete it if owned.
+            </summary>
+            <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Server,RevoltSharp.ServerPermissions)">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)" />
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server,RevoltSharp.ServerPermissions)">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)" />
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)">
+            <summary>
+            Modify the default member permissions for the server.
             </summary>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>

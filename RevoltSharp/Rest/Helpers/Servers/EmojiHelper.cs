@@ -13,6 +13,18 @@ namespace RevoltSharp;
 /// </summary>
 public static class EmojiHelper
 {
+    /// <inheritdoc cref="GetEmojiAsync(RevoltRestClient, string)" />
+    public static async Task<Emoji?> GetEmojiAsync(this Server server, string emojiId)
+    {
+        Conditions.EmojiIdLength(emojiId, nameof(GetEmojiAsync));
+
+        Emoji? emoji = await GetEmojiAsync(server.Client.Rest, emojiId);
+        if (emoji == null || emoji.ServerId != server.Id)
+            return null;
+
+        return emoji;
+    }
+
     /// <summary>
     /// Get an emoji.
     /// </summary>

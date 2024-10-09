@@ -1,4 +1,5 @@
 ﻿using RevoltSharp.Rest;
+using RevoltSharp.Rest.Requests;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -40,6 +41,10 @@ public static class ServerHelper
     }
 
     /// <inheritdoc cref="GetBansAsync(RevoltRestClient, string)" />
+    public static Task<IReadOnlyCollection<ServerBan>> GetBansAsync(this RevoltRestClient rest, Server server)
+        => GetBansAsync(rest, server.Id);
+
+    /// <inheritdoc cref="GetBansAsync(RevoltRestClient, string)" />
     public static Task<IReadOnlyCollection<ServerBan>> GetBansAsync(this Server server)
         => GetBansAsync(server.Client.Rest, server.Id);
 
@@ -67,6 +72,10 @@ public static class ServerHelper
     public static Task LeaveAsync(this Server server)
         => LeaveServerAsync(server.Client.Rest, server.Id);
 
+    /// <inheritdoc cref="LeaveServerAsync(RevoltRestClient, string)" />
+    public static Task LeaveAsync(this RevoltRestClient rest, Server server)
+        => LeaveServerAsync(rest, server.Id);
+
     /// <summary>
     /// Leave server or delete it if owned.
     /// </summary>
@@ -77,5 +86,28 @@ public static class ServerHelper
         Conditions.ServerIdLength(serverId, nameof(LeaveServerAsync));
 
         await rest.DeleteAsync($"/servers/{serverId}");
+    }
+
+    /// <inheritdoc cref="ModifyDefaultPermissions(RevoltRestClient, string, ServerPermissions)" />
+    public static Task ModifyDefaultPermissions(this Server server, ServerPermissions permissions)
+        => LeaveServerAsync(server.Client.Rest, server.Id);
+
+    /// <inheritdoc cref="ModifyDefaultPermissions(RevoltRestClient, string, ServerPermissions)" />
+    public static Task ModifyDefaultPermissions(this RevoltRestClient rest, Server server, ServerPermissions permissions)
+        => LeaveServerAsync(rest, server.Id);
+
+    /// <summary>
+    /// Modify the default member permissions for the server.
+    /// </summary>
+    /// <exception cref="RevoltArgumentException"></exception>
+    /// <exception cref="RevoltRestException"></exception>
+    public static async Task<Server> ModifyDefaultPermissions(this RevoltRestClient rest, string serverId, ServerPermissions permissions)
+    {
+        Conditions.ServerIdLength(serverId, nameof(ModifyDefaultPermissions));
+
+        return await rest.PutAsync<Server>($"/servers/{serverId}/permissions/default", new ModifyDefaultPermissionsRequest
+        {
+            permissions = permissions.Raw
+        });
     }
 }

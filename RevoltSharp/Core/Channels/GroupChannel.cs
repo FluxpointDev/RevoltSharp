@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ public class GroupChannel : Channel
     internal GroupChannel(RevoltClient client, ChannelJson model) : base(client, model)
     {
         Type = ChannelType.Group;
-        Recipents = model.Recipients != null ? model.Recipients.ToHashSet() : new HashSet<string>();
+        Recipents = model.Recipients != null ? model.Recipients : Array.Empty<string>();
         if (client.WebSocket != null)
         {
             foreach (string u in Recipents)
@@ -40,7 +41,7 @@ public class GroupChannel : Channel
     /// </summary>
     public ChannelPermissions Permissions { get; internal set; }
 
-    internal HashSet<string> Recipents { get; set; }
+    public string[] Recipents { get; internal set; }
 
     internal ConcurrentDictionary<string, User> CachedUsers { get; set; } = new ConcurrentDictionary<string, User>();
 
@@ -115,11 +116,6 @@ public class GroupChannel : Channel
 
     internal void AddUser(User user)
     {
-        try
-        {
-            Recipents.Add(user.Id);
-        }
-        catch { }
         user.InternalMutualGroups.TryAdd(Id, this);
         CachedUsers.TryAdd(user.Id, user);
     }
@@ -129,11 +125,7 @@ public class GroupChannel : Channel
         if (!delete)
         {
             CachedUsers.TryRemove(user.Id, out _);
-            try
-            {
-                Recipents.Remove(user.Id);
-            }
-            catch { }
+            Recipents = Recipents.Where(x => x != user.Id).ToArray();
         }
         user.InternalMutualGroups.TryRemove(Id, out _);
         if (user.Id != user.Client.CurrentUser.Id && !user.HasMutuals)
@@ -145,11 +137,7 @@ public class GroupChannel : Channel
     internal void RemoveUser(RevoltClient client, string userId)
     {
         CachedUsers.TryRemove(userId, out _);
-        try
-        {
-            Recipents.Remove(userId);
-        }
-        catch { }
+        Recipents = Recipents.Where(x => x != userId).ToArray();
 
         if (userId != client.CurrentUser.Id)
         {

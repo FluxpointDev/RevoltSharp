@@ -1,5 +1,4 @@
 ﻿using RevoltSharp.Rest;
-using System;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -13,6 +12,10 @@ public static class UserHelper
     /// <inheritdoc cref="GetUserAsync(RevoltRestClient, string)" />
     public static Task<User?> GetUserAsync(this Server server, string userId)
         => GetUserAsync(server.Client.Rest, userId);
+
+    /// <inheritdoc cref="GetUserAsync(RevoltRestClient, string)" />
+    public static Task<User?> GetUserAsync(this DMChannel chan)
+        => GetUserAsync(chan.Client.Rest, chan.UserId);
 
     /// <summary>
     /// Get a user.

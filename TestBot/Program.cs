@@ -28,11 +28,11 @@ class Program
             //ApiUrl = "http://local.revolt.chat/api/",
             Debug = new ClientDebugConfig
             {
-                LogRestRequestJson = false,
+                LogRestRequestJson = true,
                 LogRestResponseJson = false,
-                LogRestRequest = false,
+                LogRestRequest = true,
                 LogWebSocketFull = true,
-                LogWebSocketReady = false,
+                LogWebSocketReady = true,
                 LogWebSocketError = true,
                 LogWebSocketUnknownEvent = true
             },
@@ -100,8 +100,12 @@ public class CommandHandler
             Console.WriteLine("Success command: " + commandinfo.Value.Name);
         else
         {
-            if (commandinfo.HasValue)
+            if (commandinfo.HasValue && !result.IsSuccess)
+            {
+                Console.WriteLine(((ExecuteResult)result).Exception);
                 context.Channel.SendMessageAsync("Error: " + result.ErrorReason);
+
+            }
         }
     }
 }

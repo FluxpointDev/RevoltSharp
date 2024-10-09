@@ -33,9 +33,9 @@ public class User : CreatedEntity
 
     internal User(RevoltClient client, MessageWebhookJson model) : base(client, model.Id)
     {
-        Username = model.Name!;
+        Username = model.Name;
         Discriminator = "0000";
-        Status = new UserStatus(null) { Type = UserStatusType.Online };
+        Status = new UserStatus(null) { Type = UserStatusType.Offline };
         Avatar = Attachment.Create(client, model.Avatar);
         Badges = new UserBadges(0);
         Flags = new UserFlags(0);
@@ -111,7 +111,7 @@ public class User : CreatedEntity
 
         if ((which | AvatarSources.Default) != 0)
         {
-            Conditions.ImageSizeLength(size, nameof(GetAvatarUrl));
+            Conditions.GetImageSizeLength(size, nameof(GetAvatarUrl));
             return $"{Client.Config.ApiUrl}users/{Id}/default_avatar{(size != null ? $"?size={size}" : null)}";
         }
 

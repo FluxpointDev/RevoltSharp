@@ -15,13 +15,13 @@ internal class AttachmentJson
     public string Filename { get; set; } = null!;
 
     [JsonProperty("metadata")]
-    public AttachmentMetaJson Metadata { get; set; } = null!;
+    public AttachmentMetaJson? Metadata { get; set; } = null!;
 
     [JsonProperty("content_type")]
     public string ContentType { get; set; } = null!;
 
     [JsonProperty("size")]
-    public int Size { get; set; }
+    public int FileSize { get; set; }
 
     [JsonProperty("deleted")]
     public bool? Deleted { get; set; }

@@ -60,10 +60,9 @@ public static class GroupChannelHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task<IReadOnlyCollection<User>> GetGroupChannelUsersAsync(this RevoltRestClient rest, string channelId)
     {
-        Conditions.NotAllowedForBots(rest, nameof(GetGroupChannelUsersAsync));
         Conditions.ChannelIdLength(channelId, nameof(GetGroupChannelUsersAsync));
 
-        UserJson[]? List = await rest.GetAsync<UserJson[]>($"channels/{channelId}");
+        UserJson[]? List = await rest.GetAsync<UserJson[]>($"channels/{channelId}/members");
         if (List == null)
             return System.Array.Empty<User>();
 
