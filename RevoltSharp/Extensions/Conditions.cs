@@ -45,14 +45,6 @@ public static class Conditions
         if (id.Length > Const.All_MaxIdLength)
             throw new RevoltArgumentException($"Owner id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
     }
-    public static void OwnerModifyCheck(ServerMember member, string request)
-        => OwnerModifyCheck(member.Server, member.Id, request);
-
-    public static void OwnerModifyCheck(Server server, string memberId, string request)
-    {
-        if (!string.IsNullOrEmpty(memberId) && server.OwnerId == memberId)
-            throw new RevoltRestException($"You can't modify the server owner for the {request} request.", 400, RevoltErrorType.InvalidOperation);
-    }
     #endregion
 
     #region Member

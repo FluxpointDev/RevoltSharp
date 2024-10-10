@@ -38,7 +38,6 @@ public static class MemberHelper
     public static async Task AddRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
         Conditions.RoleIdLength(roleId, nameof(AddRoleAsync));
-        Conditions.OwnerModifyCheck(member, nameof(AddRoleAsync));
 
         if (!member.RolesIds.Any(x => x == roleId))
         {
@@ -68,7 +67,6 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task AddRolesAsync(this RevoltRestClient rest, ServerMember member, string[] roleIds)
     {
-        Conditions.OwnerModifyCheck(member, nameof(AddRolesAsync));
         Conditions.RoleListEmpty(roleIds, nameof(AddRolesAsync));
 
         foreach (string r in roleIds)
@@ -103,7 +101,6 @@ public static class MemberHelper
     public static async Task RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
         Conditions.RoleIdLength(roleId, nameof(RemoveRoleAsync));
-        Conditions.OwnerModifyCheck(member, nameof(RemoveRoleAsync));
 
         if (member.Roles.Any(x => x.Id == roleId))
         {
@@ -133,7 +130,6 @@ public static class MemberHelper
     /// <exception cref="RevoltRestException"></exception>
     public static async Task RemoveRolesAsync(this RevoltRestClient rest, ServerMember member, string[] roleIds)
     {
-        Conditions.OwnerModifyCheck(member, nameof(RemoveRolesAsync));
         Conditions.RoleListEmpty(roleIds, nameof(RemoveRolesAsync));
         foreach (string r in roleIds)
         {
@@ -323,7 +319,6 @@ public static class MemberHelper
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
     public static Task ModifyAsync(this ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
-        Conditions.OwnerModifyCheck(member, nameof(ModifyAsync));
         return ModifyMemberAsync(member.Client.Rest, member.ServerId, member.Id, nickname, avatar, timeout);
     }
 
@@ -334,14 +329,12 @@ public static class MemberHelper
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
     public static Task ModifyMemberAsync(this Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
-        Conditions.OwnerModifyCheck(server, memberId, nameof(ModifyMemberAsync));
         return ModifyMemberAsync(server.Client.Rest, server.Id, memberId, nickname, avatar, timeout);
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
     public static Task ModifyMemberAsync(this RevoltRestClient rest, Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
-        Conditions.OwnerModifyCheck(server, memberId, nameof(ModifyMemberAsync));
         return ModifyMemberAsync(rest, server.Id, memberId, nickname, avatar, timeout);
     }
 

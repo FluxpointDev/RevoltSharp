@@ -25,6 +25,18 @@ public class CmdTest : ModuleBase
         }
     }
 
+    [Command("giverole")]
+    public async Task GiveRole()
+    {
+        await Context.Member.AddRoleAsync("01GZYQ9GCE14824E1HM10E49FP");
+    }
+
+    [Command("removerole")]
+    public async Task RemoveRole()
+    {
+        await Context.Member.RemoveRoleAsync("01GZYQ9GCE14824E1HM10E49FP");
+    }
+
     [Command("leaveserver")]
     public async Task LeaveServer()
     {
@@ -438,12 +450,12 @@ public class CmdTest : ModuleBase
         await ReplyAsync(String.Join(", ", Member.Roles.Select(x => x.Name)));
     }
 
-    [Command("removerole"), RequireOwner]
-    public async Task RemoveRole()
-    {
-        ServerMember Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
-        await Member.RemoveRoleAsync(Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
-    }
+    //[Command("removerole"), RequireOwner]
+    //public async Task RemoveRole()
+    //{
+    //    ServerMember Member = await Context.Server.GetMemberAsync("01G3BHHPN05RTFDGB99YRYC8QN");
+    //    await Member.RemoveRoleAsync(Context.Server.GetRole("01FESEE54DDDSEM217NX9GH4KG"));
+    //}
 
     [Command("testreaction")]
     public async Task TestReaction()
