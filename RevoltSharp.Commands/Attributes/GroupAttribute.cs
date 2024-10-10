@@ -2,7 +2,6 @@ using System;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Marks the module as a command group.
 /// </summary>

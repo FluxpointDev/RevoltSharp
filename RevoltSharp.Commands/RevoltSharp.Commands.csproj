@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Authors>Builderb (Fluxpoint Development)</Authors>
     <Company>Fluxpoint Development</Company>
     <Product>RevoltSharp.Commands</Product>

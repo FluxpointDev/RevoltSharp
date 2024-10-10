@@ -45,6 +45,8 @@ public class ClientConfig
     /// </summary>
     public string[] Owners = null;
 
+    public bool OwnerBypassPermissions { get; set; }
+
     /// <summary>
     /// The cf_clearance cookie for Cloudflare.
     /// </summary>

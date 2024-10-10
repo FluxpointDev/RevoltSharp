@@ -51,6 +51,19 @@ public class ChannelPermissions
     /// Check if the channel role override has a specific channel permission. 
     /// </summary>
     /// <returns><see langword="bool" /></returns>
+    public bool Has(ServerPermission permission)
+    {
+        ulong Flag = (ulong)permission;
+        if ((RawDenied & Flag) == Flag)
+            return false;
+
+        return ((RawAllowed & Flag) == Flag);
+    }
+
+    /// <summary>
+    /// Check if the channel role override has a specific channel permission. 
+    /// </summary>
+    /// <returns><see langword="bool" /></returns>
     public bool Has(ChannelPermission permission)
     {
         ulong Flag = (ulong)permission;

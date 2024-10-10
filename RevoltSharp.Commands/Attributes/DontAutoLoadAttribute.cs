@@ -2,7 +2,6 @@ using System;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Prevents the marked module from being loaded automatically.
 /// </summary>

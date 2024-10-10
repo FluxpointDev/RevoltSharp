@@ -2,7 +2,6 @@ using System;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Prevents the marked property from being injected into a module.
 /// </summary>

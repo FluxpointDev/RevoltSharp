@@ -2,7 +2,6 @@ using System;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Marks the execution information for a command.
 /// </summary>

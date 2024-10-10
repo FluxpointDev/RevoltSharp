@@ -226,18 +226,17 @@
             <param name="command">The command being executed.</param>
             <param name="services">The service collection used for dependency injection.</param>
         </member>
-        <member name="P:RevoltSharp.Commands.RequireBotPermissionAttribute.ErrorMessage">
-            <inheritdoc />
-        </member>
-        <member name="F:RevoltSharp.Commands.RequireBotPermissionAttribute.Perm">
+        <member name="F:RevoltSharp.Commands.RequireBotPermissionAttribute.Server">
             <summary>
-            Permission to check for.
+            Server/group permission to check for.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Commands.RequireBotPermissionAttribute.Channel">
+            <summary>
+            Channel permission to check for.
             </summary>
         </member>
         <member name="M:RevoltSharp.Commands.RequireBotPermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
-            <inheritdoc />
-        </member>
-        <member name="P:RevoltSharp.Commands.RequireContextAttribute.ErrorMessage">
             <inheritdoc />
         </member>
         <member name="P:RevoltSharp.Commands.RequireContextAttribute.Contexts">
@@ -246,6 +245,15 @@
             </summary>
         </member>
         <member name="M:RevoltSharp.Commands.RequireContextAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireDMttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireGroupAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:RevoltSharp.Commands.RequireGroupOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
         <member name="T:RevoltSharp.Commands.RequireOwnerAttribute">
@@ -274,36 +282,26 @@
                 </code>
             </example>
         </member>
-        <member name="P:RevoltSharp.Commands.RequireOwnerAttribute.ErrorMessage">
-            <inheritdoc />
-        </member>
         <member name="M:RevoltSharp.Commands.RequireOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
-            <inheritdoc />
-        </member>
-        <member name="P:RevoltSharp.Commands.RequireServerAttribute.ErrorMessage">
             <inheritdoc />
         </member>
         <member name="M:RevoltSharp.Commands.RequireServerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
-        <member name="P:RevoltSharp.Commands.RequireServerOwnerAttribute.ErrorMessage">
-            <inheritdoc />
-        </member>
         <member name="M:RevoltSharp.Commands.RequireServerOwnerAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
             <inheritdoc />
         </member>
-        <member name="P:RevoltSharp.Commands.RequireUserPermissionAttribute.ErrorMessage">
-            <inheritdoc />
-        </member>
-        <member name="F:RevoltSharp.Commands.RequireUserPermissionAttribute.Perm">
+        <member name="F:RevoltSharp.Commands.RequireUserPermissionAttribute.Server">
             <summary>
-            Permission to check for.
+            Server/group permission to check for.
+            </summary>
+        </member>
+        <member name="F:RevoltSharp.Commands.RequireUserPermissionAttribute.Channel">
+            <summary>
+            Channel permission to check for.
             </summary>
         </member>
         <member name="M:RevoltSharp.Commands.RequireUserPermissionAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">
-            <inheritdoc />
-        </member>
-        <member name="P:RevoltSharp.Commands.TemplateAttribute.ErrorMessage">
             <inheritdoc />
         </member>
         <member name="M:RevoltSharp.Commands.TemplateAttribute.CheckPermissionsAsync(RevoltSharp.Commands.CommandContext,RevoltSharp.Commands.CommandInfo,System.IServiceProvider)">

@@ -2,7 +2,6 @@ using System;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Marks the input to not be parsed by the parser.
 /// </summary>

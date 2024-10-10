@@ -1314,6 +1314,12 @@
             Raw permissions number that has been denied for the role.
             </summary>
         </member>
+        <member name="M:RevoltSharp.ChannelPermissions.Has(RevoltSharp.ServerPermission)">
+            <summary>
+            Check if the channel role override has a specific channel permission. 
+            </summary>
+            <returns><see langword="bool" /></returns>
+        </member>
         <member name="M:RevoltSharp.ChannelPermissions.Has(RevoltSharp.ChannelPermission)">
             <summary>
             Check if the channel role override has a specific channel permission. 

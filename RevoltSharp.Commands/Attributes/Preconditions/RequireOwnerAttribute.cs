@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Requires the command to be invoked by the owner of the bot.
 /// </summary>
@@ -29,12 +28,9 @@ namespace RevoltSharp.Commands;
 ///     }
 ///     </code>
 /// </example>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class RequireOwnerAttribute : PreconditionAttribute
 {
-    /// <inheritdoc />
-    public override string? ErrorMessage { get; set; }
-
     /// <inheritdoc />
 #pragma warning disable CS1998
     public override async Task<PreconditionResult> CheckPermissionsAsync(CommandContext context, CommandInfo command, IServiceProvider services)
@@ -42,6 +38,6 @@ public class RequireOwnerAttribute : PreconditionAttribute
     {
         if (context.Client.CurrentUser.OwnerId == context.User.Id || (context.Client.Config.Owners != null && context.Client.Config.Owners.Any(x => x == context.User.Id)))
             return PreconditionResult.FromSuccess();
-        return PreconditionResult.FromError(ErrorMessage ?? "Command can only be run by the owner of the bot.");
+        return PreconditionResult.FromError("Command can only be run by the owner of the bot.");
     }
 }

@@ -2,7 +2,6 @@ using System;
 
 namespace RevoltSharp.Commands;
 
-
 // Cosmetic Summary, for Groups and Commands
 /// <summary>
 ///     Attaches a summary to your command.

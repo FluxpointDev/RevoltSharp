@@ -3,18 +3,13 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp.Commands;
 
-
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class RequireContextAttribute : PreconditionAttribute
 {
-
     public RequireContextAttribute(ContextType contextTypes)
     {
         Contexts = contextTypes;
     }
-
-    /// <inheritdoc />
-    public override string? ErrorMessage { get; set; }
 
     /// <summary>
     /// Gets the context required to execute the command.

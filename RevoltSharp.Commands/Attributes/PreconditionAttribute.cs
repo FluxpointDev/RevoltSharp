@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Requires the module or class to pass the specified precondition before execution can begin.
 /// </summary>

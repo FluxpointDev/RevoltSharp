@@ -3,7 +3,6 @@ using System.Reflection;
 
 namespace RevoltSharp.Commands;
 
-
 /// <summary>
 ///     Marks the <see cref="Type"/> to be read by the specified <see cref="TypeReader"/>.
 /// </summary>
