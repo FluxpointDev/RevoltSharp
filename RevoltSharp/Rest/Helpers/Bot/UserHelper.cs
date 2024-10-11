@@ -14,6 +14,10 @@ public static class UserHelper
         => GetUserAsync(server.Client.Rest, userId);
 
     /// <inheritdoc cref="GetUserAsync(RevoltRestClient, string)" />
+    public static Task<User?> GetUserAsync(this GroupChannel chan, string userId)
+        => GetUserAsync(chan.Client.Rest, userId);
+
+    /// <inheritdoc cref="GetUserAsync(RevoltRestClient, string)" />
     public static Task<User?> GetUserAsync(this DMChannel chan)
         => GetUserAsync(chan.Client.Rest, chan.UserId);
 
@@ -46,6 +50,14 @@ public static class UserHelper
     public static Task<Profile?> GetProfileAsync(this User user)
         => GetProfileAsync(user.Client.Rest, user.Id);
 
+    /// <inheritdoc cref="GetProfileAsync(RevoltRestClient, string)" />
+    public static Task<Profile?> GetProfileAsync(this RevoltRestClient rest, User user)
+        => GetProfileAsync(rest, user.Id);
+
+    /// <inheritdoc cref="GetProfileAsync(RevoltRestClient, string)" />
+    public static Task<Profile?> GetProfileAsync(this RevoltRestClient rest, ServerMember member)
+        => GetProfileAsync(rest, member.Id);
+
     /// <summary>
     /// Get the profile info for a user.
     /// </summary>
@@ -68,6 +80,10 @@ public static class UserHelper
     /// <inheritdoc cref="GetUserDMChannelAsync(RevoltRestClient, string)" />
     public static Task<DMChannel?> GetDMChannelAsync(this User user)
         => GetUserDMChannelAsync(user.Client.Rest, user.Id);
+
+    /// <inheritdoc cref="GetUserDMChannelAsync(RevoltRestClient, string)" />
+    public static Task<DMChannel?> GetUserDMChannelAsync(this RevoltRestClient rest, User user)
+        => GetUserDMChannelAsync(rest, user.Id);
 
     /// <summary>
     /// Get or open a DM channel for the user.
@@ -143,6 +159,10 @@ public static class UserHelper
     /// <inheritdoc cref="GetMutualsAsync(RevoltRestClient, string)" />
     public static Task<UserMutuals?> GetMutualsAsync(this User user)
         => GetMutualsAsync(user.Client.Rest, user.Id);
+
+    /// <inheritdoc cref="GetMutualsAsync(RevoltRestClient, string)" />
+    public static Task<UserMutuals?> GetMutualsAsync(this RevoltRestClient rest, User user)
+        => GetMutualsAsync(rest, user.Id);
 
     /// <summary>
     /// Get a list of mutual servers for the user or mutual friend users if using a user account.

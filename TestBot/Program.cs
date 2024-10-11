@@ -30,7 +30,7 @@ class Program
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = false,
-                LogRestResponseJson = false,
+                LogRestResponseJson = true,
                 LogRestRequest = true,
                 LogWebSocketFull = false,
                 LogWebSocketReady = false,

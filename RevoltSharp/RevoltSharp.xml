@@ -2582,6 +2582,10 @@
             </summary>
             <param name="hex">The hex code to use</param>
         </member>
+        <member name="M:RevoltSharp.RevoltColor.ToString">
+            <summary> Returns a string that represents the current object.</summary>
+            <returns> Color format </returns>
+        </member>
         <member name="T:RevoltSharp.Invite">
             <summary>
             Server invite
@@ -3604,6 +3608,9 @@
         <member name="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Server,System.String)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
+        <member name="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.GroupChannel,System.String)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
         <member name="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.DMChannel)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
@@ -3620,6 +3627,12 @@
         <member name="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.User)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
+        <member name="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.User)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.ServerMember)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
         <member name="M:RevoltSharp.UserHelper.GetProfileAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
             <summary>
             Get the profile info for a user.
@@ -3631,6 +3644,9 @@
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
         <member name="M:RevoltSharp.UserHelper.GetDMChannelAsync(RevoltSharp.User)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserDMChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.UserHelper.GetUserDMChannelAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.User)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.GetUserDMChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
         <member name="M:RevoltSharp.UserHelper.GetUserDMChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
@@ -3676,6 +3692,9 @@
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
         <member name="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.User)">
+            <inheritdoc cref="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.User)">
             <inheritdoc cref="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
         <member name="M:RevoltSharp.UserHelper.GetMutualsAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
@@ -3758,6 +3777,9 @@
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
         <member name="M:RevoltSharp.GroupChannelHelper.GetUsersAsync(RevoltSharp.GroupChannel)">
+            <inheritdoc cref="M:RevoltSharp.GroupChannelHelper.GetGroupChannelUsersAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.GroupChannelHelper.GetGroupChannelUsersAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.GroupChannel)">
             <inheritdoc cref="M:RevoltSharp.GroupChannelHelper.GetGroupChannelUsersAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
         <member name="M:RevoltSharp.GroupChannelHelper.GetGroupChannelUsersAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
@@ -4145,7 +4167,7 @@
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
         <member name="M:RevoltSharp.InviteHelper.GetInvitesAsync(RevoltSharp.Server)">
-            <inheritdoc cref="M:RevoltSharp.InviteHelper.GetInviteAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+            <inheritdoc cref="M:RevoltSharp.InviteHelper.GetInvitesAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
         </member>
         <member name="M:RevoltSharp.InviteHelper.GetInvitesAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
             <summary>
@@ -4357,6 +4379,9 @@
             <summary>
             Modify a server member.
             </summary>
+            <remarks>
+            This will not return a full user object!
+            </remarks>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
@@ -4457,15 +4482,41 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
-        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Server,RevoltSharp.ServerPermissions)">
-            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)" />
+        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissionsAsync(RevoltSharp.Server,RevoltSharp.ServerPermissions)">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyDefaultPermissionsAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)" />
         </member>
-        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server,RevoltSharp.ServerPermissions)">
-            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)" />
+        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissionsAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server,RevoltSharp.ServerPermissions)">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyDefaultPermissionsAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)" />
         </member>
-        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissions(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)">
+        <member name="M:RevoltSharp.ServerHelper.ModifyDefaultPermissionsAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.ServerPermissions)">
             <summary>
             Modify the default member permissions for the server.
+            </summary>
+            <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyAsync(RevoltSharp.Server,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyServerAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})" />
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyServerAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyServerAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})" />
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyServerAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})">
+            <summary>
+            Modify the properties of a Revolt server such as name, description, icon and banner.
+            </summary>
+            <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
+            <exception cref="T:RevoltSharp.RevoltRestException"></exception>
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifySystemMessagesAsync(RevoltSharp.Server,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyServerSystemMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})" />
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyServerSystemMessagesAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Server,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})">
+            <inheritdoc cref="M:RevoltSharp.ServerHelper.ModifyServerSystemMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})" />
+        </member>
+        <member name="M:RevoltSharp.ServerHelper.ModifyServerSystemMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String},RevoltSharp.Option{System.String})">
+            <summary>
+            Modify the properties of a Revolt server such as name, description, icon and banner.
             </summary>
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
 	  <ImplicitUsings>disable</ImplicitUsings>
-    <Version>7.5.3</Version>
+    <Version>7.6.0</Version>
     <Authors>Builderb (Fluxpoint Development)</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the revolt chat API and connecting to the gateway with a user or bot account.</Description>
@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

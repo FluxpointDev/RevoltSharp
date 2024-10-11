@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Xml.Linq;
 
 namespace RevoltSharp;
 
@@ -73,12 +74,16 @@ public class RevoltColor
 
     #endregion
 
-    public bool IsEmpty { get; internal set; }
+    public bool HasValue => !string.IsNullOrEmpty(Value);
+    public bool IsLinearGradient => (!string.IsNullOrEmpty(Value) && Value.StartsWith("linear-gradient", StringComparison.OrdinalIgnoreCase));
+    public bool IsHex => (!string.IsNullOrEmpty(Value) && Value.StartsWith("#", StringComparison.OrdinalIgnoreCase));
+    public bool IsRGB => (!string.IsNullOrEmpty(Value) && int.TryParse(Value[0].ToString(), out _));
     public int R { get; internal set; } = 0;
     public int G { get; internal set; } = 0;
     public int B { get; internal set; } = 0;
     public string Hex
     => (R == 0 && G == 0 && B == 0) ? "#000000" : '#' + string.Format("{0:X2}{1:X2}{2:X2}", R, G, B);
+    public string Value { get; set; }
 
     /// <summary>
     /// Creates a new RevoltColor from a <see cref="Color"/>.
@@ -89,6 +94,7 @@ public class RevoltColor
         R = color.R;
         G = color.G;
         B = color.B;
+        Value = $"{R}, {G}, {B}";
     }
 
     /// <summary>
@@ -109,6 +115,7 @@ public class RevoltColor
         R = r;
         G = g;
         B = b;
+        Value = $"{r}, {g}, {b}";
     }
 
     /// <summary>
@@ -117,8 +124,8 @@ public class RevoltColor
     /// <param name="hex">The hex code to use</param>
     public RevoltColor(string hex)
     {
-        IsEmpty = string.IsNullOrEmpty(hex);
-        if (!IsEmpty)
+        Value = hex;
+        if (HasValue)
         {
             try
             {
@@ -129,5 +136,12 @@ public class RevoltColor
             }
             catch { }
         }
+    }
+
+    /// <summary> Returns a string that represents the current object.</summary>
+    /// <returns> Color format </returns>
+    public override string ToString()
+    {
+        return Value;
     }
 }

@@ -86,7 +86,9 @@ public static class RoleHelper
         if (rank != null)
             Req.rank = Optional.Some(rank.Value);
 
-        return await rest.PatchAsync<Role>($"/servers/{serverId}/roles/{roleId}", Req);
+        RoleJson? role = await rest.PatchAsync<RoleJson>($"/servers/{serverId}/roles/{roleId}", Req);
+        role.Id = roleId;
+        return new Role(rest.Client, role, serverId, roleId);
     }
 
     /// <inheritdoc cref="DeleteRoleAsync(RevoltRestClient, string, string)" />

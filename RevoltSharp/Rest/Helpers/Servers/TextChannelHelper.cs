@@ -34,11 +34,11 @@ public static class TextChannelHelper
         => ChannelHelper.InternalGetChannelAsync<TextChannel>(rest, channelId);
 
     /// <inheritdoc cref="CreateTextChannelAsync(RevoltRestClient, string, string, string, bool)" />
-    public static Task<TextChannel> CreateTextChannelAsync(this Server server, string name, string description = null, bool nsfw = false)
+    public static Task<TextChannel> CreateTextChannelAsync(this Server server, string name, string? description = null, bool nsfw = false)
         => InternalCreateTextChannelAsync(server.Client.Rest, server.Id, name, description, nsfw);
 
     /// <inheritdoc cref="CreateTextChannelAsync(RevoltRestClient, string, string, string, bool)" />
-    public static Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, Server server, string name, string description = null, bool nsfw = false)
+    public static Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, Server server, string name, string? description = null, bool nsfw = false)
         => InternalCreateTextChannelAsync(rest, server.Id, name, description, nsfw);
 
     /// <summary>
@@ -49,10 +49,10 @@ public static class TextChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null, bool nsfw = false)
+    public static Task<TextChannel> CreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string? description = null, bool nsfw = false)
         => InternalCreateTextChannelAsync(rest, serverId, name, description, nsfw);
 
-    internal static async Task<TextChannel> InternalCreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string description = null, bool nsfw = false)
+    internal static async Task<TextChannel> InternalCreateTextChannelAsync(this RevoltRestClient rest, string serverId, string name, string? description = null, bool nsfw = false)
     {
         Conditions.ServerIdLength(serverId, nameof(CreateTextChannelAsync));
         Conditions.ChannelNameLength(name, nameof(CreateTextChannelAsync));
@@ -83,7 +83,7 @@ public static class TextChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<TextChannel> ModifyAsync(this TextChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null)
+    public static Task<TextChannel> ModifyAsync(this TextChannel channel, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null)
         => ChannelHelper.InternalModifyChannelAsync<TextChannel>(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, null);
 
 }

@@ -42,8 +42,8 @@ public static class InviteHelper
         await rest.DeleteAsync($"/invites/{inviteCode}");
     }
 
-    /// <inheritdoc cref="GetInviteAsync(RevoltRestClient, string)" />
-    public static Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this Server server)
+    /// <inheritdoc cref="GetInvitesAsync(RevoltRestClient, string)" />
+    public static Task<IReadOnlyCollection<Invite>?> GetInvitesAsync(this Server server)
         => GetInvitesAsync(server.Client.Rest, server.Id);
 
     /// <summary>
@@ -54,7 +54,7 @@ public static class InviteHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<Invite>> GetInvitesAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<IReadOnlyCollection<Invite>?> GetInvitesAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdLength(serverId, nameof(GetInvitesAsync));
 

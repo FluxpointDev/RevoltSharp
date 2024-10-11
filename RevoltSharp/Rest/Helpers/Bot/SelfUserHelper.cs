@@ -53,7 +53,7 @@ public static class SelfUserHelper
     /// List of <see cref="Channel"/> that can be cast to <see cref="DMChannel"/> or <see cref="GroupChannel"/>
     /// </returns>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<Channel>> GetPrivateChannelsAsync(this RevoltRestClient rest)
+    public static async Task<IReadOnlyCollection<Channel>?> GetPrivateChannelsAsync(this RevoltRestClient rest)
     {
         HashSet<ChannelJson>? Channels = await rest.GetAsync<HashSet<ChannelJson>>("users/dms");
         if (Channels == null)

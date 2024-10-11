@@ -41,7 +41,7 @@ public class MessageMasquerade
         if (!string.IsNullOrEmpty(AvatarUrl))
             Json.AvatarUrl = AvatarUrl;
 
-        if (Color != null && !Color.IsEmpty)
+        if (Color != null && Color.HasValue)
             Json.Color = Optional.Some(Color.Hex);
 
         return Json;

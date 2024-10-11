@@ -39,13 +39,10 @@ public static class MemberHelper
     {
         Conditions.RoleIdLength(roleId, nameof(AddRoleAsync));
 
-        if (!member.RolesIds.Any(x => x == roleId))
+        await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
         {
-            await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
-            {
-                roles = Optional.Some(member.RolesIds.Append(roleId).Select(x => x).ToArray())
-            });
-        }
+            roles = Optional.Some(member.RolesIds.Append(roleId).Select(x => x).ToArray())
+        });
     }
 
     /// <inheritdoc cref="AddRolesAsync(RevoltRestClient, ServerMember, string[])" />
@@ -101,14 +98,10 @@ public static class MemberHelper
     public static async Task RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
         Conditions.RoleIdLength(roleId, nameof(RemoveRoleAsync));
-
-        if (member.Roles.Any(x => x.Id == roleId))
+        await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
         {
-            await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
-            {
-                roles = Optional.Some(member.RolesIds.Where(x => x != roleId).ToArray())
-            });
-        }
+            roles = Optional.Some(member.RolesIds.Where(x => x != roleId).ToArray())
+        });
     }
 
     /// <inheritdoc cref="RemoveRolesAsync(RevoltRestClient, ServerMember, string[])" />
@@ -184,7 +177,7 @@ public static class MemberHelper
     }
 
     /// <inheritdoc cref="GetMemberAsync(RevoltRestClient, string, string)" />
-    public static Task<IReadOnlyCollection<ServerMember>> GetMembersAsync(this Server server, bool onlineOnly = false)
+    public static Task<IReadOnlyCollection<ServerMember>?> GetMembersAsync(this Server server, bool onlineOnly = false)
        => GetMembersAsync(server.Client.Rest, server.Id, onlineOnly);
 
     /// <summary>
@@ -198,7 +191,7 @@ public static class MemberHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<ServerMember>> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
+    public static async Task<IReadOnlyCollection<ServerMember>?> GetMembersAsync(this RevoltRestClient rest, string serverId, bool onlineOnly = false)
     {
         Conditions.ServerIdLength(serverId, nameof(GetMembersAsync));
 
@@ -317,23 +310,23 @@ public static class MemberHelper
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyAsync(this ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
+    public static Task<ServerMember> ModifyAsync(this ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         return ModifyMemberAsync(member.Client.Rest, member.ServerId, member.Id, nickname, avatar, timeout);
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this Server _, ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
+    public static Task<ServerMember> ModifyMemberAsync(this Server _, ServerMember member, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
         => ModifyAsync(member, nickname, avatar, timeout);
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
+    public static Task<ServerMember> ModifyMemberAsync(this Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         return ModifyMemberAsync(server.Client.Rest, server.Id, memberId, nickname, avatar, timeout);
     }
 
     /// <inheritdoc cref="ModifyMemberAsync(RevoltRestClient, string, string, Option{string}, Option{Attachment}, Option{DateTime?})" />
-    public static Task ModifyMemberAsync(this RevoltRestClient rest, Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
+    public static Task<ServerMember> ModifyMemberAsync(this RevoltRestClient rest, Server server, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         return ModifyMemberAsync(rest, server.Id, memberId, nickname, avatar, timeout);
     }
@@ -341,9 +334,12 @@ public static class MemberHelper
     /// <summary>
     /// Modify a server member.
     /// </summary>
+    /// <remarks>
+    /// This will not return a full user object!
+    /// </remarks>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
+    public static async Task<ServerMember> ModifyMemberAsync(this RevoltRestClient rest, string serverId, string memberId, Option<string?>? nickname = null, Option<Attachment?>? avatar = null, Option<DateTime?>? timeout = null)
     {
         Conditions.ServerIdLength(serverId, nameof(ModifyMemberAsync));
         Conditions.MemberIdLength(memberId, nameof(ModifyMemberAsync));
@@ -371,7 +367,8 @@ public static class MemberHelper
             else
                 Req.timeout = Optional.Some(timeout.Value.Value);
         }
+        ServerMemberJson member = await rest.PatchAsync<ServerMemberJson>($"servers/{serverId}/members/{memberId}", Req);
 
-        await rest.PatchAsync<HttpResponseMessage>($"servers/{serverId}/members/{memberId}", Req);
+        return new ServerMember(rest.Client, member, new UserJson { Id = member.Id.User }, null);
     }
 }

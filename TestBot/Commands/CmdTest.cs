@@ -15,6 +15,12 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("linear")]
+    public async Task Linear()
+    {
+        await Context.Server.ModifyAsync(name: new Option<string>("Hello"));
+    }
+
     [Command("beforemsg")]
     public async Task BeforeMsg(string msgId)
     {

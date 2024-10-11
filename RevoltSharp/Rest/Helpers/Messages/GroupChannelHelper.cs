@@ -46,9 +46,12 @@ public static class GroupChannelHelper
 
 
     /// <inheritdoc cref="GetGroupChannelUsersAsync(RevoltRestClient, string)" />
-    public static Task<IReadOnlyCollection<User>> GetUsersAsync(this GroupChannel channel)
+    public static Task<IReadOnlyCollection<User>?> GetUsersAsync(this GroupChannel channel)
       => GetGroupChannelUsersAsync(channel.Client.Rest, channel.Id);
 
+    /// <inheritdoc cref="GetGroupChannelUsersAsync(RevoltRestClient, string)" />
+    public static Task<IReadOnlyCollection<User>?> GetGroupChannelUsersAsync(this RevoltRestClient rest, GroupChannel channel)
+      => GetGroupChannelUsersAsync(rest, channel.Id);
 
     /// <summary>
     /// Get a list of users for the group channel.
@@ -58,7 +61,7 @@ public static class GroupChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<User>> GetGroupChannelUsersAsync(this RevoltRestClient rest, string channelId)
+    public static async Task<IReadOnlyCollection<User>?> GetGroupChannelUsersAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdLength(channelId, nameof(GetGroupChannelUsersAsync));
 
@@ -87,7 +90,7 @@ public static class GroupChannelHelper
     /// List of <see cref="GroupChannel"/>
     /// </returns>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<GroupChannel>> GetGroupChannelsAsync(this RevoltRestClient rest)
+    public static async Task<IReadOnlyCollection<GroupChannel>?> GetGroupChannelsAsync(this RevoltRestClient rest)
     {
         if (rest.Client.WebSocket != null)
             return rest.Client.WebSocket.ChannelCache.Values.Where(x => x.Type == ChannelType.Group).Select(x => (GroupChannel)x).ToArray();
@@ -167,7 +170,7 @@ public static class GroupChannelHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static Task<GroupChannel> ModifyAsync(this GroupChannel channel, Option<string> name = null, Option<string> desc = null, Option<string> iconId = null, Option<bool> nsfw = null, Option<string> owner = null)
+    public static Task<GroupChannel> ModifyAsync(this GroupChannel channel, Option<string>? name = null, Option<string?>? desc = null, Option<string?>? iconId = null, Option<bool>? nsfw = null, Option<string>? owner = null)
         => ChannelHelper.InternalModifyChannelAsync<GroupChannel>(channel.Client.Rest, channel.Id, name, desc, iconId, nsfw, owner);
 
 }

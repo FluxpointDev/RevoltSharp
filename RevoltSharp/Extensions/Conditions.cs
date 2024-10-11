@@ -254,6 +254,19 @@ public static class Conditions
         if (id.Length > Const.All_MaxIdLength)
             throw new RevoltArgumentException($"Server id length can't be more than {Const.All_MaxIdLength} characters for the {request} request.");
     }
+    public static void ServerNameLength(string name, string request)
+    {
+        if (string.IsNullOrEmpty(name) || name.Length < 1)
+            throw new RevoltArgumentException($"Server name can't be empty for the {request} request.");
+
+        if (name.Length > Const.All_MaxNameLength)
+            throw new RevoltArgumentException($"Server name length can't be more than {Const.All_MaxNameLength} characters for the {request} request.");
+    }
+    public static void ServerDescriptionLength(string name, string request)
+    {
+        if (name.Length > Const.All_MaxDescriptionLength)
+            throw new RevoltArgumentException($"Server description length can't be more than {Const.All_MaxNameLength} characters for the {request} request.");
+    }
     public static void InviteCodeEmpty(string inviteCode, string request)
     {
         if (string.IsNullOrWhiteSpace(inviteCode))

@@ -59,7 +59,7 @@ public static class EmojiHelper
     }
 
     /// <inheritdoc cref="GetEmojisAsync(RevoltRestClient, string)" />
-    public static Task<IReadOnlyCollection<Emoji>> GetEmojisAsync(this Server server)
+    public static Task<IReadOnlyCollection<Emoji>?> GetEmojisAsync(this Server server)
         => GetEmojisAsync(server.Client.Rest, server.Id);
 
     /// <summary>
@@ -70,7 +70,7 @@ public static class EmojiHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<Emoji>> GetEmojisAsync(this RevoltRestClient rest, string serverId)
+    public static async Task<IReadOnlyCollection<Emoji>?> GetEmojisAsync(this RevoltRestClient rest, string serverId)
     {
         Conditions.ServerIdLength(serverId, nameof(GetEmojisAsync));
 

@@ -222,7 +222,7 @@ public class Embed
             Json.media = Image;
         }
 
-        if (Color != null && !Color.IsEmpty)
+        if (Color != null && Color.HasValue)
             Json.colour = Optional.Some(Color.Hex);
 
         return Json;
