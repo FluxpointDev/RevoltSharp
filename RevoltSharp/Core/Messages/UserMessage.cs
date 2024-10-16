@@ -55,8 +55,8 @@ public class UserMessage : Message
     public MessageMasquerade? Masquerade { get; internal set; }
 
     //public MessageWebhook? Webhook { get; internal set; }
-    internal UserMessage(RevoltClient client, MessageJson model)
-        : base(client, model)
+    internal UserMessage(RevoltClient client, MessageJson model, UserJson[]? users = null, ServerMemberJson[]? members = null)
+        : base(client, model, users, members)
     {
         //Nonce = model.Nonce;
         Content = model.Content;
@@ -67,6 +67,7 @@ public class UserMessage : Message
         //Webhook = model.Webhook != null ? new MessageWebhook(client, model.Webhook) : null;
         if (model.EditedAt.HasValue)
             EditedAt = model.EditedAt.Value;
+
         Embeds = model.Embeds == null ? new List<MessageEmbed>() : new List<MessageEmbed>(model.Embeds.Select(x => MessageEmbed.Create(client, x)!));
 
         if (!model.Reactions.HasValue)

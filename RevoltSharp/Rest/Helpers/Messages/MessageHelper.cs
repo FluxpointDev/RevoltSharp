@@ -1,4 +1,5 @@
 ﻿using Optionals;
+using RevoltSharp.Core.Messages;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
@@ -178,11 +179,22 @@ public static class MessageHelper
             Conditions.MessageNearbyIdLength(beforeMessageId, nameof(GetMessagesAsync));
         }
 
-        MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages" + QueryBuilder.GetQuery());
-        if (Data == null)
-            return Array.Empty<Message>();
+        if (includeUserDetails)
+        {
+            BulkMessagesJson? Data = await rest.GetAsync<BulkMessagesJson>($"channels/{channelId}/messages" + QueryBuilder.GetQuery());
+            if (Data == null)
+                return Array.Empty<Message>();
 
-        return Data.Select(x => Message.Create(rest.Client, x)).ToImmutableArray();
+            return Data.Messages.Select(x => Message.Create(rest.Client, x, Data.Users, Data.Members)).ToImmutableArray();
+        }
+        else
+        {
+            MessageJson[]? Data = await rest.GetAsync<MessageJson[]>($"channels/{channelId}/messages" + QueryBuilder.GetQuery());
+            if (Data == null)
+                return Array.Empty<Message>();
+
+            return Data.Select(x => Message.Create(rest.Client, x)).ToImmutableArray();
+        }
     }
 
     /// <inheritdoc cref="GetMessageAsync(RevoltRestClient, string, string)" />

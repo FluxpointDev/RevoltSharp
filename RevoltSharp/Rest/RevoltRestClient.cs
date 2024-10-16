@@ -96,8 +96,8 @@ public class RevoltRestClient
     /// }
     /// </remarks>
     /// <returns><see cref="HttpResponseMessage"/></returns>
-    public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, IRevoltRequest json = null)
-    => json == null ? InternalRequest(GetMethod(method), endpoint, null) : InternalRequest(GetMethod(method), endpoint, json);
+    public Task<HttpResponseMessage> SendRequestAsync(RequestType method, string endpoint, IRevoltRequest? json = null)
+    => InternalRequest(GetMethod(method), endpoint, json);
 
     internal Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
@@ -271,10 +271,11 @@ public class RevoltRestClient
         return "attachments";
     }
 
-    internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object request)
+    internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object? request)
     {
         if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
             throw new RevoltRestException("Joining servers with a userbot has been blocked.", 400, RevoltErrorType.NotAllowedForUsers);
+
 
         HttpRequestMessage Mes = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
         if (request != null)
@@ -283,7 +284,9 @@ public class RevoltRestClient
             if (Client.Config.Debug.LogRestRequestJson)
                 Client.Logger.LogJson("Rest Request", request);
         }
+
         HttpResponseMessage Req = await Http.SendAsync(Mes);
+
         if (Req.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
             RetryRequest Retry = null;
@@ -339,7 +342,7 @@ public class RevoltRestClient
                 throw new RevoltRestException(Req.ReasonPhrase, (int)Req.StatusCode, RevoltErrorType.Unknown);
         }
 
-        if (Req.IsSuccessStatusCode && Client.Config.Debug.LogRestResponseJson)
+        if (Req.IsSuccessStatusCode && Req.Content.Headers.ContentLength.HasValue && Client.Config.Debug.LogRestResponseJson)
         {
             string Content = await Req.Content.ReadAsStringAsync();
             Client.Logger.LogJson("Rest Request", Content);

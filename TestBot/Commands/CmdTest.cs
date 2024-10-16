@@ -15,10 +15,21 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
-    [Command("linear")]
+    [Command("deletemsg")]
+    public async Task DeleteMessage()
+    {
+        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5, false);
+        await Task.Delay(250);
+        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5, false);
+        await Task.Delay(250);
+        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5, false);
+
+    }
+
+    [Command("rainbow")]
     public async Task Linear()
     {
-        await Context.Server.ModifyAsync(name: new Option<string>("Hello"));
+        await Context.Server.GetRole("01J9Z30V2A9CJH5D505AM456PA").ModifyAsync(color: new Option<string?>("linear-gradient(90deg, #ff0000,#ff8000,#ffff00,#00ff00,#00ffff,#ff00ff)"));
     }
 
     [Command("beforemsg")]
@@ -80,7 +91,7 @@ public class CmdTest : ModuleBase
     {
         HashSet<string> Roles = new HashSet<string>();
 
-        foreach (var rr in Context.Server.CurrentUser.Roles.OrderByDescending(x => x.Rank))
+        foreach (var rr in Context.Member.Roles.OrderByDescending(x => x.Rank))
         {
             Roles.Add("Role: " + rr.Name);
         }

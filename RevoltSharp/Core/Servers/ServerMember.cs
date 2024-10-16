@@ -217,7 +217,7 @@ public class ServerMember : Entity
     #endregion
 
 
-    internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson uModel, User user) : base(client)
+    internal ServerMember(RevoltClient client, ServerMemberJson sModel, UserJson? uModel, User? user) : base(client)
     {
         User = user;
         if (user == null && uModel != null)

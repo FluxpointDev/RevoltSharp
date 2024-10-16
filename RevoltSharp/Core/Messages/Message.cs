@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace RevoltSharp;
 
@@ -8,7 +9,7 @@ namespace RevoltSharp;
 /// </summary>
 public abstract class Message : CreatedEntity
 {
-    internal Message(RevoltClient client, MessageJson model)
+    internal Message(RevoltClient client, MessageJson model, UserJson[]? users = null, ServerMemberJson[]? members = null)
         : base(client, model.MessageId)
     {
         ChannelId = model.ChannelId;
@@ -21,7 +22,11 @@ public abstract class Message : CreatedEntity
         else
         {
             AuthorId = model.AuthorId;
-            Author = client.GetUser(model.AuthorId);
+            if (users != null)
+                Author = new User(client, users.FirstOrDefault(x => x.Id == AuthorId));
+            else
+                Author = client.GetUser(model.AuthorId);
+
             if (Author != null)
                 Type = Author.IsBot ? MessageType.Bot : MessageType.User;
 
@@ -31,12 +36,17 @@ public abstract class Message : CreatedEntity
         if (Channel != null && Channel is ServerChannel SC)
         {
             ServerId = SC.ServerId;
-            if (client.WebSocket != null && model.AuthorId != User.SystemUserId && Server.InternalMembers.TryGetValue(model.AuthorId, out var member))
-                Member = member;
+            if (client.WebSocket != null && model.AuthorId != User.SystemUserId)
+            {
+                if (Server.InternalMembers.TryGetValue(model.AuthorId, out var member))
+                    Member = member;
+                else if (members != null)
+                    Member = new ServerMember(client, members.FirstOrDefault(x => x.Id.User == AuthorId), null, Author);
+            }
         }
     }
 
-    internal static Message Create(RevoltClient client, MessageJson model)
+    internal static Message Create(RevoltClient client, MessageJson model, UserJson[]? users = null, ServerMemberJson[]? members = null)
     {
         if (model.AuthorId == User.SystemUserId)
         {
@@ -71,7 +81,7 @@ public abstract class Message : CreatedEntity
             return new SystemMessage<SystemUnknown>(client, model, new SystemUnknown());
         }
 
-        return new UserMessage(client, model);
+        return new UserMessage(client, model, users, members);
     }
 
     /// <summary>
