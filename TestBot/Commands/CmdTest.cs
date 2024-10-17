@@ -158,8 +158,7 @@ public class CmdTest : ModuleBase
     [Command("bans")]
     public async Task Ban()
     {
-        await Context.Server.GetBansAsync();
-
+        var Bans = await Context.Server.GetBansAsync();
     }
 
 

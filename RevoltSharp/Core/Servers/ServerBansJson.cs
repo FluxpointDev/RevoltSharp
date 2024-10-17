@@ -13,7 +13,7 @@ internal class ServerBansJson
 }
 internal class ServerBanUserJson
 {
-    [JsonProperty("id")]
+    [JsonProperty("_id")]
     public string Id { get; set; } = null!;
 
     [JsonProperty("username")]

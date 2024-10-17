@@ -2692,6 +2692,19 @@
             Reason for ban creation.
             </summary>
         </member>
+        <member name="P:RevoltSharp.ServerBan.Tag">
+            <summary>
+            Get the username and discriminator of the user.
+            </summary>
+        </member>
+        <member name="M:RevoltSharp.ServerBan.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+            <summary>
+            Gets the user's avatar.
+            </summary>
+            <param name="which">Which avatar to return.</param>
+            <param name="size"></param>
+            <returns>URL of the image</returns>
+        </member>
         <member name="M:RevoltSharp.ServerBan.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Name#0001 ban </returns>

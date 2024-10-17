@@ -51,6 +51,32 @@ public class ServerBan : CreatedEntity
 
     public Attachment? Avatar { get; }
 
+    /// <summary>
+    /// Get the username and discriminator of the user.
+    /// </summary>
+    public string Tag
+        => $"{Username}#{Discriminator}";
+
+    /// <summary>
+    /// Gets the user's avatar.
+    /// </summary>
+    /// <param name="which">Which avatar to return.</param>
+    /// <param name="size"></param>
+    /// <returns>URL of the image</returns>
+    public string? GetAvatarUrl(AvatarSources which = AvatarSources.Any, int? size = null)
+    {
+        if (Avatar != null && (which | AvatarSources.User) != 0)
+            return Avatar.GetUrl(size);
+
+        if ((which | AvatarSources.Default) != 0)
+        {
+            Conditions.GetImageSizeLength(size, nameof(GetAvatarUrl));
+            return $"{Client.Config.ApiUrl}users/{Id}/default_avatar{(size != null ? $"?size={size}" : null)}";
+        }
+
+        return null;
+    }
+
     /// <summary> Returns a string that represents the current object.</summary>
     /// <returns> Name#0001 ban </returns>
     public override string ToString()
