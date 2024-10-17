@@ -45,7 +45,14 @@ public class CmdTest : ModuleBase
     [Command("giverole")]
     public async Task GiveRole()
     {
-        await Context.Member.AddRoleAsync("01GZYQ9GCE14824E1HM10E49FP");
+        Context.Member.AddRoleAsync("01J9Z30V2A9CJH5D505AM456PA");
+        Context.Member.AddRoleAsync("01J9WBDYXX5294VAMY21W91CMP");
+    }
+
+    [Command("user")]
+    public async Task User()
+    {
+        await ReplyAsync(string.Join(", ", Context.Member.Permissions.ToList()));
     }
 
     [Command("removerole")]

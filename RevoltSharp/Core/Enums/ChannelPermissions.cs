@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace RevoltSharp;
 
@@ -45,6 +48,17 @@ public class ChannelPermissions
         Server = server;
         RawAllowed = allowed;
         RawDenied = denied;
+    }
+
+    /// <summary>
+    /// List of channel permissions as single enum values.
+    /// </summary>
+    /// <returns>List of <see cref="ChannelPermission"/></returns>
+    public IEnumerable<ChannelPermission> ToList()
+    {
+        ChannelPermission perm = (ChannelPermission)RawAllowed;
+        return Enum.GetValues(typeof(ChannelPermission))
+        .Cast<ChannelPermission>().Where(m => perm.HasFlag(m));
     }
 
     /// <summary>

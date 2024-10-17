@@ -1314,6 +1314,12 @@
             Raw permissions number that has been denied for the role.
             </summary>
         </member>
+        <member name="M:RevoltSharp.ChannelPermissions.ToList">
+            <summary>
+            List of channel permissions as single enum values.
+            </summary>
+            <returns>List of <see cref="T:RevoltSharp.ChannelPermission"/></returns>
+        </member>
         <member name="M:RevoltSharp.ChannelPermissions.Has(RevoltSharp.ServerPermission)">
             <summary>
             Check if the channel role override has a specific channel permission. 
@@ -1885,6 +1891,12 @@
             <summary>
             The server that these permissions are from.
             </summary>
+        </member>
+        <member name="M:RevoltSharp.ServerPermissions.ToList">
+            <summary>
+            List of server permissions as single enum values.
+            </summary>
+            <returns>List of <see cref="T:RevoltSharp.ServerPermission"/></returns>
         </member>
         <member name="P:RevoltSharp.ServerPermissions.Raw">
             <summary>

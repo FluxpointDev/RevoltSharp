@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace RevoltSharp;
 
@@ -43,6 +46,18 @@ public class ServerPermissions
             Raw = resolvedServer;
         }
     }
+
+    /// <summary>
+    /// List of server permissions as single enum values.
+    /// </summary>
+    /// <returns>List of <see cref="ServerPermission"/></returns>
+    public IEnumerable<ServerPermission> ToList()
+    {
+        ServerPermission perm = (ServerPermission)Raw;
+        return Enum.GetValues(typeof(ServerPermission))
+        .Cast<ServerPermission>().Where(m => perm.HasFlag(m));
+    }
+
 
     /// <summary>
     /// Raw permissions number for the server.

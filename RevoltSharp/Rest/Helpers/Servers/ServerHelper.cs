@@ -3,9 +3,7 @@ using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;

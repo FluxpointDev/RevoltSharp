@@ -2,6 +2,7 @@
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -38,11 +39,25 @@ public static class MemberHelper
     public static async Task AddRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
         Conditions.RoleIdLength(roleId, nameof(AddRoleAsync));
-
-        await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
+        
+        await member.RoleLock.WaitAsync();
+        EditMemberRequest request = new EditMemberRequest
         {
             roles = Optional.Some(member.RolesIds.Append(roleId).Select(x => x).ToArray())
-        });
+        };
+        try
+        {
+            HttpResponseMessage response = await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", request);
+            if (response.IsSuccessStatusCode)
+            {
+                member.RolesIds = request.roles.Value;
+                member.InternalRoles = new ConcurrentDictionary<string, Role>(request.roles.Value.ToDictionary(x => x, x => member.Server.InternalRoles[x]));
+            }
+        }
+        finally
+        {
+            member.RoleLock.Release();
+        }
     }
 
     /// <inheritdoc cref="AddRolesAsync(RevoltRestClient, ServerMember, string[])" />
@@ -70,12 +85,25 @@ public static class MemberHelper
         {
             Conditions.RoleIdLength(r, nameof(AddRolesAsync));
         }
-
-        await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
+        await member.RoleLock.WaitAsync();
+        EditMemberRequest request = new EditMemberRequest
         {
             roles = Optional.Some(member.RolesIds.Union(roleIds).ToArray())
-        });
-
+        };
+        try
+        {
+            HttpResponseMessage response = await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", request);
+            if (response.IsSuccessStatusCode)
+            {
+                member.RolesIds = request.roles.Value;
+                member.InternalRoles = new ConcurrentDictionary<string, Role>(request.roles.Value.ToDictionary(x => x, x => member.Server.InternalRoles[x]));
+            }
+        }
+        finally
+        {
+            member.RoleLock.Release();
+        }
+        
     }
 
     /// <inheritdoc cref="RemoveRoleAsync(RevoltRestClient, ServerMember, string)" />
@@ -98,10 +126,25 @@ public static class MemberHelper
     public static async Task RemoveRoleAsync(this RevoltRestClient rest, ServerMember member, string roleId)
     {
         Conditions.RoleIdLength(roleId, nameof(RemoveRoleAsync));
-        await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
+
+        await member.RoleLock.WaitAsync();
+        var request = new EditMemberRequest
         {
             roles = Optional.Some(member.RolesIds.Where(x => x != roleId).ToArray())
-        });
+        };
+        try
+        {
+            HttpResponseMessage response = await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", request);
+            if (response.IsSuccessStatusCode)
+            {
+                member.RolesIds = request.roles.Value;
+                member.InternalRoles = new ConcurrentDictionary<string, Role>(request.roles.Value.ToDictionary(x => x, x => member.Server.InternalRoles[x]));
+            }
+        }
+        finally
+        {
+            member.RoleLock.Release();
+        }
     }
 
     /// <inheritdoc cref="RemoveRolesAsync(RevoltRestClient, ServerMember, string[])" />
@@ -128,12 +171,25 @@ public static class MemberHelper
         {
             Conditions.RoleIdLength(r, nameof(RemoveRolesAsync));
         }
+        await member.RoleLock.WaitAsync();
 
-        await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", new EditMemberRequest
+        EditMemberRequest request = new EditMemberRequest
         {
             roles = Optional.Some(member.RolesIds.Except(roleIds).ToArray())
-        });
-
+        };
+        try
+        {
+            HttpResponseMessage response = await rest.PatchAsync<HttpResponseMessage>($"servers/{member.ServerId}/members/{member.Id}", request);
+            if (response.IsSuccessStatusCode)
+            {
+                member.RolesIds = request.roles.Value;
+                member.InternalRoles = new ConcurrentDictionary<string, Role>(request.roles.Value.ToDictionary(x => x, x => member.Server.InternalRoles[x]));
+            }
+        }
+        finally
+        {
+            member.RoleLock.Release();
+        }
     }
 
     /// <inheritdoc cref="GetMemberAsync(RevoltRestClient, string, string)" />

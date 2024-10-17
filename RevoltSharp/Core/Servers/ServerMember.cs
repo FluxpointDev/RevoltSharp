@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace RevoltSharp;
 
@@ -244,6 +245,9 @@ public class ServerMember : Entity
         }
     }
 
+    [JsonIgnore]
+    internal readonly SemaphoreSlim RoleLock = new SemaphoreSlim(1);
+
     internal void Update(PartialServerMemberJson json)
     {
         if (json.Nickname.HasValue)
@@ -254,8 +258,8 @@ public class ServerMember : Entity
 
         if (json.Roles.HasValue)
         {
-            RolesIds = json.Roles.Value.Distinct().ToArray();
             Server server = Client.GetServer(ServerId);
+            RolesIds = json.Roles.Value.Distinct().ToArray();
             InternalRoles = new ConcurrentDictionary<string, Role>(RolesIds.ToDictionary(x => x, x => server.InternalRoles[x]));
             Permissions = new ServerPermissions(server, this);
         }
