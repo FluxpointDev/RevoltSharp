@@ -1116,11 +1116,12 @@
             Server or default emoji
             </summary>
         </member>
-        <member name="M:RevoltSharp.Emoji.#ctor(System.String)">
+        <member name="M:RevoltSharp.Emoji.#ctor(System.String,System.Boolean)">
             <summary>
             Parse the emoji format or id to use for reactions.
             </summary>
             <param name="emoji"></param>
+            <param name="parseDefaultEmojis"></param>
         </member>
         <member name="P:RevoltSharp.Emoji.Id">
             <summary>

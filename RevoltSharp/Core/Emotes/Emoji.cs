@@ -26,9 +26,14 @@ public class Emoji : CreatedEntity
     /// Parse the emoji format or id to use for reactions.
     /// </summary>
     /// <param name="emoji"></param>
-    public Emoji(string emoji) : base(null, emoji.StartsWith(':') ? emoji.Substring(1, emoji.Length - 2) : emoji)
+    /// <param name="parseDefaultEmojis"></param>
+    public Emoji(string emoji, bool parseDefaultEmojis = true) : base(null, emoji.StartsWith(':') ? emoji.Substring(1, emoji.Length - 2) : emoji)
     {
         Name = Id;
+        if (parseDefaultEmojis)
+        {
+            EmojiList.NameToUnicode.TryGetValue(emoji, out var Name);
+        }
     }
 
     /// <summary>
@@ -93,4 +98,17 @@ public class Emoji : CreatedEntity
         return Name;
     }
 
+
+    public static string? ParseName(string name)
+    {
+        if (EmojiList.NameToUnicode.TryGetValue(name, out string emoji))
+            return emoji;
+
+        return null;
+    }
+
+    public static void TryParseName(string name, out string? emoji)
+    {
+        EmojiList.NameToUnicode.TryGetValue(name, out emoji);
+    }
 }

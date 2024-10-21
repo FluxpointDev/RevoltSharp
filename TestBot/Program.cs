@@ -22,6 +22,7 @@ class Program
     {
         // Yes ik i can use json file blah blah :p
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
+        
 
         Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
         {
