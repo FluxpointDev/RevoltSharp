@@ -1180,6 +1180,22 @@
             <summary> Returns a string that represents the current object.</summary>
             <returns> Emoji name or unicode </returns>
         </member>
+        <member name="M:RevoltSharp.Emoji.ParseName(System.String)">
+            <summary>
+            Parse a default emoji by name or fail
+            </summary>
+            <param name="name"></param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:RevoltSharp.Emoji.TryParseName(System.String,System.String@)">
+            <summary>
+            Try parse a default emoji by name.
+            </summary>
+            <param name="name"></param>
+            <param name="emoji"></param>
+            <returns><see cref="T:System.Boolean"/></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="T:RevoltSharp.Entity">
             <summary>
             A Revolt object entity that has the client attached.
@@ -2311,6 +2327,11 @@
             Id of the message.
             </summary>
         </member>
+        <member name="P:RevoltSharp.Message.Content">
+            <summary>
+            Content of the message.
+            </summary>
+        </member>
         <member name="P:RevoltSharp.Message.CreatedAt">
             <summary>
             Date of when the message was created.
@@ -2367,9 +2388,79 @@
             <summary> Returns a string that represents the current object.</summary>
             <returns> User/bot/system message </returns>
         </member>
+        <member name="T:RevoltSharp.MessageType">
+            <summary>
+            The type of message this is.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.MessageMasquerade.ToString">
             <summary> Returns a string that represents the current object.</summary>
             <returns> Masquerade name </returns>
+        </member>
+        <member name="T:RevoltSharp.SystemData">
+            <summary>
+            Raw system data for the system message.
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUnknown">
+            <summary>
+            Unknown system messages
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataText">
+            <summary>
+            System message with text content
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUserAdded">
+            <summary>
+            User has been added to a group channel
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUserRemoved">
+            <summary>
+            User has been removed from the group channel
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUserJoined">
+            <summary>
+            Member has joined the server
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUserLeft">
+            <summary>
+            Member has left the server
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUserKicked">
+            <summary>
+            Member has been kicked from the server
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataUserBanned">
+            <summary>
+            Member has been banned from the server
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataChannelRenamed">
+            <summary>
+            Group channel name has been changed
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataChannelDescriptionChanged">
+            <summary>
+            Group channel description has been changed
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataChannelIconChanged">
+            <summary>
+            Group channel icon has been changed
+            </summary>
+        </member>
+        <member name="T:RevoltSharp.SystemDataChannelOwnershipChanged">
+            <summary>
+            Group channel ownership has been changed
+            </summary>
         </member>
         <member name="T:RevoltSharp.SystemMessage`1">
             <summary>
@@ -2377,83 +2468,82 @@
             </summary>
             <typeparam name="Type"></typeparam>
         </member>
-        <member name="P:RevoltSharp.SystemMessage`1.Content">
+        <member name="P:RevoltSharp.SystemMessage`1.Data">
             <summary>
             The content data of this system message.
             </summary>
         </member>
+        <member name="P:RevoltSharp.SystemMessage`1.SystemType">
+            <summary>
+            The type of system message this is.
+            </summary>
+        </member>
         <member name="M:RevoltSharp.SystemMessage`1.ToString">
             <summary> Returns a string that represents the current object.</summary>
-            <returns> System message </returns>
         </member>
-        <member name="T:RevoltSharp.SystemUnknown">
+        <member name="F:RevoltSharp.SystemType.Unknown">
             <summary>
-            Unknown system messages
+            Unknown system message type.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemText">
+        <member name="F:RevoltSharp.SystemType.Text">
             <summary>
-            System message with text content
+            System message with text.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemUserAdded">
+        <member name="F:RevoltSharp.SystemType.GroupUserAdded">
             <summary>
-            User has been added to a group channel
+            User has been added to the group.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemUserRemoved">
+        <member name="F:RevoltSharp.SystemType.GroupUserRemoved">
             <summary>
-            User has been removed from the group channel
+            User has been removed from the group.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemUserJoined">
+        <member name="F:RevoltSharp.SystemType.ServerUserJoined">
             <summary>
-            Member has joined the server
+            User has joined the server.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemUserLeft">
+        <member name="F:RevoltSharp.SystemType.ServerUserLeft">
             <summary>
-            Member has left the server
+            User has left the server.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemUserKicked">
+        <member name="F:RevoltSharp.SystemType.ServerUserKicked">
             <summary>
-            Member has been kicked from the server
+            User has been kicked from the server.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemUserBanned">
+        <member name="F:RevoltSharp.SystemType.ServerUserBanned">
             <summary>
-            Member has been banned from the server
+            User has been banned from the server.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemChannelRenamed">
+        <member name="F:RevoltSharp.SystemType.GroupNameChanged">
             <summary>
-            Group channel name has been changed
+            Group channel name has been changed.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemChannelDescriptionChanged">
+        <member name="F:RevoltSharp.SystemType.GroupDescriptionChanged">
             <summary>
-            Group channel description has been changed
+            Group channel description has been changed.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemChannelIconChanged">
+        <member name="F:RevoltSharp.SystemType.GroupIconChanged">
             <summary>
-            Group channel icon has been changed
+            Group channel icon has been changed.
             </summary>
         </member>
-        <member name="T:RevoltSharp.SystemChannelOwnershipChanged">
+        <member name="F:RevoltSharp.SystemType.GroupOwnerChanged">
             <summary>
-            Group channel ownership has been changed
+            Group channel owner has been changed.
             </summary>
         </member>
         <member name="T:RevoltSharp.UserMessage">
             <summary>
             User messages sent with text, author, attachments, embeds, replies, mentions and optional parent server.
-            </summary>
-        </member>
-        <member name="P:RevoltSharp.UserMessage.Content">
-            <summary>
-            Content of the message.
             </summary>
         </member>
         <member name="P:RevoltSharp.UserMessage.Attachments">
@@ -2484,6 +2574,11 @@
         <member name="P:RevoltSharp.UserMessage.Reactions">
             <summary>
             Reactions on this message.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.UserMessage.ReactionsRaw">
+            <summary>
+            The raw reaction type to user ids list.
             </summary>
         </member>
         <member name="P:RevoltSharp.UserMessage.Masquerade">
@@ -3524,11 +3619,7 @@
             Spec: https://github.com/ulid/spec
             </summary>
         </member>
-        <member name="P:RevoltSharp.Ulid.Time">
-            <summary>
-            Date and time of the created object.
-            </summary>
-        </member>
+        <!-- Badly formed XML comment ignored for member "P:RevoltSharp.Ulid.Time" -->
         <member name="M:RevoltSharp.Ulid.Parse(System.String)">
             <summary>
             Parse a Revolt id to Ulid class.
@@ -4085,6 +4176,11 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException" />
             <exception cref="T:RevoltSharp.RevoltRestException" />
             <exception cref="T:RevoltSharp.RevoltPermissionException" />
+        </member>
+        <member name="T:RevoltSharp.CategoryHelper">
+            <summary>
+            Revolt http/rest methods for categories.
+            </summary>
         </member>
         <member name="T:RevoltSharp.EmojiHelper">
             <summary>

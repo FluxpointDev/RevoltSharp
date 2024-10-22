@@ -35,4 +35,7 @@ internal class PartialServerJson
 
     [JsonProperty("system_messages")]
     public Optional<ServerSystemMessagesJson> SystemMessages { get; set; }
+
+    [JsonProperty("categories")]
+    public Optional<CategoryJson[]> Categories { get; set; }
 }

@@ -10,13 +10,6 @@ namespace RevoltSharp;
 /// </summary>
 public class UserMessage : Message
 {
-    //public string? Nonce { get; internal set; }
-
-    /// <summary>
-    /// Content of the message.
-    /// </summary>
-    public string? Content { get; internal set; }
-
     /// <summary>
     /// File attachments for the message.
     /// </summary>
@@ -47,6 +40,9 @@ public class UserMessage : Message
     /// </summary>
     public IReadOnlyDictionary<Emoji, User[]> Reactions { get; internal set; }
 
+    /// <summary>
+    /// The raw reaction type to user ids list.
+    /// </summary>
     public IReadOnlyDictionary<string, string[]> ReactionsRaw { get; internal set; }
 
     /// <summary>
@@ -55,10 +51,10 @@ public class UserMessage : Message
     public MessageMasquerade? Masquerade { get; internal set; }
 
     //public MessageWebhook? Webhook { get; internal set; }
+
     internal UserMessage(RevoltClient client, MessageJson model, UserJson[]? users = null, ServerMemberJson[]? members = null)
         : base(client, model, users, members)
     {
-        //Nonce = model.Nonce;
         Content = model.Content;
         Masquerade = MessageMasquerade.Create(model.Masquerade);
         Attachments = model.Attachments == null ? new List<Attachment>() : new List<Attachment>(model.Attachments.Select(a => Attachment.Create(client, a)!));

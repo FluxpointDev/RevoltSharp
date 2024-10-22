@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace RevoltSharp.Core.Messages;
+namespace RevoltSharp;
 
 internal class BulkMessagesJson
 {

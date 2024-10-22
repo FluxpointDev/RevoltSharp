@@ -44,7 +44,7 @@ internal class RevoltSocketClient
     internal async Task SetupWebsocket()
     {
         StopWebSocket = false;
-        
+
         while (!CancellationToken.IsCancellationRequested && !StopWebSocket)
         {
             using (WebSocket = new ClientWebSocket())
@@ -172,7 +172,6 @@ internal class RevoltSocketClient
                         Client.Logger.LogJson("WebSocket Response Json", json);
                         break;
                 }
-
             }
 
 
@@ -277,6 +276,14 @@ internal class RevoltSocketClient
                             ServerCache = new ConcurrentDictionary<string, Server>(@event.Servers.ToDictionary(x => x.Id, x => new Server(Client, x)));
                             ChannelCache = new ConcurrentDictionary<string, Channel>(@event.Channels.ToDictionary(x => x.Id, x => Channel.Create(Client, x)));
 
+                            foreach (Server s in ServerCache.Values)
+                            {
+                                foreach (ServerCategory c in s.Categories)
+                                {
+                                    c.UpdateChannels(Client);
+                                }
+                            }
+
                             foreach (ServerMemberJson m in @event.Members)
                             {
                                 if (ServerCache.TryGetValue(m.Id.Server, out Server s))
@@ -294,14 +301,14 @@ internal class RevoltSocketClient
                                     user.InternalMutualDMs.TryAdd(c.Id, DM);
                             }
 
-                                foreach (EmojiJson m in @event.Emojis)
-                                {
-                                    Emoji Emote = new Emoji(Client, m);
-                                    EmojiCache.TryAdd(m.Id, Emote);
-                                    if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
-                                        s.InternalEmojis.TryAdd(m.Id, Emote);
-                                }
-                            
+                            foreach (EmojiJson m in @event.Emojis)
+                            {
+                                Emoji Emote = new Emoji(Client, m);
+                                EmojiCache.TryAdd(m.Id, Emote);
+                                if (ServerCache.TryGetValue(m.Parent.ServerId, out Server s))
+                                    s.InternalEmojis.TryAdd(m.Id, Emote);
+                            }
+
                             Client.InvokeLog("WebSocket Ready!", RevoltLogSeverity.Debug);
 
                             Client.InvokeReady(CurrentUser);
@@ -322,8 +329,12 @@ internal class RevoltSocketClient
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
-                            Client.InvokeWebSocketError(Client, new SocketError() { Message = "Fatal error, could not parse ready event.\n" +
-                                "WebSocket connection has been stopped.", Type = RevoltErrorType.Unknown });
+                            Client.InvokeWebSocketError(Client, new SocketError()
+                            {
+                                Message = "Fatal error, could not parse ready event.\n" +
+                                "WebSocket connection has been stopped.",
+                                Type = RevoltErrorType.Unknown
+                            });
                             await Client.StopAsync();
                         }
                     }
@@ -611,7 +622,11 @@ internal class RevoltSocketClient
                             if (@event.Clear.Value.Contains("Description"))
                                 @event.Data.Description = Optional.Some<string>(null);
                         }
+
+
+
                         Server cloned = server.Clone();
+
                         server.Update(@event.Data);
                         Client.InvokeServerUpdated(cloned, server, new ServerUpdatedProperties(server, @event.Data));
 
@@ -739,7 +754,7 @@ internal class RevoltSocketClient
                                 {
                                     server.RemoveMember(m.User);
                                 }
-                                
+
                                 foreach (Emoji e in server.InternalEmojis.Values)
                                 {
                                     EmojiCache.TryRemove(e.Id, out _);
@@ -1092,7 +1107,7 @@ internal class RevoltSocketClient
                         Client.Logger.LogMessage("Client has been logged out by the server, this may be an expired session or the bot token has been reset.", RevoltLogSeverity.Warn);
 
                         Client.InvokeLogout();
-                        
+
                         await Client.StopAsync();
                     }
                     break;

@@ -1,5 +1,4 @@
 ﻿using Optionals;
-using RevoltSharp.Core.Messages;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
 using System;

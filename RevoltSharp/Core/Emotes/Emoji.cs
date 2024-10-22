@@ -88,7 +88,7 @@ public class Emoji : CreatedEntity
     /// <summary>
     /// The image url of the emoji or empty if unicode.
     /// </summary>
-    public string ImageUrl
+    public string? ImageUrl
         => IsServerEmoji ? Client.Config.Debug.UploadUrl + "/emojis/" + Id : string.Empty;
 
     /// <summary> Returns a string that represents the current object.</summary>
@@ -98,17 +98,34 @@ public class Emoji : CreatedEntity
         return Name;
     }
 
-
+    /// <summary>
+    /// Parse a default emoji by name or fail
+    /// </summary>
+    /// <param name="name"></param>
+    /// <exception cref="ArgumentException"></exception>
     public static string? ParseName(string name)
     {
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentNullException("Name argument for ParseName is empty.");
+
         if (EmojiList.NameToUnicode.TryGetValue(name, out string emoji))
             return emoji;
 
-        return null;
+        throw new ArgumentException("Could not parse default emoji type from name " + name);
     }
 
-    public static void TryParseName(string name, out string? emoji)
+    /// <summary>
+    /// Try parse a default emoji by name.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="emoji"></param>
+    /// <returns><see cref="bool"/></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static bool TryParseName(string name, out string? emoji)
     {
-        EmojiList.NameToUnicode.TryGetValue(name, out emoji);
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentNullException("Name argument for ParseName is empty.");
+
+        return EmojiList.NameToUnicode.TryGetValue(name, out emoji);
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RevoltSharp;
@@ -19,6 +20,14 @@ public class Server : CreatedEntity
         Banner = Attachment.Create(client, model.Banner);
         Icon = Attachment.Create(client, model.Icon);
         ChannelIds = model.Channels != null ? model.Channels.ToHashSet() : new HashSet<string>();
+        if (model.Categories != null)
+        {
+            foreach(var cat in model.Categories)
+            {
+                InternalCategories.TryAdd(cat.id, new ServerCategory(client, Id, cat, InternalCategories.Keys.Count));
+            }
+        }
+
         OwnerId = model.Owner;
         InternalRoles = model.Roles != null
             ? new ConcurrentDictionary<string, Role>(model.Roles.ToDictionary(x => x.Key, x => new Role(client, x.Value, model.Id, x.Key)))
@@ -87,15 +96,32 @@ public class Server : CreatedEntity
     [JsonIgnore]
     public IReadOnlyCollection<VoiceChannel> VoiceChannels => (IReadOnlyCollection<VoiceChannel>)Client.WebSocket.ChannelCache.Values.Where(x => x is VoiceChannel VC && VC.ServerId == Id).Select(x => (VoiceChannel)x).ToImmutableArray();
 
+    [JsonIgnore]
+    public ConcurrentDictionary<string, ServerCategory> InternalCategories = new ConcurrentDictionary<string, ServerCategory>();
 
-    //public ServerCategory[] Categories;
+    [JsonIgnore]
+    public IReadOnlyList<ServerCategory> Categories
+        => (IReadOnlyList<ServerCategory>)InternalCategories.Values;
+
+    public ServerCategory? GetCategory(string categoryId)
+    {
+        if (InternalCategories.TryGetValue(categoryId, out ServerCategory cat))
+            return cat;
+
+        return null;
+    }
+
     public ServerSystemMessages SystemMessages;
 
+    [JsonIgnore]
     internal ConcurrentDictionary<string, Role> InternalRoles { get; set; }
 
+    [JsonIgnore]
     internal ConcurrentDictionary<string, Emoji> InternalEmojis { get; set; } = new ConcurrentDictionary<string, Emoji>();
 
+    [JsonIgnore]
     internal ConcurrentDictionary<string, ServerMember> InternalMembers { get; set; } = new ConcurrentDictionary<string, ServerMember>();
+
 
     public ServerPermissions DefaultPermissions { get; internal set; }
 
@@ -209,6 +235,32 @@ public class Server : CreatedEntity
             SystemMessages = new ServerSystemMessages(Client, json.SystemMessages.Value);
         }
 
+        if (json.Categories.HasValue)
+        {
+            int Position = 0;
+            foreach (var cat in json.Categories.Value)
+            {
+                if (InternalCategories.TryGetValue(cat.id, out ServerCategory Cat))
+                {
+                    Cat.Update(Client, cat, Position);
+                }
+                else
+                {
+                    Cat = new ServerCategory(Client, Id, cat, Position);
+                    InternalCategories.TryAdd(cat.id, Cat);
+                    Cat.UpdateChannels(Client);
+
+                }
+                Position += 1;
+            }
+
+            foreach (var cat in Categories)
+            {
+                if (!json.Categories.Value.Any(x => x.id == cat.Id))
+                    InternalCategories.TryRemove(cat.Id, out _);
+            }
+        }
+
         _ = Task.Run(() =>
         {
             foreach (var sm in CachedMembers)
@@ -248,6 +300,9 @@ public class Server : CreatedEntity
             RemoveMember(User);
         }
     }
+
+    [JsonIgnore]
+    internal readonly SemaphoreSlim CategoryLock = new SemaphoreSlim(1);
 
     /// <summary> Returns a string that represents the current object.</summary>
     /// <returns> Server name </returns>

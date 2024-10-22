@@ -114,11 +114,11 @@ public static class ServerHelper
     }
 
     /// <inheritdoc cref="ModifyServerAsync(RevoltRestClient, string, Option{string}?, Option{string?}, Option{string?}?, Option{string?}?)" />
-    public static Task ModifyAsync(this Server server, Option<string>? name = null, Option<string?> description = null, Option<string?>? icon = null, Option<string?>? banner = null)
+    public static Task<Server> ModifyAsync(this Server server, Option<string>? name = null, Option<string?> description = null, Option<string?>? icon = null, Option<string?>? banner = null)
         => ModifyServerAsync(server.Client.Rest, server.Id, name, description, icon, banner);
 
     /// <inheritdoc cref="ModifyServerAsync(RevoltRestClient, string, Option{string}?, Option{string?}, Option{string?}?, Option{string?}?)" />
-    public static Task ModifyServerAsync(this RevoltRestClient rest, Server server, Option<string>? name = null, Option<string?> description = null, Option<string?>? icon = null, Option<string?>? banner = null)
+    public static Task<Server> ModifyServerAsync(this RevoltRestClient rest, Server server, Option<string>? name = null, Option<string?> description = null, Option<string?>? icon = null, Option<string?>? banner = null)
         => ModifyServerAsync(rest, server.Id, name, description, icon, banner);
 
     /// <summary>

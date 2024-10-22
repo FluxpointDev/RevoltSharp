@@ -55,30 +55,30 @@ public abstract class Message : CreatedEntity
                 switch (model.System.SystemType)
                 {
                     case "text":
-                        return new SystemMessage<SystemText>(client, model, new SystemText());
+                        return new SystemMessage<SystemDataText>(client, model, new SystemDataText(), SystemType.Text);
                     case "user_added":
-                        return new SystemMessage<SystemUserAdded>(client, model, new SystemUserAdded());
+                        return new SystemMessage<SystemDataUserAdded>(client, model, new SystemDataUserAdded(), SystemType.GroupUserAdded);
                     case "user_remove":
-                        return new SystemMessage<SystemUserRemoved>(client, model, new SystemUserRemoved());
+                        return new SystemMessage<SystemDataUserRemoved>(client, model, new SystemDataUserRemoved(), SystemType.GroupUserRemoved);
                     case "user_joined":
-                        return new SystemMessage<SystemUserJoined>(client, model, new SystemUserJoined());
+                        return new SystemMessage<SystemDataUserJoined>(client, model, new SystemDataUserJoined(), SystemType.ServerUserJoined);
                     case "user_left":
-                        return new SystemMessage<SystemUserLeft>(client, model, new SystemUserLeft());
+                        return new SystemMessage<SystemDataUserLeft>(client, model, new SystemDataUserLeft(), SystemType.ServerUserLeft);
                     case "user_kicked":
-                        return new SystemMessage<SystemUserKicked>(client, model, new SystemUserKicked());
+                        return new SystemMessage<SystemDataUserKicked>(client, model, new SystemDataUserKicked(), SystemType.ServerUserKicked);
                     case "user_banned":
-                        return new SystemMessage<SystemUserBanned>(client, model, new SystemUserBanned());
+                        return new SystemMessage<SystemDataUserBanned>(client, model, new SystemDataUserBanned(), SystemType.ServerUserBanned);
                     case "channel_renamed":
-                        return new SystemMessage<SystemChannelRenamed>(client, model, new SystemChannelRenamed());
+                        return new SystemMessage<SystemDataChannelRenamed>(client, model, new SystemDataChannelRenamed(), SystemType.GroupNameChanged);
                     case "channel_description_changed":
-                        return new SystemMessage<SystemChannelDescriptionChanged>(client, model, new SystemChannelDescriptionChanged());
+                        return new SystemMessage<SystemDataChannelDescriptionChanged>(client, model, new SystemDataChannelDescriptionChanged(), SystemType.GroupDescriptionChanged);
                     case "channel_icon_changed":
-                        return new SystemMessage<SystemChannelIconChanged>(client, model, new SystemChannelIconChanged());
+                        return new SystemMessage<SystemDataChannelIconChanged>(client, model, new SystemDataChannelIconChanged(), SystemType.GroupIconChanged);
                     case "channel_ownership_changed":
-                        return new SystemMessage<SystemChannelOwnershipChanged>(client, model, new SystemChannelOwnershipChanged());
+                        return new SystemMessage<SystemDataChannelOwnershipChanged>(client, model, new SystemDataChannelOwnershipChanged(), SystemType.GroupOwnerChanged);
                 }
             }
-            return new SystemMessage<SystemUnknown>(client, model, new SystemUnknown());
+            return new SystemMessage<SystemDataUnknown>(client, model, new SystemDataUnknown(), SystemType.Unknown);
         }
 
         return new UserMessage(client, model, users, members);
@@ -88,6 +88,11 @@ public abstract class Message : CreatedEntity
     /// Id of the message.
     /// </summary>
     public new string Id => base.Id;
+
+    /// <summary>
+    /// Content of the message.
+    /// </summary>
+    public string? Content { get; internal set; }
 
     /// <summary>
     /// Date of when the message was created.
@@ -152,6 +157,10 @@ public abstract class Message : CreatedEntity
         return Type.ToString() + " message";
     }
 }
+
+/// <summary>
+/// The type of message this is.
+/// </summary>
 public enum MessageType
 {
     User, Bot, System, Webhook

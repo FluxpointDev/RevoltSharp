@@ -12,6 +12,8 @@ internal class ModifyServerRequest : IRevoltRequest
 
     public Optional<string> banner { get; set; }
 
+    public Optional<List<CategoryJson>> categories { get; set; }
+
     public Optional<ModifyServerSystemChannels> system_messages { get; set; }
 
     public Optional<List<string>> remove { get; set; }

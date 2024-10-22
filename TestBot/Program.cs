@@ -33,8 +33,8 @@ class Program
                 LogRestRequestJson = false,
                 LogRestResponseJson = false,
                 LogRestRequest = false,
-                LogWebSocketFull = false,
-                LogWebSocketReady = false,
+                LogWebSocketFull = true,
+                LogWebSocketReady = true,
                 LogWebSocketError = true,
                 LogWebSocketUnknownEvent = true
             },
