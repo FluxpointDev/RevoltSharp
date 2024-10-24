@@ -53,6 +53,9 @@ public class ClientEvents
     public delegate void ServerMemberEvent(Server server, ServerMember member);
 
     /// <inheritdoc cref="RevoltEvent" />
+    public delegate void ServerMemberLeftEvent(Server server, string userId, User? user, ServerMember? member);
+
+    /// <inheritdoc cref="RevoltEvent" />
     public delegate void MessageUpdatedEvent(Downloadable<string, Message> message_cache, MessageUpdatedProperties message);
 
     /// <inheritdoc cref="RevoltEvent" />
@@ -299,10 +302,10 @@ public class ClientEvents
     /// A <see cref="ServerMember" /> has left the <see cref="Server" />
     /// </summary>
 
-    public event ServerMemberEvent? OnMemberLeft;
-    internal void InvokeMemberLeft(Server server, ServerMember user)
+    public event ServerMemberLeftEvent? OnMemberLeft;
+    internal void InvokeMemberLeft(Server server, string userId, User? user, ServerMember? member)
     {
-        OnMemberLeft?.Invoke(server, user);
+        OnMemberLeft?.Invoke(server, userId, user, member);
     }
 
 

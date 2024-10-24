@@ -765,27 +765,34 @@ internal class RevoltSocketClient
                         }
                         else
                         {
-                            UserCache.TryGetValue(@event.UserId, out User user);
-                            if (!ServerCache.TryGetValue(@event.ServerId, out Server Server))
-                            {
-                                user.InternalMutualServers.TryRemove(@event.ServerId, out Server);
+                            UserCache.TryGetValue(@event.UserId, out User? User);
+                            ServerCache.TryGetValue(@event.ServerId, out Server? Server);
+
+                            if (User != null)
+                                User.InternalMutualServers.TryRemove(@event.ServerId, out _);
+
+                            if (Server == null)
+                                Server = await Client.Rest.GetServerAsync(@event.ServerId);
+
+                            if (Server == null)
                                 return;
-                            }
 
-                            user = await Client.Rest.GetUserAsync(@event.UserId);
+                            if (User == null)
+                                User = await Client.Rest.GetUserAsync(@event.UserId);
 
+                            Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember? Member);
 
-                            Server.InternalMembers.TryGetValue(@event.UserId, out ServerMember Member);
-                            Member ??= new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, user);
-
-                            if (user == null)
+                            if (Member != null && Member.User != null)
                             {
+                                Server.RemoveMember(Member.User);
+                                User = Member.User;
+                            }
+                            else if (User != null)
+                                Server.RemoveMember(User);
+                            else
                                 Server.RemoveMember(Client, @event.UserId);
-                                return;
-                            }
 
-                            Server.RemoveMember(Member.User);
-                            Client.InvokeMemberLeft(Server, Member);
+                            Client.InvokeMemberLeft(Server, @event.UserId, User, Member);
                         }
                     }
                     break;

@@ -9,7 +9,6 @@ public class EventTests
 {
     public EventTests(RevoltClient client)
     {
-        return;
         client.OnChannelCreated += Client_OnChannelCreated;
         client.OnChannelDeleted += Client_OnChannelDeleted;
         client.OnChannelUpdated += Client_OnChannelUpdated;
@@ -53,6 +52,7 @@ public class EventTests
 
 
     }
+
 
     private void Client_OnStarted(SelfUser selfuser)
     {
@@ -183,16 +183,16 @@ public class EventTests
         Console.WriteLine(value.Id + " | " + value2);
     }
 
-    private void Client_OnMemberLeft(Server value, ServerMember value2)
+    private void Client_OnMemberLeft(Server value, string userId, ServerMember value2)
     {
         Console.WriteLine("--- EVENT: Member Left ---");
-        Console.WriteLine(value.Name);
+        Console.WriteLine($"{value.Name} - {value2.CurrentName}");
     }
 
     private void Client_OnMemberJoined(Server value, ServerMember value2)
     {
         Console.WriteLine("--- EVENT: Member Joined ---");
-        Console.WriteLine(value.Name);
+        Console.WriteLine($"{value.Name} - {value2.CurrentName}");
     }
 
     private void Client_OnGroupUserLeft(GroupChannel value, User value2)

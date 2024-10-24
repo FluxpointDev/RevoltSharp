@@ -224,8 +224,7 @@ public class ServerMember : Entity
         if (user == null && uModel != null)
             User = new User(Client, uModel);
 
-       JoinedAt = sModel.JoinedAt;
-
+        JoinedAt = sModel.JoinedAt;
         ServerId = sModel.Id.Server;
         Nickname = sModel.Nickname;
         if (sModel.Timeout.HasValue)

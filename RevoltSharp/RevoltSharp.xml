@@ -190,6 +190,9 @@
         <member name="T:RevoltSharp.ClientEvents.ServerMemberEvent">
             <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
         </member>
+        <member name="T:RevoltSharp.ClientEvents.ServerMemberLeftEvent">
+            <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
+        </member>
         <member name="T:RevoltSharp.ClientEvents.MessageUpdatedEvent">
             <inheritdoc cref="T:RevoltSharp.ClientEvents.RevoltEvent" />
         </member>
