@@ -183,10 +183,10 @@ public class EventTests
         Console.WriteLine(value.Id + " | " + value2);
     }
 
-    private void Client_OnMemberLeft(Server value, string userId, ServerMember value2)
+    private void Client_OnMemberLeft(Server value, string userId, User? user, ServerMember? value2)
     {
         Console.WriteLine("--- EVENT: Member Left ---");
-        Console.WriteLine($"{value.Name} - {value2.CurrentName}");
+        Console.WriteLine($"{value.Name} - {user?.CurrentName}");
     }
 
     private void Client_OnMemberJoined(Server value, ServerMember value2)

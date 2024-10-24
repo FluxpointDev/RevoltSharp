@@ -708,7 +708,7 @@ internal class RevoltSocketClient
 
                             Client.InvokeLog("Joined Server: " + server.Name, RevoltLogSeverity.Debug);
 
-                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, CurrentUser);
+                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId }, JoinedAt = DateTime.UtcNow }, null, CurrentUser);
                             server.AddMember(Member);
                             Client.InvokeServerJoined(server, CurrentUser);
                         }
@@ -725,7 +725,7 @@ internal class RevoltSocketClient
                             if (user == null)
                                 return;
 
-                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId } }, null, user);
+                            ServerMember Member = new ServerMember(Client, new ServerMemberJson { Id = new ServerMemberIdsJson { Server = @event.ServerId, User = @event.UserId }, JoinedAt = DateTime.UtcNow }, null, user);
                             Server.AddMember(Member);
                             Client.InvokeMemberJoined(Server, Member);
                         }
