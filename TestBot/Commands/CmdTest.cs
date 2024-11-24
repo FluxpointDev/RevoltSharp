@@ -18,7 +18,7 @@ public class CmdTest : ModuleBase
     [Command("typestart")]
     public async Task TypeStart()
     {
-        var Typing = await Context.Member.ModifyAsync()
+
     }
 
     [Command("typestop")]

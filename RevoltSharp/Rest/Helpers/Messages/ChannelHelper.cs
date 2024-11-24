@@ -161,6 +161,10 @@ public static class ChannelHelper
     public static async Task TriggerTypingChannelAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdLength(channelId, nameof(TriggerTypingChannelAsync));
+        Conditions.WebSocketOnly(rest, nameof(TriggerTypingChannelAsync));
+
+        if (rest.Client.WebSocket.TypingChannels.ContainsKey(channelId))
+            return;
 
         await rest.Client.WebSocket.Send(rest.Client.WebSocket.WebSocket, JsonConvert.SerializeObject(new BeginTypingSocketRequest(channelId)), new System.Threading.CancellationToken());
     }
@@ -180,6 +184,10 @@ public static class ChannelHelper
     public static async Task<TypingNotifier> BeginTypingChannelAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdLength(channelId, nameof(BeginTypingChannelAsync));
+        Conditions.WebSocketOnly(rest, nameof(BeginTypingChannelAsync));
+
+        if (rest.Client.WebSocket.TypingChannels.TryGetValue(channelId, out var typing))
+            return typing;
 
         return new TypingNotifier(rest, channelId);
     }
@@ -201,6 +209,7 @@ public static class ChannelHelper
     public static async Task StopTypingChannelAsync(this RevoltRestClient rest, string channelId)
     {
         Conditions.ChannelIdLength(channelId, nameof(StopTypingChannelAsync));
+        Conditions.WebSocketOnly(rest, nameof(StopTypingChannelAsync));
 
         if (rest.Client.WebSocket.TypingChannels.TryGetValue(channelId, out TypingNotifier typing))
             typing.Stop();

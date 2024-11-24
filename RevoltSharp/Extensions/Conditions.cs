@@ -346,6 +346,12 @@ public static class Conditions
             throw new RevoltArgumentException($"Cannot perform the {request} request against the current user/bot account.");
     }
 
+    public static void WebSocketOnly(RevoltRestClient rest, string request)
+    {
+        if (rest.Client.WebSocket == null)
+            throw new RevoltArgumentException($"The {request} is only allowed to be used in WebSocket mode only.");
+    }
+
     #endregion
 
     #region Webhook
