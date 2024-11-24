@@ -3881,6 +3881,50 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
+        <member name="M:RevoltSharp.ChannelHelper.TriggerTypingAsync(RevoltSharp.Channel)">
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.TriggerTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.TriggerTypingAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Channel)">
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.TriggerTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.TriggerTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
+            <summary>
+            Trigger the typing indicator one-time on a channel which will stop after 3 seconds.
+            </summary>
+            <remarks>
+            This will only work with <see cref="F:RevoltSharp.ClientMode.WebSocket"/>
+            </remarks>
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.BeginTypingAsync(RevoltSharp.Channel)">
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.BeginTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.BeginTypingAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Channel)">
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.BeginTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.BeginTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
+            <summary>
+            Trigger the typing indicator continuously on a channel, you can use the <see cref="T:RevoltSharp.WebSocket.TypingNotifier"/> class to stop typing or using the StopTypingChannelAsync rest/channel request.
+            </summary>
+            <remarks>
+            This will only work with <see cref="F:RevoltSharp.ClientMode.WebSocket"/>
+            </remarks>
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.StopTypingAsync(RevoltSharp.Channel)">
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.StopTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.StopTypingAsync(RevoltSharp.Rest.RevoltRestClient,RevoltSharp.Channel)">
+            <inheritdoc cref="M:RevoltSharp.ChannelHelper.StopTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)" />
+        </member>
+        <member name="M:RevoltSharp.ChannelHelper.StopTypingChannelAsync(RevoltSharp.Rest.RevoltRestClient,System.String)">
+            <summary>
+            Trigger the stop typing on a channel which will stop the current user from typing in the channel.
+            </summary>
+            <remarks>
+            This will only work with <see cref="F:RevoltSharp.ClientMode.WebSocket"/>
+            </remarks>
+            <param name="rest"></param>
+            <param name="channelId"></param>
+        </member>
         <member name="T:RevoltSharp.GroupChannelHelper">
             <summary>
             Revolt http/rest methods for group channels.

@@ -39,6 +39,8 @@ internal class RevoltSocketClient
     internal ConcurrentDictionary<string, Channel> ChannelCache = new ConcurrentDictionary<string, Channel>();
     internal ConcurrentDictionary<string, User> UserCache = new ConcurrentDictionary<string, User>();
     internal ConcurrentDictionary<string, Emoji> EmojiCache = new ConcurrentDictionary<string, Emoji>();
+
+    internal ConcurrentDictionary<string, TypingNotifier> TypingChannels = new ConcurrentDictionary<string, TypingNotifier>();
     internal SelfUser? CurrentUser => Client.CurrentUser;
 
     internal async Task SetupWebsocket()
@@ -64,7 +66,7 @@ internal class RevoltSocketClient
                     WebSocket.Options.SetRequestHeader("User-Agent", Client.Config.UserAgent);
 
                     await WebSocket.ConnectAsync(uri, CancellationToken);
-                    await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateRequest(Client.Token)), CancellationToken);
+                    await Send(WebSocket, JsonConvert.SerializeObject(new AuthenticateSocketRequest(Client.Token)), CancellationToken);
                     _firstError = true;
                     await Receive(WebSocket, CancellationToken);
                 }
@@ -101,7 +103,7 @@ internal class RevoltSocketClient
         }
     }
 
-    private Task Send(ClientWebSocket socket, string data, CancellationToken stoppingToken)
+    internal Task Send(ClientWebSocket socket, string data, CancellationToken stoppingToken)
         => socket.SendAsync(Encoding.UTF8.GetBytes(data), WebSocketMessageType.Text, true, stoppingToken);
 
     private async Task Receive(ClientWebSocket socket, CancellationToken cancellationToken)
@@ -128,29 +130,6 @@ internal class RevoltSocketClient
                 }
             }
         }
-    }
-
-    internal class AuthenticateRequest
-    {
-        internal AuthenticateRequest(string token)
-        {
-            Token = token;
-        }
-
-        [JsonProperty("type")]
-        public string Type = "Authenticate";
-
-        [JsonProperty("token")]
-        public string Token;
-    }
-
-    private class HeartbeatRequest
-    {
-        [JsonProperty("type")]
-        public string Type = "Ping";
-
-        [JsonProperty("data")]
-        public int Data = 20000;
     }
 
     private async Task WebSocketMessage(string json)
@@ -187,7 +166,7 @@ internal class RevoltSocketClient
                         Client.InvokeLog("WebSocket Reconnected!", RevoltLogSeverity.Debug);
 
                     _firstConnected = false;
-                    await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest()), CancellationToken);
+                    await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatSocketRequest()), CancellationToken);
 
                     //_ = Task.Run(async () =>
                     //{
@@ -205,8 +184,8 @@ internal class RevoltSocketClient
                     break;
                 case "Ping":
                     {
-                        HeartbeatRequest @event = JsonConvert.DeserializeObject<HeartbeatRequest>(json);
-                        await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatRequest() { Data = @event.Data }), CancellationToken);
+                        HeartbeatSocketRequest @event = JsonConvert.DeserializeObject<HeartbeatSocketRequest>(json);
+                        await Send(WebSocket, JsonConvert.SerializeObject(new HeartbeatSocketRequest() { Data = @event.Data }), CancellationToken);
                     }
                     break;
                 case "Pong":

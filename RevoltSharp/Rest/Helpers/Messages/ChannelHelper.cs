@@ -1,6 +1,8 @@
-﻿using Optionals;
+﻿using Newtonsoft.Json;
+using Optionals;
 using RevoltSharp.Rest;
 using RevoltSharp.Rest.Requests;
+using RevoltSharp.WebSocket;
 using System.Threading.Tasks;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -142,5 +144,67 @@ public static class ChannelHelper
         Conditions.ChannelIdLength(channelId, nameof(DeleteChannelAsync));
 
         await rest.DeleteAsync($"/channels/{channelId}");
+    }
+
+    /// <inheritdoc cref="TriggerTypingChannelAsync(RevoltRestClient, string)" />
+    public static Task TriggerTypingAsync(this Channel channel) => TriggerTypingChannelAsync(channel.Client.Rest, channel.Id);
+
+    /// <inheritdoc cref="TriggerTypingChannelAsync(RevoltRestClient, string)" />
+    public static Task TriggerTypingAsync(this RevoltRestClient rest, Channel channel) => TriggerTypingChannelAsync(rest, channel.Id);
+
+    /// <summary>
+    /// Trigger the typing indicator one-time on a channel which will stop after 3 seconds.
+    /// </summary>
+    /// <remarks>
+    /// This will only work with <see cref="ClientMode.WebSocket"/>
+    /// </remarks>
+    public static async Task TriggerTypingChannelAsync(this RevoltRestClient rest, string channelId)
+    {
+        Conditions.ChannelIdLength(channelId, nameof(TriggerTypingChannelAsync));
+
+        await rest.Client.WebSocket.Send(rest.Client.WebSocket.WebSocket, JsonConvert.SerializeObject(new BeginTypingSocketRequest(channelId)), new System.Threading.CancellationToken());
+    }
+
+    /// <inheritdoc cref="BeginTypingChannelAsync(RevoltRestClient, string)" />
+    public static Task BeginTypingAsync(this Channel channel) => BeginTypingChannelAsync(channel.Client.Rest, channel.Id);
+
+    /// <inheritdoc cref="BeginTypingChannelAsync(RevoltRestClient, string)" />
+    public static Task BeginTypingAsync(this RevoltRestClient rest, Channel channel) => BeginTypingChannelAsync(rest, channel.Id);
+
+    /// <summary>
+    /// Trigger the typing indicator continuously on a channel, you can use the <see cref="TypingNotifier"/> class to stop typing or using the StopTypingChannelAsync rest/channel request.
+    /// </summary>
+    /// <remarks>
+    /// This will only work with <see cref="ClientMode.WebSocket"/>
+    /// </remarks>
+    public static async Task<TypingNotifier> BeginTypingChannelAsync(this RevoltRestClient rest, string channelId)
+    {
+        Conditions.ChannelIdLength(channelId, nameof(BeginTypingChannelAsync));
+
+        return new TypingNotifier(rest, channelId);
+    }
+
+    /// <inheritdoc cref="StopTypingChannelAsync(RevoltRestClient, string)" />
+    public static Task StopTypingAsync(this Channel channel) => StopTypingChannelAsync(channel.Client.Rest, channel.Id);
+
+    /// <inheritdoc cref="StopTypingChannelAsync(RevoltRestClient, string)" />
+    public static Task StopTypingAsync(this RevoltRestClient rest, Channel channel) => StopTypingChannelAsync(rest, channel.Id);
+
+    /// <summary>
+    /// Trigger the stop typing on a channel which will stop the current user from typing in the channel.
+    /// </summary>
+    /// <remarks>
+    /// This will only work with <see cref="ClientMode.WebSocket"/>
+    /// </remarks>
+    /// <param name="rest"></param>
+    /// <param name="channelId"></param>
+    public static async Task StopTypingChannelAsync(this RevoltRestClient rest, string channelId)
+    {
+        Conditions.ChannelIdLength(channelId, nameof(StopTypingChannelAsync));
+
+        if (rest.Client.WebSocket.TypingChannels.TryGetValue(channelId, out TypingNotifier typing))
+            typing.Stop();
+        else
+            await rest.Client.WebSocket.Send(rest.Client.WebSocket.WebSocket, JsonConvert.SerializeObject(new EndTypingSocketRequest(channelId)), new System.Threading.CancellationToken());
     }
 }

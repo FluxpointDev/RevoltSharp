@@ -15,6 +15,18 @@ namespace TestBot.Commands;
 [RequireOwner]
 public class CmdTest : ModuleBase
 {
+    [Command("typestart")]
+    public async Task TypeStart()
+    {
+        var Typing = await Context.Member.ModifyAsync()
+    }
+
+    [Command("typestop")]
+    public async Task TypeStop()
+    {
+        await Context.Channel.StopTypingAsync();
+    }
+
     [Command("test")]
     public async Task Test()
     {
