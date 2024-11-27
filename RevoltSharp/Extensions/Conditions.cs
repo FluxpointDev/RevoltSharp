@@ -176,7 +176,7 @@ public static class Conditions
 
     public static void EmbedsNotAllowedForUsers(RevoltRestClient rest, Embed[] embeds, string request)
     {
-        if (rest.Client.UserBot && embeds != null && embeds.Any())
+        if (rest.Client.IsUserAccount && embeds != null && embeds.Any())
             throw new RevoltArgumentException($"User accounts can't send messages with embeds for the {request} request.");
     }
 
@@ -330,13 +330,13 @@ public static class Conditions
 
     public static void NotAllowedForBots(RevoltRestClient rest, string request)
     {
-        if (!rest.Client.UserBot)
+        if (!rest.Client.IsUserAccount)
             throw new RevoltRestException($"The {request} is not allowed to be used for bots.", 400, RevoltErrorType.NotAllowedForBots);
     }
 
     public static void NotAllowedForUsers(RevoltRestClient rest, string request)
     {
-        if (rest.Client.UserBot)
+        if (rest.Client.IsUserAccount)
             throw new RevoltRestException($"The {request} is not allowed to be used for user accounts.", 400, RevoltErrorType.NotAllowedForBots);
     }
 

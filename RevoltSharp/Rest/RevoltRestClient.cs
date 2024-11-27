@@ -59,10 +59,9 @@ public class RevoltRestClient
         {
             BaseAddress = new Uri(Client.Config.ApiUrl)
         };
-        Http.DefaultRequestHeaders.Add(Client.Config.UserBot ? "x-session-token" : "x-bot-token", Client.Token);
+
         Http.DefaultRequestHeaders.Add("User-Agent", Client.Config.UserAgent);
         Http.DefaultRequestHeaders.Add("Accept", "application/json");
-
         var FileHandler = new HttpClientHandler() { UseProxy = Client.Config.RestProxy != null };
         FileHandler.Proxy = Client.Config.RestProxy;
         FileHttpClient = new HttpClient(FileHandler)
@@ -100,6 +99,9 @@ public class RevoltRestClient
     => InternalRequest(GetMethod(method), endpoint, json);
 
     internal Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, object> json) where TResponse : class
+        => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
+
+    internal Task<TResponse> SendRequestAsync<TResponse>(RequestType method, string endpoint, Dictionary<string, string> json) where TResponse : class
         => InternalJsonRequest<TResponse>(GetMethod(method), endpoint, json);
 
     internal Task<TResponse?> GetAsync<TResponse>(string endpoint, IRevoltRequest json = null, bool throwGetRequest = false) where TResponse : class
@@ -159,7 +161,7 @@ public class RevoltRestClient
 
     /// <inheritdoc cref="UploadFileAsync(byte[], string, UploadFileType)" />
     public Task<FileAttachment> UploadFileAsync(string path, UploadFileType type)
-        => UploadFileAsync(File.ReadAllBytes(path), path.Split('.').Last(), type);
+        => UploadFileAsync(System.IO.File.ReadAllBytes(path), path.Split('.').Last(), type);
 
 
     /// <summary>
@@ -273,10 +275,6 @@ public class RevoltRestClient
 
     internal async Task<HttpResponseMessage> InternalRequest(HttpMethod method, string endpoint, object? request)
     {
-        if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
-            throw new RevoltRestException("Joining servers with a userbot has been blocked.", 400, RevoltErrorType.NotAllowedForUsers);
-
-
         HttpRequestMessage Mes = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
         if (request != null)
         {
@@ -352,11 +350,6 @@ public class RevoltRestClient
     internal async Task<TResponse> InternalJsonRequest<TResponse>(HttpMethod method, string endpoint, object request, bool throwGetRequest = false)
         where TResponse : class
     {
-        if (Client.UserBot && method == HttpMethod.Post && (endpoint.StartsWith("/invites/", StringComparison.OrdinalIgnoreCase) || endpoint.StartsWith("invites/", StringComparison.OrdinalIgnoreCase)))
-            throw new RevoltRestException("Joining servers with a user account has been blocked.", 400, RevoltErrorType.NotAllowedForUsers);
-
-
-
         HttpRequestMessage Mes = new HttpRequestMessage(method, Client.Config.ApiUrl + endpoint);
         if (request != null)
         {

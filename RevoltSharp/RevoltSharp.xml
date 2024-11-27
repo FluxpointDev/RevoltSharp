@@ -34,11 +34,6 @@
             Do not use this unless you know what you're doing.
             </summary>
         </member>
-        <member name="F:RevoltSharp.ClientConfig.UserBot">
-            <summary>
-            Enable this if you want to use the lib with a userbot
-            </summary>
-        </member>
         <member name="F:RevoltSharp.ClientConfig.Owners">
             <summary>
             Useful for owner checks and also used for RequireOwnerAttribute when using the built-in command handler.
@@ -253,6 +248,14 @@
             You can use this with <see cref="F:RevoltSharp.ClientMode.Http" /> and <see cref="F:RevoltSharp.ClientMode.WebSocket" />
             </remarks>
         </member>
+        <member name="E:RevoltSharp.ClientEvents.OnLogin">
+            <summary>
+            Event used when the <see cref="T:RevoltSharp.RevoltClient"/> has logged in with the <see cref="P:RevoltSharp.RevoltClient.CurrentUser"/>.
+            </summary>
+            <remarks>
+            You can use this with <see cref="F:RevoltSharp.ClientMode.Http" /> and <see cref="F:RevoltSharp.ClientMode.WebSocket" />
+            </remarks>
+        </member>
         <member name="E:RevoltSharp.ClientEvents.OnConnected">
             <summary>
             Event used when the <see cref="T:RevoltSharp.RevoltClient"/> WebSocket has connected successfully.
@@ -441,7 +444,7 @@
             Version of the current RevoltSharp lib installed.
             </summary>
         </member>
-        <member name="M:RevoltSharp.RevoltClient.#ctor(System.String,RevoltSharp.ClientMode,RevoltSharp.ClientConfig)">
+        <member name="M:RevoltSharp.RevoltClient.#ctor(RevoltSharp.ClientMode,RevoltSharp.ClientConfig)">
             <summary>
             Create a Revolt client that can be used for user or bot accounts.
             </summary>
@@ -3564,6 +3567,11 @@
         <member name="M:RevoltSharp.Downloadable`2.GetOrDownloadAsync">
             <summary>
             Get the object from cache or download it from the Revolt instance API if not cached.
+            </summary>
+        </member>
+        <member name="P:RevoltSharp.EmojiList.NameToUnicode">
+            <summary>
+            It's recommended to use Emoji.ParseName()
             </summary>
         </member>
         <member name="M:RevoltSharp.Format.Bold(System.String)">

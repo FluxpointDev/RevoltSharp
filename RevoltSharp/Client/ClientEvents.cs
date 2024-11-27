@@ -133,6 +133,18 @@ public class ClientEvents
     }
 
     /// <summary>
+    /// Event used when the <see cref="RevoltClient"/> has logged in with the <see cref="RevoltClient.CurrentUser"/>.
+    /// </summary>
+    /// <remarks>
+    /// You can use this with <see cref="ClientMode.Http" /> and <see cref="ClientMode.WebSocket" />
+    /// </remarks>
+    public event SelfUserEvent? OnLogin;
+    internal void InvokeLogin(SelfUser user)
+    {
+        OnLogin?.Invoke(user);
+    }
+
+    /// <summary>
     /// Event used when the <see cref="RevoltClient"/> WebSocket has connected successfully.
     /// </summary>
     public event RevoltEvent? OnConnected;

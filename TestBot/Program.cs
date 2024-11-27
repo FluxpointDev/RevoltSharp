@@ -24,7 +24,7 @@ class Program
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
         
 
-        Client = new RevoltClient(Token, ClientMode.WebSocket, new ClientConfig
+        Client = new RevoltClient(ClientMode.WebSocket, new ClientConfig
         {
             LogMode = RevoltLogSeverity.Debug,
             //ApiUrl = "http://local.revolt.chat/api/",
@@ -40,8 +40,13 @@ class Program
             },
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });
+
+        string UserToken = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/UserToken.txt");
+        
+
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
+        await Client.LoginAsync(UserToken, AccountType.User);
         await Client.StartAsync();
         _ = new EventTests(Client);
         //await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));

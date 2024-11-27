@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 using RevoltSharp.Rest;
+using RevoltSharp.Rest.Requests;
 using RevoltSharp.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ public class RevoltClient : ClientEvents
     /// <param name="mode">Use http for http requests only with no websocket.</param>
     /// <param name="config">Optional config stuff for the bot and lib.</param>
     /// <exception cref="RevoltArgumentException"></exception>
-    public RevoltClient(string token, ClientMode mode, ClientConfig? config = null)
+    public RevoltClient(ClientMode mode, ClientConfig? config = null)
     {
         Config = config ?? new ClientConfig();
         ConfigSafetyChecks();
@@ -48,15 +49,6 @@ public class RevoltClient : ClientEvents
 
         Logger = new RevoltLogger("RevoltSharp", config.LogMode);
         Logger.AllowOptionals = true;
-
-        if (string.IsNullOrEmpty(token))
-        {
-            Logger.LogMessage("Client token is missing!", RevoltLogSeverity.Error);
-            throw new RevoltArgumentException("Client token is missing!");
-        }
-
-        Token = token;
-        UserBot = Config.UserBot;
         Rest = new RevoltRestClient(this);
         Admin = new AdminClient(this);
         Mode = mode;
@@ -101,7 +93,7 @@ public class RevoltClient : ClientEvents
         if (!Config.ApiUrl.EndsWith('/'))
             Config.ApiUrl += "/";
 
-        Config.UserAgent ??= $"RevoltSharp Bot ({Config.ClientName}) v{Version}{(UserBot ? " user" : null)}";
+        Config.UserAgent ??= $"RevoltSharp v{Version} ({Config.ClientName})";
         Config.Owners ??= Array.Empty<string>();
         Config.Debug ??= new ClientDebugConfig();
     }
@@ -120,7 +112,8 @@ public class RevoltClient : ClientEvents
     /// </remarks>
     public string? RevoltVersion { get; internal set; }
 
-    internal bool UserBot { get; set; }
+    public bool IsUserAccount { get; internal set; }
+    public bool IsLoginComplete => CurrentUser != null;
 
     /// <summary>
     /// The json serializer that is used with RevoltSharp.
@@ -212,6 +205,12 @@ public class RevoltClient : ClientEvents
     {
         if (FirstConnection)
         {
+            if (string.IsNullOrEmpty(Token))
+                throw new RevoltException("You need to login with the account first using LoginAsync()");
+
+            if (!IsLoginComplete)
+                throw new RevoltException("This account has not properly logged in.");
+
             InvokeLog("Starting...", RevoltLogSeverity.Debug);
 
             FirstConnection = false;
@@ -234,25 +233,7 @@ public class RevoltClient : ClientEvents
             Config.Debug.VoiceServerUrl = CurrentQuery.VoiceApiUrl;
             Config.Debug.VoiceWebsocketUrl = CurrentQuery.VoiceWebsocketUrl;
 
-            UserJson? SelfUser = null;
-            try
-            {
-                SelfUser = await Rest.GetAsync<UserJson>("/users/@me", null, true);
-            }
-            catch (RevoltRestException re)
-            {
-                if (re.Code == 401)
-                    throw new RevoltRestException("The token is invalid.", re.Code, re.Type);
-
-                throw;
-            }
-            catch (Exception ex)
-            {
-                InvokeLogAndThrowException($"Failed to login to the {(Config.UserBot ? "user" : "bot")} account. {ex.Message}");
-            }
-
-            CurrentUser = new SelfUser(this, SelfUser);
-            InvokeLog($"Started: {SelfUser.Username} ({SelfUser.Id})", RevoltLogSeverity.Info);
+            InvokeLog($"Started: {CurrentUser.Username} ({CurrentUser.Id})", RevoltLogSeverity.Info);
             InvokeStarted(CurrentUser);
 
             if (VoiceClient != null)
@@ -275,6 +256,128 @@ public class RevoltClient : ClientEvents
             this.OnConnected -= HandleConnected;
             this.OnWebSocketError -= HandleError;
         }
+    }
+
+    public async Task<AccountLogin> LoginAsync(string email, string password, string sessionName = null)
+    {
+        AccountLogin Response = null;
+        try
+        {
+            var Json = await Rest.PostAsync<AccountLoginJson>("auth/session/login", new AccountLoginRequest
+            {
+                email = email,
+                password = password,
+                friendly_name = sessionName
+            });
+            Response = new AccountLogin(Json);
+        }
+        catch
+        {
+            return new AccountLogin(null)
+            {
+                ResponseType = LoginResponseType.Failed
+            };
+        }
+
+        if (Response.ResponseType != LoginResponseType.Success)
+            return Response;
+
+        AccountLogin LoginState = await LoginAsync(Response.Token, AccountType.User);
+        if (LoginState.ResponseType != LoginResponseType.Success)
+            return LoginState;
+
+        return Response;
+    }
+
+    public async Task<AccountLogin> LoginMFAAsync(string ticket, string code, MFAType type, string sessionName = null)
+    {
+        AccountLogin Response = null;
+        try
+        {
+            var Req = new AccountLoginMFARequest
+            {
+                mfa_ticket = ticket,
+                friendly_name = sessionName
+            };
+            if (type == MFAType.Recovery)
+                Req.mfa_response.recovery_code = code;
+            else
+                Req.mfa_response.totp_code = code;
+
+            var Json = await Rest.PostAsync<AccountLoginJson>("auth/session/login", Req);
+            Response = new AccountLogin(Json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return new AccountLogin(null)
+            {
+                ResponseType = LoginResponseType.Failed
+            };
+        }
+
+        if (Response.ResponseType != LoginResponseType.Success)
+            return Response;
+
+
+        AccountLogin LoginState = await LoginAsync(Response.Token, AccountType.User);
+        if (LoginState.ResponseType != LoginResponseType.Success)
+            return LoginState;
+
+        return Response;
+    }
+
+    public async Task<AccountLogin> LoginAsync(string token, AccountType type)
+    {
+        if (string.IsNullOrEmpty(token))
+        {
+            Logger.LogMessage("Client token is missing!", RevoltLogSeverity.Error);
+            throw new RevoltArgumentException("Client token is missing!");
+        }
+
+        Token = token;
+        IsUserAccount = type == AccountType.User;
+        Rest.Http.DefaultRequestHeaders.Add(IsUserAccount ? "x-session-token" : "x-bot-token", Token);
+
+        // Check onboarding status
+        if (IsUserAccount)
+        {
+            OnboardStatus Status = await Rest.GetAccountOnboardingStatus();
+
+            if (Status.IsOnboardingRequired)
+                return new AccountLogin(null)
+                {
+                    ResponseType = LoginResponseType.OnboardingRequired,
+                };
+        }
+
+        UserJson? SelfUser = null;
+        try
+        {
+            SelfUser = await Rest.GetAsync<UserJson>("users/@me", null, true);
+        }
+        catch (RevoltRestException re)
+        {
+            if (re.Code == 401)
+                throw new RevoltRestException("The token is invalid.", re.Code, re.Type);
+
+            throw;
+        }
+        catch (Exception ex)
+        {
+            InvokeLogAndThrowException($"Failed to login. {ex.Message}");
+        }
+        CurrentUser = new SelfUser(this, SelfUser);
+
+        if (CurrentUser.IsBot == IsUserAccount)
+            throw new Exception("Login session is using the wrong account type.");
+
+        InvokeLogin(CurrentUser);
+
+        return new AccountLogin(null)
+        {
+            ResponseType = LoginResponseType.Success
+        };
     }
 
     /// <summary>

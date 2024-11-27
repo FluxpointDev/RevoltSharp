@@ -36,11 +36,6 @@ public class ClientConfig
     public ClientDebugConfig Debug = new ClientDebugConfig();
 
     /// <summary>
-    /// Enable this if you want to use the lib with a userbot
-    /// </summary>
-    public bool UserBot;
-
-    /// <summary>
     /// Useful for owner checks and also used for RequireOwnerAttribute when using the built-in command handler.
     /// </summary>
     public string[] Owners = null;

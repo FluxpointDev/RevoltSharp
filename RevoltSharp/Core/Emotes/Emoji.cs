@@ -89,7 +89,7 @@ public class Emoji : CreatedEntity
     /// The image url of the emoji or empty if unicode.
     /// </summary>
     public string? ImageUrl
-        => IsServerEmoji ? Client.Config.Debug.UploadUrl + "/emojis/" + Id : string.Empty;
+        => IsServerEmoji ? Client.Config.Debug.UploadUrl + "emojis/" + Id : string.Empty;
 
     /// <summary> Returns a string that represents the current object.</summary>
     /// <returns> Emoji name or unicode </returns>

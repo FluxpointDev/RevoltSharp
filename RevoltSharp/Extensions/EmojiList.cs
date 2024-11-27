@@ -2,9 +2,12 @@
 
 namespace RevoltSharp;
 
-internal static class EmojiList
+public static class EmojiList
 {
-    internal static IReadOnlyDictionary<string, string> NameToUnicode = new Dictionary<string, string>
+    /// <summary>
+    /// It's recommended to use Emoji.ParseName()
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> NameToUnicode { get; } = new Dictionary<string, string>
     {
         [":100:"] = "💯",
         [":1234:"] = "🔢",
@@ -164,10 +167,8 @@ internal static class EmojiList
         [":middle_finger:"] = "🖕",
         [":point_down:"] = "👇",
         [":point_up:"] = "☝️",
-        [":+1:"] = "👍",
-        [":+1:"] = "👍",
-        [":-1:"] = "👎",
-        [":-1:"] = "👎",
+        [":thumbsup:"] = "👍",
+        ["::thumbsdown: :"] = "👎",
         [":fist:"] = "✊",
         [":fist:"] = "✊",
         [":punch:"] = "👊",

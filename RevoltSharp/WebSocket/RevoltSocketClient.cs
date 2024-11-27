@@ -235,7 +235,7 @@ internal class RevoltSocketClient
                             UserCache = new ConcurrentDictionary<string, User>(@event.Users.ToDictionary(x => x.Id, x => new User(Client, x)));
 
                             SelfUser SocketSelfUser = null;
-                            if (!Client.UserBot)
+                            if (!Client.IsUserAccount)
                                 SocketSelfUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Relationship == "User" && x.Bot != null));
                             else
                                 SocketSelfUser = new SelfUser(Client, @event.Users.FirstOrDefault(x => x.Id == CurrentUser.Id));
