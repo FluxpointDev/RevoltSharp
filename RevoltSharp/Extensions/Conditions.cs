@@ -174,12 +174,6 @@ public static class Conditions
             throw new RevoltArgumentException($"Embed icon url can't be more than {Const.All_MaxUrlLength} characters for the {request} request.");
     }
 
-    public static void EmbedsNotAllowedForUsers(RevoltRestClient rest, Embed[] embeds, string request)
-    {
-        if (rest.Client.IsUserAccount && embeds != null && embeds.Any())
-            throw new RevoltArgumentException($"User accounts can't send messages with embeds for the {request} request.");
-    }
-
     public static void MessagePropertiesEmpty(string content, string[] attachments, Embed[] embeds, string request)
     {
         if (string.IsNullOrEmpty(content) && (attachments == null || attachments.Length == 0) && (embeds == null || embeds.Length == 0))

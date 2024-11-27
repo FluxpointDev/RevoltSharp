@@ -36,8 +36,6 @@ public static class MessageHelper
 
         if (embeds != null)
         {
-            Conditions.EmbedsNotAllowedForUsers(rest, embeds, nameof(SendMessageAsync));
-
             IEnumerable<Task> uploadTasks = embeds.Where(x => !string.IsNullOrEmpty(x.Image)).Select(async x =>
             {
                 if (x.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || x.Image.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
@@ -134,7 +132,6 @@ public static class MessageHelper
         Conditions.FileBytesEmpty(bytes, nameof(SendFileAsync));
         Conditions.FileNameEmpty(fileName, nameof(SendFileAsync));
         Conditions.MessageContentLength(text, nameof(SendFileAsync));
-        Conditions.EmbedsNotAllowedForUsers(rest, embeds, nameof(SendFileAsync));
 
         FileAttachment File = await rest.UploadFileAsync(bytes, fileName, UploadFileType.Attachment);
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies, flags).ConfigureAwait(false);
