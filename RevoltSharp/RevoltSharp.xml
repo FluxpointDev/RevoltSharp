@@ -4066,10 +4066,10 @@
             <exception cref="T:RevoltSharp.RevoltArgumentException"></exception>
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
-        <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Channel,System.Int32,System.Boolean,System.String,System.String)">
-            <inheritdoc cref="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,System.Boolean,System.String,System.String,System.String)" />
+        <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Channel,System.Int32,RevoltSharp.MessageSortType,System.Boolean,System.String,System.String,System.String)">
+            <inheritdoc cref="!:GetMessagesAsync(RevoltRestClient, string, int, bool, string, string, string)" />
         </member>
-        <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,System.Boolean,System.String,System.String,System.String)">
+        <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,RevoltSharp.MessageSortType,System.Boolean,System.String,System.String,System.String)">
             <summary>
             Get a list of messages from the channel up to 100.
             </summary>

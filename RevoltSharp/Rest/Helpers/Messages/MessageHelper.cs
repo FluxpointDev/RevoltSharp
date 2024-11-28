@@ -138,8 +138,8 @@ public static class MessageHelper
     }
 
     /// <inheritdoc cref="GetMessagesAsync(RevoltRestClient, string, int, bool, string, string, string)" />
-    public static Task<IReadOnlyCollection<Message>?> GetMessagesAsync(this Channel channel, int messageCount = 100, bool includeUserDetails = false, string beforeMessageId = "", string afterMessageId = "")
-        => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, includeUserDetails, beforeMessageId, afterMessageId);
+    public static Task<IReadOnlyCollection<Message>?> GetMessagesAsync(this Channel channel, int messageCount = 100, MessageSortType sortBy = MessageSortType.Latest, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
+        => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, sortBy, includeUserDetails, nearbyMessageId, beforeMessageId, afterMessageId);
 
     /// <summary>
     /// Get a list of messages from the channel up to 100.
@@ -149,7 +149,7 @@ public static class MessageHelper
     /// </returns>
     /// <exception cref="RevoltArgumentException"></exception>
     /// <exception cref="RevoltRestException"></exception>
-    public static async Task<IReadOnlyCollection<Message>?> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
+    public static async Task<IReadOnlyCollection<Message>?> GetMessagesAsync(this RevoltRestClient rest, string channelId, int messageCount = 100, MessageSortType sortBy = MessageSortType.Latest, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
     {
         Conditions.ChannelIdLength(channelId, nameof(GetMessagesAsync));
         Conditions.MessageSearchCount(messageCount, nameof(GetMessagesAsync));
@@ -157,7 +157,7 @@ public static class MessageHelper
         QueryBuilder QueryBuilder = new QueryBuilder()
             .Add("limit", messageCount)
             .Add("include_users", includeUserDetails)
-            .Add("sort", "Latest");
+            .Add("sort", sortBy.ToString());
 
         if (!string.IsNullOrEmpty(nearbyMessageId))
         {
