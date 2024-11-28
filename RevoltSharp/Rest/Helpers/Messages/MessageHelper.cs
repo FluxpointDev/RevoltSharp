@@ -137,7 +137,7 @@ public static class MessageHelper
         return await rest.SendMessageAsync(channelId, text, embeds, new string[] { File.Id }, masquerade, interactions, replies, flags).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="GetMessagesAsync(RevoltRestClient, string, int, bool, string, string, string)" />
+    /// <inheritdoc cref="GetMessagesAsync(RevoltRestClient, string, int, MessageSortType, bool, string, string, string)" />
     public static Task<IReadOnlyCollection<Message>?> GetMessagesAsync(this Channel channel, int messageCount = 100, MessageSortType sortBy = MessageSortType.Latest, bool includeUserDetails = false, string nearbyMessageId = "", string beforeMessageId = "", string afterMessageId = "")
         => GetMessagesAsync(channel.Client.Rest, channel.Id, messageCount, sortBy, includeUserDetails, nearbyMessageId, beforeMessageId, afterMessageId);
 
