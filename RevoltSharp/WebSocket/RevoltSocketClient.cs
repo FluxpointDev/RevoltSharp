@@ -293,17 +293,20 @@ internal class RevoltSocketClient
                             Client.InvokeReady(CurrentUser);
 
                             // This task will cleanup extra group channels where the bot is only a member of.
-                            _ = Task.Run(async () =>
+                            if (CurrentUser.IsBot)
                             {
-                                foreach (Channel channel in ChannelCache.Values.Where(x => x is GroupChannel))
+                                _ = Task.Run(async () =>
                                 {
-                                    GroupChannel c = channel as GroupChannel;
-                                    if (c.Recipents.Length == 1)
+                                    foreach (Channel channel in ChannelCache.Values.Where(x => x is GroupChannel))
                                     {
-                                        await c.LeaveAsync();
+                                        GroupChannel c = channel as GroupChannel;
+                                        if (c.Recipents.Length == 1)
+                                        {
+                                            await c.LeaveAsync();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                         catch (Exception ex)
                         {
