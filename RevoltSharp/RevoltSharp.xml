@@ -2382,7 +2382,7 @@
             Member who posted the message
             </summary>
             <remarks>
-            Will be <see langword="null" /> if client is rest mode or system/webhook messages.
+            Will be <see langword="null" /> if user is not in the server, client is rest mode or system/webhook messages.
             </remarks>
         </member>
         <member name="P:RevoltSharp.Message.Type">
@@ -4067,7 +4067,7 @@
             <exception cref="T:RevoltSharp.RevoltRestException"></exception>
         </member>
         <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Channel,System.Int32,RevoltSharp.MessageSortType,System.Boolean,System.String,System.String,System.String)">
-            <inheritdoc cref="!:GetMessagesAsync(RevoltRestClient, string, int, bool, string, string, string)" />
+            <inheritdoc cref="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,RevoltSharp.MessageSortType,System.Boolean,System.String,System.String,System.String)" />
         </member>
         <member name="M:RevoltSharp.MessageHelper.GetMessagesAsync(RevoltSharp.Rest.RevoltRestClient,System.String,System.Int32,RevoltSharp.MessageSortType,System.Boolean,System.String,System.String,System.String)">
             <summary>

@@ -44,11 +44,11 @@ public class CmdTest : ModuleBase
     [Command("deletemsg")]
     public async Task DeleteMessage()
     {
-        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5, false);
+        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5);
         await Task.Delay(250);
-        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5, false);
+        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5);
         await Task.Delay(250);
-        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5, false);
+        await Context.Client.Rest.GetMessagesAsync(Context.Channel.Id, 5);
 
     }
 
@@ -395,50 +395,6 @@ public class CmdTest : ModuleBase
     {
         Console.WriteLine(emoji);
         //await Context.Message.AddReactionAsync(new RevoltSharp.Emoji(UpdatedEmojis[emoji]));
-    }
-
-    [Command("emojiparse")]
-    public async Task EmojiParser()
-    {
-        string Downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Downloads/";
-        string[] Emojis = File.ReadAllLines(Downloads + "unicode_emoji.txt");
-       
-        string Output = "";
-        foreach(var i in Emojis)
-        {
-
-            try
-            {
-                var emoji = NamesAndUnicodes.First(x => x.Value == i);
-                if (!emoji.Key.EndsWith(":"))
-                    continue;
-                Output += $"[\"{emoji.Key}\"] = \"{i}\",\n";
-                Console.WriteLine("Done " + emoji.Key);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Failed " + i);
-            }
-        }
-        File.WriteAllText(Downloads + "revolt_emojis.txt", Output);
-        await ReplyAsync("Done parse");
-        
-
-
-        //Console.WriteLine(semaphoreSlim.CurrentCount);
-        //await semaphoreSlim.WaitAsync();
-        //try
-        //{
-
-        //    await ReplyAsync("Test");
-        //    await Task.Delay(30000);
-        //    Console.WriteLine("Done delay");
-        //}
-        //finally
-        //{
-        //    Console.WriteLine("Release");
-        //    semaphoreSlim.Release();
-        //}
     }
 
     [Command("testcontext")]

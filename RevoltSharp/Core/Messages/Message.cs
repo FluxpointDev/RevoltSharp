@@ -41,7 +41,12 @@ public abstract class Message : CreatedEntity
                 if (Server.InternalMembers.TryGetValue(model.AuthorId, out var member))
                     Member = member;
                 else if (members != null)
-                    Member = new ServerMember(client, members.FirstOrDefault(x => x.Id.User == AuthorId), null, Author);
+                {
+                    ServerMemberJson? MemberData = members.FirstOrDefault(x => x.Id.User == AuthorId);
+                    if (MemberData != null)
+                        Member = new ServerMember(client, MemberData, null, Author);
+                }
+                    
             }
         }
     }
@@ -139,7 +144,7 @@ public abstract class Message : CreatedEntity
     /// Member who posted the message
     /// </summary>
     /// <remarks>
-    /// Will be <see langword="null" /> if client is rest mode or system/webhook messages.
+    /// Will be <see langword="null" /> if user is not in the server, client is rest mode or system/webhook messages.
     /// </remarks>
     public ServerMember? Member { get; internal set; }
 

@@ -11,6 +11,6 @@ public class ChannelReadState
     }
 
     public string ChannelId { get; internal set; }
-    public string LastMessageId { get; internal set; }
+    public string? LastMessageId { get; internal set; }
     public string[] Mentions { get; internal set; }
 }

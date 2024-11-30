@@ -1,5 +1,7 @@
-﻿using RevoltSharp.Rest;
+﻿using Newtonsoft.Json.Linq;
+using RevoltSharp.Rest;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,17 +63,14 @@ public static class AccountHelper
         });
     }
 
-    public static async Task<Dictionary<long, Tuple<string, string>>?> GetAccountSettings(this RevoltRestClient rest, string[] keys)
+    public static async Task<Dictionary<string, Tuple<long, string>>> GetAccountSettingsAsync(this RevoltRestClient rest, string[] keys)
     {
-        Dictionary<long, Tuple<string, string>>? Values = await rest.GetAsync<Dictionary<long, Tuple<string, string>>>("sync/settings/fetch", new AccountFetchSettingsRequest
+        Dictionary<string, JArray> Values = await rest.PostAsync<Dictionary<string, JArray>>("sync/settings/fetch", new AccountFetchSettingsRequest
         {
             keys = keys
         });
 
-        if (Values == null)
-            return null;
-
-        return Values;
+        return Values.ToDictionary(x => x.Key, x => new Tuple<long, string>(x.Value.First().Value<long>(), x.Value.Last().Value<string>()));
     }
 
     public static async Task ModifyAccountSettingsAsync(this RevoltRestClient rest, Dictionary<string, string> settings)

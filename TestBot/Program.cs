@@ -34,7 +34,7 @@ class Program
                 LogRestResponseJson = false,
                 LogRestRequest = false,
                 LogWebSocketFull = false,
-                LogWebSocketReady = true,
+                LogWebSocketReady = false,
                 LogWebSocketError = true,
                 LogWebSocketUnknownEvent = true
             },
@@ -48,6 +48,7 @@ class Program
         Client.OnWebSocketError += Client_OnWebSocketError;
         await Client.LoginAsync(UserToken, AccountType.User);
         await Client.StartAsync();
+        Client.OnReady += Client_OnReady1;
         _ = new EventTests(Client);
         //await Client.CurrentUser.ModifySelfAsync(statusText: new Option<string>("LOL"));
 
@@ -56,6 +57,22 @@ class Program
         await Task.Delay(-1);
     }
 
+    private static void Client_OnReady1(SelfUser selfuser)
+    {
+        _ = Task.Run(async () =>
+        {
+            Console.WriteLine("Getting sessions");
+            try
+            {
+                var Sessions = await Client.Rest.GetAccountSessionsAsync();
+                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Sessions, Newtonsoft.Json.Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        });
+    }
 
     public static void Client_OnReady(SelfUser value)
     {
