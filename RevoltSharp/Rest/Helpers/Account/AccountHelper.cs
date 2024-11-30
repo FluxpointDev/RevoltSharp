@@ -86,4 +86,102 @@ public static class AccountHelper
 
         return Json.Select(x => new ChannelReadState(x)).ToArray();
     }
+
+    public static async Task CreateAccountAsync(this RevoltRestClient rest, string email, string password, string? inviteCode = null, string? captchaCode = null)
+    {
+        await rest.PostAsync("auth/account/create", new CreateAccountRequest
+        {
+            email = email,
+            password = password,
+            invite = inviteCode,
+            captcha = captchaCode
+        });
+    }
+
+    public static async Task VerifyAccountAsync(this RevoltRestClient rest, string email, string? captchaCode)
+    {
+        await rest.PostAsync("auth/account/reverify", new AccountVerificationRequest
+        {
+            email = email,
+            captcha = captchaCode
+        });
+    }
+
+    public static async Task RequestAccountDeletionAsync(this RevoltRestClient rest)
+    {
+        await rest.PostAsync("auth/account/delete");
+    }
+
+    public static async Task ConfirmAccountDeletionAsync(this RevoltRestClient rest, string token)
+    {
+        await rest.PutAsync("auth/account/delete", new AccountConfirmDeletionRequest
+        {
+            token = token
+        });
+    }
+
+    public static async Task<AccountInfo?> GetAccountInfoAsync(this RevoltRestClient rest)
+    {
+        AccountInfoJson? json = await rest.GetAsync<AccountInfoJson>("auth/account");
+        if (json == null)
+            return null;
+
+        return new AccountInfo(rest.Client, json);
+    }
+
+    public static async Task DisableAccountAsync(this RevoltRestClient rest)
+    {
+        await rest.PostAsync("auth/account/disable"); 
+    }
+
+    public static async Task ChangeAccountPasswordAsync(this RevoltRestClient rest, string currentPassword, string newPassword)
+    {
+        await rest.PatchAsync("auth/account/change/password", new AccountChangePasswordRequest
+        {
+            current_password = currentPassword,
+            password = newPassword
+        });
+    }
+
+    public static async Task ChangeAccountEmailAsync(this RevoltRestClient rest, string currentPassword, string newEmail)
+    {
+        await rest.PatchAsync("auth/account/change/email", new AccountChangeEmailRequest
+        {
+            current_password = currentPassword,
+            email = newEmail
+        });
+    }
+
+    public static async Task RequestPasswordResetAsync(this RevoltRestClient rest, string email, string? captchaCode = null)
+    {
+        await rest.PostAsync("auth/account/reset_password", new PasswordResetRequest
+        {
+            email = email,
+            captcha = captchaCode
+        });
+    }
+
+    public static async Task ConfirmPasswordResetAsync(this RevoltRestClient rest, string token, string password, bool removeSessions = false)
+    {
+        await rest.PatchAsync("auth/account/reset_password", new AccountPasswordResetRequest
+        {
+            token = token,
+            password = password,
+            remove_sessions = removeSessions
+        });
+    }
+
+    public static async Task AccountLogoutAsync(this RevoltRestClient rest)
+    {
+        await rest.PostAsync("auth/session/logout");
+    }
+
+    public static async Task<AccountMFA?> AccountMFAInfoAsync(this RevoltRestClient rest)
+    {
+        AccountMFAJson? json = await rest.GetAsync<AccountMFAJson>("auth/mfa");
+        if (json == null)
+            return null;
+
+        return new AccountMFA(json);
+    }
 }

@@ -14,6 +14,9 @@ public class Server : CreatedEntity
 {
     internal Server(RevoltClient client, ServerJson model) : base(client, model.Id)
     {
+        if (Client.WebSocket != null && Client.TryGetServer(model.Id, out var cachedServer))
+            HasAllMembers = cachedServer.HasAllMembers;
+
         Name = model.Name;
         DefaultPermissions = new ServerPermissions(this, model.DefaultPermissions);
         Description = model.Description;
@@ -77,6 +80,11 @@ public class Server : CreatedEntity
     /// Get the actual channel count of the server regardless of permissions.
     /// </summary>
     public int ChannelCount => ChannelIds.Count();
+
+    /// <summary>
+    /// Server has all members downloaded to cache.
+    /// </summary>
+    public bool HasAllMembers { get; internal set; }
 
     /// <summary>
     /// List of text channels for the server.

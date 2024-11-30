@@ -185,7 +185,7 @@ public static class SafetyHelper
         AdminConditions.StrikeIdLength(strikeId, nameof(ModifyStrikeAsync));
         AdminConditions.StrikeReasonLength(reason, nameof(ModifyStrikeAsync));
 
-        await admin.Client.Rest.PostAsync<dynamic>("safety/strikes/" + strikeId, new AdminStrikeModifyRequest
+        await admin.Client.Rest.PostAsync("safety/strikes/" + strikeId, new AdminStrikeModifyRequest
         {
             reason = reason
         });

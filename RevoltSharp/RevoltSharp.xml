@@ -2761,6 +2761,11 @@
             Get the actual channel count of the server regardless of permissions.
             </summary>
         </member>
+        <member name="P:RevoltSharp.Server.HasAllMembers">
+            <summary>
+            Server has all members downloaded to cache.
+            </summary>
+        </member>
         <member name="P:RevoltSharp.Server.TextChannels">
             <summary>
             List of text channels for the server.

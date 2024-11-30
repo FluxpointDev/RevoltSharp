@@ -118,11 +118,20 @@ public class RevoltRestClient
     internal Task<TResponse> PatchAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Patch, endpoint, json);
 
+    internal Task PatchAsync(string endpoint, IRevoltRequest json = null)
+        => SendRequestAsync(RequestType.Patch, endpoint, json);
+
     internal Task<TResponse> PutAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Put, endpoint, json);
 
+    internal Task PutAsync(string endpoint, IRevoltRequest json = null)
+        => SendRequestAsync(RequestType.Put, endpoint, json);
+
     internal Task<TResponse> PostAsync<TResponse>(string endpoint, IRevoltRequest json = null) where TResponse : class
         => SendRequestAsync<TResponse>(RequestType.Post, endpoint, json);
+
+    internal Task PostAsync(string endpoint, IRevoltRequest json = null)
+        => SendRequestAsync(RequestType.Post, endpoint, json);
 
     /// <summary>
     /// Send a custom request to the Revolt instance API.

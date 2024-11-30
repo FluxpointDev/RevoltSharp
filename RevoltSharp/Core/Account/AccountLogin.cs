@@ -32,10 +32,10 @@ public class AccountLogin
     }
 
     public LoginResponseType ResponseType { get; set; }
-    public string Id { get; set; }
-    public string UserId { get; set; }
-    public string Token { get; set; }
-    public string SessionName { get; set; }
-    public string MFATicket { get; set; }
-    public string[] MFAMethods { get; set; }
+    public string? Id { get; set; }
+    public string? UserId { get; set; }
+    public string? Token { get; set; }
+    public string? SessionName { get; set; }
+    public string? MFATicket { get; set; }
+    public string[]? MFAMethods { get; set; }
 }

@@ -269,6 +269,10 @@ public static class MemberHelper
 
             Members.Add(new ServerMember(rest.Client, List.Members[i], List.Users[i], user));
         }
+
+        if (!onlineOnly && rest.Client.WebSocket != null && rest.Client.TryGetServer(serverId, out Server cachedServer))
+            cachedServer.HasAllMembers = true;
+
         return Members.ToImmutableArray();
     }
 
