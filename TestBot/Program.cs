@@ -3,6 +3,7 @@ using Optionals;
 using RevoltSharp;
 using RevoltSharp.Commands;
 using System;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -20,9 +21,12 @@ class Program
 
     public static async Task Start()
     {
+        // Telrik fiddle proxy to log requests
+        //WebRequest.DefaultWebProxy = new WebProxy("127.0.0.1", 8888);
+
         // Yes ik i can use json file blah blah :p
         string Token = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/Config.txt");
-        
+
 
         Client = new RevoltClient(ClientMode.WebSocket, new ClientConfig
         {
@@ -38,15 +42,16 @@ class Program
                 LogWebSocketError = true,
                 LogWebSocketUnknownEvent = true
             },
+            RestProxy = WebRequest.DefaultWebProxy,
             Owners = new string[] { "01FE57SEGM0CBQD6Y7X10VZQ49", "01FEYH91F7KQXFM5737YVR1M1N" }
         });
 
         string UserToken = System.IO.File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/RevoltBots/UserToken.txt");
-        
+
 
         Client.OnReady += Client_OnReady;
         Client.OnWebSocketError += Client_OnWebSocketError;
-        await Client.LoginAsync(UserToken, AccountType.User);
+        await Client.LoginAsync(Token, AccountType.Bot);
         await Client.StartAsync();
         Client.OnReady += Client_OnReady1;
         _ = new EventTests(Client);

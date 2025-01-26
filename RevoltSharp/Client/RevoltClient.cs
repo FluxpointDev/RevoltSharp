@@ -338,6 +338,7 @@ public class RevoltClient : ClientEvents
         Token = token;
         IsUserAccount = type == AccountType.User;
         Rest.Http.DefaultRequestHeaders.Add(IsUserAccount ? "x-session-token" : "x-bot-token", Token);
+        Rest.FileHttpClient.DefaultRequestHeaders.Add(IsUserAccount ? "x-session-token" : "x-bot-token", Token);
 
         // Check onboarding status
         if (IsUserAccount)

@@ -25,7 +25,7 @@ public class RevoltRestClient
             Client.Logger.LogMessage("Client config ApiUrl can not be empty.", RevoltLogSeverity.Error);
             throw new RevoltException("Client config ApiUrl can not be empty.");
         }
-            
+
 
         if (!Uri.IsWellFormedUriString(client.Config.ApiUrl, UriKind.Absolute))
         {
@@ -41,7 +41,7 @@ public class RevoltRestClient
             Client.Logger.LogMessage("Client config UploadUrl can not be empty.", RevoltLogSeverity.Error);
             throw new RevoltException("Client config UploadUrl can not be empty.");
         }
-            
+
 
         if (!Uri.IsWellFormedUriString(client.Config.Debug.UploadUrl, UriKind.Absolute))
         {

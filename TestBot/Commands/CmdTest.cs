@@ -35,7 +35,7 @@ public class CmdTest : ModuleBase
     [Command("testcat")]
     public async Task TestCat()
     {
-        foreach(var i in Context.Server.Categories)
+        foreach (var i in Context.Server.Categories)
         {
             Console.WriteLine($"{i.Name} - {i.Position}");
         }
@@ -198,14 +198,14 @@ public class CmdTest : ModuleBase
     [Command("tag")]
     public async Task Tag()
     {
-        foreach(var command in CommandHandler.Service.Commands)
+        foreach (var command in CommandHandler.Service.Commands)
         {
             PreconditionResult result = await command.CheckPreconditionsAsync(Context);
             if (command.Name == "bans")
                 Console.WriteLine("Check: " + result.IsSuccess);
-            
+
         }
-        
+
         await ReplyAsync($"Hi {Context.User.Tag}");
     }
 
