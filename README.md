@@ -36,8 +36,8 @@ static void Main(string[] args)
 public static RevoltClient Client;
 public static async Task Start()
 {
-    Client = new RevoltClient("Bot Token", ClientMode.WebSocket);
-    
+    Client = new RevoltClient(ClientMode.WebSocket);
+    await Client.LoginAsync(Token, AccountType.Bot);
     await Client.StartAsync();
     await Task.Delay(-1);
 }
