@@ -28,7 +28,7 @@ public class ClientConfig
     /// <summary>
     /// Do not change this unless you know what you're doing.
     /// </summary>
-    public string ApiUrl = "https://api.revolt.chat/0.8/";
+    public string ApiUrl = "https://api.revolt.chat/";
 
     /// <summary>
     /// Do not use this unless you know what you're doing.
