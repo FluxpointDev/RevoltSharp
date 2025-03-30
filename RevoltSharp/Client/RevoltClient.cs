@@ -35,7 +35,7 @@ public class RevoltClient : ClientEvents
     /// <exception cref="RevoltArgumentException"></exception>
     public RevoltClient(ClientMode mode, ClientConfig? config = null)
     {
-        Config = config ?? new ClientConfig();
+        Config = config ??= new ClientConfig();
         ConfigSafetyChecks();
 
         if (!Config.Debug.EnableConsoleQuickEdit)
