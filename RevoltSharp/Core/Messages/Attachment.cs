@@ -76,10 +76,9 @@ public class Attachment : CreatedEntity
     /// <summary>
     /// The URL of the attachment.
     /// </summary>
-    public string GetUrl(int? size = null)
+    public string GetUrl()
     {
-        Conditions.GetImageSizeLength(size, nameof(GetUrl));
-        return $"{Client.Config.Debug.UploadUrl}{Tag}/{Id}/{Filename}{(size != null ? $"?size={size}" : null)}";
+        return $"{Client.Config.Debug.UploadUrl}{Tag}/{Id}/{Filename}";
     }
 
     internal static Attachment? Create(RevoltClient client, AttachmentJson? model)

@@ -66,12 +66,12 @@ public class ServerMember : Entity
     public Attachment? ServerAvatar { get; internal set; }
 
     /// <inheritdoc cref="User.GetAvatarUrl"/>
-    public string? GetAvatarUrl(AvatarSources which = AvatarSources.Any, int? size = null)
+    public string? GetAvatarUrl(AvatarSources which = AvatarSources.Any)
     {
         if (Avatar != null && (which | AvatarSources.Server) != 0)
-            return Avatar.GetUrl(size);
+            return Avatar.GetUrl();
 
-        return User.GetAvatarUrl(which, size);
+        return User.GetAvatarUrl(which);
     }
 
     /// <summary>

@@ -866,12 +866,11 @@
             The avatar id of the bot.
             </summary>
         </member>
-        <member name="M:RevoltSharp.PublicBot.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+        <member name="M:RevoltSharp.PublicBot.GetAvatarUrl(RevoltSharp.AvatarSources)">
             <summary>
             Gets the bot's avatar.
             </summary>
             <param name="which">Which avatar to return.</param>
-            <param name="size"></param>
             <returns>URL of the image</returns>
         </member>
         <member name="P:RevoltSharp.PublicBot.Description">
@@ -2133,7 +2132,7 @@
             File has been reported by a user.
             </summary>
         </member>
-        <member name="M:RevoltSharp.Attachment.GetUrl(System.Nullable{System.Int32})">
+        <member name="M:RevoltSharp.Attachment.GetUrl">
             <summary>
             The URL of the attachment.
             </summary>
@@ -2816,7 +2815,7 @@
             Get the username and discriminator of the user.
             </summary>
         </member>
-        <member name="M:RevoltSharp.ServerBan.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+        <member name="M:RevoltSharp.ServerBan.GetAvatarUrl(RevoltSharp.AvatarSources)">
             <summary>
             Gets the user's avatar.
             </summary>
@@ -2884,8 +2883,8 @@
             Will be <see langword="null" /> if member has no avatar set.
             </remarks>
         </member>
-        <member name="M:RevoltSharp.ServerMember.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
-            <inheritdoc cref="M:RevoltSharp.User.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})"/>
+        <member name="M:RevoltSharp.ServerMember.GetAvatarUrl(RevoltSharp.AvatarSources)">
+            <inheritdoc cref="M:RevoltSharp.User.GetAvatarUrl(RevoltSharp.AvatarSources)"/>
         </member>
         <member name="P:RevoltSharp.ServerMember.RolesIds">
             <summary>
@@ -3148,7 +3147,7 @@
             Will be <see langword="null" /> if the user has no custom avatar set.
             </remarks>
         </member>
-        <member name="M:RevoltSharp.User.GetAvatarUrl(RevoltSharp.AvatarSources,System.Nullable{System.Int32})">
+        <member name="M:RevoltSharp.User.GetAvatarUrl(RevoltSharp.AvatarSources)">
             <summary>
             Gets the user's avatar.
             </summary>
