@@ -35,8 +35,8 @@ class Program
             Debug = new ClientDebugConfig
             {
                 LogRestRequestJson = false,
-                LogRestResponseJson = false,
-                LogRestRequest = false,
+                LogRestResponseJson = true,
+                LogRestRequest = true,
                 LogWebSocketFull = false,
                 LogWebSocketReady = false,
                 LogWebSocketError = true,
@@ -69,7 +69,7 @@ class Program
             Console.WriteLine("Getting sessions");
             try
             {
-                var Sessions = await Client.Rest.GetAccountSessionsAsync();
+                AccountSession[] Sessions = await Client.Rest.GetAccountSessionsAsync();
                 Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Sessions, Newtonsoft.Json.Formatting.Indented));
             }
             catch (Exception ex)
@@ -106,7 +106,7 @@ public class CommandHandler
 
     public async Task LoadCommands()
     {
-        var Services = new ServiceCollection().AddSingleton(Service).BuildServiceProvider();
+        ServiceProvider Services = new ServiceCollection().AddSingleton(Service).BuildServiceProvider();
 
         await Service.AddModulesAsync(Assembly.GetEntryAssembly(), Services);
     }

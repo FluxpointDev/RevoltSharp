@@ -35,7 +35,7 @@ public class CmdTest : ModuleBase
     [Command("testcat")]
     public async Task TestCat()
     {
-        foreach (var i in Context.Server.Categories)
+        foreach (ServerCategory i in Context.Server.Categories)
         {
             Console.WriteLine($"{i.Name} - {i.Position}");
         }
@@ -61,8 +61,8 @@ public class CmdTest : ModuleBase
     [Command("beforemsg")]
     public async Task BeforeMsg(string msgId)
     {
-        var Messages = await Context.Channel.GetMessagesAsync(10, beforeMessageId: msgId);
-        foreach (var m in Messages)
+        IReadOnlyCollection<Message> Messages = await Context.Channel.GetMessagesAsync(10, beforeMessageId: msgId);
+        foreach (Message m in Messages)
         {
             Console.WriteLine($"{m.Author?.ToString()}: {m.Type} - {(m as UserMessage)?.Content}");
         }
@@ -104,9 +104,9 @@ public class CmdTest : ModuleBase
     [Command("permtest")]
     public async Task PermTest()
     {
-        var User = Context.Server.CurrentUser;
-        var Perms = User.Permissions;
-        var Channel = User.GetPermissions(Context.Channel as TextChannel);
+        ServerMember User = Context.Server.CurrentUser;
+        ServerPermissions Perms = User.Permissions;
+        ChannelPermissions Channel = User.GetPermissions(Context.Channel as TextChannel);
         await ReplyAsync("Global: " + Perms.EmbedLinks + "\n" +
             "Channel: " + Channel.EmbedLinks);
 
@@ -124,7 +124,7 @@ public class CmdTest : ModuleBase
     {
         HashSet<string> Roles = new HashSet<string>();
 
-        foreach (var rr in Context.Member.Roles.OrderByDescending(x => x.Rank))
+        foreach (Role rr in Context.Member.Roles.OrderByDescending(x => x.Rank))
         {
             Roles.Add("Role: " + rr.Name);
         }
@@ -144,7 +144,7 @@ public class CmdTest : ModuleBase
         Console.WriteLine("RUN");
         try
         {
-            var VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
+            VoiceState VCR = await Context.Server.GetVoiceChannel("01H4A2KP85J5R21M01C1MNYJ5X").JoinChannelAsync();
             string File = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads") + "/toads.mp4";
 
             _ = Task.Run(async () =>
@@ -180,8 +180,8 @@ public class CmdTest : ModuleBase
     [Command("webhooks")]
     public async Task Webhooks()
     {
-        var Webhooks = await (Context.Channel as TextChannel).GetWebhooksAsync();
-        foreach (var w in Webhooks)
+        IReadOnlyCollection<Webhook> Webhooks = await (Context.Channel as TextChannel).GetWebhooksAsync();
+        foreach (Webhook w in Webhooks)
         {
             Console.WriteLine($"WH: {w.Name}");
         }
@@ -191,14 +191,14 @@ public class CmdTest : ModuleBase
     [Command("bans")]
     public async Task Ban()
     {
-        var Bans = await Context.Server.GetBansAsync();
+        IReadOnlyCollection<ServerBan> Bans = await Context.Server.GetBansAsync();
     }
 
 
     [Command("tag")]
     public async Task Tag()
     {
-        foreach (var command in CommandHandler.Service.Commands)
+        foreach (CommandInfo command in CommandHandler.Service.Commands)
         {
             PreconditionResult result = await command.CheckPreconditionsAsync(Context);
             if (command.Name == "bans")
@@ -581,7 +581,7 @@ public class CmdTest : ModuleBase
         UserMessage GCM = await GC.SendMessageAsync("Hi");
         await GCM.DeleteAsync();
 
-        var GCMembers = await GC.GetUsersAsync();
+        IReadOnlyCollection<User> GCMembers = await GC.GetUsersAsync();
         if (!GCMembers.Any())
             throw new Exception("Failed to get Group users");
 
@@ -617,8 +617,8 @@ public class CmdTest : ModuleBase
     [Command("ping")]
     public async Task Ping()
     {
-        var Members = await Context.Server.GetMembersAsync();
-        var List = Members.Where(x => x.RolesIds.Any(x => x == "01GZYQ9GCE14824E1HM10E49FP")).Select(x => $"<@{x.Id}>");
+        IReadOnlyCollection<ServerMember> Members = await Context.Server.GetMembersAsync();
+        IEnumerable<string> List = Members.Where(x => x.RolesIds.Any(x => x == "01GZYQ9GCE14824E1HM10E49FP")).Select(x => $"<@{x.Id}>");
         await Context.Channel.SendMessageAsync($"**RevoltSharp Notice**\n{string.Join(" | ", List)}");
     }
 

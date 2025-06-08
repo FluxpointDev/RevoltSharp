@@ -229,6 +229,7 @@ public class RevoltClient : ClientEvents
             RevoltVersion = CurrentQuery.RevoltVersion;
             Config.Debug.WebsocketUrl = CurrentQuery.WebsocketUrl;
             Config.Debug.UploadUrl = CurrentQuery.ImageServerUrl;
+            Rest.FileHttpClient.BaseAddress = new Uri(Config.Debug.UploadUrl);
 
             Config.Debug.VoiceServerUrl = CurrentQuery.VoiceApiUrl;
             Config.Debug.VoiceWebsocketUrl = CurrentQuery.VoiceWebsocketUrl;
@@ -263,7 +264,7 @@ public class RevoltClient : ClientEvents
         AccountLogin Response = null;
         try
         {
-            var Json = await Rest.PostAsync<AccountLoginJson>("auth/session/login", new AccountLoginRequest
+            AccountLoginJson Json = await Rest.PostAsync<AccountLoginJson>("auth/session/login", new AccountLoginRequest
             {
                 email = email,
                 password = password,
@@ -294,7 +295,7 @@ public class RevoltClient : ClientEvents
         AccountLogin Response = null;
         try
         {
-            var Req = new AccountLoginMFARequest
+            AccountLoginMFARequest Req = new AccountLoginMFARequest
             {
                 mfa_ticket = ticket,
                 friendly_name = sessionName
@@ -304,7 +305,7 @@ public class RevoltClient : ClientEvents
             else
                 Req.mfa_response.totp_code = code;
 
-            var Json = await Rest.PostAsync<AccountLoginJson>("auth/session/login", Req);
+            AccountLoginJson Json = await Rest.PostAsync<AccountLoginJson>("auth/session/login", Req);
             Response = new AccountLogin(Json);
         }
         catch (Exception ex)
