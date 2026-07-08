@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Optionals;
 using System;
+using System.Collections.Generic;
 
 namespace StoatSharp.WebSocket;
 
@@ -48,4 +49,7 @@ internal class MessageUpdateDataJson
 
     [JsonProperty("pinned")]
     public Optional<bool> Pinned;
+
+    [JsonProperty("reactions")]
+    public Optional<IReadOnlyDictionary<EmojiJson, UserJson[]>> Reactions;
 }

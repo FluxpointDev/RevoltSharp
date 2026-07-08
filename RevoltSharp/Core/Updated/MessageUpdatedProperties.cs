@@ -1,6 +1,7 @@
 ﻿using Optionals;
 using StoatSharp.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace StoatSharp;
@@ -14,6 +15,9 @@ public class MessageUpdatedProperties : CreatedEntity
         EditedAt = json.Data.EditedAt;
         ChannelId = json.ChannelId;
         Embeds = json.Data.Embeds.HasValue ? Optional.Some(json.Data.Embeds.Value.Select(x => MessageEmbed.Create(client, x)!).ToArray()) : Optional.None<MessageEmbed[]>();
+        Reactions = json.Data.Reactions.HasValue ?
+            Optional.Some<IReadOnlyDictionary<Emoji, User[]>>(json.Data.Reactions.Value.ToDictionary(x => new Emoji(client, x.Key),
+                x => x.Value.Select(u => new User(client, u)).ToArray())) : Optional.None<IReadOnlyDictionary<Emoji, User[]>>();
         if (Channel is ServerChannel SC)
             ServerId = SC.ServerId;
     }
@@ -31,6 +35,8 @@ public class MessageUpdatedProperties : CreatedEntity
     public Optional<string> Content { get; private set; }
 
     public Optional<MessageEmbed[]> Embeds { get; private set; }
+
+    public Optional<IReadOnlyDictionary<Emoji, User[]>> Reactions { get; private set; }
 
     public DateTime EditedAt { get; private set; }
 

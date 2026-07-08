@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
 	  <ImplicitUsings>disable</ImplicitUsings>
-    <Version>9.0.5</Version>
+    <Version>9.0.6</Version>
     <Authors>Builderb (Fluxpoint Development)</Authors>
     <Company>Fluxpoint Development</Company>
     <Description>A C# lib for using the Stoat Chat API and connecting to the gateway with a user or bot account.</Description>

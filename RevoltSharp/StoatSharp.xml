@@ -3904,13 +3904,13 @@
             <exception cref="T:StoatSharp.StoatArgumentException"></exception>
             <exception cref="T:StoatSharp.StoatRestException"></exception>
         </member>
-        <member name="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Server,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean})">
-            <inheritdoc cref="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String})" />
+        <member name="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Server,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.Int32})">
+            <inheritdoc cref="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String},StoatSharp.Option{System.Int32})" />
         </member>
-        <member name="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,StoatSharp.Channel,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String})">
-            <inheritdoc cref="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String})" />
+        <member name="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,StoatSharp.Channel,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String},StoatSharp.Option{System.Int32})">
+            <inheritdoc cref="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String},StoatSharp.Option{System.Int32})" />
         </member>
-        <member name="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String})">
+        <member name="M:StoatSharp.ChannelHelper.ModifyChannelAsync(StoatSharp.Rest.StoatRestClient,System.String,StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.String},StoatSharp.Option{System.Boolean},StoatSharp.Option{System.String},StoatSharp.Option{System.Int32})">
             <summary>
             Update a channel.
             </summary>
