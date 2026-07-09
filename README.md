@@ -51,13 +51,8 @@ Here is an example on how to setup commands.
 ```cs
 class Program
 {
-    static void Main(string[] args)
     public static StoatClient Client;
-    {
-        Start().GetAwaiter().GetResult();
-    }
-
-    public static async Task Start()
+    public static async Main Start()
     {
         Client = new StoatClient("Bot Token", ClientMode.WebSocket);
         await Client.StartAsync();
@@ -74,20 +69,34 @@ public class CommandHandler
         Client = client;
         client.OnMessageRecieved += Client_OnMessageRecieved;
     }
-	
-    public StoatClient Client;
-    public CommandService Service = new CommandService();
-    private void Client_OnMessageRecieved(Message msg)
-        {
-            UserMessage Message = msg as UserMessage;
-            if (Message == null || Message.Author.IsBot)
-                return;
-            int argPos = 0;
-            if (!(Message.HasCharPrefix('!', ref argPos) || Message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
-                return;
-            CommandContext context = new CommandContext(Client, Message);
-            Service.ExecuteAsync(context, argPos, null);
-        }
+    
+    public StoatClient Client { get; }
+    public CommandService Service { get; } = new CommandService();
+    private void Client_OnMessageRecieved(Message message)
+    {
+        if (message is not UserMessage userMessage) return;
+        if (userMessage.Author.IsBot) return;
+        
+        if (!IsCommand(usermessage, out int argPos)) return;
+        
+        CommandContext context = new CommandContext(Client, userMessage);
+        Service.ExecuteAsync(context, argPos, null);
+    }
+    
+    /// <summary>
+    ///     Checks if a <paramref name="userMessage"/> is a valid command, while determining the position at which arguments start.
+    /// </summary>
+    /// <param name="userMessage">The message to check.</param>
+    /// <param name="argPos">The position at which arguments start.</param>
+    private bool IsCommand(UserMessage userMessage, out int argPos)
+    {
+        argPos = 0;
+        
+        if (userMessage.HasCharPrefix('!', ref argPos)) return true;
+        if (userMessage.HasMentionPrefix(Client.CurrentUser, ref argPos)) return true;
+        
+        return false;
+    }
 }
 ```
 
